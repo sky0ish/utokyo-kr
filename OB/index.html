@@ -85,7 +85,12 @@
   .sec-head .more:hover{color:var(--gold);border-color:var(--gold);}
 
   /* ── 총회 결과보고 ── */
-  .asm{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:2px;background:#fff;padding:26px 30px;margin-bottom:14px;}
+  .asm{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:2px;background:#fff;padding:26px 30px;margin-bottom:14px;display:flex;gap:28px;align-items:flex-start;}
+  .asm .asm-tx{flex:1;min-width:0;}
+  .asm-poster{flex:none;width:210px;display:block;}
+  .asm-poster img{width:100%;display:block;border:1px solid var(--line);border-radius:2px;transition:.25s;}
+  .asm-poster:hover img{transform:scale(1.03);box-shadow:0 10px 28px rgba(0,0,0,.18);}
+  @media (max-width:700px){ .asm{flex-direction:column;} .asm-poster{width:100%;max-width:340px;} }
   .asm h3{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;margin-bottom:4px;}
   .asm h3 .yr{color:var(--gold);font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;margin-right:10px;}
   .asm .when{font-size:13px;color:#8a8574;margin-bottom:12px;}
@@ -279,6 +284,7 @@
     </div>
 
     <div class="asm">
+      <div class="asm-tx">
       <h3><span class="yr">2026</span>2026년도 정기총회 결과 보고</h3>
       <div class="when">2026년 2월 12일(목) 18:30 · 한국제약바이오협회 강당 (온/오프라인 병행) · 사회 김태수 부회장</div>
       <ul>
@@ -288,18 +294,23 @@
         <li>특강(윤상인 교수) · 자랑스러운 동경대인상 수여 · 동문 우수기업 소개 · 경품 추첨(약 30인)</li>
         <li>2026년 주요 사업: 단과대별 순환 포럼(75만원 지원), 멘토링, 주소록 연락망 확충, 홈페이지 개선, 주니어·정년세대 소모임 활성화</li>
       </ul>
+      </div>
+      <a class="asm-poster" href="../images/posters/asm2026.jpg" target="_blank"><img src="../images/posters/asm2026.jpg" alt="2026년도 총회 초대장"></a>
     </div>
 
     <div class="asm">
+      <div class="asm-tx">
       <h3><span class="yr">2025</span>2025년도 정기총회 결과 보고</h3>
       <div class="when">2025년 2월 · 서울 (온/오프라인 병행)</div>
       <ul>
         <li>도쿄대학 총장 인사말 · 축사(곽민희 이사) · 활동보고 · 경품 추첨</li>
         <li>연간 활동: 건축학 구조계 포럼(노토반도 지진 도시방재, 2월) · 농학생명과학 포럼(2월) · 골프 모임(4월·11월, 여주 360도CC) · 고문단·부회장단 모임(11월)</li>
       </ul>
+      </div>
     </div>
 
     <div class="asm">
+      <div class="asm-tx">
       <h3><span class="yr">2024</span>2024년도 정기총회 결과 보고</h3>
       <div class="when">2024년 2월 21일(수) 18:20 · 대한약사회 4층 강당 (ZOOM 병행)</div>
       <ul>
@@ -307,9 +318,12 @@
         <li>역대 수상자 특별강연: '생활 속의 안전' — 이준 (한국교통연구원 연구위원)</li>
         <li>경품 추첨 20인(갤럭시탭 S9 외) · 참가자 전원 스타벅스 쿠폰</li>
       </ul>
+      </div>
+      <a class="asm-poster" href="../images/posters/asm2024.jpg" target="_blank"><img src="../images/posters/asm2024.jpg" alt="2024년도 총회 포스터"></a>
     </div>
 
     <div class="asm">
+      <div class="asm-tx">
       <h3><span class="yr">2023</span>2023년도 정기총회 결과 보고</h3>
       <div class="when">2023년 3월 15일(수) 18:30 · 한국제약바이오협회 2층 K룸 (온/오프라인) — 현장 57명, 온라인 포함 약 70여 명 참석</div>
       <ul>
@@ -317,9 +331,12 @@
         <li>자랑스러운 도쿄대인상: 박종근 명예회장 · 전홍우 동문 / 기여상: 이동근 부회장 · 후지이 지후미(도쿄대 서울사무국)</li>
         <li>포럼: '한일 문화 교류의 현황과 미래' — 강태웅 교수 · 약 20여 명 경품 추첨</li>
       </ul>
+      </div>
+      <a class="asm-poster" href="../images/posters/asm2023.jpg" target="_blank"><img src="../images/posters/asm2023.jpg" alt="2023년도 총회 팜플렛"></a>
     </div>
 
     <div class="asm">
+      <div class="asm-tx">
       <h3><span class="yr">2022</span>2022년도 정기총회 결과 보고</h3>
       <div class="when">2022년 2월 24일(목) 19:00 · 서울대학교 220동 201호 (온라인 병행)</div>
       <ul>
@@ -327,9 +344,12 @@
         <li>자랑스러운 젊은 동대인상: 김상현 (한국과학기술원 교수)</li>
         <li>특별강연: '한일 화해를 위한 민간 역할 — 동경대 동문을 중심으로'(최봉태 변호사) · '의료 인공지능의 현재와 미래'(김동민 JLK 대표)</li>
       </ul>
+      </div>
+      <a class="asm-poster" href="../images/posters/asm2022.jpg" target="_blank"><img src="../images/posters/asm2022.jpg" alt="2022년도 총회 안내장"></a>
     </div>
 
     <div class="asm">
+      <div class="asm-tx">
       <h3><span class="yr">2012–2021</span>초기 총회 · 신년회</h3>
       <div class="when">창립(2011) 이후 신년회 중심으로 개최</div>
       <ul>
@@ -338,6 +358,7 @@
         <li>2016년 신년회+포럼 결합 형식으로 발전</li>
         <li>2019년 총동문회 활성화 TFT 발족 · 2021년 임원진 정비 및 교류 프로그램 운영</li>
       </ul>
+      </div>
     </div>
   </div>
 </section>
