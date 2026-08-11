@@ -36,9 +36,11 @@
 
   <div class="tabs" id="catTabs">
     <a href="#" data-cat="">전체</a>
-    <a href="#" data-cat="notice">공지</a>
-    <a href="#" data-cat="news">동문소식</a>
+    <a href="#" data-cat="notice">공지사항</a>
     <a href="#" data-cat="free">자유게시판</a>
+    <a href="#" data-cat="club">소모임</a>
+    <a href="#" data-cat="faculty">단과대별</a>
+    <a href="#" data-cat="news">동문소식</a>
     <a href="#" data-cat="jobs">구인구직</a>
     <a href="#" data-cat="market">벼룩시장</a>
     <a href="#" data-cat="condolence">경조사</a>
@@ -55,10 +57,11 @@
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
-const CAT = { notice:"공지", free:"자유", news:"소식", jobs:"구인", market:"장터", condolence:"경조사" };
+const CAT = { notice:"공지", free:"자유", club:"소모임", faculty:"단과대별", news:"소식", jobs:"구인", market:"장터", condolence:"경조사" };
 const params = new URLSearchParams(location.search);
 const org = params.get("org") || "";
-let cat = "";
+let cat = params.get("cat") || "";
+if (!CAT[cat]) cat = "";
 
 document.querySelectorAll("#catTabs a").forEach(a => {
   a.addEventListener("click", (e) => {
@@ -69,7 +72,7 @@ document.querySelectorAll("#catTabs a").forEach(a => {
     load();
   });
 });
-document.querySelector('#catTabs a[data-cat=""]').classList.add("on");
+(document.querySelector('#catTabs a[data-cat="' + cat + '"]') || document.querySelector('#catTabs a[data-cat=""]')).classList.add("on");
 
 // 로그인 상태 표시
 const user = await currentUser();
