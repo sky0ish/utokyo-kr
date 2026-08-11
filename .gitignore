@@ -8,6 +8,7 @@
 !/OB/
 !/images/
 !/auth/
+!/board/
 
 # 저장소 관리 파일 허용
 !/.gitignore

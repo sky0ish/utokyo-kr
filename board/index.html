@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>게시판 | 도쿄대학교 한국 커뮤니티</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="board.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="../YB/index.html">한국인학생회</a>
+      <a href="../OB/index.html">재한 도쿄대학 총동문회</a>
+    </div>
+    <div class="links" id="authLinks">
+      <a href="../auth/login.html">로그인</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="head">
+    <div>
+      <span class="en">Community Board</span>
+      <h1>게시판</h1>
+    </div>
+    <div>
+      <a class="btn line" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
+      <button class="btn dark" id="writeBtn">글쓰기</button>
+    </div>
+  </div>
+
+  <div class="tabs" id="orgTabs">
+    <a href="?org=" data-org="">전체</a>
+    <a href="?org=OB" data-org="OB">OB 총동문회</a>
+    <a href="?org=YB" data-org="YB">YB 학생회</a>
+  </div>
+  <div class="tabs" id="catTabs">
+    <a href="#" data-cat="">전체</a>
+    <a href="#" data-cat="notice">공지</a>
+    <a href="#" data-cat="news">동문소식</a>
+    <a href="#" data-cat="free">자유게시판</a>
+    <a href="#" data-cat="jobs">구인구직</a>
+    <a href="#" data-cat="market">벼룩시장</a>
+    <a href="#" data-cat="condolence">경조사</a>
+  </div>
+
+  <div class="list" id="list"><div class="empty">불러오는 중…</div></div>
+
+  <div class="notice-box" id="loginNotice" style="display:none;">
+    회원 전용 글은 로그인 후 보입니다. 승인된 회원만 글을 쓸 수 있습니다.
+    <a href="../auth/login.html">로그인</a> · <a href="../auth/signup.html">회원가입</a>
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "../auth/auth.js";
+
+const CAT = { notice:"공지", free:"자유", news:"소식", jobs:"구인", market:"장터", condolence:"경조사" };
+const params = new URLSearchParams(location.search);
+const org = params.get("org") || "";
+let cat = "";
+
+// 탭 활성화
+document.querySelectorAll("#orgTabs a").forEach(a => {
+  if ((a.dataset.org || "") === org) a.classList.add("on");
+});
+document.querySelectorAll("#catTabs a").forEach(a => {
+  a.addEventListener("click", (e) => {
+    e.preventDefault();
+    cat = a.dataset.cat || "";
+    document.querySelectorAll("#catTabs a").forEach(x => x.classList.remove("on"));
+    a.classList.add("on");
+    load();
+  });
+});
+document.querySelector('#catTabs a[data-cat=""]').classList.add("on");
+
+// 로그인 상태 표시
+const user = await currentUser();
+if (user) {
+  const p = await myProfile();
+  document.getElementById("authLinks").innerHTML =
+    `<a href="../auth/mypage.html">${(p && p.name) ? p.name + "님" : "내 정보"}</a>`;
+} else {
+  document.getElementById("loginNotice").style.display = "block";
+}
+
+document.getElementById("writeBtn").addEventListener("click", async () => {
+  if (!user) { location.href = "../auth/login.html"; return; }
+  location.href = "write.html" + (org ? "?org=" + org : "");
+});
+
+async function load() {
+  const listEl = document.getElementById("list");
+  listEl.innerHTML = '<div class="empty">불러오는 중…</div>';
+  let q = sb.from("posts")
+    .select("id,title,org,category,author_name,visibility,source,created_at")
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (org) q = q.in("org", [org, "ALL"]);
+  if (cat) q = q.eq("category", cat);
+  const { data, error } = await q;
+  if (error) { listEl.innerHTML = '<div class="empty">게시판을 불러오지 못했습니다. (' + error.message + ')</div>'; return; }
+  if (!data || data.length === 0) { listEl.innerHTML = '<div class="empty">아직 게시글이 없습니다.</div>'; return; }
+  listEl.innerHTML = data.map(p => `
+    <a class="row" href="post.html?id=${p.id}">
+      <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span>
+      <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
+      <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
+      <span class="meta">${escapeHtml(p.author_name || "")}<br>${p.created_at.slice(0,10)}</span>
+    </a>`).join("");
+}
+
+function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+load();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>게시글 | 도쿄대학교 한국 커뮤니티</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="board.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="index.html">게시판 목록</a>
+    </div>
+    <div class="links" id="authLinks"><a href="../auth/login.html">로그인</a></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="post" id="postBox">
+    <div class="empty">불러오는 중…</div>
+  </div>
+  <div class="pactions" id="actions" style="display:none;">
+    <button class="btn line" id="editBtn">수정</button>
+    <button class="btn line" id="delBtn">삭제</button>
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser } from "../auth/auth.js";
+
+const CAT = { notice:"공지", free:"자유게시판", news:"동문소식", jobs:"구인구직", market:"벼룩시장", condolence:"경조사" };
+const id = new URLSearchParams(location.search).get("id");
+const box = document.getElementById("postBox");
+const user = await currentUser();
+if (user) document.getElementById("authLinks").innerHTML = '<a href="../auth/mypage.html">내 정보</a>';
+
+function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const { data: p, error } = await sb.from("posts").select("*").eq("id", id).single();
+if (error || !p) {
+  box.innerHTML = '<div class="empty">글을 찾을 수 없거나 열람 권한이 없습니다.<br><br><a class="btn line" href="index.html">목록으로</a>' +
+    (user ? "" : ' <a class="btn dark" href="../auth/login.html">로그인</a>') + '</div>';
+} else {
+  box.innerHTML = `
+    <div>
+      <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span>
+      <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
+    </div>
+    <h2>${escapeHtml(p.title)}</h2>
+    <div class="pmeta">${escapeHtml(p.author_name || "")} · ${p.created_at.slice(0,16).replace("T"," ")}</div>
+    <div class="body">${escapeHtml(p.content)}</div>
+    ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' : ""}
+  `;
+  if (user && p.author_id === user.id) {
+    document.getElementById("actions").style.display = "flex";
+    document.getElementById("editBtn").addEventListener("click", () => location.href = "write.html?edit=" + p.id);
+    document.getElementById("delBtn").addEventListener("click", async () => {
+      if (!confirm("이 글을 삭제할까요?")) return;
+      const { error: e } = await sb.from("posts").delete().eq("id", p.id);
+      if (e) alert("삭제 실패: " + e.message); else location.href = "index.html";
+    });
+  }
+}
+</script>
+
+</body>
+</html>

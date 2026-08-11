@@ -1,0 +1,58 @@
+/* ─── 게시판 공용 스타일 ─── */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;color:#22283a;background:#f8f7f3;min-height:100vh;line-height:1.7;}
+a{text-decoration:none;color:inherit;}
+.topbar{background:#101d33;color:rgba(255,255,255,.75);font-size:12.5px;}
+.topbar .inner{max-width:960px;margin:0 auto;padding:9px 20px;display:flex;justify-content:space-between;gap:16px;}
+.topbar a:hover{color:#e8c876;}
+.topbar .links{display:flex;gap:16px;}
+.wrap{max-width:960px;margin:0 auto;padding:36px 20px 80px;}
+.head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
+.head h1{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:600;}
+.head .en{font-family:Georgia,serif;font-style:italic;font-size:14px;color:#c9a24b;letter-spacing:.1em;display:block;}
+.btn{display:inline-block;padding:10px 22px;border-radius:3px;font-size:13.5px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.2s;}
+.btn.dark{background:#101d33;color:#fff;}
+.btn.dark:hover{background:#1b2a45;}
+.btn.line{background:#fff;border:1px solid #d8d1bf;color:#5a5648;}
+.btn.line:hover{border-color:#8a6d2b;color:#8a6d2b;}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.tabs a{padding:7px 16px;border-radius:100px;font-size:13px;font-weight:500;background:#fff;border:1px solid #e3ddd0;color:#6f6a5c;}
+.tabs a.on{background:#101d33;color:#fff;border-color:#101d33;}
+.list{background:#fff;border:1px solid #e6e1d5;border-radius:4px;overflow:hidden;}
+.list .row{display:flex;align-items:center;gap:14px;padding:15px 18px;border-bottom:1px solid #f0ece1;transition:.15s;}
+.list .row:hover{background:#faf8f2;}
+.list .row:last-child{border-bottom:none;}
+.chip{flex:none;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:.04em;}
+.chip.notice{background:#ede4cf;color:#8a6d2b;}
+.chip.free{background:#e7ecf3;color:#33507e;}
+.chip.news{background:#e8f0e6;color:#3f6a3a;}
+.chip.jobs{background:#f3e7ee;color:#8c3f6d;}
+.chip.market{background:#e9ecec;color:#4a6a6a;}
+.chip.condolence{background:#ececec;color:#666;}
+.chip.org-YB{background:#e2f0e5;color:#1e5230;}
+.chip.org-OB{background:#fdf1dc;color:#a06a10;}
+.chip.org-ALL{background:#eee;color:#555;}
+.row .t{flex:1;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.row .t .lock{font-size:11px;color:#b0a98f;margin-left:6px;}
+.row .meta{flex:none;font-size:12px;color:#a8a291;text-align:right;line-height:1.5;}
+.empty{padding:60px 20px;text-align:center;color:#9a947f;font-size:14px;}
+.notice-box{margin-top:16px;padding:14px 16px;border-radius:4px;background:#f2eee2;color:#6f6a5c;font-size:13px;line-height:1.7;}
+.notice-box a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
+/* 글보기 */
+.post{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:34px 34px 40px;}
+.post h2{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:600;margin:10px 0 8px;}
+.post .pmeta{font-size:12.5px;color:#a8a291;padding-bottom:18px;border-bottom:1px solid #eee9dd;margin-bottom:24px;}
+.post .body{font-size:15px;color:#3a4050;white-space:pre-wrap;word-break:keep-all;}
+.post .src{margin-top:26px;font-size:12px;color:#b0a98f;}
+.pactions{margin-top:22px;display:flex;gap:10px;}
+/* 글쓰기 */
+.form{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:30px;}
+label{display:block;font-size:12.5px;font-weight:500;color:#5a5648;margin:16px 0 6px;}
+input,select,textarea{width:100%;padding:11px 13px;font-size:14.5px;font-family:inherit;border:1px solid #d8d1bf;border-radius:3px;background:#fdfcfa;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:#c9a24b;box-shadow:0 0 0 3px rgba(201,162,75,.15);}
+textarea{min-height:280px;resize:vertical;line-height:1.8;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.msg{display:none;margin-top:16px;padding:11px 13px;border-radius:3px;font-size:13.5px;}
+.msg.err{background:#f8e8e6;color:#8a3b32;display:block;}
+.msg.ok{background:#e8f0e6;color:#3f6a3a;display:block;}
+@media (max-width:640px){ .row3{grid-template-columns:1fr;} .row .meta{display:none;} .post{padding:24px 18px;} }

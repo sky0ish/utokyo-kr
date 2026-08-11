@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글쓰기 | 도쿄대학교 한국 커뮤니티</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="board.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="index.html">게시판 목록</a>
+    </div>
+    <div class="links"><a href="../auth/mypage.html">내 정보</a></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="head"><div><span class="en">Write</span><h1 id="pageTitle">글쓰기</h1></div></div>
+
+  <div class="form">
+    <div class="msg" id="topMsg"></div>
+    <form id="postForm" style="display:none;">
+      <label>제목 *</label>
+      <input type="text" id="title" required maxlength="200">
+
+      <div class="row3">
+        <div>
+          <label>게시판 구분 *</label>
+          <select id="org">
+            <option value="OB">OB — 총동문회</option>
+            <option value="YB">YB — 학생회</option>
+            <option value="ALL">공통</option>
+          </select>
+        </div>
+        <div>
+          <label>분류 *</label>
+          <select id="category">
+            <option value="free">자유게시판</option>
+            <option value="notice">공지</option>
+            <option value="news">동문소식</option>
+            <option value="jobs">구인구직</option>
+            <option value="market">벼룩시장</option>
+            <option value="condolence">경조사</option>
+          </select>
+        </div>
+        <div>
+          <label>공개 범위 *</label>
+          <select id="visibility">
+            <option value="members">회원 전용</option>
+            <option value="public">전체 공개</option>
+          </select>
+        </div>
+      </div>
+
+      <label>내용 *</label>
+      <textarea id="content" required></textarea>
+
+      <button class="btn dark" id="submitBtn" type="submit" style="margin-top:20px;">등록하기</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "../auth/auth.js";
+
+const topMsg = document.getElementById("topMsg");
+const form = document.getElementById("postForm");
+const editId = new URLSearchParams(location.search).get("edit");
+const preOrg = new URLSearchParams(location.search).get("org");
+
+const user = await currentUser();
+if (!user) { location.href = "../auth/login.html"; }
+const profile = await myProfile();
+
+if (!profile || !profile.approved) {
+  topMsg.className = "msg err";
+  topMsg.textContent = "글쓰기는 운영진 승인이 완료된 회원만 가능합니다. (현재: 승인 대기중)";
+} else {
+  form.style.display = "block";
+  if (preOrg === "YB" || preOrg === "OB") document.getElementById("org").value = preOrg;
+
+  // 수정 모드
+  if (editId) {
+    document.getElementById("pageTitle").textContent = "글 수정";
+    const { data: p } = await sb.from("posts").select("*").eq("id", editId).single();
+    if (p) {
+      document.getElementById("title").value = p.title;
+      document.getElementById("org").value = p.org;
+      document.getElementById("category").value = p.category;
+      document.getElementById("visibility").value = p.visibility;
+      document.getElementById("content").value = p.content;
+    }
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submitBtn");
+    const msg = document.getElementById("msg");
+    btn.disabled = true;
+    const row = {
+      title: document.getElementById("title").value.trim(),
+      org: document.getElementById("org").value,
+      category: document.getElementById("category").value,
+      visibility: document.getElementById("visibility").value,
+      content: document.getElementById("content").value,
+    };
+    let res;
+    if (editId) {
+      res = await sb.from("posts").update({ ...row, updated_at: new Date().toISOString() }).eq("id", editId).select("id").single();
+    } else {
+      res = await sb.from("posts").insert({ ...row, author_id: user.id, author_name: profile.name || "" }).select("id").single();
+    }
+    btn.disabled = false;
+    if (res.error) {
+      msg.className = "msg err"; msg.textContent = "등록 실패: " + res.error.message;
+    } else {
+      location.href = "post.html?id=" + res.data.id;
+    }
+  });
+}
+</script>
+
+</body>
+</html>
