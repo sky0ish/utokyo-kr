@@ -109,13 +109,14 @@
     width:150px;height:150px;border-radius:50%;
     background:rgba(8,14,24,.82);backdrop-filter:blur(8px);
     border:1px solid rgba(255,255,255,.25);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    padding-top:6px;
     pointer-events:none;box-shadow:0 10px 60px rgba(0,0,0,.5);
   }
   .emblem .ring{position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(255,255,255,.13);}
   .emblem .leaf-duo{display:flex;gap:4px;align-items:center;}
-  .emblem .txt{font-family:'Noto Serif KR',serif;font-size:12px;letter-spacing:.26em;color:rgba(255,255,255,.85);text-align:center;line-height:1.8;}
-  .emblem .txt b{font-size:13.5px;font-weight:600;color:#fff;display:block;letter-spacing:.18em;}
+  .emblem .txt{font-family:'Noto Serif KR',serif;color:rgba(255,255,255,.85);text-align:center;white-space:nowrap;}
+  .emblem .txt b{font-size:11.5px;font-weight:600;color:#fff;display:block;letter-spacing:.1em;}
 
   footer{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:center;padding:16px;pointer-events:none;}
   footer p{font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.6);text-shadow:0 1px 8px rgba(0,0,0,.7);}
@@ -170,20 +171,24 @@
 
 </main>
 
-<!-- 중앙 엠블럼 : 초록 잎 + 금빛 잎 -->
+<!-- 중앙 엠블럼 : 도쿄대 은행잎 마크 (골드 × 초록 교차 실선) -->
 <div class="emblem" aria-hidden="true">
   <div class="ring"></div>
-  <div class="leaf-duo">
-    <svg width="26" height="26" viewBox="0 0 40 40">
-      <path d="M20 36 C20 26 20 22 20 20 C8 24 2 16 4 8 C12 4 20 8 20 18 C20 8 28 4 36 8 C38 16 32 24 20 20"
-            fill="none" stroke="#7fc48a" stroke-width="2.2" stroke-linejoin="round"/>
-    </svg>
-    <svg width="26" height="26" viewBox="0 0 40 40">
-      <path d="M20 36 C20 26 20 22 20 20 C8 24 2 16 4 8 C12 4 20 8 20 18 C20 8 28 4 36 8 C38 16 32 24 20 20"
-            fill="none" stroke="#e8c876" stroke-width="2.2" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <div class="txt"><b>같은 길, 두 계절</b>이초 나미키</div>
+  <svg width="82" height="82" viewBox="0 0 100 100" fill="none" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <!-- 큰 잎 + 줄기 고리 : 가을의 골드 (OB) -->
+    <g stroke="#e8c876">
+      <path d="M50 60 C36 56 26 42 26 24 C38 24 48 32 50 44 C52 32 62 24 74 24 C74 42 64 56 50 60 Z"/>
+      <path d="M50 60 L50 44"/>
+      <path d="M50 60 C50 68 47 73 43 76"/>
+      <circle cx="34" cy="72" r="9"/>
+    </g>
+    <!-- 작은 잎 : 여름의 초록 (YB) — 큰 잎과 교차 -->
+    <g stroke="#7fc48a" transform="translate(67,68) rotate(150) scale(.56)">
+      <path d="M0 0 C-14 -4 -24 -18 -24 -36 C-12 -36 -2 -28 0 -16 C2 -28 12 -36 24 -36 C24 -18 14 -4 0 0 Z"/>
+      <path d="M0 0 L0 -16"/>
+    </g>
+  </svg>
+  <div class="txt"><b>같은 길, 두 계절</b></div>
 </div>
 
 <footer>
