@@ -35,9 +35,19 @@
   .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}
   .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;}
   .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.16em;}
-  nav.gnb{display:flex;gap:2px;}
-  nav.gnb>a{padding:10px 11px;font-size:14px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
-  nav.gnb>a:hover,nav.gnb>a.on{color:var(--gold-bright);border-bottom-color:var(--gold);}
+  nav.gnb{display:flex;gap:2px;align-items:center;}
+  nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 11px;font-size:14px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  nav.gnb>a:hover,nav.gnb>a.on,nav.gnb .dd>a:hover{color:var(--gold-bright);border-bottom-color:var(--gold);}
+
+  /* ── 드롭다운 하위메뉴 ── */
+  .gnb .dd{position:relative;}
+  .gnb .dd>a::after{content:" ▾";font-size:10px;opacity:.7;}
+  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:12px;min-width:148px;z-index:200;}
+  .dd:hover .dd-menu{display:flex;}
+  .dd-menu a{display:block;text-align:center;padding:10px 20px;font-size:13.5px;color:#fff;
+    background:rgba(222,222,222,.14);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.18);border-radius:7px;transition:.2s;white-space:nowrap;}
+  .dd-menu a:hover{background:rgba(232,200,118,.22);color:var(--gold-bright);border-color:var(--gold);}
 
   /* ── 히어로 ── */
   .hero{
@@ -221,10 +231,21 @@
     </a>
     <nav class="gnb">
       <a href="#" class="on">홈</a>
-      <a href="#greeting">동문회 소개</a>
-      <a href="#news">동문회 총회</a>
+      <div class="dd">
+        <a href="#greeting">동문회 소개</a>
+        <div class="dd-menu">
+          <a href="#greeting">인사말</a>
+          <a href="#history">연혁</a>
+        </div>
+      </div>
       <a href="../board/index.html?org=OB" class="auth-only">게시판</a>
-      <a href="#join">참여마당</a>
+      <div class="dd">
+        <a href="#join">참여마당</a>
+        <div class="dd-menu">
+          <a href="#news">총회</a>
+          <a href="#join">지역 동문회 · 멘토링</a>
+        </div>
+      </div>
       <a href="#gallery" class="auth-only">갤러리</a>
       <a href="#sponsor">후원</a>
     </nav>
