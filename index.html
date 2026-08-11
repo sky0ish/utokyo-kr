@@ -25,7 +25,8 @@
     display:flex;justify-content:space-between;align-items:center;
     padding:22px 44px;pointer-events:none;
   }
-  .brand{display:flex;align-items:center;gap:14px;}
+  .brand{display:flex;align-items:center;gap:14px;pointer-events:auto;text-decoration:none;transition:opacity .2s;}
+  .brand:hover{opacity:.75;}
   .brand .jp{font-family:'Noto Serif KR',serif;font-size:15px;letter-spacing:.35em;color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.6);}
   .brand .en{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;letter-spacing:.12em;color:rgba(255,255,255,.75);text-shadow:0 1px 14px rgba(0,0,0,.6);}
   header .date{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.2em;color:rgba(255,255,255,.65);text-shadow:0 1px 14px rgba(0,0,0,.6);}
@@ -137,10 +138,10 @@
 <body>
 
 <header>
-  <div class="brand">
+  <a class="brand" href="https://www.u-tokyo.ac.jp/en/about/plog_2026_0506.html" target="_blank" rel="noopener" aria-label="도쿄대학교 공식 홈페이지로 이동">
     <span class="jp">東京大學</span>
     <span class="en">The University of Tokyo — Korean Community</span>
-  </div>
+  </a>
   <div class="date">EST. 2011 · TOKYO / SEOUL</div>
 </header>
 
