@@ -42,7 +42,7 @@
   /* ── 드롭다운 하위메뉴 ── */
   .gnb .dd{position:relative;}
   .gnb .dd>a::after{content:" ▾";font-size:10px;opacity:.7;}
-  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:12px;min-width:148px;z-index:200;}
+  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:24px;min-width:148px;z-index:200;}
   .dd:hover .dd-menu{display:flex;}
   .dd-menu a{display:block;text-align:center;padding:10px 20px;font-size:13.5px;color:#fff;
     background:rgba(222,222,222,.14);backdrop-filter:blur(8px);
@@ -186,6 +186,15 @@
   .sponsor span{font-family:'Cormorant Garamond',serif;font-size:20px;color:#b0a98f;letter-spacing:.1em;transition:.2s;}
   .sponsor span:hover{color:var(--gold);}
 
+  /* ── 협력기관·후원기업 배너 ── */
+  .partners{background:#f2efe6;border-top:1px solid var(--line);padding:30px 0 34px;}
+  .prow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:9px 0;}
+  .plabel{flex:none;width:84px;font-size:12px;letter-spacing:.16em;color:#9a947f;font-weight:700;}
+  .pitems{display:flex;gap:11px;flex-wrap:wrap;}
+  .pitems a,.pitems span{display:block;background:#fff;border:1px solid #e3ddd0;border-radius:6px;padding:9px 20px;font-size:13.5px;color:#4b5162;text-align:center;line-height:1.4;transition:.2s;}
+  .pitems small{display:block;font-size:10.5px;color:#a8a291;letter-spacing:.05em;}
+  .pitems a:hover{border-color:var(--gold);color:#8a6d2b;box-shadow:0 6px 18px rgba(60,50,20,.12);transform:translateY(-2px);}
+
   /* ── 푸터 ── */
   footer.site{background:#0b1526;color:rgba(255,255,255,.6);padding:54px 0 40px;font-size:13px;}
   footer.site .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:32px;}
@@ -302,7 +311,7 @@
       <a class="frame" href="https://cls.snu.ac.kr/snu__professor/%EC%96%91%EC%9D%BC%EB%AA%A8-2/" target="_blank" rel="noopener" title="양일모 회장 프로필 보기">
         <img src="../images/president.jpg" alt="양일모 회장">
       </a>
-      <figcaption><b>4대 회장 양일모</b>서울대학교 자유전공학부 교수 (도쿄대학 동아시아사상문화 博)<br><a href="https://cls.snu.ac.kr/snu__professor/%EC%96%91%EC%9D%BC%EB%AA%A8-2/" target="_blank" rel="noopener" style="color:#8a6d2b;border-bottom:1px solid #d8cba8;">프로필 보기 →</a></figcaption>
+      <figcaption><b>4대 회장 양일모</b>서울대학교 자유전공학부 교수<br>(도쿄대학 동아시아사상문화 博)<br><a href="https://cls.snu.ac.kr/snu__professor/%EC%96%91%EC%9D%BC%EB%AA%A8-2/" target="_blank" rel="noopener" style="color:#8a6d2b;border-bottom:1px solid #d8cba8;">프로필 보기 →</a></figcaption>
     </figure>
     <div class="txt">
       <span class="en">Greetings from the President</span>
@@ -472,13 +481,6 @@
     <div class="sec-head" style="justify-content:center;text-align:center;">
       <div class="t"><span class="en">Partners &amp; Sponsors</span><h2>후원 및 협력</h2></div>
     </div>
-    <div class="sponsor">
-      <span>SAMSUNG DISPLAY</span>
-      <span>LG DISPLAY</span>
-      <span>在日韓国科学技術者協会</span>
-      <span>東京大学韓国人学生会</span>
-    </div>
-
     <!-- 동문회비 납부 안내 -->
     <div style="max-width:640px;margin:44px auto 0;background:#fff;border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:2px;padding:38px 36px;text-align:center;box-shadow:0 10px 40px rgba(60,50,20,.07);">
       <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--gold);letter-spacing:.12em;">Membership Fee</div>
@@ -518,6 +520,32 @@
     </script>
   </div>
 </section>
+
+<!-- 협력기관 · 후원기업 배너 -->
+<div class="partners">
+  <div class="container">
+    <div class="prow">
+      <span class="plabel">협력 기관</span>
+      <div class="pitems">
+        <a href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener">도쿄대학교<small>The University of Tokyo</small></a>
+        <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener">도쿄대학 한국인학생회<small>東京大学韓国人学生会</small></a>
+        <a href="http://www.kseaj.com/" target="_blank" rel="noopener">재일한국과학기술자협회<small>KSEAJ</small></a>
+        <a href="https://www.kr.emb-japan.go.jp/itprtop_ko/index.html" target="_blank" rel="noopener">주한일본대사관<small>Embassy of Japan in Korea</small></a>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="plabel">후원 기업</span>
+      <div class="pitems">
+        <a href="https://www.jlkgroup.com/" target="_blank" rel="noopener">JLK<small>의료 인공지능</small></a>
+        <a href="http://www.dynebio.co.kr/" target="_blank" rel="noopener">다인바이오<small>Dyne Bio</small></a>
+        <a href="https://www.biotoxtech.com/" target="_blank" rel="noopener">바이오톡스텍<small>Biotoxtech</small></a>
+        <span>KSB TUGEN</span>
+        <a href="https://www.samsungdisplay.com/" target="_blank" rel="noopener">삼성디스플레이<small>Samsung Display</small></a>
+        <a href="https://www.lgdisplay.com/" target="_blank" rel="noopener">LG디스플레이<small>LG Display</small></a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer class="site">
   <div class="container">
