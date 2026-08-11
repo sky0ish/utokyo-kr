@@ -10,6 +10,9 @@
 !/auth/
 !/board/
 
+# 페이스북 이전 글(개인 이름 포함)은 공개 저장소에 올리지 않음
+board/fb_import_*.sql
+
 # 저장소 관리 파일 허용
 !/.gitignore
 !/README.md
