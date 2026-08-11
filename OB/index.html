@@ -197,8 +197,8 @@
       <a href="../YB/index.html">한국인학생회</a>
       <a href="https://alumni.tokyoksa.com/" target="_blank" rel="noopener">총동문회 홈페이지(기존)</a>
     </div>
-    <div class="links">
-      <a href="../auth/login.html">로그인</a><a href="../auth/signup.html">회원가입</a><a href="../auth/mypage.html">내 정보</a>
+    <div class="links" id="authLinks">
+      <a href="../auth/login.html">로그인</a><a href="../auth/signup.html">회원가입</a>
     </div>
   </div>
 </div>
@@ -487,6 +487,27 @@
     <div class="cr">© 2026 The University of Tokyo Alumni Association in Korea. All rights reserved. — 본 페이지는 디자인 초안입니다.</div>
   </div>
 </footer>
+
+<script type="module">
+// 로그인 상태를 상단바에 반영
+import { sb, currentUser, myProfile } from "../auth/auth.js";
+try {
+  const user = await currentUser();
+  if (user) {
+    const p = await myProfile();
+    const el = document.getElementById("authLinks");
+    el.innerHTML = "";
+    const my = document.createElement("a");
+    my.href = "../auth/mypage.html";
+    my.textContent = (p && p.name ? p.name + "님" : "내 정보") + (p && !p.approved ? " (승인대기)" : "");
+    const out = document.createElement("a");
+    out.href = "#";
+    out.textContent = "로그아웃";
+    out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+    el.append(my, out);
+  }
+} catch (e) { /* 오프라인 등 실패 시 기본 링크 유지 */ }
+</script>
 
 </body>
 </html>
