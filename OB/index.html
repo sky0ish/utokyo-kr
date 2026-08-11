@@ -500,6 +500,11 @@ try {
     const p = await myProfile();
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
+    const st = document.createElement("span");
+    st.textContent = "[로그인중]";
+    st.style.color = "#7fc48a";
+    st.style.fontWeight = "700";
+    el.append(st);
     const my = document.createElement("a");
     my.href = "../auth/mypage.html";
     my.textContent = (p && p.name ? p.name + "님" : "내 정보") + (p && !p.approved ? " (승인대기)" : "");
