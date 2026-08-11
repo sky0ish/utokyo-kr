@@ -340,6 +340,31 @@
       <span>在日韓国科学技術者協会</span>
       <span>東京大学韓国人学生会</span>
     </div>
+
+    <!-- 후원 계좌 안내 -->
+    <div style="max-width:520px;margin:44px auto 0;background:#fff;border:1px solid var(--line);border-radius:2px;padding:30px 32px;text-align:center;">
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--gold);letter-spacing:.12em;">Donation</div>
+      <h3 style="font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;margin:4px 0 14px;">후원 계좌 안내</h3>
+      <p style="font-size:13.5px;color:#6f6a5c;font-weight:300;margin-bottom:18px;">보내주신 후원금은 정기총회·장학사업·한일교류 등<br>동문회 활동에 소중히 사용됩니다.</p>
+      <div style="display:inline-flex;align-items:center;gap:12px;background:#faf8f2;border:1px solid #eee9dd;border-radius:3px;padding:14px 20px;flex-wrap:wrap;justify-content:center;">
+        <span style="font-size:13px;font-weight:700;color:#8a6d2b;">카카오뱅크</span>
+        <span id="acctNo" style="font-size:17px;font-weight:700;letter-spacing:.04em;">7942-31-14274</span>
+        <span style="font-size:13px;color:#6f6a5c;">김소영 (총무이사)</span>
+        <button id="copyAcct" style="font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 14px;border:none;border-radius:3px;background:var(--navy);color:#fff;cursor:pointer;">계좌번호 복사</button>
+      </div>
+      <div id="copyDone" style="display:none;margin-top:10px;font-size:12.5px;color:#3f6a3a;">복사되었습니다! 은행 앱에 붙여넣기 하세요.</div>
+    </div>
+    <script>
+      document.getElementById('copyAcct').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('카카오뱅크 7942-31-14274 김소영');
+        } catch (e) {
+          const r = document.createRange(); r.selectNode(document.getElementById('acctNo'));
+          getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand('copy');
+        }
+        document.getElementById('copyDone').style.display = 'block';
+      });
+    </script>
   </div>
 </section>
 
