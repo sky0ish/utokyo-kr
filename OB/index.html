@@ -36,7 +36,7 @@
   .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;}
   .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.16em;}
   nav.gnb{display:flex;gap:2px;}
-  nav.gnb>a{padding:10px 15px;font-size:14.5px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  nav.gnb>a{padding:10px 11px;font-size:14px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
   nav.gnb>a:hover,nav.gnb>a.on{color:var(--gold-bright);border-bottom-color:var(--gold);}
 
   /* ── 히어로 ── */
@@ -98,14 +98,14 @@
   .asm ul li{padding-left:14px;position:relative;}
   .asm ul li::before{content:"·";color:var(--gold);position:absolute;left:0;font-weight:700;}
 
-  /* ── SNS 버튼 ── */
-  .sns-btns{position:absolute;top:32px;right:28px;z-index:6;display:flex;gap:10px;}
-  .pill{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:100px;font-size:13.5px;font-weight:600;transition:.25s;}
+  /* ── SNS 버튼 (헤더 안) ── */
+  .sns-btns{display:flex;gap:9px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;transition:.25s;white-space:nowrap;}
   .pill.band{background:var(--gold);color:#14203a;}
-  .pill.band:hover{background:var(--gold-bright);transform:translateY(-2px);}
-  .pill.fb{border:1.5px solid rgba(255,255,255,.7);color:#fff;}
+  .pill.band:hover{background:var(--gold-bright);transform:translateY(-1px);}
+  .pill.fb{border:1.5px solid rgba(255,255,255,.6);color:#fff;}
   .pill.fb:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
-  @media (max-width:760px){ .sns-btns{position:static;padding:18px 24px 0;justify-content:flex-start;} }
+  @media (max-width:900px){ .sns-btns{display:none;} }
 
   /* ── 소식 + 행사 ── */
   .two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:44px;}
@@ -226,14 +226,14 @@
       <a href="#history">연혁</a>
       <a href="#sponsor">후원</a>
     </nav>
+    <div class="sns-btns">
+      <a class="pill band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 <span>→</span></a>
+      <a class="pill fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
+    </div>
   </div>
 </header>
 
 <section class="hero">
-  <div class="sns-btns">
-    <a class="pill band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 <span>→</span></a>
-    <a class="pill fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
-  </div>
   <!-- 낙엽 — 공식 마크의 은행잎(노란면)을 반투명 흰 선으로 -->
   <svg class="deco" viewBox="0 0 400 500" aria-hidden="true">
     <g fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2">
