@@ -28,15 +28,13 @@
       <label>제목 *</label>
       <input type="text" id="title" required maxlength="200">
 
-      <div class="row3">
-        <div>
-          <label>게시판 구분 *</label>
-          <select id="org">
-            <option value="OB">OB — 총동문회</option>
-            <option value="YB">YB — 학생회</option>
-            <option value="ALL">공통</option>
-          </select>
-        </div>
+      <label>작성자 구분 *</label>
+      <div class="tabs" id="orgTabs" style="margin-bottom:2px;">
+        <a href="#" data-org="OB" class="on">OB — 총동문회</a>
+        <a href="#" data-org="YB">YB — 학생회</a>
+      </div>
+
+      <div class="row3" style="grid-template-columns:1fr 1fr;">
         <div>
           <label>분류 *</label>
           <select id="category">
@@ -49,11 +47,8 @@
           </select>
         </div>
         <div>
-          <label>공개 범위 *</label>
-          <select id="visibility">
-            <option value="members">회원 전용</option>
-            <option value="public">전체 공개</option>
-          </select>
+          <label>공개 범위</label>
+          <input value="회원 전용" disabled style="background:#f2efe8;color:#8a8574;">
         </div>
       </div>
 
@@ -83,7 +78,16 @@ if (!profile || !profile.approved) {
   topMsg.textContent = "글쓰기는 운영진 승인이 완료된 회원만 가능합니다. (현재: 승인 대기중)";
 } else {
   form.style.display = "block";
-  if (preOrg === "YB" || preOrg === "OB") document.getElementById("org").value = preOrg;
+
+  // OB/YB 탭
+  let org = (preOrg === "YB" || preOrg === "OB") ? preOrg : "OB";
+  const orgTabs = document.querySelectorAll("#orgTabs a");
+  function setOrg(v) {
+    org = v;
+    orgTabs.forEach(a => a.classList.toggle("on", a.dataset.org === v));
+  }
+  setOrg(org);
+  orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
   // 수정 모드
   if (editId) {
@@ -91,9 +95,8 @@ if (!profile || !profile.approved) {
     const { data: p } = await sb.from("posts").select("*").eq("id", editId).single();
     if (p) {
       document.getElementById("title").value = p.title;
-      document.getElementById("org").value = p.org;
+      setOrg(p.org === "YB" ? "YB" : "OB");
       document.getElementById("category").value = p.category;
-      document.getElementById("visibility").value = p.visibility;
       document.getElementById("content").value = p.content;
     }
   }
@@ -105,9 +108,9 @@ if (!profile || !profile.approved) {
     btn.disabled = true;
     const row = {
       title: document.getElementById("title").value.trim(),
-      org: document.getElementById("org").value,
+      org: org,
       category: document.getElementById("category").value,
-      visibility: document.getElementById("visibility").value,
+      visibility: "members",
       content: document.getElementById("content").value,
     };
     let res;

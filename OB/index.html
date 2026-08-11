@@ -84,6 +84,24 @@
   .sec-head .more{font-size:13px;letter-spacing:.18em;color:#9a947f;border-bottom:1px solid var(--line);padding-bottom:3px;}
   .sec-head .more:hover{color:var(--gold);border-color:var(--gold);}
 
+  /* ── 총회 결과보고 ── */
+  .asm{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:2px;background:#fff;padding:26px 30px;margin-bottom:14px;}
+  .asm h3{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;margin-bottom:4px;}
+  .asm h3 .yr{color:var(--gold);font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;margin-right:10px;}
+  .asm .when{font-size:13px;color:#8a8574;margin-bottom:12px;}
+  .asm ul{list-style:none;font-size:14px;color:#4b5162;font-weight:300;line-height:1.9;word-break:keep-all;}
+  .asm ul li{padding-left:14px;position:relative;}
+  .asm ul li::before{content:"·";color:var(--gold);position:absolute;left:0;font-weight:700;}
+
+  /* ── SNS 버튼 ── */
+  .sns-btns{position:absolute;top:32px;right:28px;z-index:6;display:flex;gap:10px;}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:100px;font-size:13.5px;font-weight:600;transition:.25s;}
+  .pill.band{background:var(--gold);color:#14203a;}
+  .pill.band:hover{background:var(--gold-bright);transform:translateY(-2px);}
+  .pill.fb{border:1.5px solid rgba(255,255,255,.7);color:#fff;}
+  .pill.fb:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
+  @media (max-width:760px){ .sns-btns{position:static;padding:18px 24px 0;justify-content:flex-start;} }
+
   /* ── 소식 + 행사 ── */
   .two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:44px;}
   ul.notice{border-top:2px solid var(--navy);list-style:none;}
@@ -196,6 +214,7 @@
     <nav class="gnb">
       <a href="#" class="on">홈</a>
       <a href="#greeting">동문회 소개</a>
+      <a href="#news">동문회 총회</a>
       <a href="../board/index.html?org=OB">게시판</a>
       <a href="#join">참여마당</a>
       <a href="#gallery">사진첩</a>
@@ -206,6 +225,10 @@
 </header>
 
 <section class="hero">
+  <div class="sns-btns">
+    <a class="pill band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 <span>→</span></a>
+    <a class="pill fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
+  </div>
   <!-- 낙엽 — 공식 마크의 은행잎(노란면)을 반투명 흰 선으로 -->
   <svg class="deco" viewBox="0 0 400 500" aria-hidden="true">
     <g fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2">
@@ -251,25 +274,70 @@
 <section class="block" id="news">
   <div class="container">
     <div class="sec-head">
-      <div class="t"><span class="en">News &amp; Notice</span><h2>동문회 소식</h2></div>
-      <a class="more" href="../board/index.html?org=OB">전체보기 +</a>
+      <div class="t"><span class="en">General Assembly</span><h2>동문회 총회</h2></div>
+      <a class="more" href="../board/index.html?org=OB">게시판 +</a>
     </div>
-    <div class="two-col">
-      <ul class="notice">
-        <li><a href="#"><span class="badge b1">공지</span><span class="tt">2026년도 정기총회 결과 보고 — 활동보고·자랑스러운 동경대인상</span><span class="dt">2026.08.09</span></a></li>
-        <li><a href="#"><span class="badge b2">행사</span><span class="tt">가을 학술 세미나 및 단과대별 포럼 참가 신청 안내</span><span class="dt">2026.08.05</span></a></li>
-        <li><a href="#"><span class="badge b1">공지</span><span class="tt">2026년도 하반기 회비 납부 안내</span><span class="dt">2026.07.30</span></a></li>
-        <li><a href="#"><span class="badge b3">모집</span><span class="tt">한국 문화체험 프로그램 호스트 패밀리 모집</span><span class="dt">2026.07.24</span></a></li>
-        <li><a href="#"><span class="badge b2">행사</span><span class="tt">도쿄대 한국인학생회 멘토링 — 선배 멘토 모집</span><span class="dt">2026.07.18</span></a></li>
-        <li><a href="#"><span class="badge b1">공지</span><span class="tt">신입 회원(2020년대 졸업 동문) 환영 모임 안내</span><span class="dt">2026.07.11</span></a></li>
+
+    <div class="asm">
+      <h3><span class="yr">2026</span>2026년도 정기총회 결과 보고</h3>
+      <div class="when">2026년 2월 12일(목) 18:30 · 한국제약바이오협회 강당 (온/오프라인 병행) · 사회 김태수 부회장</div>
+      <ul>
+        <li><b>제4대 양일모 회장 선출</b> (서울대학교 자유전공학부 교수) — 제3대 정세영 회장 이·취임</li>
+        <li>도쿄대학 후지이 데루오(藤井輝夫) 총장 인사말</li>
+        <li>활동보고: 2025년 회계 결산(수입 28,876,454원 · 지출 9,950,140원 · 이월 18,926,314원) 및 2026년 예산안</li>
+        <li>특강(윤상인 교수) · 자랑스러운 동경대인상 수여 · 동문 우수기업 소개 · 경품 추첨(약 30인)</li>
+        <li>2026년 주요 사업: 단과대별 순환 포럼(75만원 지원), 멘토링, 주소록 연락망 확충, 홈페이지 개선, 주니어·정년세대 소모임 활성화</li>
       </ul>
-      <div class="ev-card">
-        <h3>주요 행사 <span>Calendar</span></h3>
-        <div class="ev"><div class="d"><b>19</b><span>SEP</span></div><div class="i"><h4>가을 학술 세미나</h4><p>서울 시내 · 15:00</p></div></div>
-        <div class="ev"><div class="d"><b>24</b><span>OCT</span></div><div class="i"><h4>단과대별 동문 포럼</h4><p>분야별 간담회 · 상세 추후 공지</p></div></div>
-        <div class="ev"><div class="d"><b>05</b><span>DEC</span></div><div class="i"><h4>송년 임원회의</h4><p>고문·부회장단·이사진</p></div></div>
-        <div class="ev"><div class="d"><b>2월</b><span>2027</span></div><div class="i"><h4>정기총회</h4><p>총회·자랑스러운 동경대인상·특별강연</p></div></div>
-      </div>
+    </div>
+
+    <div class="asm">
+      <h3><span class="yr">2025</span>2025년도 정기총회 결과 보고</h3>
+      <div class="when">2025년 2월 · 서울 (온/오프라인 병행)</div>
+      <ul>
+        <li>도쿄대학 총장 인사말 · 축사(곽민희 이사) · 활동보고 · 경품 추첨</li>
+        <li>연간 활동: 건축학 구조계 포럼(노토반도 지진 도시방재, 2월) · 농학생명과학 포럼(2월) · 골프 모임(4월·11월, 여주 360도CC) · 고문단·부회장단 모임(11월)</li>
+      </ul>
+    </div>
+
+    <div class="asm">
+      <h3><span class="yr">2024</span>2024년도 정기총회 결과 보고</h3>
+      <div class="when">2024년 2월 21일(수) 18:20 · 대한약사회 4층 강당 (ZOOM 병행)</div>
+      <ul>
+        <li>도쿄대학 총장 축사 · 동창회 활동보고 · 자랑스러운 동대인상 수여</li>
+        <li>역대 수상자 특별강연: '생활 속의 안전' — 이준 (한국교통연구원 연구위원)</li>
+        <li>경품 추첨 20인(갤럭시탭 S9 외) · 참가자 전원 스타벅스 쿠폰</li>
+      </ul>
+    </div>
+
+    <div class="asm">
+      <h3><span class="yr">2023</span>2023년도 정기총회 결과 보고</h3>
+      <div class="when">2023년 3월 15일(수) 18:30 · 한국제약바이오협회 2층 K룸 (온/오프라인) — 현장 57명, 온라인 포함 약 70여 명 참석</div>
+      <ul>
+        <li>공로상: 이영순 명예회장 · 박종근 명예회장</li>
+        <li>자랑스러운 도쿄대인상: 박종근 명예회장 · 전홍우 동문 / 기여상: 이동근 부회장 · 후지이 지후미(도쿄대 서울사무국)</li>
+        <li>포럼: '한일 문화 교류의 현황과 미래' — 강태웅 교수 · 약 20여 명 경품 추첨</li>
+      </ul>
+    </div>
+
+    <div class="asm">
+      <h3><span class="yr">2022</span>2022년도 정기총회 결과 보고</h3>
+      <div class="when">2022년 2월 24일(목) 19:00 · 서울대학교 220동 201호 (온라인 병행)</div>
+      <ul>
+        <li>축사: 쓰다 아쓰시(津田敦) 도쿄대학 집행역·부학장</li>
+        <li>자랑스러운 젊은 동대인상: 김상현 (한국과학기술원 교수)</li>
+        <li>특별강연: '한일 화해를 위한 민간 역할 — 동경대 동문을 중심으로'(최봉태 변호사) · '의료 인공지능의 현재와 미래'(김동민 JLK 대표)</li>
+      </ul>
+    </div>
+
+    <div class="asm">
+      <h3><span class="yr">2012–2021</span>초기 총회 · 신년회</h3>
+      <div class="when">창립(2011) 이후 신년회 중심으로 개최</div>
+      <ul>
+        <li>2012·2013년 신년회 개최 — 총회의 시작</li>
+        <li>2015년 신년회에서 '자랑스러운 동경대인상' 제정·첫 수여 (고상룡 교수 · 이병일 교수)</li>
+        <li>2016년 신년회+포럼 결합 형식으로 발전</li>
+        <li>2019년 총동문회 활성화 TFT 발족 · 2021년 임원진 정비 및 교류 프로그램 운영</li>
+      </ul>
     </div>
   </div>
 </section>
