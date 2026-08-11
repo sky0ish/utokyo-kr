@@ -98,6 +98,9 @@
   .asm ul li{padding-left:14px;position:relative;}
   .asm ul li::before{content:"·";color:var(--gold);position:absolute;left:0;font-weight:700;}
 
+  /* 로그인 회원에게만 보이는 요소 */
+  .auth-only{display:none !important;}
+
   /* ── SNS 버튼 (헤더 안) ── */
   .sns-btns{display:flex;gap:9px;align-items:center;}
   .pill{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;transition:.25s;white-space:nowrap;}
@@ -220,10 +223,9 @@
       <a href="#" class="on">홈</a>
       <a href="#greeting">동문회 소개</a>
       <a href="#news">동문회 총회</a>
-      <a href="../board/index.html?org=OB">게시판</a>
+      <a href="../board/index.html?org=OB" class="auth-only">게시판</a>
       <a href="#join">참여마당</a>
-      <a href="#gallery">사진첩</a>
-      <a href="#history">연혁</a>
+      <a href="#gallery" class="auth-only">갤러리</a>
       <a href="#sponsor">후원</a>
     </nav>
     <div class="sns-btns">
@@ -276,11 +278,26 @@
   </div>
 </section>
 
+<section class="block history" id="history">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">History</span><h2>동문회 연혁</h2></div>
+    </div>
+    <div class="timeline">
+      <div class="trow"><div class="yr">2011</div><div class="dot"></div><div class="tx"><h4>재한 도쿄대학 총동문회 창설</h4><p>3월 18일, 하마다 준이치(浜田純一) 총장 참석 하에 창립 — 초대 회장 이영순 (서울대 수의과대학 명예교수). 동일본대지진 성금을 도쿄대에 전달하고, 도쿄대 공식 동창회 조직인 아카몬학우회(赤門学友会)에 등록</p></div></div>
+      <div class="trow"><div class="yr">2014</div><div class="dot"></div><div class="tx"><h4>도쿄대학 서울사무소 개소 · 야스다강당 개보수 기부</h4><p>도쿄대학 서울오피스 개소에 협력하고, 동문 모금으로 야스다강당(安田講堂) 개보수 기부에 참여</p></div></div>
+      <div class="trow"><div class="yr">2015</div><div class="dot"></div><div class="tx"><h4>자랑스러운 동경대인상 제정</h4><p>신년회에서 첫 수여 (고상룡 교수, 이병일 교수) — 2대 회장 박종근 (서울대 공과대학 명예교수) 취임. 인문사회·산업계 동문 간담회, 도쿄대학교우회·서울대총동문회 친선교류회 참여</p></div></div>
+      <div class="trow"><div class="yr">2016</div><div class="dot"></div><div class="tx"><h4>신년회 · 포럼 정례화</h4><p>신년회와 학술 포럼을 결합한 연례 행사로 발전, 한국인학생회 멘토링과 체험활동 프로그램 운영</p></div></div>
+      <div class="trow"><div class="yr">현재</div><div class="dot"></div><div class="tx"><h4>정기총회와 한일교류의 확대</h4><p>정세영 회장 (경희대 약학대학 교수) 취임. 매년 2월 정기총회 개최 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 수상자 특별강연. 명예회장 이영순·박종근, 고문·부회장단·이사진과 함께 학술 세미나, 지역 포럼, 한일교류 사업 추진</p></div></div>
+    </div>
+  </div>
+</section>
+
 <section class="block" id="news">
   <div class="container">
     <div class="sec-head">
       <div class="t"><span class="en">General Assembly</span><h2>동문회 총회</h2></div>
-      <a class="more" href="../board/index.html?org=OB">게시판 +</a>
+      <a class="more auth-only" href="../board/index.html?org=OB">게시판 +</a>
     </div>
 
     <div class="asm">
@@ -363,20 +380,7 @@
   </div>
 </section>
 
-<section class="block history" id="history">
-  <div class="container">
-    <div class="sec-head">
-      <div class="t"><span class="en">History</span><h2>동문회 연혁</h2></div>
-    </div>
-    <div class="timeline">
-      <div class="trow"><div class="yr">2011</div><div class="dot"></div><div class="tx"><h4>재한 도쿄대학 총동문회 창설</h4><p>3월 18일, 하마다 준이치(浜田純一) 총장 참석 하에 창립 — 초대 회장 이영순 (서울대 수의과대학 명예교수). 동일본대지진 성금을 도쿄대에 전달하고, 도쿄대 공식 동창회 조직인 아카몬학우회(赤門学友会)에 등록</p></div></div>
-      <div class="trow"><div class="yr">2014</div><div class="dot"></div><div class="tx"><h4>도쿄대학 서울사무소 개소 · 야스다강당 개보수 기부</h4><p>도쿄대학 서울오피스 개소에 협력하고, 동문 모금으로 야스다강당(安田講堂) 개보수 기부에 참여</p></div></div>
-      <div class="trow"><div class="yr">2015</div><div class="dot"></div><div class="tx"><h4>자랑스러운 동경대인상 제정</h4><p>신년회에서 첫 수여 (고상룡 교수, 이병일 교수) — 2대 회장 박종근 (서울대 공과대학 명예교수) 취임. 인문사회·산업계 동문 간담회, 도쿄대학교우회·서울대총동문회 친선교류회 참여</p></div></div>
-      <div class="trow"><div class="yr">2016</div><div class="dot"></div><div class="tx"><h4>신년회 · 포럼 정례화</h4><p>신년회와 학술 포럼을 결합한 연례 행사로 발전, 한국인학생회 멘토링과 체험활동 프로그램 운영</p></div></div>
-      <div class="trow"><div class="yr">현재</div><div class="dot"></div><div class="tx"><h4>정기총회와 한일교류의 확대</h4><p>정세영 회장 (경희대 약학대학 교수) 취임. 매년 2월 정기총회 개최 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 수상자 특별강연. 명예회장 이영순·박종근, 고문·부회장단·이사진과 함께 학술 세미나, 지역 포럼, 한일교류 사업 추진</p></div></div>
-    </div>
-  </div>
-</section>
+
 
 <section class="block" id="join">
   <div class="container">
@@ -403,10 +407,10 @@
   </div>
 </section>
 
-<section class="block sponsor-wrap" id="gallery" style="background:#fff;padding-top:0;">
+<section class="block sponsor-wrap auth-only" id="gallery" style="background:#fff;padding-top:0;">
   <div class="container">
     <div class="sec-head">
-      <div class="t"><span class="en">Gallery — 모교의 풍경</span><h2>사진첩</h2></div>
+      <div class="t"><span class="en">Gallery — 모교의 풍경</span><h2>갤러리</h2></div>
       <a class="more" href="#">전체보기 +</a>
     </div>
     <div class="gal-grid">
@@ -505,6 +509,8 @@ try {
     out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
     el.append(my, out);
+    // 로그인 회원에게 게시판·갤러리 표시
+    document.querySelectorAll(".auth-only").forEach(n => n.classList.remove("auth-only"));
   }
 } catch (e) { /* 오프라인 등 실패 시 기본 링크 유지 */ }
 </script>
