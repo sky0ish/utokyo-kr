@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도쿄대학교 한국 커뮤니티 | 한국인학생회 · 재한동경대학 총동문회</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#2f6b3c;         /* YB 여름의 초록 */
+    --green-deep:#173a20;
+    --gold:#c9973b;          /* OB 가을의 황금빛 */
+    --gold-bright:#e8c876;
+    --night:#101d33;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#0c1420;color:#fff;overflow:hidden;}
+
+  /* ── 상단 헤더 ─────────────────────────── */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 44px;pointer-events:none;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand .jp{font-family:'Noto Serif KR',serif;font-size:15px;letter-spacing:.35em;color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.6);}
+  .brand .en{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;letter-spacing:.12em;color:rgba(255,255,255,.75);text-shadow:0 1px 14px rgba(0,0,0,.6);}
+  header .date{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.2em;color:rgba(255,255,255,.65);text-shadow:0 1px 14px rgba(0,0,0,.6);}
+
+  /* ── 스플릿 : 같은 길, 두 계절 ───────────── */
+  .split{display:flex;height:100vh;}
+  .panel{
+    position:relative;flex:1;
+    display:flex;align-items:flex-end;
+    cursor:pointer;text-decoration:none;color:inherit;
+    overflow:hidden;
+    transition:flex 1s cubic-bezier(.22,1,.36,1);
+  }
+  .split:has(.panel:hover) .panel{flex:.72;}
+  .split .panel:hover{flex:1.55;}
+
+  .panel .bg{
+    position:absolute;inset:0;
+    background-image:url('images/green_avenue.jpg');
+    background-size:cover;background-position:center 62%;
+    transition:transform 1.6s cubic-bezier(.22,1,.36,1);
+  }
+  .panel:hover .bg{transform:scale(1.05);}
+
+  /* YB : 여름의 초록 (원본 그대로, 싱그럽게) */
+  .panel-ksa .bg{
+    filter:saturate(1.15) brightness(1.02);
+  }
+  /* OB : 가을의 황금빛 (같은 길을 거울로 — 색을 가을로) */
+  .panel-alumni .bg{
+    transform:scaleX(-1);
+    filter:sepia(.9) hue-rotate(-8deg) saturate(2.6) brightness(1.0) contrast(1.06);
+  }
+  .panel-alumni:hover .bg{transform:scaleX(-1) scale(1.05);}
+
+  /* 톤 오버레이 & 가독성 그늘 */
+  .panel-ksa::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,58,32,.32),transparent 40%,rgba(8,22,12,.55) 92%);z-index:1;}
+  .panel-alumni::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(60,40,8,.3),transparent 40%,rgba(30,18,4,.6) 92%);z-index:1;}
+  .panel::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,14,.6) 0%,transparent 40%);z-index:2;}
+
+  .panel .label{position:relative;z-index:5;width:100%;padding:0 56px 70px;}
+  .label .season{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:15px;letter-spacing:.2em;margin-bottom:10px;
+    text-shadow:0 1px 12px rgba(0,0,0,.6);
+  }
+  .panel-ksa .season{color:#bfe8c2;}
+  .panel-alumni .season{color:var(--gold-bright);}
+  .label .eyebrow{
+    display:flex;align-items:center;gap:12px;
+    font-size:12px;letter-spacing:.42em;font-weight:500;
+    color:rgba(255,255,255,.85);margin-bottom:16px;
+  }
+  .label .eyebrow::before{content:"";width:36px;height:1px;background:rgba(255,255,255,.6);}
+  .label h2{
+    font-family:'Noto Serif KR',serif;
+    font-size:clamp(26px,3.2vw,44px);
+    font-weight:600;line-height:1.3;letter-spacing:.02em;
+    margin-bottom:14px;
+    text-shadow:0 2px 28px rgba(0,0,0,.6);
+  }
+  .label .sub{
+    font-size:14.5px;font-weight:300;line-height:1.7;
+    color:rgba(255,255,255,.92);max-width:350px;
+    text-shadow:0 1px 14px rgba(0,0,0,.55);
+  }
+  .label .enter{
+    display:inline-flex;align-items:center;gap:10px;
+    margin-top:26px;font-size:13px;letter-spacing:.28em;font-weight:500;color:#fff;
+    opacity:0;transform:translateY(8px);
+    transition:opacity .6s ease .1s, transform .6s ease .1s;
+  }
+  .panel:hover .enter{opacity:1;transform:translateY(0);}
+  .enter .arrow{display:inline-block;width:42px;height:1px;background:#fff;position:relative;}
+  .enter .arrow::after{content:"";position:absolute;right:0;top:-3px;width:8px;height:8px;border-top:1px solid #fff;border-right:1px solid #fff;transform:rotate(45deg) translateY(1px);}
+
+  /* ── 중앙 엠블럼 ───────────────────────── */
+  .emblem{
+    position:absolute;top:50%;left:50%;z-index:40;
+    transform:translate(-50%,-50%);
+    width:150px;height:150px;border-radius:50%;
+    background:rgba(8,14,24,.82);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.25);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    pointer-events:none;box-shadow:0 10px 60px rgba(0,0,0,.5);
+  }
+  .emblem .ring{position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(255,255,255,.13);}
+  .emblem .leaf-duo{display:flex;gap:4px;align-items:center;}
+  .emblem .txt{font-family:'Noto Serif KR',serif;font-size:12px;letter-spacing:.26em;color:rgba(255,255,255,.85);text-align:center;line-height:1.8;}
+  .emblem .txt b{font-size:13.5px;font-weight:600;color:#fff;display:block;letter-spacing:.18em;}
+
+  footer{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:center;padding:16px;pointer-events:none;}
+  footer p{font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.6);text-shadow:0 1px 8px rgba(0,0,0,.7);}
+
+  @media (max-width:760px){
+    body{overflow:auto;}
+    .split{flex-direction:column;height:auto;min-height:100vh;}
+    .panel{min-height:52vh;flex:none !important;}
+    .panel .label{padding:0 30px 46px;}
+    .panel .enter{opacity:1;transform:none;}
+    .emblem{width:120px;height:120px;}
+    header{padding:16px 22px;}
+    header .date{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="jp">東京大學</span>
+    <span class="en">The University of Tokyo — Korean Community</span>
+  </div>
+  <div class="date">EST. 2011 · TOKYO / SEOUL</div>
+</header>
+
+<main class="split">
+
+  <!-- ◀ YB : 여름의 초록 — 한국인학생회 -->
+  <a class="panel panel-ksa" href="ksa/index.html" aria-label="도쿄대학 한국인학생회 홈페이지로 이동">
+    <div class="bg"></div>
+    <div class="label">
+      <div class="season">Summer Green — 젊음의 계절</div>
+      <div class="eyebrow">YB · 在学生 · FOR STUDENTS</div>
+      <h2>도쿄대학<br>한국인학생회</h2>
+      <p class="sub">東京大学韓国人学生会 — 싱그러운 초록의 은행나무길처럼, 지금 배우고 성장하는 유학생들의 커뮤니티입니다.</p>
+      <span class="enter">입장하기 <span class="arrow"></span></span>
+    </div>
+  </a>
+
+  <!-- ▶ OB : 가을의 황금빛 — 재한동경대학 총동문회 -->
+  <a class="panel panel-alumni" href="alumni/index.html" aria-label="재한동경대학 총동문회 홈페이지로 이동">
+    <div class="bg"></div>
+    <div class="label">
+      <div class="season">Autumn Gold — 결실의 계절</div>
+      <div class="eyebrow">OB · 同門 · FOR ALUMNI</div>
+      <h2>재한동경대학<br>총동문회</h2>
+      <p class="sub">在韓東京大学総同門会 — 황금빛으로 물든 그 길처럼, 결실을 나누고 후배를 이끄는 동문의 네트워크입니다.</p>
+      <span class="enter">입장하기 <span class="arrow"></span></span>
+    </div>
+  </a>
+
+</main>
+
+<!-- 중앙 엠블럼 : 초록 잎 + 금빛 잎 -->
+<div class="emblem" aria-hidden="true">
+  <div class="ring"></div>
+  <div class="leaf-duo">
+    <svg width="26" height="26" viewBox="0 0 40 40">
+      <path d="M20 36 C20 26 20 22 20 20 C8 24 2 16 4 8 C12 4 20 8 20 18 C20 8 28 4 36 8 C38 16 32 24 20 20"
+            fill="none" stroke="#7fc48a" stroke-width="2.2" stroke-linejoin="round"/>
+    </svg>
+    <svg width="26" height="26" viewBox="0 0 40 40">
+      <path d="M20 36 C20 26 20 22 20 20 C8 24 2 16 4 8 C12 4 20 8 20 18 C20 8 28 4 36 8 C38 16 32 24 20 20"
+            fill="none" stroke="#e8c876" stroke-width="2.2" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="txt"><b>같은 길, 두 계절</b>이초 나미키</div>
+</div>
+
+<footer>
+  <p>© 도쿄대학 한국인학생회 · 재한동경대학 총동문회 — Photo: Wikimedia Commons</p>
+</footer>
+
+</body>
+</html>

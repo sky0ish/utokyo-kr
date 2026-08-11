@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도쿄대학교 재한총동문회 | 東京大学 在韓總同門會</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101d33;
+    --navy-2:#1b2a45;
+    --gold:#c9a24b;
+    --gold-bright:#e8c876;
+    --ivory:#f6f3ec;
+    --ink:#22283a;
+    --line:#e6e1d5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#fff;line-height:1.75;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:1140px;margin:0 auto;padding:0 24px;}
+
+  /* ── 유틸바 ── */
+  .utilbar{background:#0b1526;color:rgba(255,255,255,.7);font-size:12px;}
+  .utilbar .container{display:flex;justify-content:space-between;padding-top:8px;padding-bottom:8px;}
+  .utilbar a:hover{color:var(--gold-bright);}
+  .utilbar .links{display:flex;gap:18px;}
+
+  /* ── 헤더 ── */
+  header.site{position:sticky;top:0;z-index:100;background:rgba(16,29,51,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+  header.site .container{display:flex;align-items:center;justify-content:space-between;height:80px;}
+  .logo{display:flex;align-items:center;gap:13px;}
+  .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}
+  .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;}
+  .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.16em;}
+  nav.gnb{display:flex;gap:2px;}
+  nav.gnb>a{padding:10px 15px;font-size:14.5px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  nav.gnb>a:hover,nav.gnb>a.on{color:var(--gold-bright);border-bottom-color:var(--gold);}
+
+  /* ── 히어로 ── */
+  .hero{
+    position:relative;color:#fff;overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(16,24,40,.72) 0%, rgba(20,24,34,.58) 45%, rgba(10,13,22,.85) 100%),
+      url('../images/gold_canopy.jpg') center 40%/cover;
+  }
+  .hero .container{position:relative;z-index:2;padding-top:104px;padding-bottom:150px;}
+  .hero .eyebrow{display:flex;align-items:center;gap:12px;font-size:12.5px;letter-spacing:.42em;color:var(--gold-bright);margin-bottom:22px;}
+  .hero .eyebrow::before{content:"";width:36px;height:1px;background:var(--gold);}
+  .hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(30px,4.4vw,52px);font-weight:600;line-height:1.4;margin-bottom:20px;}
+  .hero h1 em{font-style:normal;color:var(--gold-bright);}
+  .hero p.lead{font-weight:300;font-size:16.5px;max-width:560px;color:rgba(255,255,255,.85);}
+  .hero .cta{display:flex;gap:12px;margin-top:36px;}
+  .btn{display:inline-block;padding:13px 30px;border-radius:2px;font-size:14px;font-weight:500;letter-spacing:.08em;transition:.25s;}
+  .btn-gold{background:var(--gold);color:#14203a;}
+  .btn-gold:hover{background:var(--gold-bright);transform:translateY(-2px);}
+  .btn-line{border:1px solid rgba(255,255,255,.45);color:#fff;}
+  .btn-line:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
+  .hero svg.deco{position:absolute;right:-20px;bottom:-10px;height:95%;z-index:1;opacity:.6;}
+
+  /* ── 인사말 ── */
+  .greeting{background:var(--ivory);padding:96px 0;}
+  .greeting .inner{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:start;}
+  .portrait{position:relative;}
+  .portrait .frame{aspect-ratio:3/3.7;background:linear-gradient(160deg,#2c3f5e,#101d33);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:rgba(255,255,255,.8);}
+  .portrait .frame::before{content:"";position:absolute;inset:14px;border:1px solid rgba(201,162,75,.5);}
+  .portrait .frame .ph{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.14em;color:rgba(255,255,255,.5);}
+  .portrait figcaption{margin-top:16px;text-align:center;font-size:14px;color:#7d7869;}
+  .portrait figcaption b{display:block;font-family:'Noto Serif KR',serif;font-size:17px;color:var(--ink);font-weight:600;}
+  .greeting .txt .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);letter-spacing:.12em;}
+  .greeting .txt h2{font-family:'Noto Serif KR',serif;font-size:32px;font-weight:600;margin:6px 0 26px;}
+  .greeting .txt p{font-size:15.5px;color:#4b5162;margin-bottom:18px;font-weight:300;}
+  .greeting .txt p b{font-weight:500;color:var(--ink);}
+  .greeting .sign{margin-top:30px;font-family:'Noto Serif KR',serif;font-size:16px;}
+  .greeting .sign small{display:block;font-size:12.5px;color:#9a947f;font-family:'Noto Sans KR';letter-spacing:.1em;margin-bottom:2px;}
+
+  /* ── 공통 섹션 ── */
+  section.block{padding:88px 0;}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:38px;}
+  .sec-head .t .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--gold);letter-spacing:.14em;}
+  .sec-head .t h2{font-family:'Noto Serif KR',serif;font-size:30px;font-weight:600;margin-top:4px;}
+  .sec-head .more{font-size:13px;letter-spacing:.18em;color:#9a947f;border-bottom:1px solid var(--line);padding-bottom:3px;}
+  .sec-head .more:hover{color:var(--gold);border-color:var(--gold);}
+
+  /* ── 소식 + 행사 ── */
+  .two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:44px;}
+  ul.notice{border-top:2px solid var(--navy);list-style:none;}
+  ul.notice li{list-style:none;border-bottom:1px solid #eee9dd;}
+  ul.notice a{display:flex;align-items:center;gap:16px;padding:17px 6px;transition:.15s;}
+  ul.notice a:hover{background:#faf8f2;}
+  .badge{flex:none;font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:2px;}
+  .badge.b1{background:#ede4cf;color:#8a6d2b;}
+  .badge.b2{background:#e2e7f0;color:#33507e;}
+  .badge.b3{background:#e9e3ea;color:#7a5494;}
+  ul.notice .tt{flex:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  ul.notice .dt{flex:none;font-size:13px;color:#a8a291;}
+  .ev-card{background:var(--navy);border-radius:2px;color:#fff;padding:34px;position:relative;overflow:hidden;}
+  .ev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);}
+  .ev-card h3{font-family:'Noto Serif KR',serif;font-size:20px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;}
+  .ev-card h3 span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--gold-bright);}
+  .ev{display:flex;gap:16px;padding:15px 0;border-top:1px solid rgba(255,255,255,.14);}
+  .ev .d{flex:none;text-align:center;width:52px;color:var(--gold-bright);}
+  .ev .d b{display:block;font-size:22px;font-weight:700;line-height:1.1;}
+  .ev .d span{font-size:11px;letter-spacing:.12em;opacity:.8;}
+  .ev .i h4{font-size:15px;font-weight:500;}
+  .ev .i p{font-size:12.5px;opacity:.65;}
+
+  /* ── 연혁 ── */
+  .history{background:var(--ivory);}
+  .timeline{position:relative;margin-top:10px;}
+  .timeline::before{content:"";position:absolute;left:99px;top:6px;bottom:6px;width:1px;background:#d8d1bf;}
+  .trow{display:flex;gap:36px;padding:16px 0;}
+  .trow .yr{flex:none;width:80px;text-align:right;font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);line-height:1.3;}
+  .trow .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--gold);margin-top:12px;box-shadow:0 0 0 4px var(--ivory);}
+  .trow .tx h4{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;}
+  .trow .tx p{font-size:14px;color:#6f6a5c;font-weight:300;}
+
+  /* ── 참여마당 ── */
+  .join-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .jcard{border:1px solid var(--line);border-radius:2px;padding:30px;transition:.25s;background:#fff;}
+  .jcard:hover{border-color:var(--gold);box-shadow:0 12px 36px rgba(60,50,20,.08);transform:translateY(-3px);}
+  .jcard .no{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);}
+  .jcard h3{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;margin:8px 0 10px;}
+  .jcard p{font-size:13.5px;color:#6f6a5c;font-weight:300;}
+
+  /* ── 갤러리 ── */
+  .gal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .gitem{position:relative;border-radius:2px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:flex-end;color:#fff;transition:.3s;}
+  .gitem:hover{transform:translateY(-4px);}
+  .gitem .ph{position:absolute;inset:0;}
+  .gitem .ph{background-size:cover;background-position:center;}
+  .g1 .ph{background-image:url('../images/yasuda.jpg');}
+  .g2 .ph{background-image:url('../images/akamon.jpg');}
+  .g3 .ph{background-image:url('../images/gold_canopy.jpg');}
+  .g4 .ph{background-image:url('../images/ginkgo_leaves.jpg');}
+  .gitem::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 55%);}
+  .gitem .cap{position:relative;z-index:2;padding:16px;font-size:13.5px;font-weight:500;}
+  .gitem .cap small{display:block;font-size:11px;opacity:.75;font-weight:300;}
+
+  /* ── 후원 ── */
+  .sponsor-wrap{background:var(--ivory);}
+  .sponsor{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;align-items:center;}
+  .sponsor span{font-family:'Cormorant Garamond',serif;font-size:20px;color:#b0a98f;letter-spacing:.1em;transition:.2s;}
+  .sponsor span:hover{color:var(--gold);}
+
+  /* ── 푸터 ── */
+  footer.site{background:#0b1526;color:rgba(255,255,255,.6);padding:54px 0 40px;font-size:13px;}
+  footer.site .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:32px;}
+  footer.site h4{font-family:'Noto Serif KR',serif;color:#fff;font-size:17px;margin-bottom:10px;}
+  footer.site .links{display:flex;gap:22px;}
+  footer.site .links a:hover{color:var(--gold-bright);}
+  footer.site .cr{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;font-size:12px;color:rgba(255,255,255,.35);}
+
+  @media (max-width:900px){
+    nav.gnb{display:none;}
+    .greeting .inner{grid-template-columns:1fr;gap:40px;}
+    .portrait{max-width:300px;margin:0 auto;}
+    .two-col,.join-grid{grid-template-columns:1fr;}
+    .gal-grid{grid-template-columns:repeat(2,1fr);}
+    .timeline::before{left:79px;}
+    .trow .yr{width:60px;font-size:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="utilbar">
+  <div class="container">
+    <div class="links">
+      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="../ksa/index.html">한국인학생회 →</a>
+    </div>
+    <div class="links">
+      <a href="#">로그인</a><a href="#">회원가입</a><a href="#">회원가입 안내</a>
+    </div>
+  </div>
+</div>
+
+<header class="site">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <span class="mark">
+        <svg width="22" height="22" viewBox="0 0 40 40"><path d="M20 36 C20 26 20 22 20 20 C8 24 2 16 4 8 C12 4 20 8 20 18 C20 8 28 4 36 8 C38 16 32 24 20 20" fill="none" stroke="#e8c876" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="name">재한동경대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></span>
+    </a>
+    <nav class="gnb">
+      <a href="#" class="on">홈</a>
+      <a href="#greeting">동문회 소개</a>
+      <a href="#news">게시판</a>
+      <a href="#join">참여마당</a>
+      <a href="#gallery">사진첩</a>
+      <a href="#history">연혁</a>
+      <a href="#sponsor">후원</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <svg class="deco" viewBox="0 0 420 520" aria-hidden="true">
+    <g fill="none" stroke="rgba(232,200,118,.5)" stroke-width="1.6">
+      <circle cx="230" cy="260" r="170" opacity=".3"/>
+      <circle cx="230" cy="260" r="120" opacity=".45"/>
+    </g>
+    <g fill="rgba(232,200,118,.55)">
+      <path d="M180 130 q-20 -26 3 -42 q26 -15 38 10 q7 17 -10 27 q-15 10 -31 5 Z" transform="rotate(-15 190 110)"/>
+      <path d="M300 210 q-15 -19 2 -31 q19 -11 28 8 q6 12 -8 20 q-11 8 -22 3 Z" transform="rotate(30 305 195)"/>
+      <path d="M160 320 q-13 -16 1 -26 q16 -10 24 6 q5 11 -6 18 q-10 6 -19 2 Z" transform="rotate(-45 165 310)"/>
+      <path d="M290 400 q-11 -14 1 -22 q13 -8 20 5 q4 9 -5 15 q-8 5 -16 2 Z" transform="rotate(60 295 390)"/>
+    </g>
+  </svg>
+  <div class="container">
+    <div class="eyebrow">KOREA · 在韓東京大学総同門会</div>
+    <h1><em>붉은 문</em>을 지나온 인연,<br>한국에서 이어지다</h1>
+    <p class="lead">재한동경대학 총동문회는 아카몬(赤門)을 함께 지나온 동문들이 한국에서 세대를 넘어 지혜와 우정을 나누는 배움의 공동체입니다. 2011년 창설 이래 매년 정기총회와 포럼, 한일 학술·문화 교류를 이어오고 있습니다.</p>
+    <div class="cta">
+      <a class="btn btn-gold" href="#news">동문회 소식</a>
+      <a class="btn btn-line" href="#greeting">회장 인사말</a>
+    </div>
+  </div>
+</section>
+
+<section class="greeting" id="greeting">
+  <div class="container inner">
+    <figure class="portrait">
+      <div class="frame">
+        <svg width="52" height="52" viewBox="0 0 40 40"><path d="M20 36 C20 26 20 22 20 20 C8 24 2 16 4 8 C12 4 20 8 20 18 C20 8 28 4 36 8 C38 16 32 24 20 20" fill="none" stroke="#c9a24b" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span class="ph">Portrait</span>
+      </div>
+      <figcaption><b>정 세 영</b>재한동경대학 총동문회 회장 · 경희대학교 약학대학 교수 (약학부 博 1987)</figcaption>
+    </figure>
+    <div class="txt">
+      <span class="en">Greetings from the President</span>
+      <h2>인사말</h2>
+      <p>존경하는 동문 여러분, 안녕하십니까.</p>
+      <p>재한동경대학 총동문회 홈페이지를 찾아주신 여러분을 진심으로 환영합니다. 우리 동문회는 2011년 하마다 준이치(浜田純一) 총장님을 모시고 창설된 이래, <b>배움의 길에서 만난 소중한 인연</b>을 바탕으로 세대와 전공을 넘어 서로를 격려하고 이끌어주는 지식 공동체로 성장해 왔습니다.</p>
+      <p>매년 2월의 정기총회와 <b>자랑스러운 동경대인상</b> 수여, 학술 포럼과 분야별 동문 간담회에 이르기까지 — 동문회는 만남의 장을 넓히는 한편, 도쿄대학 한국인학생회와의 교류·멘토링과 한일 양국의 학술·문화 교류에도 힘을 보태고 있습니다.</p>
+      <p>이 작은 창이 동문 여러분을 잇는 튼튼한 다리가 되기를 바랍니다. 늘 건강하시고, 하시는 일마다 결실이 가득하시길 기원합니다.</p>
+      <div class="sign"><small>재한동경대학 총동문회 회장</small>정세영 拜上</div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="news">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">News &amp; Notice</span><h2>동문회 소식</h2></div>
+      <a class="more" href="#">전체보기 +</a>
+    </div>
+    <div class="two-col">
+      <ul class="notice">
+        <li><a href="#"><span class="badge b1">공지</span><span class="tt">2026년도 정기총회 결과 보고 — 활동보고·자랑스러운 동경대인상</span><span class="dt">2026.08.09</span></a></li>
+        <li><a href="#"><span class="badge b2">행사</span><span class="tt">가을 학술 세미나 및 단과대별 포럼 참가 신청 안내</span><span class="dt">2026.08.05</span></a></li>
+        <li><a href="#"><span class="badge b1">공지</span><span class="tt">2026년도 하반기 회비 납부 안내</span><span class="dt">2026.07.30</span></a></li>
+        <li><a href="#"><span class="badge b3">모집</span><span class="tt">한국 문화체험 프로그램 호스트 패밀리 모집</span><span class="dt">2026.07.24</span></a></li>
+        <li><a href="#"><span class="badge b2">행사</span><span class="tt">도쿄대 한국인학생회 멘토링 — 선배 멘토 모집</span><span class="dt">2026.07.18</span></a></li>
+        <li><a href="#"><span class="badge b1">공지</span><span class="tt">신입 회원(2020년대 졸업 동문) 환영 모임 안내</span><span class="dt">2026.07.11</span></a></li>
+      </ul>
+      <div class="ev-card">
+        <h3>주요 행사 <span>Calendar</span></h3>
+        <div class="ev"><div class="d"><b>19</b><span>SEP</span></div><div class="i"><h4>가을 학술 세미나</h4><p>서울 시내 · 15:00</p></div></div>
+        <div class="ev"><div class="d"><b>24</b><span>OCT</span></div><div class="i"><h4>단과대별 동문 포럼</h4><p>분야별 간담회 · 상세 추후 공지</p></div></div>
+        <div class="ev"><div class="d"><b>05</b><span>DEC</span></div><div class="i"><h4>송년 임원회의</h4><p>고문·부회장단·이사진</p></div></div>
+        <div class="ev"><div class="d"><b>2월</b><span>2027</span></div><div class="i"><h4>정기총회</h4><p>총회·자랑스러운 동경대인상·특별강연</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block history" id="history">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">History</span><h2>동문회 연혁</h2></div>
+    </div>
+    <div class="timeline">
+      <div class="trow"><div class="yr">2011</div><div class="dot"></div><div class="tx"><h4>재한동경대학 총동문회 창설</h4><p>3월 18일, 하마다 준이치(浜田純一) 총장 참석 하에 창립 — 초대 회장 이영순 (서울대 수의과대학 명예교수). 동일본대지진 성금을 도쿄대에 전달하고, 도쿄대 공식 동창회 조직인 아카몬학우회(赤門学友会)에 등록</p></div></div>
+      <div class="trow"><div class="yr">2014</div><div class="dot"></div><div class="tx"><h4>도쿄대학 서울사무소 개소 · 야스다강당 개보수 기부</h4><p>도쿄대학 서울오피스 개소에 협력하고, 동문 모금으로 야스다강당(安田講堂) 개보수 기부에 참여</p></div></div>
+      <div class="trow"><div class="yr">2015</div><div class="dot"></div><div class="tx"><h4>자랑스러운 동경대인상 제정</h4><p>신년회에서 첫 수여 (고상룡 교수, 이병일 교수) — 2대 회장 박종근 (서울대 공과대학 명예교수) 취임. 인문사회·산업계 동문 간담회, 도쿄대학교우회·서울대총동문회 친선교류회 참여</p></div></div>
+      <div class="trow"><div class="yr">2016</div><div class="dot"></div><div class="tx"><h4>신년회 · 포럼 정례화</h4><p>신년회와 학술 포럼을 결합한 연례 행사로 발전, 한국인학생회 멘토링과 체험활동 프로그램 운영</p></div></div>
+      <div class="trow"><div class="yr">현재</div><div class="dot"></div><div class="tx"><h4>정기총회와 한일교류의 확대</h4><p>정세영 회장 (경희대 약학대학 교수) 취임. 매년 2월 정기총회 개최 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 수상자 특별강연. 명예회장 이영순·박종근, 고문·부회장단·이사진과 함께 학술 세미나, 지역 포럼, 한일교류 사업 추진</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="join">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">Participation</span><h2>참여마당</h2></div>
+    </div>
+    <div class="join-grid">
+      <a class="jcard" href="#">
+        <span class="no">01</span>
+        <h3>지역 동문회</h3>
+        <p>서울·수도권을 비롯해 부산, 대전, 광주 등 지역별 동문 모임을 안내합니다.</p>
+      </a>
+      <a class="jcard" href="#">
+        <span class="no">02</span>
+        <h3>동문 업체 소개</h3>
+        <p>동문이 운영하는 기업과 전문 서비스를 소개하고 상호 협력의 기회를 잇습니다.</p>
+      </a>
+      <a class="jcard" href="#">
+        <span class="no">03</span>
+        <h3>멘토링 · 장학</h3>
+        <p>유학 준비생과 재학생을 위한 선배 멘토링, 장학기금 후원에 참여하실 수 있습니다.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="block sponsor-wrap" id="gallery" style="background:#fff;padding-top:0;">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">Gallery — 모교의 풍경</span><h2>사진첩</h2></div>
+      <a class="more" href="#">전체보기 +</a>
+    </div>
+    <div class="gal-grid">
+      <a class="gitem g1" href="#"><div class="ph"></div><div class="cap">야스다강당 (安田講堂)<small>혼고캠퍼스 — 동문회 개보수 기부 참여</small></div></a>
+      <a class="gitem g2" href="#"><div class="ph"></div><div class="cap">아카몬 (赤門)<small>우리 모두가 지나온 붉은 문</small></div></a>
+      <a class="gitem g3" href="#"><div class="ph"></div><div class="cap">혼고의 은행나무<small>가을, 결실의 황금빛</small></div></a>
+      <a class="gitem g4" href="#"><div class="ph"></div><div class="cap">은행잎 (銀杏)<small>도쿄대학의 상징</small></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="block sponsor-wrap" id="sponsor">
+  <div class="container">
+    <div class="sec-head" style="justify-content:center;text-align:center;">
+      <div class="t"><span class="en">Partners &amp; Sponsors</span><h2>후원 및 협력</h2></div>
+    </div>
+    <div class="sponsor">
+      <span>SAMSUNG DISPLAY</span>
+      <span>LG DISPLAY</span>
+      <span>在日韓国科学技術者協会</span>
+      <span>東京大学韓国人学生会</span>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="top">
+      <div>
+        <h4>재한동경대학 총동문회</h4>
+        <p>在韓東京大学総同門会 (EST. 2011 · 赤門学友会 등록단체)<br>서울특별시 (사무국 주소 기재란)<br>alumni@example.com · 02-000-0000</p>
+      </div>
+      <div class="links">
+        <a href="../index.html">통합 홈</a>
+        <a href="../ksa/index.html">한국인학생회</a>
+        <a href="#">회칙</a>
+        <a href="#">개인정보처리방침</a>
+      </div>
+    </div>
+    <div class="cr">© 2026 The University of Tokyo Alumni Association in Korea. All rights reserved. — 본 페이지는 디자인 초안입니다.</div>
+  </div>
+</footer>
+
+</body>
+</html>
