@@ -279,6 +279,18 @@
   </div>
 </section>
 
+<!-- 비로그인 안내 (로그인하면 자동으로 사라짐) -->
+<div id="loginNotice" style="background:#f2eee2;border-bottom:1px solid #e6e1d5;">
+  <div class="container" style="padding-top:13px;padding-bottom:13px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;font-size:14px;color:#6f6a5c;">
+    <span>🔒 <b style="color:#22283a;font-weight:600;">로그인 하시면 상세정보를 보실 수 있습니다</b> — 게시판·갤러리 등 회원 전용 콘텐츠</span>
+    <span>
+      <a href="../auth/login.html" style="color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;">로그인</a>
+      <span style="color:#c9c2ae;margin:0 6px;">|</span>
+      <a href="../auth/signup.html" style="color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;">회원가입</a>
+    </span>
+  </div>
+</div>
+
 <section class="greeting" id="greeting">
   <div class="container inner">
     <figure class="portrait">
@@ -542,8 +554,10 @@ try {
     out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
     el.append(my, out);
-    // 로그인 회원에게 게시판·갤러리 표시
+    // 로그인 회원에게 게시판·갤러리 표시, 안내 배너 제거
     document.querySelectorAll(".auth-only").forEach(n => n.classList.remove("auth-only"));
+    const ln = document.getElementById("loginNotice");
+    if (ln) ln.remove();
   }
 } catch (e) { /* 오프라인 등 실패 시 기본 링크 유지 */ }
 </script>
