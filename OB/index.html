@@ -154,7 +154,7 @@
   .trow .tx p{font-size:14px;color:#6f6a5c;font-weight:300;}
 
   /* ── 참여마당 ── */
-  .join-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .join-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
   .jcard{border:1px solid var(--line);border-radius:2px;padding:30px;transition:.25s;background:#fff;}
   .jcard:hover{border-color:var(--gold);box-shadow:0 12px 36px rgba(60,50,20,.08);transform:translateY(-3px);}
   .jcard .no{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);}
@@ -243,7 +243,9 @@
         <a href="#join">참여마당</a>
         <div class="dd-menu">
           <a href="#news">총회</a>
-          <a href="#join">지역 동문회 · 멘토링</a>
+          <a href="#sub-moim">소모임</a>
+          <a href="#sub-forum">포럼</a>
+          <a href="#sub-seminar">세미나</a>
         </div>
       </div>
       <a href="#gallery" class="auth-only">갤러리</a>
@@ -410,20 +412,25 @@
       <div class="t"><span class="en">Participation</span><h2>참여마당</h2></div>
     </div>
     <div class="join-grid">
-      <a class="jcard" href="#">
+      <a class="jcard" href="#news" id="sub-assembly">
         <span class="no">01</span>
-        <h3>지역 동문회</h3>
-        <p>서울·수도권을 비롯해 부산, 대전, 광주 등 지역별 동문 모임을 안내합니다.</p>
+        <h3>총회</h3>
+        <p>매년 2월 정기총회 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 특별강연과 경품 추첨. 연도별 결과 보고 보기 →</p>
       </a>
-      <a class="jcard" href="#">
+      <a class="jcard" href="#" id="sub-moim">
         <span class="no">02</span>
-        <h3>동문 업체 소개</h3>
-        <p>동문이 운영하는 기업과 전문 서비스를 소개하고 상호 협력의 기회를 잇습니다.</p>
+        <h3>소모임</h3>
+        <p>골프(은행회) · 등산모임 · 약우회 · 현정회 · 젊은 동문 모임 등 취미·친목 소모임을 연 2회 지원합니다.</p>
       </a>
-      <a class="jcard" href="#">
+      <a class="jcard" href="#" id="sub-forum">
         <span class="no">03</span>
-        <h3>멘토링 · 장학</h3>
-        <p>유학 준비생과 재학생을 위한 선배 멘토링, 장학기금 후원에 참여하실 수 있습니다.</p>
+        <h3>포럼</h3>
+        <p>단과대별 순환 포럼(추진 단과대별 75만원 지원) — 건축학 구조계, 농학생명과학, 한일국제포럼 등 분야별 최신 정보 교류.</p>
+      </a>
+      <a class="jcard" href="#" id="sub-seminar">
+        <span class="no">04</span>
+        <h3>세미나</h3>
+        <p>학술 세미나와 심포지엄의 자율적 개최를 지원합니다 — 동문 간 전문지식 공유와 네트워크의 장.</p>
       </a>
     </div>
   </div>
