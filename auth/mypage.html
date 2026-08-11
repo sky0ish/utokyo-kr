@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 정보 | 도쿄대학교 한국 커뮤니티</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+  <h1>내 정보</h1>
+  <p class="desc" id="statusLine">불러오는 중…</p>
+
+  <table class="info-table" id="infoTable" style="display:none;">
+    <tr><td>이름</td><td id="p_name"></td></tr>
+    <tr><td>구분</td><td id="p_type"></td></tr>
+    <tr><td>학부/연구과</td><td id="p_faculty"></td></tr>
+    <tr><td>졸업연도</td><td id="p_grad"></td></tr>
+    <tr><td>이메일</td><td id="p_email"></td></tr>
+    <tr><td>승인 상태</td><td id="p_status"></td></tr>
+  </table>
+
+  <div class="msg" id="msg"></div>
+
+  <button class="primary" id="goSite" style="display:none;" onclick="location.href='../index.html'">홈페이지로 이동</button>
+  <button class="ghost" id="logoutBtn">로그아웃</button>
+  <div class="back" style="text-align:center;"><a href="../index.html">← 통합 홈으로</a></div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile, logout, showMsg } from "./auth.js";
+
+document.getElementById("logoutBtn").addEventListener("click", logout);
+
+const user = await currentUser();
+if (!user) {
+  location.href = "login.html";
+} else {
+  const p = await myProfile();
+  const st = document.getElementById("statusLine");
+  if (!p) {
+    st.textContent = "프로필을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+  } else {
+    st.textContent = p.name + "님, 환영합니다.";
+    document.getElementById("p_name").textContent = p.name || "-";
+    document.getElementById("p_type").textContent = p.member_type === "YB" ? "YB · 재학생 (한국인학생회)" : p.member_type === "OB" ? "OB · 동문 (재한 도쿄대학 총동문회)" : "-";
+    document.getElementById("p_faculty").textContent = p.faculty || "-";
+    document.getElementById("p_grad").textContent = p.grad_year || "-";
+    document.getElementById("p_email").textContent = p.email || user.email;
+    document.getElementById("p_status").innerHTML = p.approved
+      ? '<span class="badge ok">승인 완료 — 정회원</span>'
+      : '<span class="badge wait">운영진 승인 대기중</span>';
+    document.getElementById("infoTable").style.display = "table";
+    document.getElementById("goSite").style.display = "block";
+    if (!p.approved) {
+      showMsg(document.getElementById("msg"),
+        "가입 신청이 접수되었습니다. 운영진 승인 후 회원 전용 콘텐츠(주소록·내부자료 등)를 이용하실 수 있습니다.", true);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
