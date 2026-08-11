@@ -4,8 +4,8 @@
 
 # 홈페이지 파일만 허용
 !/index.html
-!/ksa/
-!/alumni/
+!/YB/
+!/OB/
 !/images/
 
 # 저장소 관리 파일 허용
