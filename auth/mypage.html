@@ -18,6 +18,7 @@
     <tr><td>구분</td><td id="p_type"></td></tr>
     <tr><td>학부/연구과</td><td id="p_faculty"></td></tr>
     <tr><td>졸업연도</td><td id="p_grad"></td></tr>
+    <tr><td>전화번호</td><td id="p_phone"></td></tr>
     <tr><td>이메일</td><td id="p_email"></td></tr>
     <tr><td>승인 상태</td><td id="p_status"></td></tr>
   </table>
@@ -48,6 +49,7 @@ if (!user) {
     document.getElementById("p_type").textContent = p.member_type === "YB" ? "YB · 재학생 (한국인학생회)" : p.member_type === "OB" ? "OB · 동문 (재한 도쿄대학 총동문회)" : "-";
     document.getElementById("p_faculty").textContent = p.faculty || "-";
     document.getElementById("p_grad").textContent = p.grad_year || "-";
+    document.getElementById("p_phone").textContent = p.phone || "-";
     document.getElementById("p_email").textContent = p.email || user.email;
     document.getElementById("p_status").innerHTML = p.approved
       ? '<span class="badge ok">승인 완료 — 정회원</span>'
