@@ -6,6 +6,11 @@ a{text-decoration:none;color:inherit;}
 .topbar .inner{max-width:960px;margin:0 auto;padding:9px 20px;display:flex;justify-content:space-between;gap:16px;}
 .topbar a:hover{color:#e8c876;}
 .topbar .links{display:flex;gap:16px;}
+/* ─── 어두운 사진 배너 ─── */
+.banner{background:linear-gradient(rgba(11,18,32,.74),rgba(11,18,32,.66)),url('../images/gold_avenue.jpg') center 42%/cover;color:#fff;}
+.banner .binner{max-width:960px;margin:0 auto;padding:40px 20px 36px;}
+.banner .en{font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:#e8c876;letter-spacing:.14em;display:block;margin-bottom:4px;}
+.banner h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,.5);}
 .wrap{max-width:960px;margin:0 auto;padding:36px 20px 80px;}
 .head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
 .head h1{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:600;}

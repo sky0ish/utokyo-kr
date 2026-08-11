@@ -74,13 +74,26 @@
   .greeting .inner{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:start;}
   .portrait{position:relative;}
   .portrait .frame{
-    display:block;background:#fff;padding:14px;
-    border:1px solid #d9d1bd;border-radius:2px;
-    box-shadow:0 3px 8px rgba(50,42,18,.08), 0 18px 44px rgba(50,42,18,.16);
+    display:block;position:relative;background:#fdfcf9;padding:7px;
+    border:1px solid #c9c0a8;border-radius:1px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.95),
+      0 1px 2px rgba(50,42,18,.12),
+      0 8px 16px rgba(50,42,18,.14),
+      0 26px 54px rgba(50,42,18,.28);
     transition:.3s;
   }
-  .portrait .frame:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(50,42,18,.1), 0 26px 56px rgba(50,42,18,.2);}
-  .portrait .frame img{width:100%;display:block;border:1px solid #eee7d8;}
+  .portrait .frame::after{
+    content:"";position:absolute;inset:7px;pointer-events:none;
+    box-shadow:inset 0 2px 9px rgba(0,0,0,.32), inset 0 -1px 2px rgba(255,255,255,.25);
+  }
+  .portrait .frame:hover{transform:translateY(-4px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.95),
+      0 2px 4px rgba(50,42,18,.12),
+      0 12px 22px rgba(50,42,18,.16),
+      0 34px 64px rgba(50,42,18,.32);}
+  .portrait .frame img{width:100%;display:block;}
   .portrait figcaption{margin-top:16px;text-align:center;font-size:14px;color:#7d7869;}
   .portrait figcaption b{display:block;font-family:'Noto Serif KR',serif;font-size:17px;color:var(--ink);font-weight:600;}
   .greeting .txt .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);letter-spacing:.12em;}
