@@ -34,11 +34,6 @@
     </div>
   </div>
 
-  <div class="tabs" id="orgTabs">
-    <a href="?org=" data-org="">전체</a>
-    <a href="?org=OB" data-org="OB">OB 총동문회</a>
-    <a href="?org=YB" data-org="YB">YB 학생회</a>
-  </div>
   <div class="tabs" id="catTabs">
     <a href="#" data-cat="">전체</a>
     <a href="#" data-cat="notice">공지</a>
@@ -65,10 +60,6 @@ const params = new URLSearchParams(location.search);
 const org = params.get("org") || "";
 let cat = "";
 
-// 탭 활성화
-document.querySelectorAll("#orgTabs a").forEach(a => {
-  if ((a.dataset.org || "") === org) a.classList.add("on");
-});
 document.querySelectorAll("#catTabs a").forEach(a => {
   a.addEventListener("click", (e) => {
     e.preventDefault();
@@ -102,7 +93,6 @@ async function load() {
     .select("id,title,org,category,author_name,visibility,source,created_at")
     .order("created_at", { ascending: false })
     .limit(100);
-  if (org) q = q.in("org", [org, "ALL"]);
   if (cat) q = q.eq("category", cat);
   const { data, error } = await q;
   if (error) { listEl.innerHTML = '<div class="empty">게시판을 불러오지 못했습니다. (' + error.message + ')</div>'; return; }

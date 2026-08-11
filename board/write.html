@@ -79,8 +79,9 @@ if (!profile || !profile.approved) {
 } else {
   form.style.display = "block";
 
-  // OB/YB 탭
-  let org = (preOrg === "YB" || preOrg === "OB") ? preOrg : "OB";
+  // OB/YB 탭 — 회원 프로필의 소속이 기본 선택
+  let org = (preOrg === "YB" || preOrg === "OB") ? preOrg
+          : (profile.member_type === "YB" ? "YB" : "OB");
   const orgTabs = document.querySelectorAll("#orgTabs a");
   function setOrg(v) {
     org = v;
