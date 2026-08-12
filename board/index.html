@@ -58,14 +58,15 @@
 
   <div class="tabs" id="catTabs">
     <a href="#" data-cat="">전체</a>
-    <a href="#" data-cat="notice">공지사항</a>
     <a href="#" data-cat="free">자유게시판</a>
     <a href="#" data-cat="club">소모임</a>
+    <a href="#" data-cat="jobs">구인구직</a>
+    <a href="#" data-cat="mentoring">멘티멘토</a>
+    <a href="#" data-cat="condolence">경조사</a>
+    <a href="#" data-cat="notice">공지사항</a>
     <a href="#" data-cat="faculty">단과대별</a>
     <a href="#" data-cat="news">동문소식</a>
-    <a href="#" data-cat="jobs">구인구직</a>
     <a href="#" data-cat="market">벼룩시장</a>
-    <a href="#" data-cat="condolence">경조사</a>
   </div>
 
   <div class="list" id="list"><div class="empty">불러오는 중…</div></div>
@@ -79,7 +80,7 @@
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
-const CAT = { notice:"공지", free:"자유", club:"소모임", faculty:"단과대별", news:"소식", jobs:"구인", market:"장터", condolence:"경조사" };
+const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘티멘토", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
 const params = new URLSearchParams(location.search);
 const org = params.get("org") || "";
 let cat = params.get("cat") || "";
