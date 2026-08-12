@@ -78,7 +78,9 @@ if (error || !p) {
     <h2>${escapeHtml(p.title)}</h2>
     <div class="pmeta">${escapeHtml(p.author_name || "")} · ${p.created_at.slice(0,16).replace("T"," ")}</div>
     <div class="body">${escapeHtml(p.content)}</div>
-    ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' : ""}
+    ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' :
+      p.source === "band" ? '<div class="src">※ 네이버 밴드에서 옮겨온 글입니다.</div>' :
+      p.source === "legacy" ? '<div class="src">※ (구)홈페이지 게시판에서 옮겨온 글입니다.</div>' : ""}
   `;
   if (user && p.author_id === user.id) {
     document.getElementById("actions").style.display = "flex";

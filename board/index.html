@@ -77,6 +77,11 @@
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
 const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘티멘토", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
+const SRC = {
+  band: '<span class="src-tag band">네이버밴드</span>',
+  facebook: '<span class="src-tag fb">페이스북</span>',
+  legacy: '<span class="src-tag legacy">(구)게시판</span>'
+};
 const params = new URLSearchParams(location.search);
 const org = params.get("org") || "";
 let cat = params.get("cat") || "";
@@ -122,7 +127,7 @@ async function load() {
   listEl.innerHTML = data.map(p => `
     <a class="row" href="post.html?id=${p.id}">
       <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
-      <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
+      <span class="t">${escapeHtml(p.title)}${SRC[p.source] || ""}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
       <span class="meta">${escapeHtml(p.author_name || "")} <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span><br>${p.created_at.slice(0,10)}</span>
     </a>`).join("");
 }
