@@ -115,8 +115,12 @@ if (!user) {
 } else {
   document.getElementById("main").style.display = "block";
 
-  // ── 북마클릿 ──
-  const code = "javascript:(function(){var s=document.createElement('script');s.src='https://u-tokyo.kr/admin/collector.js?'+Date.now();document.body.appendChild(s);})();";
+  // ── 북마클릿 (페이스북 보안정책 때문에 코드를 통째로 담습니다) ──
+  let code = "javascript:(function(){var s=document.createElement('script');s.src='https://u-tokyo.kr/admin/collector.js?'+Date.now();document.body.appendChild(s);})();";
+  try {
+    const res = await fetch("bookmarklet.txt?" + Date.now());
+    if (res.ok) { const t = (await res.text()).trim(); if (t.startsWith("javascript:")) code = t; }
+  } catch (e) { /* 실패 시 기본값 사용 */ }
   document.getElementById("bmk").setAttribute("href", code);
   document.getElementById("bmkText").value = code;
 
