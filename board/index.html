@@ -66,6 +66,8 @@
     <a href="#" data-cat="notice">공지사항</a>
   </div>
 
+  <div id="statBox"></div>
+
   <div class="list" id="list"><div class="empty">불러오는 중…</div></div>
 
   <div class="notice-box" id="loginNotice" style="display:none;">
@@ -123,8 +125,9 @@ async function load() {
     .limit(100);
   if (cat) q = q.eq("category", cat);
   const { data, error } = await q;
-  if (error) { listEl.innerHTML = '<div class="empty">게시판을 불러오지 못했습니다. (' + error.message + ')</div>'; return; }
-  if (!data || data.length === 0) { listEl.innerHTML = '<div class="empty">아직 게시글이 없습니다.</div>'; return; }
+  if (error) { listEl.innerHTML = '<div class="empty">게시판을 불러오지 못했습니다. (' + error.message + ')</div>'; drawStat([]); return; }
+  if (!data || data.length === 0) { listEl.innerHTML = '<div class="empty">아직 게시글이 없습니다.</div>'; drawStat([]); return; }
+  drawStat(data);
   listEl.innerHTML = data.map(p => `
     <a class="row" href="post.html?id=${p.id}">
       <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
@@ -134,6 +137,54 @@ async function load() {
 }
 
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ─── 말머리(분류 또는 [말머리]) 비율 파이차트 ───
+const PIE_COLORS = ["#c9a24b","#2e6a8f","#3f6a3a","#9a5a2b","#7a5494","#8a6d2b","#4a6a6a","#a05252","#556b8d","#7d8a5a"];
+function drawStat(rows) {
+  const box = document.getElementById("statBox");
+  if (!rows.length) { box.innerHTML = ""; return; }
+  const counts = {};
+  rows.forEach(p => {
+    let key;
+    if (cat) { // 특정 게시판: 제목 앞 [말머리] 기준
+      const m = (p.title || "").match(/^\s*[\[【]([^\]】]{1,12})[\]】]/);
+      key = m ? m[1].trim() : "일반";
+    } else {  // 전체: 게시판 분류 기준
+      key = CAT[p.category] || p.category;
+    }
+    counts[key] = (counts[key] || 0) + 1;
+  });
+  const items = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 10);
+  const total = items.reduce((s,[,v]) => s+v, 0);
+  if (items.length < 2) { box.innerHTML = ""; return; }
+
+  const R = 42, C = 50;
+  let acc = 0;
+  const paths = items.map(([k,v], i) => {
+    const frac = v/total, a0 = acc*2*Math.PI - Math.PI/2;
+    acc += frac;
+    const a1 = acc*2*Math.PI - Math.PI/2;
+    const x0 = C+R*Math.cos(a0), y0 = C+R*Math.sin(a0);
+    const x1 = C+R*Math.cos(a1), y1 = C+R*Math.sin(a1);
+    const large = frac > 0.5 ? 1 : 0;
+    const d = frac >= 0.999
+      ? `M ${C} ${C-R} A ${R} ${R} 0 1 1 ${C-0.01} ${C-R} Z`
+      : `M ${C} ${C} L ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1} Z`;
+    return `<path d="${d}" fill="${PIE_COLORS[i % PIE_COLORS.length]}" stroke="#fff" stroke-width="1"/>`;
+  }).join("");
+
+  const legend = items.map(([k,v], i) =>
+    `<span><i style="background:${PIE_COLORS[i % PIE_COLORS.length]}"></i>${escapeHtml(k)} <b>${Math.round(v/total*100)}%</b> <span style="color:#a8a291;">(${v})</span></span>`
+  ).join("");
+
+  box.innerHTML = `<div class="stat">
+      <svg class="pie" width="100" height="100" viewBox="0 0 100 100">${paths}</svg>
+      <div>
+        <div class="stitle">${cat ? "말머리 비율" : "게시판 분류 비율"} · 총 ${total}건</div>
+        <div class="legend">${legend}</div>
+      </div>
+    </div>`;
+}
 
 load();
 </script>
