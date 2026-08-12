@@ -41,7 +41,7 @@
 
   /* ── 드롭다운 하위메뉴 ── */
   .gnb .dd{position:relative;}
-  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:row;gap:8px;padding-top:22px;z-index:200;white-space:nowrap;}
+  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:24px;min-width:148px;z-index:200;}
   .dd:hover .dd-menu{display:flex;}
   .dd-menu a{display:block;text-align:center;padding:10px 20px;font-size:13.5px;color:#fff;
     background:rgba(222,222,222,.14);backdrop-filter:blur(8px);
@@ -68,6 +68,22 @@
   .btn-line{border:1px solid rgba(255,255,255,.45);color:#fff;}
   .btn-line:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
   .hero svg.deco{position:absolute;right:-20px;bottom:-10px;height:95%;z-index:1;opacity:.6;}
+  .hero-quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px;max-width:640px;}
+  .hero-quick a{padding:9px 18px;font-size:13px;color:#fff;background:rgba(222,222,222,.14);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.18);border-radius:7px;transition:.2s;white-space:nowrap;}
+  .hero-quick a:hover{background:rgba(232,200,118,.22);color:var(--gold-bright);border-color:var(--gold);}
+
+  /* ── 갤러리 라이트박스 ── */
+  .lb{position:fixed;inset:0;background:rgba(6,10,20,.9);display:none;z-index:600;align-items:center;justify-content:center;padding:28px;}
+  .lb.on{display:flex;}
+  .lb-box{max-width:1160px;width:100%;}
+  .lb-head{display:flex;justify-content:space-between;align-items:center;color:#fff;margin-bottom:16px;}
+  .lb-head h3{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;}
+  .lb-close{background:none;border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:100px;padding:7px 18px;font-size:13px;cursor:pointer;font-family:inherit;transition:.2s;}
+  .lb-close:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
+  .lb-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .lb-imgs img{width:100%;height:100%;max-height:68vh;object-fit:cover;border-radius:3px;display:block;}
+  @media (max-width:760px){ .lb-imgs{grid-template-columns:1fr;} .lb-imgs img{max-height:28vh;} }
 
   /* ── 인사말 ── */
   .greeting{background:var(--ivory);padding:96px 0;}
@@ -214,8 +230,11 @@
   .partners{background:#f2efe6;border-top:1px solid var(--line);padding:30px 0 34px;}
   .prow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:9px 0;}
   .plabel{flex:none;width:84px;font-size:12px;letter-spacing:.16em;color:#9a947f;font-weight:700;}
-  .pitems{display:flex;gap:11px;flex-wrap:wrap;}
-  .pitems a,.pitems span{display:block;background:#fff;border:1px solid #e3ddd0;border-radius:6px;padding:9px 20px;font-size:13.5px;color:#4b5162;text-align:center;line-height:1.4;transition:.2s;}
+  .pitems{display:flex;gap:11px;flex-wrap:wrap;align-items:stretch;}
+  .pitems a,.pitems span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    background:#fff;border:1px solid #e3ddd0;border-radius:6px;padding:12px 22px;min-width:150px;
+    font-size:13.5px;color:#4b5162;text-align:center;line-height:1.4;transition:.2s;}
+  .pitems img{height:32px;width:auto;max-width:168px;object-fit:contain;display:block;}
   .pitems small{display:block;font-size:10.5px;color:#a8a291;letter-spacing:.05em;}
   .pitems a:hover{border-color:var(--gold);color:#8a6d2b;box-shadow:0 6px 18px rgba(60,50,20,.12);transform:translateY(-2px);}
 
@@ -323,6 +342,17 @@
     <div class="cta">
       <a class="btn btn-gold" href="#news">동문회 총회</a>
       <a class="btn btn-line" href="#greeting">회장 인사말</a>
+    </div>
+    <div class="hero-quick">
+      <a href="#greeting">인사말</a>
+      <a href="#org">조직도</a>
+      <a href="#history">연혁</a>
+      <a href="rules.html">정관</a>
+      <a href="#sub-moim">소모임</a>
+      <a href="#sub-forum">포럼</a>
+      <a href="#sub-seminar">세미나</a>
+      <a href="#gallery">갤러리</a>
+      <a href="#sponsor">후원</a>
     </div>
   </div>
 </section>
@@ -548,10 +578,10 @@
       <a class="more" href="#">전체보기 +</a>
     </div>
     <div class="gal-grid">
-      <a class="gitem g1" href="#"><div class="ph"></div><div class="cap">야스다강당 (安田講堂)<small>혼고캠퍼스 — 동문회 개보수 기부 참여</small></div></a>
-      <a class="gitem g2" href="#"><div class="ph"></div><div class="cap">아카몬 (赤門)<small>우리 모두가 지나온 붉은 문</small></div></a>
-      <a class="gitem g3" href="#"><div class="ph"></div><div class="cap">혼고의 은행나무<small>가을, 결실의 황금빛</small></div></a>
-      <a class="gitem g4" href="#"><div class="ph"></div><div class="cap">은행잎 (銀杏)<small>도쿄대학의 상징</small></div></a>
+      <a class="gitem g1" href="#" data-set="yasuda"><div class="ph"></div><div class="cap">야스다강당 (安田講堂)<small>혼고캠퍼스 — 동문회 개보수 기부 참여</small></div></a>
+      <a class="gitem g2" href="#" data-set="akamon"><div class="ph"></div><div class="cap">아카몬 (赤門)<small>우리 모두가 지나온 붉은 문</small></div></a>
+      <a class="gitem g3" href="#" data-set="ginkgo"><div class="ph"></div><div class="cap">혼고의 은행나무<small>가을, 결실의 황금빛</small></div></a>
+      <a class="gitem g4" href="#" data-set="leaves"><div class="ph"></div><div class="cap">은행잎 (銀杏)<small>도쿄대학의 상징</small></div></a>
     </div>
   </div>
 </section>
@@ -607,20 +637,20 @@
     <div class="prow">
       <span class="plabel">협력 기관</span>
       <div class="pitems">
-        <a href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener">도쿄대학교<small>The University of Tokyo</small></a>
-        <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener">도쿄대학 한국인학생회<small>東京大学韓国人学生会</small></a>
-        <a href="http://www.kseaj.com/" target="_blank" rel="noopener">재일한국과학기술자협회<small>KSEAJ</small></a>
+        <a href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener"><img src="../images/partners/utokyo.png" alt="도쿄대학교"><small>도쿄대학교</small></a>
+        <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener"><img src="../images/partners/tokyoksa.gif" alt="도쿄대학 한국인학생회"><small>도쿄대학 한국인학생회</small></a>
+        <a href="http://www.kseaj.com/" target="_blank" rel="noopener"><img src="../images/partners/kseaj.gif" alt="재일한국과학기술자협회"><small>재일한국과학기술자협회</small></a>
         <a href="https://www.kr.emb-japan.go.jp/itprtop_ko/index.html" target="_blank" rel="noopener">주한일본대사관<small>Embassy of Japan in Korea</small></a>
       </div>
     </div>
     <div class="prow">
       <span class="plabel">후원 기업</span>
       <div class="pitems">
-        <a href="https://www.biotoxtech.com/" target="_blank" rel="noopener">바이오톡스텍<small>Biotoxtech</small></a>
-        <a href="https://www.jlkgroup.com/" target="_blank" rel="noopener">JLK<small>의료 인공지능</small></a>
-        <a href="https://ksbtugen.com/?page_id=731" target="_blank" rel="noopener">KSB TUGEN<small>케이에스비투젠</small></a>
-        <a href="http://www.dynebio.co.kr/" target="_blank" rel="noopener">다인바이오<small>Dyne Bio</small></a>
-        <a href="http://sejongrain.com/" target="_blank" rel="noopener">세종강우<small>Sejong Rain</small></a>
+        <a href="https://www.biotoxtech.com/" target="_blank" rel="noopener"><img src="../images/partners/biotoxtech.gif" alt="바이오톡스텍"><small>바이오톡스텍</small></a>
+        <a href="https://www.jlkgroup.com/" target="_blank" rel="noopener"><img src="../images/partners/jlk.png" alt="JLK"><small>JLK</small></a>
+        <a href="https://ksbtugen.com/?page_id=731" target="_blank" rel="noopener"><img src="../images/partners/ksbtugen.png" alt="KSB TUGEN"><small>KSB TUGEN</small></a>
+        <a href="http://www.dynebio.co.kr/" target="_blank" rel="noopener"><img src="../images/partners/dynebio.jpg" alt="다인바이오"><small>다인바이오</small></a>
+        <a href="http://sejongrain.com/" target="_blank" rel="noopener"><img src="../images/partners/sejongrain.png" alt="세종강우"><small>세종강우</small></a>
       </div>
     </div>
   </div>
@@ -644,6 +674,37 @@
     <div class="cr">© 2026 The University of Tokyo Alumni Association in Korea. All rights reserved. — 본 페이지는 디자인 초안입니다.</div>
   </div>
 </footer>
+
+<!-- 갤러리 라이트박스 -->
+<div class="lb" id="lb">
+  <div class="lb-box">
+    <div class="lb-head"><h3 id="lbTitle"></h3><button class="lb-close" id="lbClose">닫기 ✕</button></div>
+    <div class="lb-imgs" id="lbImgs"></div>
+  </div>
+</div>
+<script>
+(function(){
+  const GAL = {
+    yasuda: { t: "야스다강당 (安田講堂)", imgs: ["../images/yasuda.jpg","../images/gallery/yasuda2.jpg","../images/gallery/yasuda3.jpg"] },
+    akamon: { t: "아카몬 (赤門)", imgs: ["../images/akamon.jpg","../images/gallery/akamon2.jpg","../images/gallery/akamon3.jpg"] },
+    ginkgo: { t: "혼고의 은행나무", imgs: ["../images/gold_canopy.jpg","../images/green_avenue.jpg","../images/gold_avenue.jpg"] },
+    leaves: { t: "은행잎 (銀杏)", imgs: ["../images/ginkgo_leaves.jpg","../images/gallery/leaves2.jpg","../images/gold_canopy.jpg"] }
+  };
+  const lb = document.getElementById("lb");
+  document.querySelectorAll(".gitem").forEach(g => {
+    g.addEventListener("click", (e) => {
+      const k = g.dataset.set;
+      if (!k || !GAL[k]) return;
+      e.preventDefault();
+      document.getElementById("lbTitle").textContent = GAL[k].t;
+      document.getElementById("lbImgs").innerHTML = GAL[k].imgs.map(s => '<img src="' + s + '" alt="">').join("");
+      lb.classList.add("on");
+    });
+  });
+  document.getElementById("lbClose").addEventListener("click", () => lb.classList.remove("on"));
+  lb.addEventListener("click", (e) => { if (e.target === lb) lb.classList.remove("on"); });
+})();
+</script>
 
 <script type="module">
 // 로그인 상태를 상단바에 반영

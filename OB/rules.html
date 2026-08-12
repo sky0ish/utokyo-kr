@@ -16,6 +16,21 @@
   .utilbar .inner{max-width:860px;margin:0 auto;padding:8px 24px;display:flex;gap:18px;}
   .utilbar a:hover{color:var(--gold-bright);}
 
+  .mhead{background:#101d33;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+  .mhead .minner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
+  .mhead .mlogo{font-family:'Noto Serif KR',serif;font-weight:600;font-size:16.5px;color:#fff;line-height:1.25;}
+  .mhead .mlogo small{display:block;font-size:9.5px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.14em;font-family:'Noto Sans KR',sans-serif;}
+  .mhead nav{display:flex;gap:2px;align-items:center;margin-left:auto;}
+  .mhead nav a{padding:8px 10px;font-size:13.5px;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  .mhead nav a:hover{color:var(--gold-bright);border-bottom-color:var(--gold);}
+  .mpills{display:flex;gap:6px;}
+  .mpills a{padding:6px 13px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap;transition:.2s;}
+  .mpills .band{background:var(--gold);color:#14203a;}
+  .mpills .band:hover{background:var(--gold-bright);}
+  .mpills .fb{border:1px solid rgba(255,255,255,.55);color:#fff;}
+  .mpills .fb:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
+  @media (max-width:900px){ .mhead nav,.mpills{display:none;} }
+
   .banner{background:linear-gradient(rgba(11,18,32,.74),rgba(11,18,32,.66)),url('../images/gold_avenue.jpg') center 42%/cover;color:#fff;}
   .banner .inner{max-width:860px;margin:0 auto;padding:44px 24px 40px;}
   .banner .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--gold-bright);letter-spacing:.14em;display:block;margin-bottom:4px;}
@@ -49,6 +64,23 @@
     <a href="index.html">재한 도쿄대학 총동문회</a>
   </div>
 </div>
+
+<header class="mhead">
+  <div class="minner">
+    <a class="mlogo" href="index.html">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></a>
+    <nav>
+      <a href="index.html#greeting">동문회 소개</a>
+      <a href="../board/index.html">게시판</a>
+      <a href="index.html#join">참여마당</a>
+      <a href="index.html#gallery">갤러리</a>
+      <a href="index.html#sponsor">후원</a>
+    </nav>
+    <div class="mpills">
+      <a class="band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 →</a>
+      <a class="fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
+    </div>
+  </div>
+</header>
 
 <div class="banner">
   <div class="inner">
