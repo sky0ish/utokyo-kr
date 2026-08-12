@@ -94,7 +94,7 @@
         <a href="#" data-v="notice">공지사항</a>
       </div>
 
-      <label>말머리 <span style="font-weight:300;color:#9a947f;">(선택 — 제목 앞에 [말머리]로 붙습니다)</span></label>
+      <label>말머리 * <span style="font-weight:300;color:#9a947f;">(제목 앞에 [말머리]로 붙습니다)</span></label>
       <div class="pickrow" id="tagPick"></div>
 
       <div style="margin-top:16px;">
@@ -191,6 +191,12 @@ if (!profile || !profile.approved) {
     e.preventDefault();
     const btn = document.getElementById("submitBtn");
     const msg = document.getElementById("msg");
+    if (!headTag) {
+      msg.className = "msg err";
+      msg.textContent = "말머리를 선택해주세요.";
+      document.getElementById("tagPick").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     btn.disabled = true;
     const rawTitle = document.getElementById("title").value.trim();
     const row = {
