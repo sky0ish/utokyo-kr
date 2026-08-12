@@ -113,7 +113,10 @@ if (user) {
 
 document.getElementById("writeBtn").addEventListener("click", async () => {
   if (!user) { location.href = "../auth/login.html"; return; }
-  location.href = "write.html" + (org ? "?org=" + org : "");
+  const qs = [];
+  if (org) qs.push("org=" + org);
+  if (cat) qs.push("cat=" + cat);
+  location.href = "write.html" + (qs.length ? "?" + qs.join("&") : "");
 });
 
 async function load() {

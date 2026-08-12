@@ -58,22 +58,22 @@
         <a href="#" data-org="YB">YB — 학생회</a>
       </div>
 
-      <div class="row3" style="grid-template-columns:1fr 1fr;">
-        <div>
-          <label>분류 *</label>
-          <select id="category">
-            <option value="free">자유게시판</option>
-            <option value="club">소모임</option>
-            <option value="mentoring">멘티멘토</option>
-            <option value="promo">홍보</option>
-            <option value="condolence">경조사</option>
-            <option value="notice">공지사항</option>
-          </select>
-        </div>
-        <div>
-          <label>공개 범위</label>
-          <input value="회원 전용" disabled style="background:#f2efe8;color:#8a8574;">
-        </div>
+      <label>게시판 분류 *</label>
+      <div class="pickrow" id="catPick">
+        <a href="#" data-v="free">자유게시판</a>
+        <a href="#" data-v="club">소모임</a>
+        <a href="#" data-v="mentoring">멘티멘토</a>
+        <a href="#" data-v="promo">홍보</a>
+        <a href="#" data-v="condolence">경조사</a>
+        <a href="#" data-v="notice">공지사항</a>
+      </div>
+
+      <label>말머리 <span style="font-weight:300;color:#9a947f;">(선택 — 제목 앞에 [말머리]로 붙습니다)</span></label>
+      <div class="pickrow" id="tagPick"></div>
+
+      <div style="margin-top:16px;">
+        <label>공개 범위</label>
+        <input value="회원 전용" disabled style="background:#f2efe8;color:#8a8574;">
       </div>
 
       <label>내용 *</label>
@@ -114,14 +114,49 @@ if (!profile || !profile.approved) {
   setOrg(org);
   orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
+  // 게시판 분류 · 말머리 선택
+  const TAGS = {
+    free: ["일상", "질문", "정보공유", "후기"],
+    club: ["골프", "등산", "학술", "친목", "모집"],
+    mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"],
+    promo: ["저서", "논문·연구", "상품", "기업", "행사"],
+    condolence: ["부고", "결혼", "출산", "축하"],
+    notice: ["총회", "회비", "행사", "안내"]
+  };
+  let category = "free", headTag = "";
+  const catPick = document.getElementById("catPick");
+  const tagPick = document.getElementById("tagPick");
+
+  function renderTags() {
+    const list = TAGS[category] || [];
+    tagPick.innerHTML = list.map(t => `<a href="#" data-v="${t}"${t === headTag ? ' class="on"' : ''}>${t}</a>`).join("");
+    tagPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => {
+      e.preventDefault();
+      headTag = (headTag === a.dataset.v) ? "" : a.dataset.v;   // 다시 누르면 해제
+      renderTags();
+    }));
+  }
+  function setCat(v) {
+    category = v;
+    catPick.querySelectorAll("a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
+    if (!(TAGS[category] || []).includes(headTag)) headTag = "";
+    renderTags();
+  }
+  catPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); setCat(a.dataset.v); }));
+
+  const preCat = new URLSearchParams(location.search).get("cat");
+  setCat(TAGS[preCat] ? preCat : "free");
+
   // 수정 모드
   if (editId) {
     document.getElementById("pageTitle").textContent = "글 수정";
     const { data: p } = await sb.from("posts").select("*").eq("id", editId).single();
     if (p) {
-      document.getElementById("title").value = p.title;
+      const m = (p.title || "").match(/^\s*\[([^\]]{1,12})\]\s*/);
+      document.getElementById("title").value = m ? p.title.replace(m[0], "") : p.title;
       setOrg(p.org === "YB" ? "YB" : "OB");
-      document.getElementById("category").value = p.category;
+      setCat(p.category);
+      if (m && (TAGS[p.category] || []).includes(m[1].trim())) { headTag = m[1].trim(); renderTags(); }
       document.getElementById("content").value = p.content;
     }
   }
@@ -131,10 +166,11 @@ if (!profile || !profile.approved) {
     const btn = document.getElementById("submitBtn");
     const msg = document.getElementById("msg");
     btn.disabled = true;
+    const rawTitle = document.getElementById("title").value.trim();
     const row = {
-      title: document.getElementById("title").value.trim(),
+      title: (headTag ? `[${headTag}] ` : "") + rawTitle,
       org: org,
-      category: document.getElementById("category").value,
+      category: category,
       visibility: "members",
       content: document.getElementById("content").value,
     };

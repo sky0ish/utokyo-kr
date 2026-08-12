@@ -103,6 +103,13 @@ a{text-decoration:none;color:inherit;}
 .cmt-login{padding:16px;background:#faf8f2;border-radius:3px;font-size:13.5px;color:#6f6a5c;text-align:center;margin-top:16px;}
 .cmt-login a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
 
+/* 분류·말머리 선택 버튼 */
+.pickrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.pickrow a{padding:8px 16px;border:1px solid #ddd6c6;border-radius:6px;background:#fff;
+  font-size:13.5px;color:#5a5648;transition:.18s;}
+.pickrow a:hover{border-color:#c9a24b;color:#8a6d2b;}
+.pickrow a.on{background:#101d33;border-color:#101d33;color:#fff;font-weight:600;}
+
 /* 글쓰기 */
 .form{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:30px;}
 label{display:block;font-size:12.5px;font-weight:500;color:#5a5648;margin:16px 0 6px;}
