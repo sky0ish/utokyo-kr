@@ -52,10 +52,23 @@
     <button class="btn line" id="editBtn">수정</button>
     <button class="btn line" id="delBtn">삭제</button>
   </div>
+
+  <!-- 댓글 -->
+  <div class="cmt-wrap" id="cmtWrap" style="display:none;">
+    <h3 class="cmt-title">댓글 <span id="cmtCount">0</span></h3>
+    <div id="cmtList"></div>
+    <div id="cmtFormBox">
+      <textarea id="cmtInput" placeholder="댓글을 입력하세요"></textarea>
+      <div style="text-align:right;margin-top:8px;">
+        <button class="btn dark" id="cmtSubmit">댓글 등록</button>
+      </div>
+      <div class="msg" id="cmtMsg"></div>
+    </div>
+  </div>
 </div>
 
 <script type="module">
-import { sb, currentUser } from "../auth/auth.js";
+import { sb, currentUser, myProfile } from "../auth/auth.js";
 
 const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"구인구직", mentoring:"멘티멘토", condolence:"경조사", faculty:"단과대별", news:"동문소식", market:"벼룩시장" };
 const id = new URLSearchParams(location.search).get("id");
@@ -89,6 +102,59 @@ if (error || !p) {
       if (!confirm("이 글을 삭제할까요?")) return;
       const { error: e } = await sb.from("posts").delete().eq("id", p.id);
       if (e) alert("삭제 실패: " + e.message); else location.href = "index.html";
+    });
+  }
+
+  // ─── 댓글 ───
+  const wrap = document.getElementById("cmtWrap");
+  const listEl = document.getElementById("cmtList");
+  const formBox = document.getElementById("cmtFormBox");
+  wrap.style.display = "block";
+
+  const profile = user ? await myProfile() : null;
+  const canWrite = !!(profile && profile.approved);
+
+  if (!canWrite) {
+    formBox.innerHTML = user
+      ? '<div class="cmt-login">댓글 작성은 운영진 승인이 완료된 회원만 가능합니다. (현재: 승인 대기중)</div>'
+      : '<div class="cmt-login">댓글을 작성하려면 로그인이 필요합니다. <a href="../auth/login.html">로그인</a> · <a href="../auth/signup.html">회원가입</a></div>';
+  }
+
+  async function loadComments() {
+    const { data, error } = await sb.from("comments")
+      .select("id,author_id,author_name,content,created_at")
+      .eq("post_id", p.id).order("created_at", { ascending: true });
+    if (error) { listEl.innerHTML = '<div class="cmt-empty">댓글을 불러올 수 없습니다. 로그인 후 확인해주세요.</div>'; return; }
+    document.getElementById("cmtCount").textContent = data.length;
+    if (!data.length) { listEl.innerHTML = '<div class="cmt-empty">첫 댓글을 남겨보세요.</div>'; return; }
+    listEl.innerHTML = data.map(c => `
+      <div class="cmt">
+        ${user && c.author_id === user.id ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
+        <div class="who">${escapeHtml(c.author_name || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
+        <div class="body">${escapeHtml(c.content)}</div>
+      </div>`).join("");
+    listEl.querySelectorAll(".del").forEach(b => b.addEventListener("click", async () => {
+      if (!confirm("댓글을 삭제할까요?")) return;
+      await sb.from("comments").delete().eq("id", b.dataset.id);
+      loadComments();
+    }));
+  }
+  loadComments();
+
+  if (canWrite) {
+    document.getElementById("cmtSubmit").addEventListener("click", async () => {
+      const input = document.getElementById("cmtInput");
+      const msg = document.getElementById("cmtMsg");
+      const text = input.value.trim();
+      if (!text) return;
+      const btn = document.getElementById("cmtSubmit");
+      btn.disabled = true;
+      const { error } = await sb.from("comments").insert({
+        post_id: p.id, author_id: user.id, author_name: profile.name || "", content: text
+      });
+      btn.disabled = false;
+      if (error) { msg.className = "msg err"; msg.textContent = "등록 실패: " + error.message; }
+      else { input.value = ""; msg.className = "msg"; msg.textContent = ""; loadComments(); }
     });
   }
 }

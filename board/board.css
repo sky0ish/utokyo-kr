@@ -74,6 +74,25 @@ a{text-decoration:none;color:inherit;}
 .post .body{font-size:15px;color:#3a4050;white-space:pre-wrap;word-break:keep-all;}
 .post .src{margin-top:26px;font-size:12px;color:#b0a98f;}
 .pactions{margin-top:22px;display:flex;gap:10px;}
+/* 댓글 */
+.cmt-wrap{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:26px 30px 30px;margin-top:18px;}
+.cmt-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;padding-bottom:14px;border-bottom:2px solid #101d33;margin-bottom:6px;}
+.cmt-title span{color:#c9a24b;}
+.cmt{padding:14px 2px;border-bottom:1px solid #f0ece1;}
+.cmt:last-of-type{border-bottom:none;}
+.cmt .who{font-size:13px;font-weight:600;color:#22283a;}
+.cmt .when{font-size:11.5px;color:#a8a291;margin-left:8px;font-weight:400;}
+.cmt .body{font-size:14px;color:#3a4050;white-space:pre-wrap;word-break:keep-all;margin-top:4px;}
+.cmt .del{float:right;font-size:11.5px;color:#b0a98f;background:none;border:none;cursor:pointer;font-family:inherit;}
+.cmt .del:hover{color:#8a3b32;}
+.cmt-empty{padding:18px 2px;color:#a8a291;font-size:13.5px;}
+#cmtFormBox{margin-top:16px;padding-top:18px;border-top:1px solid #f0ece1;}
+#cmtInput{width:100%;min-height:88px;padding:11px 13px;font-size:14px;font-family:inherit;line-height:1.7;
+  border:1px solid #d8d1bf;border-radius:3px;background:#fdfcfa;outline:none;resize:vertical;}
+#cmtInput:focus{border-color:#c9a24b;box-shadow:0 0 0 3px rgba(201,162,75,.15);}
+.cmt-login{padding:16px;background:#faf8f2;border-radius:3px;font-size:13.5px;color:#6f6a5c;text-align:center;margin-top:16px;}
+.cmt-login a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
+
 /* 글쓰기 */
 .form{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:30px;}
 label{display:block;font-size:12.5px;font-weight:500;color:#5a5648;margin:16px 0 6px;}
