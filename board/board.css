@@ -75,7 +75,7 @@ a{text-decoration:none;color:inherit;}
 .chip.org-ALL{background:#eee;color:#555;}
 .row .t{flex:1;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .row .t .lock{font-size:11px;color:#b0a98f;margin-left:6px;}
-.src-tag{display:inline-block;margin-left:7px;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:3px;vertical-align:middle;}
+.src-tag{flex:none;display:inline-block;margin-left:0;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:3px;vertical-align:middle;}
 .src-tag.band{background:#e5f5e8;color:#1e7d3c;}
 .src-tag.fb{background:#e7ecf7;color:#2f4b8f;}
 .src-tag.legacy{background:#efece3;color:#7a6a3c;}
@@ -96,7 +96,7 @@ a{text-decoration:none;color:inherit;}
 .post .pgal a:hover img{box-shadow:0 8px 22px rgba(0,0,0,.18);transform:translateY(-2px);}
 .post .pgal:has(a:only-child) {grid-template-columns:1fr;}
 .post .pgal:has(a:only-child) img{max-width:640px;}
-.row .thumb{flex:none;width:44px;height:34px;object-fit:cover;border-radius:3px;border:1px solid #eee9dd;}
+.row .thumb{flex:none;width:52px;height:38px;object-fit:cover;border-radius:3px;border:1px solid #eee9dd;}
 .pactions{margin-top:22px;display:flex;gap:10px;}
 /* 댓글 */
 .cmt-wrap{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:26px 30px 30px;margin-top:18px;}

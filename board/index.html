@@ -160,8 +160,9 @@ async function load() {
   listEl.innerHTML = data.map(p => `
     <a class="row" href="post.html?id=${p.id}">
       <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
+      <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
       ${p.image_url ? `<img class="thumb" src="${p.image_url}" alt="">` : ""}
-      <span class="t">${escapeHtml(p.title)}${SRC[p.source] || ""}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
+      ${SRC[p.source] || ""}
       <span class="meta">${escapeHtml(p.author_name || "")} <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span><br>${p.created_at.slice(0,10)}</span>
     </a>`).join("");
 }
