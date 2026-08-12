@@ -134,6 +134,10 @@
   .obox h4{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;}
   .obox .role{font-size:11.5px;letter-spacing:.16em;color:var(--gold);font-weight:700;margin-bottom:3px;}
   .obox p{font-size:13px;color:#5e5849;font-weight:400;margin-top:2px;line-height:1.6;}
+  /* 이름은 진하게, 소속은 연하게 */
+  .obox .aff{color:#9a947f;font-weight:300;font-size:12px;}
+  .obox h4 .aff{display:inline-block;margin-left:6px;}
+  .obox p.namelist{color:#3c4353;font-weight:500;line-height:1.85;}
   .orgchart > .obox{width:100%;max-width:880px;}
   .ocon{width:1px;height:26px;background:#d0c8b2;}
   .ocon-tight{height:12px;background:#a99f86;width:2px;}
@@ -453,8 +457,8 @@
       <div class="ocon"></div>
       <div class="obox lv-vp">
         <div class="role">부회장단</div>
-        <h4>김태수 재무부회장 · 남지현 운영부회장</h4>
-        <p>강종구 · 권병일 · 김용권 · 김윤기 · 김종원 · 김찬동 · 김찬훈 · 김해곤 · 김형두 · 남기정 · 민동준 · 박형환 · 소순창 · 손동화 · 송민동(지역회장) · 이관영 · 윤명오 · 윤화영 · 이용문 · 이용택 · 이충상 · 이한승 · 장준호 · 전영환 · 전창후 · 정윤하(지역회장) · 최기성 · 최승철 · 한진수 · 齊藤歩 등 30여 명</p>
+        <h4>김태수 재무부회장 <span class="aff">한양대 에리카 건축학부 교수</span><br>남지현 운영부회장 <span class="aff">경기연구원 선임연구위원</span></h4>
+        <p class="namelist">강종구 · 권병일 · 김용권 · 김윤기 · 김종원 · 김찬동 · 김찬훈 · 김해곤 · 김형두 · 남기정 · 민동준 · 박형환 · 소순창 · 손동화 · 송민동<span class="aff">(지역회장)</span> · 이관영 · 윤명오 · 윤화영 · 이용문 · 이용택 · 이충상 · 이한승 · 장준호 · 전영환 · 전창후 · 정윤하<span class="aff">(지역회장)</span> · 최기성 · 최승철 · 한진수 · 齊藤歩 <span class="aff">등 30여 명</span></p>
       </div>
       <div class="ocon"></div>
       <div class="obox lv-dir">
