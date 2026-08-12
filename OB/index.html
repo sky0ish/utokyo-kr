@@ -131,6 +131,13 @@
   .ocon{width:1px;height:26px;background:#d0c8b2;}
   .orow{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;}
   .orow .obox{min-width:200px;}
+  /* 회장 + 오른쪽에서 받쳐주는 명예회장 */
+  .otop{display:flex;align-items:center;justify-content:center;}
+  .otop .obox-head{min-width:290px;}
+  .oside-link{width:46px;height:1px;background:#d0c8b2;flex:none;}
+  .otop .obox-side{border-top-color:#b9b2a0;background:#fdfcf9;max-width:330px;}
+  .otop .obox-side p{font-size:12.5px;}
+  @media (max-width:760px){ .otop{flex-direction:column;} .oside-link{width:1px;height:22px;} }
   @media (max-width:700px){ .obox{min-width:0;width:100%;} .orow{width:100%;flex-direction:column;gap:10px;} .orow .ocon{display:none;} }
 
   /* ── 공통 섹션 ── */
@@ -384,23 +391,24 @@
       <div class="t"><span class="en">Organization</span><h2>조직도</h2></div>
     </div>
     <div class="orgchart">
-      <div class="obox">
-        <div class="role">회장</div>
-        <h4>양일모 <span style="font-weight:400;font-size:13px;color:#8a8574;">(4대)</span></h4>
-        <p>서울대학교 자유전공학부 교수</p>
-      </div>
-      <div class="ocon"></div>
-      <div class="orow">
-        <div class="obox">
+      <div class="otop">
+        <div class="obox obox-head">
+          <div class="role">회장</div>
+          <h4>양일모 <span style="font-weight:400;font-size:13px;color:#8a8574;">(4대)</span></h4>
+          <p>서울대학교 자유전공학부 교수</p>
+        </div>
+        <div class="oside-link"></div>
+        <div class="obox obox-side">
           <div class="role">명예회장 · 고문</div>
           <h4>이영순 · 박종근 · 정세영</h4>
-          <p>초대 회장(서울대 수의대 명예교수) · 2대 회장(서울대 공대 명예교수) · 3대 회장(경희대 약대 명예교수)</p>
+          <p>초대 회장(서울대 수의대 명예교수)<br>2대 회장(서울대 공대 명예교수)<br>3대 회장(경희대 약대 명예교수)</p>
         </div>
-        <div class="obox">
-          <div class="role">고문단</div>
-          <h4>각계 원로 동문 14명</h4>
-          <p>강창일(前 주일 한국대사) · 권택진 · 김덕규 · 김윤신 · 박민용 · 설용건 · 소선섭 · 심창구 · 이광형 · 이은방 · 이전제 · 지상욱 · 표명영 · 홍정국<br>특별고문 森和博(도쿄대 국제전략과)</p>
-        </div>
+      </div>
+      <div class="ocon"></div>
+      <div class="obox">
+        <div class="role">고문단</div>
+        <h4>각계 원로 동문 14명</h4>
+        <p>강창일(前 주일 한국대사) · 권택진 · 김덕규 · 김윤신 · 박민용 · 설용건 · 소선섭 · 심창구 · 이광형 · 이은방 · 이전제 · 지상욱 · 표명영 · 홍정국<br>특별고문 森和博(도쿄대 국제전략과)</p>
       </div>
       <div class="ocon"></div>
       <div class="obox" style="border-top-color:#8a6d2b;">
@@ -413,31 +421,25 @@
       <div class="obox">
         <div class="role">부회장단</div>
         <h4>김태수 재무부회장 · 남지현 운영부회장</h4>
-        <p style="color:#8a6d2b;">김태수(한양대 에리카 건축공학과 교수) · 남지현(경기연구원 도시주택연구실 연구위원)</p>
+        <p style="color:#8a6d2b;">김태수 — 재무 담당 · 남지현 — 운영 담당</p>
         <p>강종구 · 권병일 · 김용권 · 김윤기 · 김종원 · 김찬동 · 김찬훈 · 김해곤 · 김형두 · 남기정 · 민동준 · 박형환 · 소순창 · 손동화 · 송민동(지역회장) · 이관영 · 윤명오 · 윤화영 · 이용문 · 이용택 · 이충상 · 이한승 · 장준호 · 전영환 · 전창후 · 정윤하(지역회장) · 최기성 · 최승철 · 한진수 · 齊藤歩 등 30여 명</p>
       </div>
       <div class="ocon"></div>
       <div class="obox" style="border-top-color:#8a6d2b;">
         <div class="role">이사진</div>
         <h4>총무이사 김소영</h4>
-        <p style="color:#8a6d2b;font-weight:500;">이사진 총괄 — 회비·총회·운영 실무의 중심 (디노보넥스트 대표)</p>
+        <p style="color:#8a6d2b;font-weight:500;">이사진 총괄 — 회비·총회·운영 실무의 중심</p>
         <div style="text-align:left;max-width:660px;margin:14px auto 0;font-size:13.5px;color:#4b5162;font-weight:300;line-height:1.95;">
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">운영</b> — 이우진(운영이사, 삼성물산) · 목승원(당연직)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">주소록 · HR</b> — 윤혜영(자연계, 인천연구원) · 김용철(인문계, 고려대 글로벌일본연구원)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">포럼 · 학술</b> — 박규태(인문포럼) · 김영근(고려대 글로벌일본연구원) · 안국진(수원시정연구원)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">국제 · 홍보</b> — 송완범(고려대) · 조관자(서울대 일본연구소) · 송진화(신한라이프케어) · 한명석(현대건설)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">산업계 교류</b> — 김동민(JLK 대표)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">총회</b> — 이시훈(가천대 의과대학) · 김보람(서경대)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">지부 · 지역</b> — 이소라(세종지부, 한국환경연구원) · 손지영(세종지부 지원, 한국치산기술협회)</p>
-          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">일본 현지</b> — 김은진(도쿄대학 종합연구박물관)</p>
-          <p><b style="color:#22283a;font-weight:600;">동호회</b> — 이행석(골프, 축산환경관리원) 외 이사 19명</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">운영</b> — 이우진 · 목승원</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">주소록 · HR</b> — 윤혜영(자연계) · 김용철(인문계)</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">포럼 · 학술</b> — 박규태 · 김영근 · 안국진</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">국제 · 홍보</b> — 송완범 · 조관자 · 송진화 · 한명석</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">산업계 교류</b> — 김동민</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">총회</b> — 이시훈 · 김보람</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">지부 · 지역</b> — 이소라(세종) · 손지영(세종 지원)</p>
+          <p style="margin-bottom:3px;"><b style="color:#22283a;font-weight:600;">일본 현지</b> — 김은진</p>
+          <p><b style="color:#22283a;font-weight:600;">동호회</b> — 이행석(골프) 외 이사 19명</p>
         </div>
-      </div>
-      <div class="ocon"></div>
-      <div class="obox">
-        <div class="role">사무국</div>
-        <h4>총무 · 회계</h4>
-        <p>회비·행사 운영 실무</p>
       </div>
     </div>
   </div>
