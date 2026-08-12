@@ -215,7 +215,11 @@ if (!user) {
         }
         if (!text || text.length < 20) return null;
         const [cat, tag] = classify(text);
-        const first = (text.split("\n").find(x => x.trim()) || "").replace(/^[#\[\]【】]+\s*/, "").slice(0, 58);
+        // 원문에 이미 [말머리]가 있으면 제거해 중복 방지
+        const first = (text.split("\n").find(x => x.trim()) || "")
+          .replace(/^\s*[#]+\s*/, "")
+          .replace(/^\s*[\[【][^\]】]{1,14}[\]】]\s*/, "")
+          .slice(0, 58);
         return {
           author_name: author.slice(0, 40), org: "OB", category: cat,
           title: `[${tag}] ${first}`, content: text,
