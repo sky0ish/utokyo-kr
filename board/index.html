@@ -121,10 +121,9 @@ async function load() {
   if (!data || data.length === 0) { listEl.innerHTML = '<div class="empty">아직 게시글이 없습니다.</div>'; return; }
   listEl.innerHTML = data.map(p => `
     <a class="row" href="post.html?id=${p.id}">
-      <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span>
       <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
       <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
-      <span class="meta">${escapeHtml(p.author_name || "")}<br>${p.created_at.slice(0,10)}</span>
+      <span class="meta">${escapeHtml(p.author_name || "")} <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span><br>${p.created_at.slice(0,10)}</span>
     </a>`).join("");
 }
 

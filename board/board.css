@@ -58,7 +58,8 @@ a{text-decoration:none;color:inherit;}
 .chip.org-ALL{background:#eee;color:#555;}
 .row .t{flex:1;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .row .t .lock{font-size:11px;color:#b0a98f;margin-left:6px;}
-.row .meta{flex:none;font-size:12px;color:#a8a291;text-align:right;line-height:1.5;}
+.row .meta{flex:none;font-size:12px;color:#a8a291;text-align:right;line-height:1.9;}
+.row .meta .chip{display:inline-block;vertical-align:middle;margin-left:5px;font-size:10.5px;padding:2px 8px;}
 .empty{padding:60px 20px;text-align:center;color:#9a947f;font-size:14px;}
 .notice-box{margin-top:16px;padding:14px 16px;border-radius:4px;background:#f2eee2;color:#6f6a5c;font-size:13px;line-height:1.7;}
 .notice-box a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
