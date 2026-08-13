@@ -67,12 +67,18 @@ export async function loadGallery() {
 
   const albums = [...map.values()];
   albums.forEach(a => {
-    a.photos.sort((x, y) => (x.sort - y.sort) || (y.date || "").localeCompare(x.date || ""));
+    // 올린 순서가 아니라 사진에 적힌 날짜를 기준으로 늘어놓는다
+    a.photos.sort((x, y) => (y.date || "").localeCompare(x.date || "")
+                         || (x.sort - y.sort)
+                         || (x.key || "").localeCompare(y.key || ""));
     const newest = a.photos.reduce((m, p) => (p.date > m ? p.date : m), "");
     a.date = a.custom ? (iso((albumInfo[a.key] || {}).event_date) || newest) : newest;
     if (!a.year) a.year = (a.date || "").slice(0, 4);
   });
-  albums.sort((a, b) => (a.sort - b.sort) || (b.date || "").localeCompare(a.date || ""));
+  // 앨범도 행사 날짜순(최신이 위). 날짜가 같을 때만 수동 배치순서를 따른다
+  albums.sort((a, b) => (b.date || "").localeCompare(a.date || "")
+                     || (a.sort - b.sort)
+                     || (a.key || "").localeCompare(b.key || ""));
 
   const byCat = {};
   CATS.forEach(([c]) => byCat[c] = []);
