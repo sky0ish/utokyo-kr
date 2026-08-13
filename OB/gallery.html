@@ -31,8 +31,12 @@
   /* 운영진 : 앨범을 끌어다 놓아 합치기 */
   .mergetip{display:none;margin:0 0 16px;padding:11px 16px;background:#fff;border:1px solid #e6dfcb;
     border-radius:9px;font-size:12.5px;color:#7d7768;}
-  .mergetip.on{display:block;}
+  .mergetip.on{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   .mergetip b{color:#4a3c14;}
+  .mergetip .upbtn{flex:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:inherit;border:1px solid #22283a;background:#22283a;color:#fff;transition:.2s;}
+  .mergetip .upbtn:hover{background:#2f3750;}
+  .mergetip .upbtn:disabled{opacity:.5;cursor:default;}
   body.admin .alb{cursor:grab;}
   .alb.dragging{opacity:.4;}
   .alb.dropzone{outline:3px solid #c9a961;outline-offset:2px;}
@@ -159,8 +163,11 @@
     <button class="newalb" id="newAlb">＋ 사진첩 만들기</button>
   </div>
   <div class="mergetip" id="mergetip">
-    <b>운영진</b> — 앨범을 <b>끌어다 다른 앨범 위에 놓으면</b> 두 앨범이 하나로 합쳐집니다.
-    (끌어온 앨범의 사진이 놓은 앨범으로 옮겨집니다)
+    <div>
+      <b>운영진</b> — 앨범을 <b>끌어다 다른 앨범 위에 놓으면</b> 두 앨범이 하나로 합쳐집니다.
+      회원이 새로 올린 사진은 <b>자동 정리</b>로 날짜·주제가 같은 앨범에 한 번에 넣을 수 있습니다.
+    </div>
+    <button class="upbtn" id="autoMerge">⟳ 새 사진 자동 정리</button>
   </div>
   <div class="ggrid" id="ggrid"></div>
 </div>
@@ -186,15 +193,15 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=16"></script>
+<script src="gallery-data.js?v=17"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=16";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=17";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (!CATS.some(c => c[0] === cur)) cur = "assembly";
 
-const { byCat } = await loadGallery();
+const { byCat, albums: allAlbums } = await loadGallery();
 
 document.getElementById("gtabs").innerHTML = CATS.map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
@@ -220,6 +227,64 @@ function render() {
       <span class="cp"><b>${a.title}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
     </a>`).join("");
   if (isAdmin) enableMerge(list);
+}
+
+// ─── 운영진 : 회원이 새로 올린 사진을 날짜·주제가 같은 앨범으로 자동 정리 ───
+const SUBJECTS = [
+  ["골프", /골프|라운딩|은행회/], ["등산", /등산|산행|트레킹/],
+  ["총회", /총회|신년회|신년하례/], ["포럼", /포럼|심포지/], ["세미나", /세미나/],
+  ["홈스테이", /홈스테이|체험/], ["임원회의", /임원회의|이사회/],
+];
+function subjectOf(s) { return (SUBJECTS.find(([, re]) => re.test(s || "")) || [""])[0]; }
+
+/** 옮길 사진을 찾는다 → [{photo, to}] */
+function planAutoMerge(all) {
+  const targets = all.filter(a => !a.key.includes("|"));          // 이름이 정해진 앨범들
+  const plan = [];
+  for (const a of all) {
+    if (!a.key.includes("|")) continue;                           // 연도 임시 앨범만 대상
+    for (const p of a.photos) {
+      if (p.kind !== "db" || p.album) continue;                   // 회원이 올린 미분류 사진
+      const sub = subjectOf(p.cap);
+      const to =
+        targets.find(t => t.cat === p.cat && t.date === p.date) ||   // ① 날짜가 같은 앨범
+        (sub && targets.find(t => t.cat === p.cat &&
+              (t.date || "").slice(0, 4) === (p.date || "").slice(0, 4) &&
+              subjectOf(t.title) === sub));                          // ② 같은 해 · 같은 주제
+      if (to) plan.push({ photo: p, to });
+    }
+  }
+  return plan;
+}
+
+async function autoMerge(all) {
+  const btn = document.getElementById("autoMerge");
+  const plan = planAutoMerge(all);
+  if (!plan.length) {
+    alert("정리할 새 사진이 없습니다.\n(회원이 올린 사진 중 날짜나 주제가 같은 앨범을 찾지 못했습니다)");
+    return;
+  }
+  const lines = plan.slice(0, 12).map(x => `· ${x.photo.date} → ${x.to.title}`).join("\n");
+  if (!confirm(`새로 올라온 사진 ${plan.length}장을 아래 앨범으로 옮길까요?\n\n${lines}` +
+               (plan.length > 12 ? `\n… 외 ${plan.length - 12}장` : ""))) return;
+
+  btn.disabled = true; btn.textContent = "정리 중…";
+  const byAlbum = new Map();
+  plan.forEach(x => {
+    if (!byAlbum.has(x.to.key)) byAlbum.set(x.to.key, []);
+    byAlbum.get(x.to.key).push(x.photo.id);
+  });
+  let err = null;
+  for (const [key, ids] of byAlbum) {
+    const r = await sb.from("gallery_photos").update({ album_key: key }).in("id", ids);
+    if (r.error) { err = r.error; break; }
+  }
+  btn.disabled = false; btn.textContent = "⟳ 새 사진 자동 정리";
+  if (err) {
+    alert("정리 실패: " + err.message + " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
+    return;
+  }
+  location.reload();
 }
 
 // ─── 운영진 : 앨범을 끌어다 놓아 합치기 ───
@@ -319,6 +384,8 @@ try {
       isAdmin = true; adminId = user.id;
       document.body.classList.add("admin");
       document.getElementById("mergetip").classList.add("on");
+      document.getElementById("autoMerge")
+        .addEventListener("click", () => autoMerge(allAlbums));
       render();                                // 끌어놓기 기능을 붙여 다시 그림
       const ad = document.createElement("a");
       ad.href = "../admin/gallery.html";
