@@ -55,6 +55,10 @@
   .chip.ob{background:#fdf6e6;color:#8a6d2b;}
   .chip.yb{background:#eaf4ec;color:#2f6b3c;}
   .empty{padding:44px 0;text-align:center;color:#a8a291;font-size:14px;}
+  .bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;
+    padding:11px 14px;background:#faf7ef;border:1px solid #ece5d4;border-radius:9px;}
+  .bulk #selCnt{font-size:13px;color:#5c563f;font-weight:500;margin-right:4px;}
+  th input[type=checkbox],td input[type=checkbox]{width:16px;height:16px;cursor:pointer;margin:0;}
   @media (max-width:760px){ table{font-size:12.5px;} th,td{padding:7px 6px;} }
 </style>
 </head>
@@ -123,6 +127,12 @@
         <a data-f="OB">OB</a>
         <a data-f="YB">YB</a>
       </div>
+      <div class="bulk">
+        <span id="selCnt">선택 0명</span>
+        <button class="btn sm dark" id="okSel">선택 승인</button>
+        <button class="btn sm" id="noSel">선택 승인 취소</button>
+        <button class="btn sm" id="okWait">대기자 전체 승인</button>
+      </div>
       <div class="msg" id="listMsg"></div>
       <div style="overflow-x:auto;"><table id="tbl"></table></div>
     </div>
@@ -180,8 +190,10 @@ async function start() {
     const t = document.getElementById("tbl");
     if (!list.length) { t.innerHTML = '<tr><td class="empty">해당하는 회원이 없습니다.</td></tr>'; return; }
     t.innerHTML =
-      "<thead><tr><th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th></th></tr></thead><tbody>" +
+      '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
+      "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th></th></tr></thead><tbody>" +
       list.map(r => `<tr data-id="${r.id}">
+        <td><input type="checkbox" class="chk"></td>
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
         <td class="em">${esc(r.email) || "-"}</td>
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
@@ -200,7 +212,45 @@ async function start() {
       r.approved = !r.approved;
       render(); refreshEmails();
     }));
+
+    // 체크박스 (한꺼번에 선택)
+    const all = t.querySelector("#chkAll");
+    const boxes = [...t.querySelectorAll(".chk")];
+    all.addEventListener("change", () => { boxes.forEach(c => c.checked = all.checked); count(); });
+    boxes.forEach(c => c.addEventListener("change", () => {
+      all.checked = boxes.every(x => x.checked); count();
+    }));
+    count();
   }
+
+  /** 선택된 회원 id 목록 */
+  function selected() {
+    return [...document.querySelectorAll("#tbl tbody tr")]
+      .filter(tr => tr.querySelector(".chk") && tr.querySelector(".chk").checked)
+      .map(tr => tr.dataset.id);
+  }
+  function count() {
+    document.getElementById("selCnt").textContent = `선택 ${selected().length}명`;
+  }
+
+  /** 여러 명 한꺼번에 승인/취소 */
+  async function bulk(ids, value) {
+    if (!ids.length) { alert("먼저 회원을 선택해주세요."); return; }
+    const word = value ? "승인" : "승인 취소";
+    if (!confirm(`${ids.length}명을 ${word}할까요?`)) return;
+    const msg = document.getElementById("listMsg");
+    msg.className = "msg"; msg.textContent = `${word} 처리 중…`;
+    const { error } = await sb.from("profiles").update({ approved: value }).in("id", ids);
+    if (error) { msg.className = "msg err"; msg.textContent = word + " 실패: " + error.message; return; }
+    ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.approved = value; });
+    render(); refreshEmails();
+    msg.className = "msg ok"; msg.textContent = `${ids.length}명을 ${word}했습니다.`;
+  }
+
+  document.getElementById("okSel").addEventListener("click", () => bulk(selected(), true));
+  document.getElementById("noSel").addEventListener("click", () => bulk(selected(), false));
+  document.getElementById("okWait").addEventListener("click", () =>
+    bulk(rows.filter(r => !r.approved).map(r => r.id), true));
 
   document.querySelectorAll("#tabs a").forEach(a =>
     a.addEventListener("click", () => { filter = a.dataset.f; render(); }));
