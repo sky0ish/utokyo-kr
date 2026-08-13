@@ -170,6 +170,7 @@ if (!profile || !profile.approved) {
 
   function renderTags() {
     const list = TAGS[category] || [];
+    tagPick.classList.toggle("need", !headTag);   // 미선택 시 연초록 강조
     tagPick.innerHTML = list.map(t => `<a href="#" data-v="${t}"${t === headTag ? ' class="on"' : ''}>${t}</a>`).join("");
     tagPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => {
       e.preventDefault();
