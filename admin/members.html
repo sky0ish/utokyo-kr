@@ -55,6 +55,19 @@
   .chip.ob{background:#fdf6e6;color:#8a6d2b;}
   .chip.yb{background:#eaf4ec;color:#2f6b3c;}
   .empty{padding:44px 0;text-align:center;color:#a8a291;font-size:14px;}
+  /* 이름으로 받는 사람 고르기 */
+  .finder{margin-top:6px;border:1px solid #ece5d4;border-radius:8px;max-height:190px;overflow:auto;display:none;}
+  .finder.on{display:block;}
+  .finder div{padding:9px 12px;font-size:13.5px;cursor:pointer;border-bottom:1px solid #f6f2e8;}
+  .finder div:last-child{border-bottom:none;}
+  .finder div:hover{background:#faf7ef;}
+  .finder small{color:#a09a86;margin-left:6px;font-size:12px;}
+  .finder .none{color:#a8a291;cursor:default;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .chips span{display:inline-flex;align-items:center;gap:6px;background:#fdf1d3;border:1px solid #e2cf9f;
+    color:#4a3c14;border-radius:100px;padding:5px 8px 5px 12px;font-size:12.5px;}
+  .chips b{font-weight:500;}
+  .chips button{border:none;background:none;color:#8a6d2b;cursor:pointer;font-size:14px;line-height:1;padding:0 2px;}
   .bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;
     padding:11px 14px;background:#faf7ef;border:1px solid #ece5d4;border-radius:9px;}
   .bulk #selCnt{font-size:13px;color:#5c563f;font-weight:500;margin-right:4px;}
@@ -80,41 +93,6 @@
   <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
 
   <div id="panel" style="display:none;">
-    <!-- 안내 메일 -->
-    <div class="card">
-      <h2>가입 안내 메일 보내기</h2>
-      <div class="hint">
-        보낼 대상을 고르고 <b>주소 복사</b>를 누른 뒤, 쓰시는 메일(지메일·네이버 등)의
-        <b>숨은참조(BCC)</b>에 붙여넣어 보내주세요. 숨은참조로 보내야 회원들끼리 서로의 주소가 보이지 않습니다.<br>
-        받는 사람이 적을 때는 <b>메일 앱으로 열기</b>를 누르면 제목·내용까지 채워진 채로 열립니다.
-      </div>
-      <label>보낼 대상</label>
-      <select id="target">
-        <option value="all">전체 회원</option>
-        <option value="approved">승인된 회원</option>
-        <option value="wait">승인 대기 회원</option>
-        <option value="OB">총동문회(OB) 회원</option>
-        <option value="YB">학생회(YB) 회원</option>
-      </select>
-      <label>제목</label>
-      <input type="text" id="subj" value="[재한 도쿄대학 총동문회] 가입이 완료되었습니다">
-      <label>내용</label>
-      <textarea id="body">재한 도쿄대학 총동문회에 가입완료되었습니다. 감사합니다~!
-앞으로 자주 활용해주세요^.^
-
-▶ 홈페이지 : https://u-tokyo.kr
-▶ 게시판 · 갤러리는 로그인 후 이용하실 수 있습니다.
-
-재한 도쿄대학 총동문회 드림</textarea>
-      <div class="btns">
-        <button class="btn dark" id="copyBtn">주소 복사</button>
-        <button class="btn" id="mailBtn">메일 앱으로 열기</button>
-        <button class="btn" id="csvBtn">명단 내려받기 (CSV)</button>
-      </div>
-      <div class="msg" id="mailMsg"></div>
-      <label style="margin-top:18px;">받는 주소 <span style="font-weight:300;color:#9a947f;">(복사가 안 되면 여기서 직접 선택해 복사하세요)</span></label>
-      <textarea id="emails" readonly style="min-height:80px;background:#f7f5ee;font-size:12.5px;"></textarea>
-    </div>
 
     <!-- 회원 목록 -->
     <div class="card">
@@ -136,6 +114,59 @@
       <div class="msg" id="listMsg"></div>
       <div style="overflow-x:auto;"><table id="tbl"></table></div>
     </div>
+
+    <!-- 안내 메일 -->
+    <div class="card">
+      <h2>메일 보내기</h2>
+      <div class="hint">
+        <b>지금 보내기</b>를 누르면 홈페이지에서 바로 발송됩니다. (운영진 전용 · 숨은참조로 발송되어 서로의 주소가 보이지 않습니다)<br>
+        발송 기능이 아직 준비되지 않았다면 <b>주소 복사</b>로 주소를 받아 쓰시는 메일의 <b>숨은참조(BCC)</b>에 붙여넣어 보내시고,
+        <b>보낸 것으로 표시</b>를 눌러 기록해두시면 다음부터 그 분들은 대상에서 빠집니다.
+      </div>
+
+      <label>보낼 대상</label>
+      <select id="target">
+        <option value="unsent">아직 안 보낸 회원 (권장)</option>
+        <option value="all">전체 회원</option>
+        <option value="approved">승인된 회원</option>
+        <option value="wait">승인 대기 회원</option>
+        <option value="OB">총동문회(OB) 회원</option>
+        <option value="YB">학생회(YB) 회원</option>
+        <option value="pick">직접 고르기 (이름 검색)</option>
+      </select>
+
+      <div id="pickBox" style="display:none;">
+        <label>받는 사람 검색 <span style="font-weight:300;color:#9a947f;">(이름 또는 이메일 · 클릭하면 추가됩니다)</span></label>
+        <input type="text" id="who" placeholder="예: 양일모" autocomplete="off">
+        <div id="whoList" class="finder"></div>
+        <div id="chips" class="chips"></div>
+      </div>
+
+      <label>제목</label>
+      <input type="text" id="subj" value="[재한 도쿄대학 총동문회] 가입이 완료되었습니다">
+
+      <label>내용</label>
+      <textarea id="body">재한 도쿄대학 총동문회에 가입완료되었습니다. 감사합니다~!
+앞으로 자주 활용해주세요^.^
+
+▶ 홈페이지 : https://u-tokyo.kr
+▶ 게시판 · 갤러리는 로그인 후 이용하실 수 있습니다.
+
+재한 도쿄대학 총동문회 드림</textarea>
+
+      <div class="btns">
+        <button class="btn dark" id="sendBtn">✉ 지금 보내기</button>
+        <button class="btn" id="copyBtn">주소 복사</button>
+        <button class="btn" id="mailBtn">메일 앱으로 열기</button>
+        <button class="btn" id="markBtn">보낸 것으로 표시</button>
+        <button class="btn" id="csvBtn">명단 내려받기 (CSV)</button>
+      </div>
+      <div class="msg" id="mailMsg"></div>
+
+      <label style="margin-top:18px;">받는 주소 <span style="font-weight:300;color:#9a947f;">(복사가 안 되면 여기서 직접 선택해 복사하세요)</span></label>
+      <textarea id="emails" readonly style="min-height:80px;background:#f7f5ee;font-size:12.5px;"></textarea>
+    </div>
+
   </div>
 </div>
 
@@ -161,7 +192,7 @@ async function start() {
 
   async function load() {
     const { data, error } = await sb.from("profiles")
-      .select("id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at")
+      .select("id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at,welcome_sent_at")
       .order("created_at", { ascending: false });
     if (error) {
       document.getElementById("listMsg").className = "msg err";
@@ -178,6 +209,7 @@ async function start() {
     f === "all" ? true :
     f === "wait" ? !r.approved :
     f === "approved" ? r.approved :
+    f === "unsent" ? !r.welcome_sent_at :
     r.member_type === f);
 
   function render() {
@@ -191,7 +223,7 @@ async function start() {
     if (!list.length) { t.innerHTML = '<tr><td class="empty">해당하는 회원이 없습니다.</td></tr>'; return; }
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
-      "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th></th></tr></thead><tbody>" +
+      "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th>안내메일</th><th></th></tr></thead><tbody>" +
       list.map(r => `<tr data-id="${r.id}">
         <td><input type="checkbox" class="chk"></td>
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
@@ -200,6 +232,9 @@ async function start() {
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
         <td>${r.approved ? '<span class="chip ok">승인</span>' : '<span class="chip wait">대기</span>'}</td>
+        <td>${r.welcome_sent_at
+              ? `<span class="chip ok">보냄</span><br><small style="color:#a09a86;font-size:11px;">${r.welcome_sent_at.slice(0,10)}</small>`
+              : '<span class="chip wait">미발송</span>'}</td>
         <td><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button></td>
       </tr>`).join("") + "</tbody>";
 
@@ -256,17 +291,121 @@ async function start() {
     a.addEventListener("click", () => { filter = a.dataset.f; render(); }));
 
   // ── 메일 대상 ──
-  function targets() {
+  let chosen = [];                                   // 직접 고른 회원 id 목록
+
+  function targetRows() {
     const v = document.getElementById("target").value;
-    return pick(v).map(r => (r.email || "").trim()).filter(Boolean);
+    return v === "pick" ? chosen.map(id => rows.find(r => r.id === id)).filter(Boolean) : pick(v);
+  }
+  function targets() {
+    return targetRows().map(r => (r.email || "").trim()).filter(Boolean);
   }
   function refreshEmails() {
     const list = targets();
     document.getElementById("emails").value = list.join(", ");
     document.getElementById("mailMsg").className = "msg";
     document.getElementById("mailMsg").textContent = `받는 사람 ${list.length}명`;
+    drawChips();
   }
-  document.getElementById("target").addEventListener("change", refreshEmails);
+  document.getElementById("target").addEventListener("change", () => {
+    const isPick = document.getElementById("target").value === "pick";
+    document.getElementById("pickBox").style.display = isPick ? "block" : "none";
+    refreshEmails();
+  });
+
+  // ── 이름으로 받는 사람 고르기 ──
+  const who = document.getElementById("who");
+  const whoList = document.getElementById("whoList");
+
+  function drawChips() {
+    const box = document.getElementById("chips");
+    if (document.getElementById("target").value !== "pick") { box.innerHTML = ""; return; }
+    box.innerHTML = chosen.map(id => {
+      const r = rows.find(x => x.id === id);
+      if (!r) return "";
+      return `<span><b>${esc(r.name) || "이름없음"}</b><small style="color:#8a7a55;">${esc(r.email)}</small>
+              <button data-id="${id}" title="빼기">✕</button></span>`;
+    }).join("") || '<span style="background:none;border:none;color:#a8a291;padding-left:0;">아래에서 이름을 검색해 추가해주세요.</span>';
+    box.querySelectorAll("button[data-id]").forEach(b => b.addEventListener("click", () => {
+      chosen = chosen.filter(x => x !== b.dataset.id);
+      refreshEmails();
+    }));
+  }
+
+  who.addEventListener("input", () => {
+    const q = who.value.trim().toLowerCase();
+    if (!q) { whoList.classList.remove("on"); return; }
+    const hit = rows.filter(r =>
+      !chosen.includes(r.id) &&
+      ((r.name || "").toLowerCase().includes(q) || (r.email || "").toLowerCase().includes(q))
+    ).slice(0, 20);
+    whoList.innerHTML = hit.length
+      ? hit.map(r => `<div data-id="${r.id}">${esc(r.name) || "이름없음"}
+          <small>${esc(r.email)}</small>
+          <small>${r.member_type || ""} ${r.approved ? "" : "· 승인대기"}</small></div>`).join("")
+      : '<div class="none">찾는 회원이 없습니다.</div>';
+    whoList.classList.add("on");
+    whoList.querySelectorAll("div[data-id]").forEach(d => d.addEventListener("click", () => {
+      if (!chosen.includes(d.dataset.id)) chosen.push(d.dataset.id);
+      who.value = ""; whoList.classList.remove("on");
+      refreshEmails();
+    }));
+  });
+  who.addEventListener("blur", () => setTimeout(() => whoList.classList.remove("on"), 200));
+
+  // ── 발송 기록 남기기 (같은 사람에게 다시 보내지 않도록) ──
+  async function markSent(list) {
+    const ids = targetRows().filter(r => list.includes((r.email || "").trim())).map(r => r.id);
+    if (!ids.length) return;
+    const now = new Date().toISOString();
+    const { error } = await sb.from("profiles").update({ welcome_sent_at: now }).in("id", ids);
+    if (!error) ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.welcome_sent_at = now; });
+    render();
+  }
+
+  // ── 지금 보내기 (Supabase Edge Function → Resend) ──
+  document.getElementById("sendBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("sendBtn");
+    const msg = document.getElementById("mailMsg");
+    const list = targets();
+    const subject = document.getElementById("subj").value.trim();
+    const text = document.getElementById("body").value;
+    if (!list.length) { msg.className = "msg err"; msg.textContent = "받는 사람이 없습니다."; return; }
+    if (!subject || !text.trim()) { msg.className = "msg err"; msg.textContent = "제목과 내용을 입력해주세요."; return; }
+    if (!confirm(`${list.length}명에게 메일을 보낼까요?\n\n제목: ${subject}`)) return;
+
+    btn.disabled = true;
+    msg.className = "msg"; msg.textContent = `보내는 중… (${list.length}명)`;
+    const { data, error } = await sb.functions.invoke("send-mail", {
+      body: { to: list, subject, text },
+    });
+    btn.disabled = false;
+
+    if (error || (data && data.error)) {
+      msg.className = "msg err";
+      msg.textContent = "보내기 실패: " + (data?.error || error.message) +
+        " — 발송 기능(send-mail)이 아직 설치되지 않았다면 「주소 복사」로 보내주세요.";
+      return;
+    }
+    const okCount = data?.sent || 0;
+    await markSent(data?.sentEmails || []);
+    msg.className = "msg " + (data?.ok ? "ok" : "err");
+    msg.textContent = `${okCount}명에게 보냈습니다.` +
+      (data?.failed?.length ? ` (일부 실패: ${data.failed[0].reason})` : " 보낸 분들은 다음부터 대상에서 빠집니다.");
+    refreshEmails();
+  });
+
+  // ── 직접 보낸 경우 수동으로 기록 ──
+  document.getElementById("markBtn").addEventListener("click", async () => {
+    const list = targets();
+    const msg = document.getElementById("mailMsg");
+    if (!list.length) { msg.className = "msg err"; msg.textContent = "대상이 없습니다."; return; }
+    if (!confirm(`${list.length}명을 '메일 보냄'으로 기록할까요?\n다음부터 '아직 안 보낸 회원' 목록에서 빠집니다.`)) return;
+    await markSent(list);
+    msg.className = "msg ok";
+    msg.textContent = `${list.length}명을 보낸 것으로 기록했습니다.`;
+    refreshEmails();
+  });
 
   document.getElementById("copyBtn").addEventListener("click", async () => {
     const box = document.getElementById("emails");

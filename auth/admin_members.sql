@@ -4,6 +4,9 @@
 -- ※ 여러 번 실행해도 안전합니다.
 -- ═══════════════════════════════════════════════════════════
 
+-- 안내 메일을 언제 보냈는지 기록 (이미 보낸 사람에게 다시 보내지 않기 위해)
+alter table public.profiles add column if not exists welcome_sent_at timestamptz;
+
 -- 가입 시 이메일이 비어 있던 경우 채워 넣기
 update public.profiles p
 set email = u.email
