@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>글쓰기 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/board/board.css">
+</head>
+<body>
+
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="javascript:history.back()">← 이전화면으로</a>
+      <a href="/index.html">⌂ 통합 홈</a>
+      <a href="index.html">게시판 목록</a>
+    </div>
+    <div class="links" id="authLinks"><a href="/auth/mypage.html">내 정보</a></div>
+  </div>
+</div>
+
+<header class="mhead">
+  <div class="inner">
+    <a class="mlogo" href="/OB/index.html">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></a>
+    <nav></nav>
+    <div class="mpills"></div>
+  </div>
+</header>
+
+<div class="banner">
+  <div class="binner">
+    <span class="en">Write</span>
+    <h1 id="pageTitle">글쓰기</h1>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="form">
+    <div class="msg" id="topMsg"></div>
+    <form id="postForm" style="display:none;">
+      <label>제목 *</label>
+      <input type="text" id="title" required maxlength="200">
+
+      <label>작성자 구분 *</label>
+      <div class="tabs" id="orgTabs" style="margin-bottom:2px;">
+        <a href="#" data-org="OB" class="on">OB — 총동문회</a>
+        <a href="#" data-org="YB">YB — 학생회</a>
+      </div>
+
+      <label>게시판 분류 *</label>
+      <div class="pickrow" id="catPick">
+        <a href="#" data-v="free">자유게시판</a>
+        <a href="#" data-v="club">소모임</a>
+        <a href="#" data-v="mentoring">멘토멘티</a>
+        <a href="#" data-v="promo">홍보·채용</a>
+        <a href="#" data-v="condolence">경조사</a>
+        <a href="#" data-v="notice">공지사항</a>
+      </div>
+
+      <label>말머리 * <span style="font-weight:300;color:#9a947f;">(제목 앞에 [말머리]로 붙습니다)</span></label>
+      <div class="pickrow" id="tagPick"></div>
+
+      <div style="margin-top:16px;">
+        <label>공개 범위</label>
+        <input id="visInfo" value="회원 전용" disabled style="background:#f2efe8;color:#8a8574;">
+      </div>
+
+      <label>내용 *</label>
+      <textarea id="content" required></textarea>
+
+      <button class="btn dark" id="submitBtn" type="submit" style="margin-top:20px;">등록하기</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { initWrite } from "/board/write-core.js?v=1";
+initWrite("OB");
+</script>
+
+</body>
+</html>

@@ -445,19 +445,19 @@
         <a href="#join">참여마당</a>
         <div class="dd-menu">
           <a href="#news">동문회 총회</a>
-          <a href="../board/index.html?cat=club">소모임</a>
-          <a href="../board/index.html?cat=mentoring">멘토멘티</a>
-          <a href="../board/index.html?cat=forum">단과대포럼</a>
-          <a href="../board/index.html?cat=seminar">세미나</a>
+          <a href="/OB/board.html?cat=club">소모임</a>
+          <a href="/OB/board.html?cat=mentoring">멘토멘티</a>
+          <a href="/OB/board.html?cat=forum">단과대포럼</a>
+          <a href="/OB/board.html?cat=seminar">세미나</a>
         </div>
       </div>
       <div class="dd">
-        <a href="../board/index.html">게시판</a>
+        <a href="/OB/board.html">게시판</a>
         <div class="dd-menu">
-          <a href="../board/index.html?cat=free">자유게시판</a>
-          <a href="../board/index.html?cat=promo">홍보·채용</a>
-          <a href="../board/index.html?cat=condolence">경조사</a>
-          <a href="../board/index.html?cat=notice">공지사항</a>
+          <a href="/OB/board.html?cat=free">자유게시판</a>
+          <a href="/OB/board.html?cat=promo">홍보·채용</a>
+          <a href="/OB/board.html?cat=condolence">경조사</a>
+          <a href="/OB/board.html?cat=notice">공지사항</a>
         </div>
       </div>
       <div class="dd">
@@ -549,7 +549,7 @@
 
       <!-- 게시판 -->
       <div class="dcard dc-board">
-        <a class="dhead" href="../board/index.html">
+        <a class="dhead" href="/OB/board.html">
           <h3><span class="ico">📋</span>게시판</h3>
           <span class="more">전체보기 +</span>
         </a>
@@ -723,22 +723,22 @@
         <h3>총회</h3>
         <p>매년 2월 정기총회 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 특별강연과 경품 추첨. 연도별 결과 보고를 아래에서 보실 수 있습니다.</p>
       </a>
-      <a class="jcard" href="../board/index.html?cat=club" id="sub-moim">
+      <a class="jcard" href="/OB/board.html?cat=club" id="sub-moim">
         <span class="no">02</span>
         <h3>소모임</h3>
         <p>골프(은행회) · 등산모임 · 약우회 · 현정회 · 젊은 동문 모임 등 취미·친목 소모임을 연 2회 지원합니다.</p>
       </a>
-      <a class="jcard" href="../board/index.html?cat=mentoring" id="sub-mentoring">
+      <a class="jcard" href="/OB/board.html?cat=mentoring" id="sub-mentoring">
         <span class="no">03</span>
         <h3>멘토멘티</h3>
         <p>선배 동문이 후배의 진로·유학·취업을 함께 고민합니다 — 멘토·멘티 모집과 상담 후기 나눔.</p>
       </a>
-      <a class="jcard" href="../board/index.html?cat=forum" id="sub-forum">
+      <a class="jcard" href="/OB/board.html?cat=forum" id="sub-forum">
         <span class="no">04</span>
         <h3>단과대포럼</h3>
         <p>단과대별 순환 포럼(추진 단과대별 75만원 지원) — 건축학 구조계, 농학생명과학, 한일국제포럼 등 분야별 최신 정보 교류.</p>
       </a>
-      <a class="jcard" href="../board/index.html?cat=seminar" id="sub-seminar">
+      <a class="jcard" href="/OB/board.html?cat=seminar" id="sub-seminar">
         <span class="no">05</span>
         <h3>세미나</h3>
         <p>학술 세미나와 심포지엄의 자율적 개최를 지원합니다 — 동문 간 전문지식 공유와 네트워크의 장.</p>
@@ -996,7 +996,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         <span class="dt">${(p.created_at||"").slice(0,10)}</span>
       </a></li>`).join("");
   } catch (e) {
-    el.innerHTML = '<li><a href="../board/index.html"><span class="tt">게시판 바로가기 →</span></a></li>';
+    el.innerHTML = '<li><a href="/OB/board.html"><span class="tt">게시판 바로가기 →</span></a></li>';
   }
 })();
 try {

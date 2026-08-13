@@ -269,14 +269,14 @@
         </div>
       </div>
       <div class="dd">
-        <a href="../board/index.html?org=YB">게시판</a>
+        <a href="/YB/board.html">게시판</a>
         <div class="dd-menu">
-          <a href="../board/index.html?org=YB&cat=notice">공지사항</a>
-          <a href="../board/index.html?org=YB&cat=free">자유게시판</a>
-          <a href="../board/index.html?org=YB&cat=qna">Q&amp;A</a>
-          <a href="../board/index.html?org=YB&cat=jobs">취업정보</a>
-          <a href="../board/index.html?org=YB&cat=parttime">아르바이트</a>
-          <a href="../board/index.html?org=YB&cat=market">벼룩시장</a>
+          <a href="/YB/board.html?cat=notice">공지사항</a>
+          <a href="/YB/board.html?cat=free">자유게시판</a>
+          <a href="/YB/board.html?cat=qna">Q&amp;A</a>
+          <a href="/YB/board.html?cat=jobs">취업정보</a>
+          <a href="/YB/board.html?cat=parttime">아르바이트</a>
+          <a href="/YB/board.html?cat=market">벼룩시장</a>
         </div>
       </div>
       <div class="dd">
@@ -351,7 +351,7 @@
       </a>
 
       <div class="dcard dc-board">
-        <a class="dhead" href="../board/index.html?org=YB">
+        <a class="dhead" href="/YB/board.html">
           <h3><span class="ico">📋</span>게시판</h3><span class="more">전체보기 +</span>
         </a>
         <div class="dbody">
@@ -386,7 +386,7 @@
         <span class="no">02</span><h3>오시는 길 · 캠퍼스</h3>
         <p>혼고(본부) · 고마바(교양) · 가시와(신령역) 캠퍼스 위치와 교통편을 안내합니다.</p>
       </a>
-      <a class="scard" href="../board/index.html?org=YB&cat=qna">
+      <a class="scard" href="/YB/board.html?cat=qna">
         <span class="no">03</span><h3>FAQ · Q&amp;A</h3>
         <p>입학, 체류자격, 기숙사, 장학금, 아르바이트 등 유학 생활의 궁금증을 나눕니다.</p>
       </a>
@@ -515,7 +515,7 @@
       <div class="cbox">
         <h3>소모임 · 회칙</h3>
         <p>스터디, 스포츠, 문화 등 다양한 소모임이 운영됩니다. 학생회 회칙과 소모임 등록 방법은 게시판 공지사항에서 확인하실 수 있습니다.</p>
-        <p style="margin-top:10px;"><a href="../board/index.html?org=YB&cat=notice" style="color:#2a6b40;font-weight:600;border-bottom:1px solid #a9cfb4;">공지사항 보기 →</a></p>
+        <p style="margin-top:10px;"><a href="/YB/board.html?cat=notice" style="color:#2a6b40;font-weight:600;border-bottom:1px solid #a9cfb4;">공지사항 보기 →</a></p>
       </div>
     </div>
   </div>
@@ -584,7 +584,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
       .select("id,title,category,created_at").eq("org", "YB")
       .order("created_at", { ascending: false }).limit(6);
     if (!data || !data.length) {
-      el.innerHTML = '<li><a href="../board/index.html?org=YB"><span class="tt">아직 등록된 글이 없습니다. 첫 글을 남겨보세요 →</span></a></li>';
+      el.innerHTML = '<li><a href="/YB/board.html"><span class="tt">아직 등록된 글이 없습니다. 첫 글을 남겨보세요 →</span></a></li>';
       return;
     }
     el.innerHTML = data.map(p => `
@@ -593,7 +593,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         <span class="dt">${(p.created_at||"").slice(0,10)}</span>
       </a></li>`).join("");
   } catch (e) {
-    el.innerHTML = '<li><a href="../board/index.html?org=YB"><span class="tt">게시판 바로가기 →</span></a></li>';
+    el.innerHTML = '<li><a href="/YB/board.html"><span class="tt">게시판 바로가기 →</span></a></li>';
   }
 })();
 

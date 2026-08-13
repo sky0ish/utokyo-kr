@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>게시글 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/board/board.css">
+</head>
+<body>
+
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="javascript:history.back()">← 이전화면으로</a>
+      <a href="/index.html">⌂ 통합 홈</a>
+      <a href="index.html">게시판 목록</a>
+    </div>
+    <div class="links" id="authLinks"><a href="/auth/login.html">로그인</a></div>
+  </div>
+</div>
+
+<header class="mhead">
+  <div class="inner">
+    <a class="mlogo" href="/OB/index.html">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></a>
+    <nav></nav>
+    <div class="mpills"></div>
+  </div>
+</header>
+
+<div class="banner">
+  <div class="binner">
+    <span class="en">Community Board</span>
+    <h1>게시판</h1>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="post" id="postBox">
+    <div class="empty">불러오는 중…</div>
+  </div>
+  <div class="pactions" id="actions" style="display:none;">
+    <button class="btn line" id="editBtn">수정</button>
+    <button class="btn line" id="delBtn">삭제</button>
+  </div>
+
+  <!-- 댓글 -->
+  <div class="cmt-wrap" id="cmtWrap" style="display:none;">
+    <h3 class="cmt-title">댓글 <span id="cmtCount">0</span></h3>
+    <div id="cmtList"></div>
+    <div id="cmtFormBox">
+      <textarea id="cmtInput" placeholder="댓글을 입력하세요"></textarea>
+      <div style="text-align:right;margin-top:8px;">
+        <button class="btn dark" id="cmtSubmit">댓글 등록</button>
+      </div>
+      <div class="msg" id="cmtMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initPost } from "/board/post-core.js?v=1";
+initPost("OB");
+</script>
+
+</body>
+</html>
