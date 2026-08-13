@@ -523,6 +523,7 @@ function setupNewAlbum(user, me) {
       const ins = await sb.from("gallery_photos").insert({
         category: cat, taken_at: date, album_key: key, sort: n, org: "OB",
         image_url: pub.publicUrl, storage_path: path, created_by: user.id,
+        owner_name: (me && me.name) || "",       // 누가 올렸는지 함께 남긴다
       });
       if (ins.error) { fail++; last = ins.error.message; } else ok++;
     }

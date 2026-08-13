@@ -71,7 +71,7 @@ export async function loadGallery() {
     (ph.data || []).forEach(r => photos.push({
       key: `db:${r.id}`, kind: "db", id: r.id, cat: r.category,
       date: iso(r.taken_at), cap: r.caption || "", sort: r.sort || 0,
-      album: r.album_key || null, owner: r.created_by,
+      album: r.album_key || null, owner: r.created_by, ownerName: r.owner_name || "",
       thumb: r.image_url, full: r.image_url, storage_path: r.storage_path,
     }));
     (al.data || []).forEach(a => {

@@ -68,6 +68,9 @@
   .ph .pick{position:absolute;top:6px;left:6px;width:18px;height:18px;cursor:pointer;display:none;z-index:3;}
   .ph.can-rm .pick{display:block;}
   .ph.iscover{outline:3px solid #2f7a45;outline-offset:-3px;}
+  .ph .own{position:absolute;left:6px;bottom:6px;z-index:2;max-width:calc(100% - 12px);
+    background:rgba(20,54,31,.75);color:#dcf0e2;border-radius:100px;padding:3px 10px;
+    font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ph.sel{outline:3px solid #b3453b;outline-offset:-3px;}
   .aempty{padding:60px 0;text-align:center;color:#98a89d;line-height:1.9;}
 
@@ -160,6 +163,8 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
   document.getElementById("ameta").textContent =
     `${CAT_NAME[cat] || cat} · 사진 ${album.photos.length}장`;
 
+  const esc = s => String(s == null ? "" : s)
+    .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const grid = document.getElementById("agrid");
   const draw = () => {
     grid.innerHTML = album.photos.length
@@ -168,7 +173,8 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
            <input type="checkbox" class="pick" title="선택">
            <button class="rm" title="사진 내리기">✕</button>
            <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-           <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
+           ${p.ownerName ? `<span class="own">공유자(${esc(p.ownerName)})</span>` : ""}
+       <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
          </div>`).join("")
       : '<div class="aempty" style="grid-column:1/-1;">아직 사진이 없습니다.<br>위에서 사진을 올려주세요.</div>';
   };
@@ -183,7 +189,9 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     const p = album.photos[idx];
     img.src = p.full;
     document.getElementById("lbcap").textContent =
-      `${p.cap || album.title} · ${(p.date || "").replace(/-/g, ".")}  (${idx + 1} / ${album.photos.length})`;
+      `${p.cap || album.title} · ${(p.date || "").replace(/-/g, ".")}` +
+      (p.ownerName ? ` · 공유자(${p.ownerName})` : "") +
+      `  (${idx + 1} / ${album.photos.length})`;
     lb.classList.add("on");
   }
   grid.querySelectorAll(".ph").forEach(p => p.addEventListener("click", () => open(+p.dataset.i)));
@@ -203,6 +211,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     const user = await currentUser();
     const me = user ? await myProfile() : null;
     const isAdmin = !!(me && me.is_admin);
+    const myName = (me && me.name) || "";
     if (me && (me.approved || me.is_admin)) {
       const box = document.getElementById("addbox");
       box.classList.add("on");
@@ -236,6 +245,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
             album_key: album.custom ? album.key : null,
             image_url: pub.publicUrl, storage_path: path,
             sort: album.photos.length + n, created_by: user.id,
+            owner_name: (myName || ""),              // 누가 올렸는지 함께 남긴다
           });
           if (ins.error) { fail++; last = ins.error.message; } else ok++;
         }
