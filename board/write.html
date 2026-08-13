@@ -16,7 +16,7 @@
       <a href="../index.html">⌂ 통합 홈</a>
       <a href="index.html">게시판 목록</a>
     </div>
-    <div class="links"><a href="../auth/mypage.html">내 정보</a></div>
+    <div class="links" id="authLinks"><a href="../auth/mypage.html">내 정보</a></div>
   </div>
 </div>
 
@@ -122,6 +122,21 @@ const preOrg = new URLSearchParams(location.search).get("org");
 const user = await currentUser();
 if (!user) { location.href = "../auth/login.html"; }
 const profile = await myProfile();
+
+// 상단바: 로그인 상태 + 로그아웃
+{
+  const el = document.getElementById("authLinks");
+  el.innerHTML = "";
+  const st = document.createElement("span");
+  st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+  const my = document.createElement("a");
+  my.href = "../auth/mypage.html";
+  my.textContent = (profile && profile.name) ? profile.name + "님" : "내 정보";
+  const out = document.createElement("a");
+  out.href = "#"; out.textContent = "로그아웃";
+  out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.href = "index.html"; });
+  el.append(st, my, out);
+}
 
 if (!profile || !profile.approved) {
   topMsg.className = "msg err";

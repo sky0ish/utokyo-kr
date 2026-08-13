@@ -137,8 +137,17 @@ const PUBLIC_CATS = ["notice", "promo"];
 const user = await currentUser();
 if (user) {
   const p = await myProfile();
-  document.getElementById("authLinks").innerHTML =
-    `<a href="../auth/mypage.html">${(p && p.name) ? p.name + "님" : "내 정보"}</a>`;
+  const el = document.getElementById("authLinks");
+  el.innerHTML = "";
+  const st = document.createElement("span");
+  st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+  const my = document.createElement("a");
+  my.href = "../auth/mypage.html";
+  my.textContent = (p && p.name) ? p.name + "님" : "내 정보";
+  const out = document.createElement("a");
+  out.href = "#"; out.textContent = "로그아웃";
+  out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+  el.append(st, my, out);
 } else {
   document.getElementById("loginNotice").style.display = "block";
   document.getElementById("loginNotice").innerHTML =

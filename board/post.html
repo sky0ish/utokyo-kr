@@ -100,7 +100,18 @@ const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", j
 const id = new URLSearchParams(location.search).get("id");
 const box = document.getElementById("postBox");
 const user = await currentUser();
-if (user) document.getElementById("authLinks").innerHTML = '<a href="../auth/mypage.html">내 정보</a>';
+if (user) {
+  const el = document.getElementById("authLinks");
+  el.innerHTML = "";
+  const st = document.createElement("span");
+  st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+  const my = document.createElement("a");
+  my.href = "../auth/mypage.html"; my.textContent = "내 정보";
+  const out = document.createElement("a");
+  out.href = "#"; out.textContent = "로그아웃";
+  out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+  el.append(st, my, out);
+}
 
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
