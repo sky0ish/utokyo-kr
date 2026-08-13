@@ -223,7 +223,11 @@ try {
       ad.href = "../admin/gallery.html";
       ad.textContent = "⚙ 갤러리 관리";
       ad.style.color = "#e8c876";
-      document.querySelector(".topbar .links").appendChild(ad);
+      const mb = document.createElement("a");
+      mb.href = "../admin/members.html";
+      mb.textContent = "⚙ 회원 관리";
+      mb.style.color = "#e8c876";
+      document.querySelector(".topbar .links").append(ad, mb);
     }
     const el = document.getElementById("authLinks");
     el.innerHTML = "";

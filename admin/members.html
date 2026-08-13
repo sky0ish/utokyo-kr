@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>회원 관리 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f7f5ef;color:#2f2a1d;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;}
+  .head{background:#101d33;color:#fff;padding:20px 0;}
+  .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .head h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;}
+  .head .sub{margin-top:5px;font-size:12.5px;color:rgba(255,255,255,.55);}
+  .head .links{margin-top:12px;display:flex;gap:14px;font-size:13px;flex-wrap:wrap;}
+  .head .links a{color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.25);}
+  .head .links a:hover{color:#e8c876;border-color:#e8c876;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px;}
+  .card{background:#fff;border:1px solid #e6dfcb;border-radius:12px;padding:24px;margin-bottom:22px;
+    box-shadow:0 2px 8px rgba(60,50,20,.06);}
+  .card h2{font-family:'Noto Serif KR',serif;font-size:18px;margin-bottom:6px;}
+  .card .hint{font-size:12.5px;color:#9a947f;margin-bottom:16px;line-height:1.7;}
+  label{display:block;font-size:12.5px;font-weight:500;color:#5c563f;margin:14px 0 6px;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
+  textarea{min-height:110px;resize:vertical;line-height:1.7;}
+  .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(90,70,20,.16);transition:.2s;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn:disabled{opacity:.5;cursor:default;transform:none;}
+  .btn.dark{background:#22283a;border-color:#22283a;color:#fff;}
+  .btn.sm{padding:6px 13px;font-size:12px;}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .msg{margin-top:12px;font-size:13px;color:#7d7768;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .tabs a{padding:8px 16px;border-radius:8px;font-size:13.5px;color:#5c563f;background:#fff;
+    border:1px solid #e0d7bf;cursor:pointer;}
+  .tabs a.on{background:linear-gradient(#fdf1d3,#f0dfb2);border-color:#d3bd85;color:#4a3c14;font-weight:500;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;font-weight:600;color:#5c563f;font-size:12.5px;padding:9px 10px;
+    border-bottom:2px solid #ece5d4;white-space:nowrap;}
+  td{padding:9px 10px;border-bottom:1px solid #f4f0e5;vertical-align:middle;}
+  tr:hover td{background:#fcfaf4;}
+  td.em{color:#5b6474;font-size:12.5px;word-break:break-all;}
+  .chip{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:500;}
+  .chip.ok{background:#e7f3ea;color:#2f7a45;}
+  .chip.wait{background:#fdf1e2;color:#a3671f;}
+  .chip.ob{background:#fdf6e6;color:#8a6d2b;}
+  .chip.yb{background:#eaf4ec;color:#2f6b3c;}
+  .empty{padding:44px 0;text-align:center;color:#a8a291;font-size:14px;}
+  @media (max-width:760px){ table{font-size:12.5px;} th,td{padding:7px 6px;} }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="inner">
+    <h1>회원 관리</h1>
+    <div class="sub">가입 승인 · 안내 메일 발송 (운영진 전용)</div>
+    <div class="links">
+      <a href="../OB/index.html">총동문회 홈</a>
+      <a href="gallery.html">갤러리 관리</a>
+      <a href="index.html">게시글 수집 관리</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+    <!-- 안내 메일 -->
+    <div class="card">
+      <h2>가입 안내 메일 보내기</h2>
+      <div class="hint">
+        보낼 대상을 고르고 <b>주소 복사</b>를 누른 뒤, 쓰시는 메일(지메일·네이버 등)의
+        <b>숨은참조(BCC)</b>에 붙여넣어 보내주세요. 숨은참조로 보내야 회원들끼리 서로의 주소가 보이지 않습니다.<br>
+        받는 사람이 적을 때는 <b>메일 앱으로 열기</b>를 누르면 제목·내용까지 채워진 채로 열립니다.
+      </div>
+      <label>보낼 대상</label>
+      <select id="target">
+        <option value="all">전체 회원</option>
+        <option value="approved">승인된 회원</option>
+        <option value="wait">승인 대기 회원</option>
+        <option value="OB">총동문회(OB) 회원</option>
+        <option value="YB">학생회(YB) 회원</option>
+      </select>
+      <label>제목</label>
+      <input type="text" id="subj" value="[재한 도쿄대학 총동문회] 가입이 완료되었습니다">
+      <label>내용</label>
+      <textarea id="body">재한 도쿄대학 총동문회에 가입완료되었습니다. 감사합니다~!
+앞으로 자주 활용해주세요^.^
+
+▶ 홈페이지 : https://u-tokyo.kr
+▶ 게시판 · 갤러리는 로그인 후 이용하실 수 있습니다.
+
+재한 도쿄대학 총동문회 드림</textarea>
+      <div class="btns">
+        <button class="btn dark" id="copyBtn">주소 복사</button>
+        <button class="btn" id="mailBtn">메일 앱으로 열기</button>
+        <button class="btn" id="csvBtn">명단 내려받기 (CSV)</button>
+      </div>
+      <div class="msg" id="mailMsg"></div>
+      <label style="margin-top:18px;">받는 주소 <span style="font-weight:300;color:#9a947f;">(복사가 안 되면 여기서 직접 선택해 복사하세요)</span></label>
+      <textarea id="emails" readonly style="min-height:80px;background:#f7f5ee;font-size:12.5px;"></textarea>
+    </div>
+
+    <!-- 회원 목록 -->
+    <div class="card">
+      <h2>회원 목록</h2>
+      <div class="hint">가입 신청이 들어오면 <b>승인</b>을 눌러야 게시판 글쓰기·사진 올리기를 할 수 있습니다.</div>
+      <div class="tabs" id="tabs">
+        <a data-f="all" class="on">전체</a>
+        <a data-f="wait">승인 대기</a>
+        <a data-f="approved">승인 완료</a>
+        <a data-f="OB">OB</a>
+        <a data-f="YB">YB</a>
+      </div>
+      <div class="msg" id="listMsg"></div>
+      <div style="overflow-x:auto;"><table id="tbl"></table></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "../auth/auth.js";
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+const gate = document.getElementById("gate");
+if (!me || !me.is_admin) {
+  gate.innerHTML = '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="../auth/login.html">로그인</a></div>';
+} else {
+  gate.style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  start();
+}
+
+function esc(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+async function start() {
+  let rows = [], filter = "all";
+
+  async function load() {
+    const { data, error } = await sb.from("profiles")
+      .select("id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at")
+      .order("created_at", { ascending: false });
+    if (error) {
+      document.getElementById("listMsg").className = "msg err";
+      document.getElementById("listMsg").textContent =
+        "회원 목록을 불러오지 못했습니다: " + error.message +
+        " — auth/admin_members.sql 을 실행하셨는지 확인해주세요.";
+      return;
+    }
+    rows = data || [];
+    render(); refreshEmails();
+  }
+
+  const pick = (f) => rows.filter(r =>
+    f === "all" ? true :
+    f === "wait" ? !r.approved :
+    f === "approved" ? r.approved :
+    r.member_type === f);
+
+  function render() {
+    document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.f === filter));
+    const list = pick(filter);
+    document.getElementById("listMsg").className = "msg";
+    document.getElementById("listMsg").textContent =
+      `전체 ${rows.length}명 · 승인 ${rows.filter(r=>r.approved).length}명 · 대기 ${rows.filter(r=>!r.approved).length}명` +
+      (filter === "all" ? "" : ` (표시 ${list.length}명)`);
+    const t = document.getElementById("tbl");
+    if (!list.length) { t.innerHTML = '<tr><td class="empty">해당하는 회원이 없습니다.</td></tr>'; return; }
+    t.innerHTML =
+      "<thead><tr><th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th></th></tr></thead><tbody>" +
+      list.map(r => `<tr data-id="${r.id}">
+        <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
+        <td class="em">${esc(r.email) || "-"}</td>
+        <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
+        <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
+        <td>${(r.created_at || "").slice(0, 10)}</td>
+        <td>${r.approved ? '<span class="chip ok">승인</span>' : '<span class="chip wait">대기</span>'}</td>
+        <td><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button></td>
+      </tr>`).join("") + "</tbody>";
+
+    t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
+      const id = b.closest("tr").dataset.id;
+      const r = rows.find(x => x.id === id);
+      b.disabled = true;
+      const { error } = await sb.from("profiles").update({ approved: !r.approved }).eq("id", id);
+      if (error) { alert("변경 실패: " + error.message); b.disabled = false; return; }
+      r.approved = !r.approved;
+      render(); refreshEmails();
+    }));
+  }
+
+  document.querySelectorAll("#tabs a").forEach(a =>
+    a.addEventListener("click", () => { filter = a.dataset.f; render(); }));
+
+  // ── 메일 대상 ──
+  function targets() {
+    const v = document.getElementById("target").value;
+    return pick(v).map(r => (r.email || "").trim()).filter(Boolean);
+  }
+  function refreshEmails() {
+    const list = targets();
+    document.getElementById("emails").value = list.join(", ");
+    document.getElementById("mailMsg").className = "msg";
+    document.getElementById("mailMsg").textContent = `받는 사람 ${list.length}명`;
+  }
+  document.getElementById("target").addEventListener("change", refreshEmails);
+
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    const box = document.getElementById("emails");
+    const msg = document.getElementById("mailMsg");
+    if (!box.value) { msg.className = "msg err"; msg.textContent = "보낼 주소가 없습니다."; return; }
+    try {
+      await navigator.clipboard.writeText(box.value);
+      msg.className = "msg ok";
+      msg.textContent = `주소 ${targets().length}개를 복사했습니다 — 메일의 숨은참조(BCC)에 붙여넣어 주세요.`;
+    } catch (e) {
+      box.select();
+      msg.className = "msg err";
+      msg.textContent = "자동 복사가 막혀 있습니다. 아래 칸이 선택되었으니 Ctrl+C 로 복사해주세요.";
+    }
+  });
+
+  document.getElementById("mailBtn").addEventListener("click", () => {
+    const list = targets();
+    const msg = document.getElementById("mailMsg");
+    if (!list.length) { msg.className = "msg err"; msg.textContent = "보낼 주소가 없습니다."; return; }
+    const url = "mailto:?bcc=" + encodeURIComponent(list.join(","))
+      + "&subject=" + encodeURIComponent(document.getElementById("subj").value)
+      + "&body=" + encodeURIComponent(document.getElementById("body").value);
+    if (url.length > 1800) {
+      msg.className = "msg err";
+      msg.textContent = `받는 사람이 ${list.length}명이라 메일 앱으로 한 번에 열기는 어렵습니다. 「주소 복사」를 이용해주세요.`;
+      return;
+    }
+    location.href = url;
+    msg.className = "msg ok";
+    msg.textContent = "메일 앱을 열었습니다. 내용을 확인하고 보내주세요.";
+  });
+
+  document.getElementById("csvBtn").addEventListener("click", () => {
+    const list = pick(document.getElementById("target").value);
+    const csv = "﻿이름,이메일,구분,전공,졸업연도,승인,가입일\n" +
+      list.map(r => [r.name, r.email, r.member_type, r.faculty, r.grad_year,
+                     r.approved ? "승인" : "대기", (r.created_at || "").slice(0, 10)]
+        .map(v => `"${(v || "").toString().replace(/"/g, '""')}"`).join(",")).join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = "회원명단.csv";
+    a.click();
+  });
+
+  load();
+}
+</script>
+
+</body>
+</html>
