@@ -23,19 +23,16 @@
 
   /* 앨범 목록 */
   .ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
-  .alb{cursor:pointer;display:block;transition:.22s;}
-  .alb .sq{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:10px;background:#f3f0e8;
-    border:1px solid #e8e2d2;box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 2px 6px rgba(60,50,20,.09);transition:.22s;}
+  .alb{cursor:pointer;display:block;border-radius:10px;overflow:hidden;background:#fff;
+    border:1px solid #e8e2d2;box-shadow:0 2px 6px rgba(60,50,20,.07);transition:.22s;}
+  .alb:hover{transform:translateY(-3px);border-color:var(--gold,#c9a961);box-shadow:0 8px 20px rgba(60,50,20,.16);}
+  .alb .sq{position:relative;display:block;width:100%;aspect-ratio:4/3;overflow:hidden;background:#f3f0e8;}
   .alb .sq img{width:100%;height:100%;object-fit:cover;display:block;transition:.4s;}
-  .alb .n{position:absolute;right:9px;bottom:9px;background:rgba(20,24,34,.78);color:#fff;
-    font-size:11.5px;padding:4px 10px;border-radius:100px;backdrop-filter:blur(6px);}
-  .alb:hover{transform:translateY(-4px);}
-  .alb:hover .sq{border-color:var(--gold,#c9a961);box-shadow:0 10px 24px rgba(60,50,20,.2);}
   .alb:hover .sq img{transform:scale(1.05);}
-  .alb .cp{padding:11px 2px 0;}
-  .alb .cp b{display:block;font-size:13.5px;font-weight:500;color:#3d4453;line-height:1.5;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .alb .cp small{display:block;margin-top:4px;font-size:11.5px;color:#a09a86;}
+  .alb .cp{display:block;padding:12px 13px 14px;}
+  .alb .cp b{display:-webkit-box;font-size:13.5px;font-weight:500;color:#332e22;line-height:1.5;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .alb .cp small{display:block;margin-top:5px;font-size:11.5px;color:#a09a86;}
   .gempty{padding:70px 0;text-align:center;color:#a8a291;}
   @media (max-width:980px){ .ggrid{grid-template-columns:repeat(3,1fr);} }
   @media (max-width:680px){ .ggrid{grid-template-columns:repeat(2,1fr);gap:12px;} .gtabs a{font-size:13.5px;padding:9px 16px;} }
@@ -120,43 +117,33 @@
   <div class="ggrid" id="ggrid"></div>
 </div>
 
-<script src="gallery-data.js?v=3"></script>
+<script src="gallery-data.js?v=4"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-
-const CATS = [
-  ["assembly", "총회"],
-  ["club",     "소모임"],
-  ["faculty",  "단과대모임"],
-  ["forum",    "포럼·세미나"],
-  ["old",      "옛날사진"],
-  ["daily",    "일상"],
-  ["etc",      "기타"],
-];
-const G = window.GALLERY || {};
-const BASE = "../images/gallery/";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=4";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (!CATS.some(c => c[0] === cur)) cur = "assembly";
 
+const { byCat } = await loadGallery();
+
 document.getElementById("gtabs").innerHTML = CATS.map(([k, v]) =>
-  `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(G[k]||[]).length}</span></a>`).join("");
+  `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
 
 function render() {
   document.querySelectorAll("#gtabs a").forEach(a => a.classList.toggle("on", a.dataset.c === cur));
-  const list = G[cur] || [];
-  const name = (CATS.find(c => c[0] === cur) || [, ""])[1];
-  const shots = list.reduce((s, a) => s + a.p.length, 0);
-  document.getElementById("gcount").textContent = `${name} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
+  const list = byCat[cur] || [];
+  const shots = list.reduce((s, a) => s + a.photos.length, 0);
+  document.getElementById("gcount").textContent =
+    `${CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
   const grid = document.getElementById("ggrid");
   if (!list.length) { grid.innerHTML = '<div class="gempty">등록된 사진이 없습니다.</div>'; return; }
   grid.innerHTML = list.map(a => `
-    <a class="alb" href="album.html?cat=${cur}&id=${a.i}" target="_blank" rel="noopener">
+    <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener">
       <span class="sq">
-        <img src="${BASE}${cur}/${a.p[0]}_t.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-        <span class="n">${a.p.length}장</span>
+        <img src="${a.photos[0].thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
       </span>
-      <span class="cp"><b>${a.t}</b><small>${a.d}</small></span>
+      <span class="cp"><b>${a.title}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
     </a>`).join("");
 }
 
@@ -173,6 +160,13 @@ try {
   const user = await currentUser();
   if (user) {
     const p = await myProfile();
+    if (p && p.is_admin) {                     // 운영진에게만 관리 버튼
+      const ad = document.createElement("a");
+      ad.href = "../admin/gallery.html";
+      ad.textContent = "⚙ 갤러리 관리";
+      ad.style.color = "#e8c876";
+      document.querySelector(".topbar .links").appendChild(ad);
+    }
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
     const st = document.createElement("span");
