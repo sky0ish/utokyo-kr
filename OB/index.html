@@ -113,10 +113,12 @@
   .dc-board{border-top:3px solid #9d8ec2;}
   .dc-gal{border-top:3px solid #7fa3bd;}
   /* 소개 카드 안 요약 */
-  .dsum{display:flex;gap:12px;align-items:center;padding:12px 2px;border-bottom:1px solid #f6f2e8;}
+  /* 게시판 카드의 목록과 폰트·크기·색상을 동일하게 */
+  .dsum{display:flex;gap:10px;align-items:center;padding:10px 2px;border-bottom:1px solid #f6f2e8;}
   .dsum:last-child{border-bottom:none;}
-  .dsum b{font-size:13.5px;color:#22283a;font-weight:600;flex:none;width:64px;}
-  .dsum span{font-size:13px;color:#6f6a5c;font-weight:300;line-height:1.6;}
+  .dsum b{font-size:13.5px;color:#22283a;font-weight:600;flex:none;width:76px;}   /* 강조 라벨은 그대로 */
+  .dsum span{font-size:13.5px;color:#3d4453;font-weight:400;line-height:1.55;}
+  .dcard:hover .dsum span{color:#8a6d2b;}
   /* 갤러리 카드 썸네일 */
   .dgal{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:14px 20px 18px;}
   .dgal a{display:block;border-radius:4px;overflow:hidden;aspect-ratio:4/3;}
