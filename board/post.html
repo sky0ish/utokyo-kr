@@ -39,7 +39,7 @@
           <a href="index.html?cat=free">자유게시판</a>
           <a href="index.html?cat=club">소모임</a>
           <a href="index.html?cat=mentoring">멘티멘토</a>
-          <a href="index.html?cat=promo">홍보</a>
+          <a href="index.html?cat=promo">홍보·채용</a>
           <a href="index.html?cat=condolence">경조사</a>
           <a href="index.html?cat=notice">공지사항</a>
         </div>
@@ -96,7 +96,7 @@
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
-const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"구인구직", mentoring:"멘티멘토", promo:"홍보", condolence:"경조사", faculty:"단과대별", news:"동문소식", market:"벼룩시장" };
+const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"구인구직", mentoring:"멘티멘토", promo:"홍보·채용", condolence:"경조사", faculty:"단과대별", news:"동문소식", market:"벼룩시장" };
 const id = new URLSearchParams(location.search).get("id");
 const box = document.getElementById("postBox");
 const user = await currentUser();
