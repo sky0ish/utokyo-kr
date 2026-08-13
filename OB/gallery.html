@@ -36,6 +36,12 @@
   body.admin .alb{cursor:grab;}
   .alb.dragging{opacity:.4;}
   .alb.dropzone{outline:3px solid #c9a961;outline-offset:2px;}
+  /* 운영진 : 앨범 이름 고치기 */
+  .alb .edit{display:none;position:absolute;top:8px;right:8px;z-index:3;
+    background:rgba(20,24,34,.75);color:#fff;border:none;border-radius:7px;
+    padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;}
+  body.admin .alb .edit{display:block;}
+  .alb .edit:hover{background:#c9a961;color:#2b2410;}
 
   /* 사진첩 만들기 */
   .modal{position:fixed;inset:0;background:rgba(10,14,22,.6);display:none;z-index:800;
@@ -180,10 +186,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=15"></script>
+<script src="gallery-data.js?v=16"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=15";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=16";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (!CATS.some(c => c[0] === cur)) cur = "assembly";
@@ -205,6 +211,7 @@ function render() {
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
        data-key="${a.key}" draggable="false">
       <span class="sq">
+        <button class="edit" title="앨범 이름 고치기">✎ 이름</button>
         ${a.custom ? '<span class="mine">회원 사진첩</span>' : ""}
         ${a.photos.length
           ? `<img src="${a.photos[0].thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
@@ -219,6 +226,32 @@ function render() {
 let isAdmin = false, adminId = null;
 function enableMerge(list) {
   const find = k => list.find(a => a.key === k);
+
+  // 앨범 이름 고치기
+  document.querySelectorAll(".alb .edit").forEach(b => b.addEventListener("click", async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const el = b.closest(".alb");
+    const alb = find(el.dataset.key);
+    if (!alb) return;
+    const t = prompt("앨범 이름을 입력해주세요.", alb.title);
+    if (t === null) return;
+    const title = t.trim();
+    if (!title) { alert("이름이 비어 있습니다."); return; }
+    b.disabled = true;
+    const { error } = await sb.from("gallery_albums").upsert({
+      album_key: alb.key, title, org: "OB",
+      updated_by: adminId, updated_at: new Date().toISOString(),
+    }, { onConflict: "album_key" });
+    b.disabled = false;
+    if (error) {
+      alert("이름 저장 실패: " + error.message +
+            " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
+      return;
+    }
+    alb.title = title;
+    el.querySelector(".cp b").textContent = title;
+  }));
+
   let from = null;
   document.querySelectorAll(".alb").forEach(el => {
     el.draggable = true;

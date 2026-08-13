@@ -101,7 +101,7 @@ export async function loadGallery() {
       const ov = albumTitles[alb.i] || {};
       map.set(alb.i, {
         key: alb.i, cat, year: (alb.d || "").slice(0, 4),
-        title: ov.title || alb.t, fixedDate: iso(alb.d),
+        title: ov.title || alb.t, fixedDate: iso(ov.event_date) || iso(alb.d),
         sort: ov.sort != null ? ov.sort : 0, photos: [],
       });
     });
