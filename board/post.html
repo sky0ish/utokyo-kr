@@ -24,50 +24,8 @@
 <header class="mhead">
   <div class="inner">
     <a class="mlogo" href="../OB/index.html">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></a>
-    <nav>
-      <div class="dd">
-        <a href="../OB/index.html#greeting">동문회 소개</a>
-        <div class="dd-menu">
-          <a href="../OB/index.html#greeting">인사말</a>
-          <a href="../OB/index.html#org">조직도</a>
-          <a href="../OB/index.html#history">연혁</a>
-          <a href="../OB/rules.html">정관</a>
-        </div>
-      </div>
-      <div class="dd">
-        <a href="index.html">게시판</a>
-        <div class="dd-menu">
-          <a href="index.html?cat=free">자유게시판</a>
-          <a href="index.html?cat=promo">홍보·채용</a>
-          <a href="index.html?cat=condolence">경조사</a>
-          <a href="index.html?cat=notice">공지사항</a>
-        </div>
-      </div>
-      <div class="dd">
-        <a href="../OB/index.html#join">참여마당</a>
-        <div class="dd-menu">
-          <a href="../OB/index.html#news">동문회 총회</a>
-          <a href="index.html?cat=club">소모임</a>
-          <a href="index.html?cat=mentoring">멘토멘티</a>
-          <a href="index.html?cat=forum">단과대포럼</a>
-          <a href="index.html?cat=seminar">세미나</a>
-        </div>
-      </div>
-      <div class="dd">
-        <a href="../OB/gallery.html">갤러리</a>
-        <div class="dd-menu">
-          <a href="../OB/gallery.html?cat=assembly">총회</a>
-          <a href="../OB/gallery.html?cat=old">옛날사진</a>
-          <a href="../OB/gallery.html?cat=club">소모임</a>
-          <a href="../OB/gallery.html?cat=daily">일상</a>
-          <a href="../OB/gallery.html?cat=etc">기타</a>
-        </div>
-      </div>      <a href="../OB/index.html#sponsor">후원</a>
-    </nav>
-    <div class="mpills">
-      <a class="band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 →</a>
-      <a class="fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
-    </div>
+    <nav></nav>
+    <div class="mpills"></div>
   </div>
 </header>
 
@@ -103,7 +61,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { applyYB } from "./yb-nav.js?v=1";
+import { applyNav } from "./nav.js?v=1";
 
 const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"취업정보", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
               forum:"단과대포럼", seminar:"세미나",
@@ -129,7 +87,9 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
 const { data: p, error } = await sb.from("posts").select("*").eq("id", id).single();
 if (p && typeof p.images === "string") { try { p.images = JSON.parse(p.images); } catch (e) { p.images = null; } }
 // 학생회 글이면 화면을 학생회 것으로 (초록 화면에 총동문회 메뉴가 남지 않도록)
-if (p && p.org === "YB") applyYB("게시글 | 도쿄대학 한국인학생회");
+applyNav(p && p.org === "YB" ? "YB" : "OB",
+         p && p.org === "YB" ? "게시글 | 도쿄대학 한국인학생회"
+                             : "게시글 | 재한 도쿄대학 총동문회");
 if (error || !p) {
   box.innerHTML = '<div class="empty">글을 찾을 수 없거나 열람 권한이 없습니다.<br><br><a class="btn line" href="index.html">목록으로</a>' +
     (user ? "" : ' <a class="btn dark" href="../auth/login.html">로그인</a>') + '</div>';
