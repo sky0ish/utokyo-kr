@@ -191,11 +191,12 @@
   .orow{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;}
   .orow .obox{min-width:200px;}
   /* 회장은 정중앙, 전 회장들은 오른쪽에서 서포트 */
-  .otop{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;column-gap:0;}
-  .otop .obox-head{grid-column:2;min-width:300px;}
+  .otop{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;max-width:880px;margin:0 auto;column-gap:0;}
+  .otop .obox-head{grid-column:2;width:340px;min-width:340px;}
   .otop .oright{grid-column:3;display:flex;align-items:center;justify-self:start;}
   .oside-link{width:40px;height:1px;background:#d0c8b2;flex:none;}
-  .otop .obox-side{border-top-color:#cfc7b4;background:#fff;width:340px;max-width:340px;min-width:340px;padding:12px 20px;box-shadow:0 3px 12px rgba(60,50,20,.05);}
+  .otop .obox-side{border-top-color:#cfc7b4;background:#fff;width:100%;max-width:none;min-width:0;padding:12px 18px;box-shadow:0 3px 12px rgba(60,50,20,.05);}
+  .otop .oright{width:100%;}
   .otop .obox-side .role{font-size:10.5px;}
   .otop .obox-side h4{font-size:14.5px;}
   .otop .obox-side p{font-size:12px;line-height:1.55;}
