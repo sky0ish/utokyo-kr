@@ -19,6 +19,8 @@ const ALBUM_NAME = {
   etc: "{y}년 행사 자료",
 };
 const BASE = "../images/gallery/";
+// 사진 파일명이 재편성될 때 브라우저가 예전 목록을 캐시해 빈 칸이 뜨는 것을 막는다
+const V = window.GALLERY_V ? "?v=" + window.GALLERY_V : "";
 
 const iso = (d) => (d || "").replace(/\./g, "-").slice(0, 10);
 
@@ -30,7 +32,7 @@ function staticPhotos() {
     albums.forEach(alb => alb.p.forEach((p, i) => out.push({
       key: `${cat}/${p.k}`, kind: "static", cat,
       date: iso(p.d), cap: p.c || alb.t, sort: i,
-      thumb: `${BASE}${cat}/${p.k}_t.jpg`, full: `${BASE}${cat}/${p.k}.jpg`,
+      thumb: `${BASE}${cat}/${p.k}_t.jpg${V}`, full: `${BASE}${cat}/${p.k}.jpg${V}`,
     })));
   }
   return out;
