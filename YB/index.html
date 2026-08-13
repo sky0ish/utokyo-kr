@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
   :root{
     --green:#1e5230;        /* YB 상징 초록 */
@@ -38,9 +40,11 @@
   nav.gnb{display:flex;gap:2px;align-items:center;margin-left:auto;margin-right:20px;}
   nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 12px;font-size:14px;color:rgba(255,255,255,.88);border-bottom:2px solid transparent;transition:.2s;}
   nav.gnb>a:hover,nav.gnb .dd>a:hover{color:var(--leaf-bright);border-bottom-color:var(--leaf);}
-  .gnb .dd{position:relative;}
-  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:22px;min-width:150px;z-index:200;white-space:nowrap;}
-  .dd:hover .dd-menu{display:flex;}
+  /* 메뉴 항목이 헤더 높이를 꽉 채워서, 마우스가 내려오는 동안 하위 메뉴가 닫히지 않도록 */
+  .gnb .dd{position:relative;display:flex;align-items:center;align-self:stretch;}
+  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:10px;min-width:150px;z-index:200;white-space:nowrap;}
+  .dd::after{content:"";position:absolute;left:-14px;right:-14px;top:100%;height:16px;}  /* 보이지 않는 연결 구간 */
+  .dd:hover .dd-menu,.dd:focus-within .dd-menu{display:flex;}
   .dd-menu a{display:block;text-align:center;padding:10px 20px;font-size:13.5px;color:#1b2620;font-weight:500;
     background:rgba(255,255,255,.6);backdrop-filter:blur(6px);
     border:1px solid #9a9a94;border-radius:7px;transition:.2s;
@@ -149,14 +153,23 @@
   .mtabs a:hover{transform:translateY(-2px);color:var(--green);}
   .mtabs a.on{background:linear-gradient(#e4f3e7,#cfe7d6);border-color:#a9cfb4;color:var(--green);}
   .mtabs a.on small{color:#5b8a68;}
-  .mapbody{display:grid;grid-template-columns:1.55fr 1fr;}
-  .mapbox{position:relative;min-height:380px;background:#eef3ef;}
-  .mapbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
-  .mapinfo{padding:26px 26px 24px;border-left:1px solid #eef3ee;}
+  /* 지도는 좌우 가득, 설명은 그 아래 */
+  .mapbox{width:100%;height:clamp(360px,52vh,560px);background:#eef3ef;}
+  #cmap{width:100%;height:100%;}
+  #cmap .leaflet-container{font-family:inherit;}
+  .cmark{display:flex;flex-direction:column;align-items:center;line-height:1.2;}
+  .cmark i{width:16px;height:16px;border-radius:50%;background:var(--green);border:3px solid #fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);}
+  .cmark b{margin-top:4px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,.95);
+    border:1px solid #cfe3d4;font-size:11.5px;font-weight:600;color:var(--green);white-space:nowrap;}
+  .cmark.on i{background:#c9452f;transform:scale(1.15);}
+  .cmark.on b{background:#c9452f;color:#fff;border-color:#c9452f;}
+  .mapinfo{display:grid;grid-template-columns:minmax(240px,1fr) 1.6fr;gap:26px;
+    padding:24px 26px 26px;border-top:1px solid #eef3ee;}
   .mapinfo .mname{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;color:var(--green);}
   .mapinfo .maddr{margin-top:10px;font-size:14px;color:#33403a;font-weight:500;word-break:keep-all;}
   .mapinfo .mjp{margin-top:3px;font-size:12.5px;color:#9aa79c;}
-  .mways{list-style:none;margin-top:18px;}
+  .mways{list-style:none;}
   .mways li{position:relative;padding:8px 0 8px 18px;font-size:13.5px;color:#33403a;line-height:1.7;
     border-bottom:1px solid #f2f7f3;word-break:keep-all;}
   .mways li:last-child{border-bottom:none;}
@@ -166,8 +179,7 @@
     border-bottom:1px solid #cfe3d4;padding-bottom:2px;transition:.2s;}
   .mlink:hover{border-color:var(--green);}
   .maptip{padding:11px 22px;font-size:12px;color:#9aa79c;background:#f7fbf7;border-top:1px solid #eef3ee;}
-  @media (max-width:860px){ .mapbody{grid-template-columns:1fr;} .mapinfo{border-left:none;border-top:1px solid #eef3ee;}
-    .mapbox{min-height:300px;} }
+  @media (max-width:860px){ .mapinfo{grid-template-columns:1fr;gap:6px;} }
   @media (max-width:760px){ .council,.school-grid{grid-template-columns:1fr;} }
 
   /* 갤러리 */
@@ -385,24 +397,23 @@
         <h3>오시는 길</h3>
         <div class="mtabs" id="mtabs"></div>
       </div>
-      <div class="mapbody">
-        <div class="mapbox">
-          <iframe id="cmap" title="도쿄대학 캠퍼스 지도" loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-        </div>
-        <div class="mapinfo">
+      <div class="mapbox"><div id="cmap"></div></div>
+      <div class="mapinfo">
+        <div class="mi-left">
           <div class="mname" id="mName"></div>
           <div class="maddr" id="mAddr"></div>
           <div class="mjp" id="mAddrJp"></div>
-          <ul class="mways" id="mWays"></ul>
-          <a class="mlink" id="mLink" href="#" target="_blank" rel="noopener">큰 지도로 보기 · 길찾기 →</a>
+          <a class="mlink" id="mLink" href="#" target="_blank" rel="noopener">구글 지도에서 길찾기 →</a>
         </div>
+        <ul class="mways" id="mWays"></ul>
       </div>
-      <div class="maptip">지도 안에서 <b>+ / −</b> 또는 마우스 휠로 확대·축소, 끌어서 이동할 수 있습니다.</div>
+      <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소할 수 있습니다. 지도 위 표시를 누르면 캠퍼스가 바뀝니다.</div>
     </div>
   </div>
 </section>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 (function () {
   const CAMPUS = [
@@ -433,21 +444,41 @@
   tabs.innerHTML = CAMPUS.map((c, i) =>
     `<a href="#access" data-i="${i}"${i === 0 ? ' class="on"' : ""}>${c.n.split(" ")[0]}<small>${c.tag}</small></a>`).join("");
 
-  function show(i) {
+  // ── Leaflet 지도 (끌어서 이동 · 휠로 확대) ──
+  const map = L.map("cmap", { scrollWheelZoom: true, zoomControl: true })
+               .setView([CAMPUS[0].lat, CAMPUS[0].lng], 15);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
+
+  const marks = CAMPUS.map((c, i) => {
+    const m = L.marker([c.lat, c.lng], {
+      icon: L.divIcon({ className: "", iconSize: [0, 0],
+        html: `<div class="cmark" data-i="${i}"><i></i><b>${c.n.split(" ")[0]}</b></div>` }),
+    }).addTo(map);
+    m.on("click", () => show(i));
+    return m;
+  });
+
+  function show(i, fly = true) {
     const c = CAMPUS[i];
     tabs.querySelectorAll("a").forEach((a, j) => a.classList.toggle("on", i === j));
-    document.getElementById("cmap").src =
-      `https://www.google.com/maps?q=${c.lat},${c.lng}&hl=ko&z=16&output=embed`;
+    document.querySelectorAll("#cmap .cmark").forEach((el, j) => el.classList.toggle("on", +el.dataset.i === i));
     document.getElementById("mName").textContent = c.n;
     document.getElementById("mAddr").textContent = c.addr;
     document.getElementById("mAddrJp").textContent = c.jp;
     document.getElementById("mWays").innerHTML = c.ways.map(w => `<li>${w}</li>`).join("");
     document.getElementById("mLink").href =
       `https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}`;
+    if (fly) map.flyTo([c.lat, c.lng], 16, { duration: .8 });
   }
   tabs.querySelectorAll("a").forEach(a =>
     a.addEventListener("click", (e) => { e.preventDefault(); show(+a.dataset.i); }));
-  show(0);
+  show(0, false);
+
+  // 섹션이 화면에 들어올 때 지도 크기 재계산 (숨겨진 상태로 그려지는 것 방지)
+  new ResizeObserver(() => map.invalidateSize()).observe(document.getElementById("cmap"));
 })();
 </script>
 
