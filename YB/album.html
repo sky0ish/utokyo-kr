@@ -4,75 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<title>앨범 | 재한 도쿄대학 총동문회</title>
+<title>앨범 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Noto Sans KR',sans-serif;background:#f7f5ef;color:#2f2a1d;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f6f9f7;color:#243029;-webkit-font-smoothing:antialiased;}
   a{text-decoration:none;color:inherit;}
 
-  .ahead{background:linear-gradient(120deg,#1b2436 0%,#2b3446 60%,#3a3527 100%);color:#fff;
+  .ahead{background:linear-gradient(120deg,#14301f 0%,#1e5230 60%,#2a6b40 100%);color:#fff;
     padding:26px 0 24px;box-shadow:0 2px 10px rgba(0,0,0,.14);}
   .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
-  .ahead .en{font-family:'Noto Serif KR',serif;font-style:italic;font-size:12.5px;color:#e8c876;letter-spacing:.06em;}
+  .ahead .en{font-family:'Noto Serif KR',serif;font-style:italic;font-size:12.5px;color:#bfe8c2;letter-spacing:.06em;}
   .ahead h1{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:600;margin-top:5px;line-height:1.35;}
   .ahead .meta{margin-top:9px;font-size:13px;color:rgba(255,255,255,.6);}
   .ahead .back{display:inline-block;margin-top:16px;font-size:13px;color:rgba(255,255,255,.75);
     border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:7px 18px;transition:.2s;}
-  .ahead .back:hover{border-color:#e8c876;color:#e8c876;}
+  .ahead .back:hover{border-color:#bfe8c2;color:#bfe8c2;}
 
   .awrap{max-width:1180px;margin:0 auto;padding:30px 24px 80px;}
-  /* 운영진 사진 추가 */
-  .addbox{display:none;background:#fff;border:1px solid #e6dfcb;border-radius:10px;
-    padding:16px 18px;margin-bottom:22px;box-shadow:0 2px 6px rgba(60,50,20,.06);}
+  .addbox{display:none;background:#fff;border:1px solid #dfe9e1;border-radius:10px;
+    padding:16px 18px;margin-bottom:22px;box-shadow:0 2px 6px rgba(30,60,40,.06);}
   .addbox.on{display:block;}
-  .addbox .ttl{font-size:14px;font-weight:500;color:#4a3c14;margin-bottom:12px;}
-  .addbox .ttl span{font-weight:300;color:#a09a86;font-size:12.5px;}
+  .addbox .ttl{font-size:14px;font-weight:500;color:#1e5230;margin-bottom:12px;}
+  .addbox .ttl span{font-weight:300;color:#98a89d;font-size:12.5px;}
   .addbox .fields{display:flex;flex-wrap:wrap;gap:9px;align-items:center;}
-  .addbox input{padding:9px 11px;border:1px solid #ddd6c4;border-radius:7px;
-    font-family:inherit;font-size:13.5px;background:#fffdf8;color:#2f2a1d;}
+  .addbox input{padding:9px 11px;border:1px solid #cfdcd3;border-radius:7px;
+    font-family:inherit;font-size:13.5px;background:#fbfefb;color:#243029;}
   .addbox input[type=text]{flex:1;min-width:200px;}
   .addbox .btn{padding:9px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
-    font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;}
+    font-family:inherit;border:1px solid #a9cfb4;background:linear-gradient(#f3faf4,#e3f1e7);color:#1e5230;}
   .addbox .btn:disabled{opacity:.5;cursor:default;}
-  .addbox .amsg{margin-top:10px;font-size:12.5px;color:#7d7768;}
+  .addbox .amsg{margin-top:10px;font-size:12.5px;color:#6f7d73;}
   .addbox .amsg.err{color:#b3453b;} .addbox .amsg.ok{color:#2f7a45;}
-  .ph .rm{position:absolute;top:5px;right:5px;border:none;border-radius:6px;padding:3px 8px;
-    font-size:10.5px;cursor:pointer;font-family:inherit;color:#fff;background:rgba(180,60,50,.9);display:none;}
-  .ph.can-rm .rm{display:block;}
+
   /* 여러 장 지우기 */
   .rmbar{display:none;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;
-    padding:11px 16px;background:#fff;border:1px solid #e6dfcb;border-radius:9px;font-size:13px;color:#5c563f;}
+    padding:11px 16px;background:#fff;border:1px solid #dfe9e1;border-radius:9px;font-size:13px;color:#3e5344;}
   .rmbar.on{display:flex;}
   .rmbar label{display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:500;}
   .rmbar input[type=checkbox]{width:16px;height:16px;cursor:pointer;}
-  .rmbar .note{color:#a09a86;font-size:12px;}
+  .rmbar .note{color:#98a89d;font-size:12px;}
   .rmbar .btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;
-    font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;}
+    font-family:inherit;border:1px solid #a9cfb4;background:linear-gradient(#f3faf4,#e3f1e7);color:#1e5230;}
   .rmbar .btn.danger{background:#b3453b;border-color:#b3453b;color:#fff;}
   .rmbar .btn:disabled{opacity:.5;cursor:default;}
-  .ph .pick{position:absolute;top:6px;left:6px;width:18px;height:18px;cursor:pointer;display:none;z-index:3;}
-  .ph.can-rm .pick{display:block;}
-  .ph.sel{outline:3px solid #b3453b;outline-offset:-3px;}
+
   .agrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
   .ph{cursor:pointer;position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;
-    background:#eceae2;border:1px solid #e5e0d0;box-shadow:0 2px 5px rgba(60,50,20,.08);transition:.2s;}
+    background:#eef3ef;border:1px solid #dfe9e1;box-shadow:0 2px 5px rgba(30,60,40,.08);transition:.2s;}
   .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:.35s;}
   .ph .dt{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 6px;font-size:10.5px;color:#fff;
     text-align:right;background:linear-gradient(transparent,rgba(0,0,0,.55));opacity:0;transition:.2s;}
   .ph:hover .dt{opacity:1;}
-  .ph:hover{transform:translateY(-3px);border-color:#c9a961;box-shadow:0 8px 18px rgba(60,50,20,.18);}
+  .ph:hover{transform:translateY(-3px);border-color:#7fc48a;box-shadow:0 8px 18px rgba(30,60,40,.18);}
   .ph:hover img{transform:scale(1.06);}
+  .ph .rm{position:absolute;top:5px;right:5px;border:none;border-radius:6px;padding:3px 8px;
+    font-size:10.5px;cursor:pointer;font-family:inherit;color:#fff;background:rgba(180,60,50,.9);display:none;}
+  .ph.can-rm .rm{display:block;}
+  .ph .pick{position:absolute;top:6px;left:6px;width:18px;height:18px;cursor:pointer;display:none;z-index:3;}
+  .ph.can-rm .pick{display:block;}
+  .ph.sel{outline:3px solid #b3453b;outline-offset:-3px;}
+  .aempty{padding:60px 0;text-align:center;color:#98a89d;line-height:1.9;}
 
   /* 확대 보기 */
-  .lb{position:fixed;inset:0;background:rgba(8,10,16,.95);display:none;z-index:900;
+  .lb{position:fixed;inset:0;background:rgba(8,14,10,.95);display:none;z-index:900;
     align-items:center;justify-content:center;padding:30px;}
   .lb.on{display:flex;}
   .lb img{max-width:100%;max-height:84vh;border-radius:4px;display:block;margin:0 auto;}
   .lb .cap{color:rgba(255,255,255,.72);text-align:center;margin-top:14px;font-size:13.5px;}
   .lb .x{position:absolute;top:20px;right:24px;background:none;border:1px solid rgba(255,255,255,.4);
     color:#fff;border-radius:100px;padding:8px 20px;font-size:13px;cursor:pointer;font-family:inherit;}
-  .lb .x:hover{border-color:#e8c876;color:#e8c876;}
+  .lb .x:hover{border-color:#bfe8c2;color:#bfe8c2;}
   .lb .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);
     border:1px solid rgba(255,255,255,.25);color:#fff;width:48px;height:48px;border-radius:100px;
     font-size:22px;cursor:pointer;line-height:1;}
@@ -96,7 +98,6 @@
 </div>
 
 <div class="awrap">
-  <!-- 운영진 전용 : 이 앨범에 사진 추가 -->
   <div class="addbox" id="addbox">
     <div class="ttl">＋ 이 앨범에 사진 추가 <span id="addWhere"></span></div>
     <div class="fields">
@@ -108,12 +109,11 @@
     <div class="amsg" id="aMsg"></div>
   </div>
 
-  <!-- 여러 장 한꺼번에 지우기 (권한 있는 사람만) -->
   <div class="rmbar" id="rmbar">
     <label><input type="checkbox" id="pickAll"> 전체 선택</label>
     <span id="pickCnt">선택 0장</span>
     <button class="btn danger" id="rmSel">선택한 사진 지우기</button>
-    <span class="note">직접 올린 사진은 삭제되고, 기본 제공 사진은 갤러리에서 감춰집니다(되돌리기 가능).</span>
+    <span class="note">내가 올린 사진만 지울 수 있습니다. (운영진은 전부)</span>
   </div>
 
   <div class="agrid" id="agrid"></div>
@@ -129,13 +129,12 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=6"></script>
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=6";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=1";
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
-  const cat = q.get("cat") || "assembly";
+  const cat = q.get("cat") || "event2015";
   const id  = q.get("id");
   const { byCat } = await loadGallery();
   const list = byCat[cat] || [];
@@ -152,18 +151,24 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     `${CAT_NAME[cat] || cat} · 사진 ${album.photos.length}장`;
 
   const grid = document.getElementById("agrid");
-  grid.innerHTML = album.photos.map((p, i) =>
-    `<div class="ph" data-i="${i}" title="${(p.cap || "").replace(/"/g, "&quot;")} (${p.date})">
-       <input type="checkbox" class="pick" title="선택">
-       <button class="rm" title="사진 내리기">✕</button>
-       <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-       <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
-     </div>`).join("");
+  const draw = () => {
+    grid.innerHTML = album.photos.length
+      ? album.photos.map((p, i) =>
+        `<div class="ph" data-i="${i}" title="${(p.cap || "").replace(/"/g, "&quot;")} (${p.date})">
+           <input type="checkbox" class="pick" title="선택">
+           <button class="rm" title="사진 내리기">✕</button>
+           <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+           <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
+         </div>`).join("")
+      : '<div class="aempty" style="grid-column:1/-1;">아직 사진이 없습니다.<br>위에서 사진을 올려주세요.</div>';
+  };
+  draw();
 
   const lb = document.getElementById("lb");
   const img = document.getElementById("lbimg");
   let idx = 0;
   function open(i) {
+    if (!album.photos.length) return;
     idx = (i + album.photos.length) % album.photos.length;
     const p = album.photos[idx];
     img.src = p.full;
@@ -183,20 +188,16 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     if (e.key === "ArrowRight") open(idx + 1);
   });
 
-  // ─── 회원 : 이 사진첩에 사진 추가 / 내리기 ───
+  // ─── 회원 : 사진 추가 / 내리기 ───
   try {
     const user = await currentUser();
     const me = user ? await myProfile() : null;
     const isAdmin = !!(me && me.is_admin);
-    const canAdd = !!(me && (me.approved || me.is_admin));
-    if (canAdd) {
-      document.body.classList.add("admin");
+    if (me && (me.approved || me.is_admin)) {
       const box = document.getElementById("addbox");
       box.classList.add("on");
-      document.getElementById("addWhere").textContent =
-        `— ${CAT_NAME[cat]} · ${album.title}`;
-      document.getElementById("aDate").value = (album.date || "").slice(0, 10)
-        || `${album.year}-01-01`;
+      document.getElementById("addWhere").textContent = `— ${CAT_NAME[cat]} · ${album.title}`;
+      document.getElementById("aDate").value = (album.date || "").slice(0, 10) || `${album.year}-01-01`;
 
       document.getElementById("aUp").addEventListener("click", async () => {
         const btn = document.getElementById("aUp");
@@ -216,12 +217,12 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         for (const [n, f] of files.entries()) {
           msg.className = "amsg"; msg.textContent = `올리는 중… (${n + 1}/${files.length})`;
           const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-          const path = `${cat}/${date}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+          const path = `YB/${cat}/${date}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
           const up = await sb.storage.from("gallery").upload(path, f, { cacheControl: "3600" });
           if (up.error) { fail++; last = up.error.message; continue; }
           const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
           const ins = await sb.from("gallery_photos").insert({
-            category: cat, taken_at: date, caption: capv || null, org: "OB",
+            category: cat, taken_at: date, caption: capv || null, org: "YB",
             album_key: album.custom ? album.key : null,
             image_url: pub.publicUrl, storage_path: path,
             sort: album.photos.length + n, created_by: user.id,
@@ -234,69 +235,48 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         if (ok) setTimeout(() => location.reload(), 700);
       });
 
-      // 사진 내리기 — 내가 올린 사진 또는 운영진만
+      // 지울 수 있는 사진 표시
       grid.querySelectorAll(".ph").forEach(el => {
         const p = album.photos[+el.dataset.i];
-        const mine = p.kind === "db" && p.owner && user && p.owner === user.id;
+        const mine = p.owner && user && p.owner === user.id;
         if (mine || isAdmin) el.classList.add("can-rm");
       });
-      /** 사진 여러 장 내리기 — 직접 올린 것은 삭제, 기본 제공 사진은 숨김 */
+
       async function removeMany(photos) {
-        const dbs = photos.filter(p => p.kind === "db");
-        const statics = photos.filter(p => p.kind !== "db");
-        if (dbs.length) {
-          const paths = dbs.map(p => p.storage_path).filter(Boolean);
-          if (paths.length) await sb.storage.from("gallery").remove(paths);
-          const { error } = await sb.from("gallery_photos").delete().in("id", dbs.map(p => p.id));
-          if (error) return "삭제 실패: " + error.message;
-        }
-        if (statics.length) {
-          const now = new Date().toISOString();
-          const { error } = await sb.from("gallery_overrides").upsert(
-            statics.map(p => ({ photo_key: p.key, hidden: true, updated_by: user.id, updated_at: now })),
-            { onConflict: "photo_key" });
-          if (error) {
-            return /gallery_overrides/.test(error.message)
-              ? "기본 제공 사진을 감추려면 board/gallery_setup.sql 을 Supabase에서 한 번 실행해야 합니다."
-              : "숨김 실패: " + error.message;
-          }
-        }
-        return null;
+        const paths = photos.map(p => p.storage_path).filter(Boolean);
+        if (paths.length) await sb.storage.from("gallery").remove(paths);
+        const { error } = await sb.from("gallery_photos").delete().in("id", photos.map(p => p.id));
+        return error ? "삭제 실패: " + error.message : null;
       }
 
-      // 사진 한 장 내리기
       grid.querySelectorAll(".can-rm .rm").forEach(b => b.addEventListener("click", async (e) => {
         e.stopPropagation();
         const p = album.photos[+b.closest(".ph").dataset.i];
-        if (!confirm(p.kind === "db" ? "이 사진을 삭제할까요?" : "이 사진을 갤러리에서 감출까요?")) return;
+        if (!confirm("이 사진을 삭제할까요?")) return;
         b.disabled = true;
         const err = await removeMany([p]);
         if (err) { alert(err); b.disabled = false; return; }
         location.reload();
       }));
 
-      // 여러 장 선택해서 내리기
-      const bar = document.getElementById("rmbar");
       const picks = [...grid.querySelectorAll(".can-rm .pick")];
       if (picks.length) {
-        bar.classList.add("on");
+        document.getElementById("rmbar").classList.add("on");
         const cnt = () => {
           const n = picks.filter(c => c.checked).length;
           document.getElementById("pickCnt").textContent = `선택 ${n}장`;
           picks.forEach(c => c.closest(".ph").classList.toggle("sel", c.checked));
-          return n;
         };
         picks.forEach(c => {
-          c.addEventListener("click", (e) => e.stopPropagation());   // 확대보기가 열리지 않도록
+          c.addEventListener("click", (e) => e.stopPropagation());
           c.addEventListener("change", cnt);
         });
         const allBox = document.getElementById("pickAll");
         allBox.addEventListener("change", () => { picks.forEach(c => c.checked = allBox.checked); cnt(); });
-
         document.getElementById("rmSel").addEventListener("click", async () => {
           const chosen = picks.filter(c => c.checked).map(c => album.photos[+c.closest(".ph").dataset.i]);
           if (!chosen.length) { alert("지울 사진을 선택해주세요."); return; }
-          if (!confirm(`선택한 ${chosen.length}장을 갤러리에서 내릴까요?`)) return;
+          if (!confirm(`선택한 ${chosen.length}장을 삭제할까요?`)) return;
           const btn = document.getElementById("rmSel");
           btn.disabled = true; btn.textContent = "처리 중…";
           const err = await removeMany(chosen);
@@ -305,7 +285,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         });
       }
     }
-  } catch (e) { /* 로그인/권한 확인 실패는 무시 */ }
+  } catch (e) { /* 무시 */ }
 }
 </script>
 

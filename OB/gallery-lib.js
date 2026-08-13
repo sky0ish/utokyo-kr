@@ -48,9 +48,9 @@ export async function loadGallery() {
 
   try {
     const [ph, ov, al] = await Promise.all([
-      sb.from("gallery_photos").select("*"),
+      sb.from("gallery_photos").select("*").eq("org", "OB"),
       sb.from("gallery_overrides").select("*"),
-      sb.from("gallery_albums").select("*"),
+      sb.from("gallery_albums").select("*").eq("org", "OB"),
     ]);
     // 기본 사진 수정 내역 적용
     const ovMap = new Map((ov.data || []).map(o => [o.photo_key, o]));

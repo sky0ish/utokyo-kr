@@ -340,7 +340,7 @@ async function start() {
       if (up.error) { fail++; lastErr = up.error.message; continue; }
       const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
       const ins = await sb.from("gallery_photos").insert({
-        category: cat, taken_at: date, caption: cap || null,
+        category: cat, taken_at: date, caption: cap || null, org: "OB",
         image_url: pub.publicUrl, storage_path: path, sort: n, created_by: user.id,
       });
       if (ins.error) { fail++; lastErr = ins.error.message; } else ok++;

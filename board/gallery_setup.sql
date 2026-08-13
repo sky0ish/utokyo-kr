@@ -55,6 +55,25 @@ alter table public.gallery_albums add column if not exists created_at timestampt
 alter table public.gallery_photos add column if not exists album_key text;
 create index if not exists gallery_photos_album_idx on public.gallery_photos (album_key);
 
+-- ── 총동문회(OB)와 학생회(YB) 갤러리 구분 ──
+alter table public.gallery_photos add column if not exists org text not null default 'OB';
+alter table public.gallery_albums add column if not exists org text not null default 'OB';
+alter table public.gallery_photos drop constraint if exists gallery_photos_org_check;
+alter table public.gallery_photos add constraint gallery_photos_org_check check (org in ('OB','YB'));
+alter table public.gallery_albums drop constraint if exists gallery_albums_org_check;
+alter table public.gallery_albums add constraint gallery_albums_org_check check (org in ('OB','YB'));
+create index if not exists gallery_photos_org_idx on public.gallery_photos (org, category, taken_at desc);
+
+-- 학생회 갤러리 분류도 허용 (도쿄대학 한국인 학생회 홈페이지 메뉴와 동일)
+alter table public.gallery_photos drop constraint if exists gallery_photos_category_check;
+alter table public.gallery_photos add constraint gallery_photos_category_check
+  check (category in (
+    -- 총동문회(OB)
+    'assembly','club','faculty','forum','old','daily','etc',
+    -- 학생회(YB)
+    'event2015','event','general'
+  ));
+
 -- 이전 버전에서 만든 표가 있으면 내용을 옮기고 정리
 do $$
 begin
