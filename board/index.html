@@ -40,8 +40,6 @@
         <a href="index.html">게시판</a>
         <div class="dd-menu">
           <a href="index.html?cat=free">자유게시판</a>
-          <a href="index.html?cat=club">소모임</a>
-          <a href="index.html?cat=mentoring">멘토멘티</a>
           <a href="index.html?cat=promo">홍보·채용</a>
           <a href="index.html?cat=condolence">경조사</a>
           <a href="index.html?cat=notice">공지사항</a>
@@ -51,7 +49,8 @@
         <a href="../OB/index.html#join">참여마당</a>
         <div class="dd-menu">
           <a href="../OB/index.html#news">동문회 총회</a>
-          <a href="../OB/index.html#sub-moim">소모임</a>
+          <a href="index.html?cat=club">소모임</a>
+          <a href="index.html?cat=mentoring">멘토멘티</a>
           <a href="../OB/index.html#sub-forum">포럼</a>
           <a href="../OB/index.html#sub-seminar">세미나</a>
         </div>
@@ -114,7 +113,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
 const ORG = (new URLSearchParams(location.search).get("org") || "").toUpperCase() === "YB" ? "YB" : "OB";
 const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
 const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
-const TABS_OB = ["free","club","mentoring","promo","condolence","notice"];
+const TABS_OB = ["free","promo","condolence","notice"];   // 소모임·멘토멘티는 참여마당에서 접근
 const TABS_YB = ["notice","free","qna","jobs","parttime","market"];
 const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
 const TABS = ORG === "YB" ? TABS_YB : TABS_OB;
@@ -126,8 +125,12 @@ if (ORG === "YB") {
   document.querySelector(".mlogo").setAttribute("href", "../YB/index.html");
 }
 // 분류 탭 다시 그리기
-document.getElementById("catTabs").innerHTML =
-  '<a href="#" data-cat="">전체</a>' + TABS.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
+{
+  const cur = new URLSearchParams(location.search).get("cat") || "";
+  const tabs = (cur && !TABS.includes(cur) && CAT[cur]) ? TABS.concat([cur]) : TABS;   // 참여마당 등에서 들어온 분류도 탭에 표시
+  document.getElementById("catTabs").innerHTML =
+    '<a href="#" data-cat="">전체</a>' + tabs.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
+}
 const SRC = {
   band: '<span class="src-tag band">네이버밴드</span>',
   facebook: '<span class="src-tag fb">페이스북</span>',
