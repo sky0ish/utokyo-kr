@@ -219,7 +219,7 @@ function render() {
        data-key="${a.key}" draggable="false">
       <span class="sq">
         <button class="edit" title="앨범 이름 고치기">✎ 이름</button>
-        ${a.custom ? '<span class="mine">회원 사진첩</span>' : ""}
+        ${a.custom && a.owner ? '<span class="mine">회원 사진첩</span>' : ""}
         ${a.photos.length
           ? `<img src="${a.photos[0].thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
           : '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#b7b09b;font-size:13px;">사진을 올려주세요</span>'}

@@ -190,7 +190,7 @@ function render() {
   grid.innerHTML = list.map(a => `
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener">
       <span class="sq">
-        ${a.custom ? '<span class="mine">회원 사진첩</span>' : ""}
+        ${a.custom && a.owner ? '<span class="mine">회원 사진첩</span>' : ""}
         ${a.photos.length
           ? `<img src="${a.photos[0].thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
           : '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#a9b8ae;font-size:13px;">사진을 올려주세요</span>'}
