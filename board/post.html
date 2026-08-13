@@ -137,7 +137,9 @@ if (error || !p) {
       p.source === "band" ? '<div class="src">※ 네이버 밴드에서 옮겨온 글입니다.</div>' :
       p.source === "legacy" ? '<div class="src">※ (구)홈페이지 게시판에서 옮겨온 글입니다.</div>' : ""}
   `;
-  if (user && p.author_id === user.id) {
+  const meProfile = user ? await myProfile() : null;
+  const canEdit = !!(user && (p.author_id === user.id || (meProfile && meProfile.is_admin)));
+  if (canEdit) {
     document.getElementById("actions").style.display = "flex";
     document.getElementById("editBtn").addEventListener("click", () => location.href = "write.html?edit=" + p.id);
     document.getElementById("delBtn").addEventListener("click", async () => {
@@ -153,7 +155,7 @@ if (error || !p) {
   const formBox = document.getElementById("cmtFormBox");
   wrap.style.display = "block";
 
-  const profile = user ? await myProfile() : null;
+  const profile = meProfile;
   const canWrite = !!(profile && profile.approved);
 
   if (!canWrite) {
@@ -171,7 +173,7 @@ if (error || !p) {
     if (!data.length) { listEl.innerHTML = '<div class="cmt-empty">첫 댓글을 남겨보세요.</div>'; return; }
     listEl.innerHTML = data.map(c => `
       <div class="cmt">
-        ${user && c.author_id === user.id ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
+        ${user && (c.author_id === user.id || (meProfile && meProfile.is_admin)) ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
         <div class="who">${escapeHtml(c.author_name || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
         <div class="body">${escapeHtml(c.content)}</div>
       </div>`).join("");
