@@ -51,8 +51,8 @@
           <a href="../OB/index.html#news">동문회 총회</a>
           <a href="index.html?cat=club">소모임</a>
           <a href="index.html?cat=mentoring">멘토멘티</a>
-          <a href="../OB/index.html#sub-forum">단과대포럼</a>
-          <a href="../OB/index.html#sub-seminar">세미나</a>
+          <a href="index.html?cat=forum">단과대포럼</a>
+          <a href="index.html?cat=seminar">세미나</a>
         </div>
       </div>
       <a href="../OB/index.html#gallery">갤러리</a>
@@ -111,7 +111,9 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
 
 // ── 조직별 게시판 구성 ──
 const ORG = (new URLSearchParams(location.search).get("org") || "").toUpperCase() === "YB" ? "YB" : "OB";
-const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
+const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
+                 forum:"단과대포럼", seminar:"세미나",
+                 jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
 const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
 const TABS_OB = ["free","promo","condolence","notice"];   // 소모임·멘토멘티는 참여마당에서 접근
 const TABS_YB = ["notice","free","qna","jobs","parttime","market"];

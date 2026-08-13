@@ -290,7 +290,7 @@
   .trow .tx p{font-size:14px;color:#6f6a5c;font-weight:300;}
 
   /* ── 참여마당 ── */
-  .join-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .join-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
   .jcard{border:1px solid #e2dbc8;border-radius:12px;padding:28px 26px 30px;transition:.25s;
     background:linear-gradient(#fffdf7,#f8f4ea);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 3px 6px rgba(60,50,20,.1), 0 10px 24px rgba(60,50,20,.14);}
@@ -305,6 +305,37 @@
   .join-grid .jcard:nth-child(2){background:linear-gradient(#f6fbf7,#eaf4ec);border-color:#d5e6d9;}
   .join-grid .jcard:nth-child(3){background:linear-gradient(#f6f9fc,#e9f1f7);border-color:#d3e2ee;}
   .join-grid .jcard:nth-child(4){background:linear-gradient(#faf8fd,#f1ecf8);border-color:#e0d8ee;}
+  .join-grid .jcard:nth-child(5){background:linear-gradient(#fdf8f6,#f8ece7);border-color:#ead9d1;}
+  /* 선택된 카드 (기본: 총회) */
+  .join-grid .jcard.on{border-color:var(--gold);border-width:2px;padding:27px 25px 29px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 4px 10px rgba(150,110,20,.2), 0 14px 30px rgba(150,110,20,.2);}
+  .join-grid .jcard.on::after{content:'';position:absolute;left:50%;bottom:-11px;transform:translateX(-50%) rotate(45deg);
+    width:18px;height:18px;background:#f9f0dd;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);}
+  .join-grid .jcard{position:relative;}
+  .join-grid .jcard.on h3{color:var(--gold-deep,#8a6a12);}
+
+  /* ── 정관 (연혁 다음) ── */
+  .rules-box{margin-top:44px;border:1px solid #e2dbc8;border-radius:14px;background:linear-gradient(#fffdf7,#f8f4ea);
+    padding:30px 32px 32px;box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 3px 8px rgba(60,50,20,.08);}
+  .rules-box .rb-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+  .rules-box .en{font-family:'Noto Serif KR',serif;font-style:italic;font-size:13px;color:var(--gold);display:block;margin-bottom:4px;}
+  .rules-box h3{font-family:'Noto Serif KR',serif;font-size:24px;color:#2f2a1d;}
+  .rules-box .rb-lead{margin-top:12px;font-size:14.5px;color:#6b6553;}
+  .btn-rules{display:inline-block;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:500;
+    color:#4a3c14;background:linear-gradient(#fdf6e6,#f2e6c9);border:1px solid #ddcb9e;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(90,70,20,.16), 0 6px 14px rgba(90,70,20,.14);transition:.2s;}
+  .btn-rules:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 4px 8px rgba(90,70,20,.2), 0 10px 20px rgba(90,70,20,.18);}
+  .rb-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:22px;}
+  .rb-grid span{background:#fff;border:1px solid #eae3d1;border-radius:8px;padding:12px 10px;text-align:center;
+    font-size:14px;color:#3b3527;font-weight:500;}
+  .rb-grid i{display:block;font-style:normal;font-size:11.5px;color:var(--gold);margin-bottom:3px;letter-spacing:.04em;}
+
+  /* 참여마당 안 총회 패널 */
+  .asm-panel{margin-top:34px;border:1px solid #e6dfcb;border-radius:14px;background:#fffdf8;padding:34px 34px 12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 4px 14px rgba(60,50,20,.07);}
+  .asm-panel .asm-head{border-bottom:1px solid #eae3d1;padding-bottom:16px;margin-bottom:26px;}
+  .asm-panel .asm-head .en{font-family:'Noto Serif KR',serif;font-style:italic;font-size:13px;color:var(--gold);display:block;margin-bottom:4px;}
+  .asm-panel .asm-head h3{font-family:'Noto Serif KR',serif;font-size:24px;color:#2f2a1d;}
 
   /* ── 갤러리 ── */
   .gal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
@@ -354,7 +385,10 @@
     nav.gnb{display:none;}
     .greeting .inner{grid-template-columns:1fr;gap:40px;}
     .portrait{max-width:300px;margin:0 auto;}
-    .two-col,.join-grid{grid-template-columns:1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .join-grid{grid-template-columns:1fr 1fr;}
+    .rb-grid{grid-template-columns:repeat(3,1fr);}
+    .join-grid .jcard.on::after{display:none;}
     .gal-grid{grid-template-columns:repeat(2,1fr);}
     .timeline::before{left:79px;}
     .trow .yr{width:60px;font-size:18px;}
@@ -406,8 +440,8 @@
           <a href="#news">동문회 총회</a>
           <a href="../board/index.html?cat=club">소모임</a>
           <a href="../board/index.html?cat=mentoring">멘토멘티</a>
-          <a href="#sub-forum">단과대포럼</a>
-          <a href="#sub-seminar">세미나</a>
+          <a href="../board/index.html?cat=forum">단과대포럼</a>
+          <a href="../board/index.html?cat=seminar">세미나</a>
         </div>
       </div>
       <div class="dd">
@@ -635,17 +669,65 @@
       <div class="trow"><div class="yr">2021</div><div class="dot"></div><div class="tx"><h4>제3대 정세영 회장 취임</h4><p>정세영 회장(경희대학교 약학대학 교수) 취임, 임원진 위촉·정비 — 코로나 시기 온·오프라인 병행 총회 방식 정착</p></div></div>
       <div class="trow"><div class="yr">2026</div><div class="dot"></div><div class="tx"><h4>제4대 양일모 회장 취임</h4><p>2월 정기총회에서 양일모 회장(서울대학교 자유전공학부 교수) 선출 — 역대 회장: 초대 이영순(2011) · 2대 박종근(2015) · 3대 정세영(2021) · 4대 양일모(2026). 단과대별 순환 포럼, 멘토링, 한일교류 사업 추진</p></div></div>
     </div>
+
+    <!-- 정관 -->
+    <div class="rules-box" id="rules">
+      <div class="rb-head">
+        <div><span class="en">Articles of Association</span><h3>동문회 정관</h3></div>
+        <a class="btn-rules" href="rules.html">정관 전문 보기 →</a>
+      </div>
+      <p class="rb-lead">2023년 11월 1일 제정 — 총칙부터 부칙까지 9개 장으로 구성되어 있습니다.</p>
+      <div class="rb-grid">
+        <span><i>제1장</i>총칙</span>
+        <span><i>제2장</i>회원</span>
+        <span><i>제3장</i>총회</span>
+        <span><i>제4장</i>임원</span>
+        <span><i>제5장</i>회의 및 조직</span>
+        <span><i>제6장</i>지부</span>
+        <span><i>제7장</i>사업</span>
+        <span><i>제8장</i>재무</span>
+        <span><i>제9장</i>부칙</span>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="block" id="news">
+<section class="block" id="join">
   <div class="container">
     <div class="sec-head">
-      <div class="t"><span class="en">General Assembly</span><h2>동문회 총회</h2></div>
-      <a class="more auth-only" href="../board/index.html?org=OB">게시판 +</a>
+      <div class="t"><span class="en">Participation</span><h2>참여마당</h2></div>
+    </div>
+    <div class="join-grid">
+      <a class="jcard on" href="#news" id="sub-assembly">
+        <span class="no">01</span>
+        <h3>총회</h3>
+        <p>매년 2월 정기총회 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 특별강연과 경품 추첨. 연도별 결과 보고를 아래에서 보실 수 있습니다.</p>
+      </a>
+      <a class="jcard" href="../board/index.html?cat=club" id="sub-moim">
+        <span class="no">02</span>
+        <h3>소모임</h3>
+        <p>골프(은행회) · 등산모임 · 약우회 · 현정회 · 젊은 동문 모임 등 취미·친목 소모임을 연 2회 지원합니다.</p>
+      </a>
+      <a class="jcard" href="../board/index.html?cat=mentoring" id="sub-mentoring">
+        <span class="no">03</span>
+        <h3>멘토멘티</h3>
+        <p>선배 동문이 후배의 진로·유학·취업을 함께 고민합니다 — 멘토·멘티 모집과 상담 후기 나눔.</p>
+      </a>
+      <a class="jcard" href="../board/index.html?cat=forum" id="sub-forum">
+        <span class="no">04</span>
+        <h3>단과대포럼</h3>
+        <p>단과대별 순환 포럼(추진 단과대별 75만원 지원) — 건축학 구조계, 농학생명과학, 한일국제포럼 등 분야별 최신 정보 교류.</p>
+      </a>
+      <a class="jcard" href="../board/index.html?cat=seminar" id="sub-seminar">
+        <span class="no">05</span>
+        <h3>세미나</h3>
+        <p>학술 세미나와 심포지엄의 자율적 개최를 지원합니다 — 동문 간 전문지식 공유와 네트워크의 장.</p>
+      </a>
     </div>
 
-    <div class="asm">
+    <div class="asm-panel" id="news">
+      <div class="asm-head"><span class="en">General Assembly</span><h3>동문회 총회 — 연도별 결과 보고</h3></div>
+<div class="asm">
       <div class="asm-tx">
       <h3><span class="yr">2026</span>2026년도 정기총회 결과 보고</h3>
       <div class="when">2026년 2월 12일(목) 18:30 · 한국제약바이오협회 강당 (온/오프라인 병행) · 사회 김태수 부회장</div>
@@ -726,37 +808,6 @@
       </ul>
       </div>
     </div>
-  </div>
-</section>
-
-
-
-<section class="block" id="join">
-  <div class="container">
-    <div class="sec-head">
-      <div class="t"><span class="en">Participation</span><h2>참여마당</h2></div>
-    </div>
-    <div class="join-grid">
-      <a class="jcard" href="#news" id="sub-assembly">
-        <span class="no">01</span>
-        <h3>총회</h3>
-        <p>매년 2월 정기총회 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 특별강연과 경품 추첨. 연도별 결과 보고 보기 →</p>
-      </a>
-      <a class="jcard" href="../board/index.html?cat=club" id="sub-moim">
-        <span class="no">02</span>
-        <h3>소모임</h3>
-        <p>골프(은행회) · 등산모임 · 약우회 · 현정회 · 젊은 동문 모임 등 취미·친목 소모임을 연 2회 지원합니다.</p>
-      </a>
-      <a class="jcard" href="#" id="sub-forum">
-        <span class="no">03</span>
-        <h3>단과대포럼</h3>
-        <p>단과대별 순환 포럼(추진 단과대별 75만원 지원) — 건축학 구조계, 농학생명과학, 한일국제포럼 등 분야별 최신 정보 교류.</p>
-      </a>
-      <a class="jcard" href="#" id="sub-seminar">
-        <span class="no">04</span>
-        <h3>세미나</h3>
-        <p>학술 세미나와 심포지엄의 자율적 개최를 지원합니다 — 동문 간 전문지식 공유와 네트워크의 장.</p>
-      </a>
     </div>
   </div>
 </section>
