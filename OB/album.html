@@ -20,6 +20,7 @@
   .ahead .back{display:inline-block;margin-top:16px;font-size:13px;color:rgba(255,255,255,.75);
     border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:7px 18px;transition:.2s;}
   .ahead .back:hover{border-color:#e8c876;color:#e8c876;}
+  .ahead .backs{display:flex;gap:8px;flex-wrap:wrap;}
 
   .awrap{max-width:1180px;margin:0 auto;padding:30px 24px 80px;}
   /* 운영진 사진 추가 */
@@ -91,7 +92,11 @@
     <span class="en">Album</span>
     <h1 id="atitle">불러오는 중…</h1>
     <div class="meta" id="ameta"></div>
-    <a class="back" id="aback" href="gallery.html">← 갤러리 목록</a>
+    <div class="backs">
+      <a class="back" id="aback" href="gallery.html">← 갤러리 목록</a>
+      <a class="back" href="index.html">⌂ 총동문회 첫화면</a>
+      <a class="back" href="../index.html">통합 홈</a>
+    </div>
   </div>
 </div>
 
@@ -129,9 +134,9 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=6"></script>
+<script src="gallery-data.js?v=7"></script>
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=6";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=7";
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);

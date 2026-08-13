@@ -134,6 +134,40 @@
   .cbox li{font-size:14px;color:#3d4a41;padding:7px 0;border-bottom:1px dashed #e8f0e9;}
   .cbox li:last-child{border-bottom:none;}
   .cbox li b{color:var(--green);font-weight:600;margin-right:8px;}
+  /* ── 오시는 길 · 캠퍼스 지도 ── */
+  .mapwrap{margin-top:34px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;
+    box-shadow:0 4px 16px rgba(20,50,30,.07);}
+  .maphead{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:18px 22px;border-bottom:1px solid #eef3ee;background:linear-gradient(#fbfefb,#f4f9f5);}
+  .maphead h3{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;}
+  .mtabs{display:flex;gap:8px;flex-wrap:wrap;}
+  .mtabs a{display:flex;flex-direction:column;align-items:center;line-height:1.3;
+    padding:8px 18px;border-radius:9px;font-size:14px;font-weight:500;color:#3e5344;
+    background:#fff;border:1px solid #cfe3d4;transition:.18s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 2px 4px rgba(30,82,48,.1);}
+  .mtabs a small{font-size:10.5px;font-weight:300;color:#9aa79c;letter-spacing:.02em;}
+  .mtabs a:hover{transform:translateY(-2px);color:var(--green);}
+  .mtabs a.on{background:linear-gradient(#e4f3e7,#cfe7d6);border-color:#a9cfb4;color:var(--green);}
+  .mtabs a.on small{color:#5b8a68;}
+  .mapbody{display:grid;grid-template-columns:1.55fr 1fr;}
+  .mapbox{position:relative;min-height:380px;background:#eef3ef;}
+  .mapbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
+  .mapinfo{padding:26px 26px 24px;border-left:1px solid #eef3ee;}
+  .mapinfo .mname{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;color:var(--green);}
+  .mapinfo .maddr{margin-top:10px;font-size:14px;color:#33403a;font-weight:500;word-break:keep-all;}
+  .mapinfo .mjp{margin-top:3px;font-size:12.5px;color:#9aa79c;}
+  .mways{list-style:none;margin-top:18px;}
+  .mways li{position:relative;padding:8px 0 8px 18px;font-size:13.5px;color:#33403a;line-height:1.7;
+    border-bottom:1px solid #f2f7f3;word-break:keep-all;}
+  .mways li:last-child{border-bottom:none;}
+  .mways li::before{content:"";position:absolute;left:2px;top:16px;width:5px;height:5px;border-radius:50%;background:var(--leaf);}
+  .mways b{font-weight:600;color:var(--green);}
+  .mlink{display:inline-block;margin-top:16px;font-size:13px;color:var(--green);font-weight:500;
+    border-bottom:1px solid #cfe3d4;padding-bottom:2px;transition:.2s;}
+  .mlink:hover{border-color:var(--green);}
+  .maptip{padding:11px 22px;font-size:12px;color:#9aa79c;background:#f7fbf7;border-top:1px solid #eef3ee;}
+  @media (max-width:860px){ .mapbody{grid-template-columns:1fr;} .mapinfo{border-left:none;border-top:1px solid #eef3ee;}
+    .mapbox{min-height:300px;} }
   @media (max-width:760px){ .council,.school-grid{grid-template-columns:1fr;} }
 
   /* 갤러리 */
@@ -344,8 +378,78 @@
         <p>입학, 체류자격, 기숙사, 장학금, 아르바이트 등 유학 생활의 궁금증을 나눕니다.</p>
       </a>
     </div>
+
+    <!-- 오시는 길 — 캠퍼스 지도 -->
+    <div class="mapwrap" id="access">
+      <div class="maphead">
+        <h3>오시는 길</h3>
+        <div class="mtabs" id="mtabs"></div>
+      </div>
+      <div class="mapbody">
+        <div class="mapbox">
+          <iframe id="cmap" title="도쿄대학 캠퍼스 지도" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+        <div class="mapinfo">
+          <div class="mname" id="mName"></div>
+          <div class="maddr" id="mAddr"></div>
+          <div class="mjp" id="mAddrJp"></div>
+          <ul class="mways" id="mWays"></ul>
+          <a class="mlink" id="mLink" href="#" target="_blank" rel="noopener">큰 지도로 보기 · 길찾기 →</a>
+        </div>
+      </div>
+      <div class="maptip">지도 안에서 <b>+ / −</b> 또는 마우스 휠로 확대·축소, 끌어서 이동할 수 있습니다.</div>
+    </div>
   </div>
 </section>
+
+<script>
+(function () {
+  const CAMPUS = [
+    { k: "hongo", n: "혼고 캠퍼스 (本郷)", tag: "본부",
+      addr: "일본 도쿄도 분쿄구 혼고 7-3-1",
+      jp: "〒113-8654 東京都文京区本郷7-3-1",
+      lat: 35.7128, lng: 139.7620,
+      ways: ["도쿄메트로 남북선 <b>도다이마에(東大前)역</b> 도보 1분",
+             "도쿄메트로 마루노우치선·도에이 오에도선 <b>혼고산초메(本郷三丁目)역</b> 도보 8분",
+             "도쿄메트로 지요다선 <b>네즈(根津)역</b> 도보 8분",
+             "아카몬(赤門) · 야스다강당 · 산시로연못이 이 캠퍼스에 있습니다"] },
+    { k: "komaba", n: "고마바 캠퍼스 (駒場)", tag: "교양학부",
+      addr: "일본 도쿄도 메구로구 고마바 3-8-1",
+      jp: "〒153-8902 東京都目黒区駒場3-8-1",
+      lat: 35.6595, lng: 139.6849,
+      ways: ["게이오 이노카시라선 <b>고마바토다이마에(駒場東大前)역</b> 바로 앞",
+             "시부야역에서 이노카시라선으로 2정거장 (약 4분)",
+             "1·2학년 전 학생이 다니는 교양학부 캠퍼스입니다"] },
+    { k: "kashiwa", n: "가시와 캠퍼스 (柏)", tag: "대학원·연구",
+      addr: "일본 지바현 가시와시 가시와노하 5-1-5",
+      jp: "〒277-8561 千葉県柏市柏の葉5-1-5",
+      lat: 35.8988, lng: 139.9436,
+      ways: ["쓰쿠바 익스프레스 <b>가시와노하캠퍼스역</b> 하차 후 버스 약 10분",
+             "JR 조반선 <b>가시와(柏)역</b> 서쪽 출구에서 버스 약 25분",
+             "신령역 연구·대학원 중심 캠퍼스입니다"] },
+  ];
+  const tabs = document.getElementById("mtabs");
+  tabs.innerHTML = CAMPUS.map((c, i) =>
+    `<a href="#access" data-i="${i}"${i === 0 ? ' class="on"' : ""}>${c.n.split(" ")[0]}<small>${c.tag}</small></a>`).join("");
+
+  function show(i) {
+    const c = CAMPUS[i];
+    tabs.querySelectorAll("a").forEach((a, j) => a.classList.toggle("on", i === j));
+    document.getElementById("cmap").src =
+      `https://www.google.com/maps?q=${c.lat},${c.lng}&hl=ko&z=16&output=embed`;
+    document.getElementById("mName").textContent = c.n;
+    document.getElementById("mAddr").textContent = c.addr;
+    document.getElementById("mAddrJp").textContent = c.jp;
+    document.getElementById("mWays").innerHTML = c.ways.map(w => `<li>${w}</li>`).join("");
+    document.getElementById("mLink").href =
+      `https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}`;
+  }
+  tabs.querySelectorAll("a").forEach(a =>
+    a.addEventListener("click", (e) => { e.preventDefault(); show(+a.dataset.i); }));
+  show(0);
+})();
+</script>
 
 <!-- 학생회 -->
 <section class="block tint" id="council">
