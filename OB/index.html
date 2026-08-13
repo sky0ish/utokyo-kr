@@ -450,6 +450,71 @@
   </div>
 </div>
 
+<!-- ═══ 메인 모음판 ═══ -->
+<section class="dash">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">At a Glance</span><h2>한눈에 보기</h2></div>
+    </div>
+    <div class="dash-grid">
+
+      <!-- 동문회 소개 -->
+      <a class="dcard dc-intro" href="#greeting">
+        <div class="dhead">
+          <h3><span class="ico">🏛</span>동문회 소개</h3>
+          <span class="more">자세히 +</span>
+        </div>
+        <div class="dbody">
+          <div class="dsum"><b>회장</b><span>제4대 양일모 — 서울대학교 자유전공학부 교수</span></div>
+          <div class="dsum"><b>창설</b><span>2011년 3월 · 아카몬학우회(赤門学友会) 등록단체</span></div>
+          <div class="dsum"><b>조직</b><span>고문단 15명 · 부회장단 30여 명 · 이사진 19명</span></div>
+          <div class="dsum"><b>정관</b><span>2023년 11월 제정 — 총칙부터 재무까지 9개 장</span></div>
+        </div>
+      </a>
+
+      <!-- 참여마당 -->
+      <a class="dcard dc-join" href="#join">
+        <div class="dhead">
+          <h3><span class="ico">🤝</span>참여마당</h3>
+          <span class="more">자세히 +</span>
+        </div>
+        <div class="dbody">
+          <div class="dsum"><b>총회</b><span>매년 2월 정기총회 — 활동보고 · 자랑스러운 동경대인상 · 특별강연</span></div>
+          <div class="dsum"><b>소모임</b><span>골프(은행회) · 등산 · 약우회 · 젊은 동문 모임</span></div>
+          <div class="dsum"><b>포럼</b><span>단과대별 순환 포럼 — 추진 단과대별 75만원 지원</span></div>
+          <div class="dsum"><b>세미나</b><span>학술 세미나 · 심포지엄 자율 개최 지원</span></div>
+        </div>
+      </a>
+
+      <!-- 게시판 -->
+      <div class="dcard dc-board">
+        <a class="dhead" href="../board/index.html">
+          <h3><span class="ico">📋</span>게시판</h3>
+          <span class="more">전체보기 +</span>
+        </a>
+        <div class="dbody">
+          <ul id="dashPosts"><li><a><span class="tt">불러오는 중…</span></a></li></ul>
+        </div>
+      </div>
+
+      <!-- 갤러리 -->
+      <a class="dcard dc-gal" href="#gallery">
+        <div class="dhead">
+          <h3><span class="ico">🖼</span>갤러리</h3>
+          <span class="more">전체보기 +</span>
+        </div>
+        <div class="dgal">
+          <span><img src="../images/posters/asm2025.jpg" alt="2025 총회"></span>
+          <span><img src="../images/yasuda.jpg" alt="야스다강당"></span>
+          <span><img src="../images/akamon.jpg" alt="아카몬"></span>
+          <span><img src="../images/gold_canopy.jpg" alt="혼고의 은행나무"></span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
 <section class="greeting" id="greeting">
   <div class="container inner">
     <figure class="portrait">
@@ -836,6 +901,31 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "../auth/auth.js";
+
+// ─── 모음판: 최근 게시글 ───
+(async () => {
+  const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘티멘토",
+                promo:"홍보", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
+  const el = document.getElementById("dashPosts");
+  if (!el) return;
+  const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  try {
+    const { data, error } = await sb.from("posts")
+      .select("id,title,category,created_at")
+      .order("created_at", { ascending: false }).limit(6);
+    if (error || !data || !data.length) {
+      el.innerHTML = '<li><a href="../auth/login.html"><span class="tt">로그인하시면 회원 전용 게시글을 보실 수 있습니다.</span></a></li>';
+      return;
+    }
+    el.innerHTML = data.map(p => `
+      <li><a href="../board/post.html?id=${p.id}">
+        <span class="tt">${esc(p.title)}</span>
+        <span class="dt">${(p.created_at||"").slice(0,10)}</span>
+      </a></li>`).join("");
+  } catch (e) {
+    el.innerHTML = '<li><a href="../board/index.html"><span class="tt">게시판 바로가기 →</span></a></li>';
+  }
+})();
 try {
   const user = await currentUser();
   if (user) {
