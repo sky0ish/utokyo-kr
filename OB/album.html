@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>앨범 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -73,7 +74,7 @@
   </div>
 </div>
 
-<script src="gallery-data.js"></script>
+<script src="gallery-data.js?v=3"></script>
 <script>
 (function () {
   const NAME = { assembly:"총회", club:"소모임", faculty:"단과대모임", forum:"포럼·세미나", old:"옛날사진", daily:"일상", etc:"기타" };
@@ -95,7 +96,7 @@
 
   const grid = document.getElementById("agrid");
   grid.innerHTML = album.p.map((k, i) =>
-    `<div class="ph" data-i="${i}"><img src="${BASE}${k}_t.jpg" alt="${album.t} ${i + 1}" loading="lazy"></div>`).join("");
+    `<div class="ph" data-i="${i}"><img src="${BASE}${k}_t.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>`).join("");
 
   const lb = document.getElementById("lb");
   const img = document.getElementById("lbimg");

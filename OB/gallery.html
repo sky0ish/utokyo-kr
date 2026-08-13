@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../board/board.css">
+<link rel="stylesheet" href="../board/board.css?v=3">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -119,7 +120,7 @@
   <div class="ggrid" id="ggrid"></div>
 </div>
 
-<script src="gallery-data.js"></script>
+<script src="gallery-data.js?v=3"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
@@ -152,7 +153,7 @@ function render() {
   grid.innerHTML = list.map(a => `
     <a class="alb" href="album.html?cat=${cur}&id=${a.i}" target="_blank" rel="noopener">
       <span class="sq">
-        <img src="${BASE}${cur}/${a.p[0]}_t.jpg" alt="${a.t}" loading="lazy">
+        <img src="${BASE}${cur}/${a.p[0]}_t.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
         <span class="n">${a.p.length}장</span>
       </span>
       <span class="cp"><b>${a.t}</b><small>${a.d}</small></span>
