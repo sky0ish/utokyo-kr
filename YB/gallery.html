@@ -245,8 +245,10 @@ function render() {
   grid.innerHTML = list.map(a => `
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener">
       <span class="sq">
-        ${a.custom && (a.ownerName || a.owner)
-          ? `<span class="mine">${a.ownerName ? "공유자(" + esc(a.ownerName) + ")" : "회원 사진첩"}</span>` : ""}
+        ${a.ownerAdmin
+          ? '<span class="mine">관리자</span>'
+          : (a.ownerName ? `<span class="mine">공유자(${esc(a.ownerName)})</span>`
+            : (a.custom && a.owner ? '<span class="mine">회원 사진첩</span>' : ""))}
         ${a.cover
           ? `<img src="${a.cover.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
           : '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#a9b8ae;font-size:13px;">사진을 올려주세요</span>'}
@@ -315,7 +317,8 @@ function setupNewAlbum(user, me) {
     const { error } = await sb.from("gallery_albums").insert({
       album_key: key, title, category: cat, event_date: date, org: "YB",
       created_by: user.id, updated_by: user.id,
-      owner_name: (me && me.name) || "",       // 사진첩에 공유자 이름을 남긴다
+      owner_name: (me && me.is_admin) ? "" : ((me && me.name) || ""),
+      owner_admin: !!(me && me.is_admin),      // 운영진이 올린 것인지
     });
     if (error) {
       save.disabled = false; msg.className = "msg err";
@@ -334,7 +337,8 @@ function setupNewAlbum(user, me) {
       const ins = await sb.from("gallery_photos").insert({
         category: cat, taken_at: date, album_key: key, sort: n, org: "YB",
         image_url: pub.publicUrl, storage_path: path, created_by: user.id,
-        owner_name: (me && me.name) || "",       // 누가 올렸는지 함께 남긴다
+        owner_name: (me && me.is_admin) ? "" : ((me && me.name) || ""),
+        owner_admin: !!(me && me.is_admin),    // 운영진이 올린 것인지
       });
       if (ins.error) { fail++; last = ins.error.message; } else ok++;
     }

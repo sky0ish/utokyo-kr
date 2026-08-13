@@ -71,7 +71,7 @@ export async function loadGallery() {
     (ph.data || []).forEach(r => photos.push({
       key: `db:${r.id}`, kind: "db", id: r.id, cat: r.category,
       date: iso(r.taken_at), cap: r.caption || "", sort: r.sort || 0,
-      album: r.album_key || null, owner: r.created_by, ownerName: r.owner_name || "",
+      album: r.album_key || null, owner: r.created_by, ownerName: r.owner_name || "", ownerAdmin: !!r.owner_admin,
       thumb: r.image_url, full: r.image_url, storage_path: r.storage_path,
     }));
     (al.data || []).forEach(a => {
@@ -90,7 +90,7 @@ export async function loadGallery() {
       key: a.album_key, cat: a.category || "etc",
       year: (iso(a.event_date) || "").slice(0, 4) || "",
       title: a.title || "사진첩", custom: true, owner: a.created_by,
-      ownerName: a.owner_name || "", coverKey: a.cover_key || "",
+      ownerName: a.owner_name || "", ownerAdmin: !!a.owner_admin, coverKey: a.cover_key || "",
       sort: a.sort != null ? a.sort : 0,      // 순서는 행사 날짜로 정한다(위로 띄우지 않음)
       photos: [],
     });

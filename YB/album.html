@@ -173,7 +173,8 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
            <input type="checkbox" class="pick" title="선택">
            <button class="rm" title="사진 내리기">✕</button>
            <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-           ${p.ownerName ? `<span class="own">공유자(${esc(p.ownerName)})</span>` : ""}
+           ${p.ownerAdmin ? '<span class="own">관리자</span>'
+          : (p.ownerName ? `<span class="own">공유자(${esc(p.ownerName)})</span>` : "")}
        <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
          </div>`).join("")
       : '<div class="aempty" style="grid-column:1/-1;">아직 사진이 없습니다.<br>위에서 사진을 올려주세요.</div>';
@@ -190,7 +191,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     img.src = p.full;
     document.getElementById("lbcap").textContent =
       `${p.cap || album.title} · ${(p.date || "").replace(/-/g, ".")}` +
-      (p.ownerName ? ` · 공유자(${p.ownerName})` : "") +
+      (p.ownerAdmin ? " · 관리자" : p.ownerName ? ` · 공유자(${p.ownerName})` : "") +
       `  (${idx + 1} / ${album.photos.length})`;
     lb.classList.add("on");
   }
@@ -245,7 +246,8 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
             album_key: album.custom ? album.key : null,
             image_url: pub.publicUrl, storage_path: path,
             sort: album.photos.length + n, created_by: user.id,
-            owner_name: (myName || ""),              // 누가 올렸는지 함께 남긴다
+            owner_name: isAdmin ? "" : (myName || ""),
+            owner_admin: isAdmin,                    // 운영진이 올린 것인지
           });
           if (ins.error) { fail++; last = ins.error.message; } else ok++;
         }
