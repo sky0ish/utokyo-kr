@@ -52,12 +52,18 @@
 
   /* ── 히어로 ── */
   .hero{
-    position:relative;color:#fff;overflow:hidden;
+    position:relative;color:#fff;overflow:hidden;min-height:82vh;display:flex;align-items:center;
     background:
-      linear-gradient(180deg, rgba(16,24,40,.66) 0%, rgba(20,24,34,.5) 45%, rgba(10,13,22,.82) 100%),
-      url('../images/gold_avenue.jpg') center 55%/cover;
+      /* 좌측은 짙게(글씨 가독) → 우측은 은행나무 황금빛이 그대로 */
+      linear-gradient(100deg, rgba(10,15,27,.90) 0%, rgba(12,17,30,.74) 34%, rgba(14,18,28,.34) 60%, rgba(40,26,6,.20) 100%),
+      /* 위아래 살짝 눌러 헤더·다음 섹션과 자연스럽게 이어짐 */
+      linear-gradient(180deg, rgba(10,14,24,.55) 0%, rgba(10,14,24,0) 26%, rgba(10,14,24,0) 62%, rgba(10,13,22,.72) 100%),
+      url('../images/gold_avenue.jpg') center 52%/cover;
   }
-  .hero .container{position:relative;z-index:2;padding-top:60px;padding-bottom:68px;}
+  /* 황금빛 은행잎 광채 */
+  .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse 46% 40% at 72% 46%, rgba(255,214,122,.30) 0%, rgba(255,196,80,.10) 45%, rgba(0,0,0,0) 72%);}
+  .hero .container{position:relative;z-index:2;padding-top:74px;padding-bottom:80px;width:100%;}
   .hero .eyebrow{display:flex;align-items:center;gap:12px;font-size:12.5px;letter-spacing:.42em;color:var(--gold-bright);margin-bottom:22px;}
   .hero .eyebrow::before{content:"";width:36px;height:1px;background:var(--gold);}
   .hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(30px,4.4vw,52px);font-weight:600;line-height:1.4;margin-bottom:20px;}
