@@ -41,7 +41,7 @@
         <div class="dd-menu">
           <a href="index.html?cat=free">자유게시판</a>
           <a href="index.html?cat=club">소모임</a>
-          <a href="index.html?cat=mentoring">멘티멘토</a>
+          <a href="index.html?cat=mentoring">멘토멘티</a>
           <a href="index.html?cat=promo">홍보·채용</a>
           <a href="index.html?cat=condolence">경조사</a>
           <a href="index.html?cat=notice">공지사항</a>
@@ -86,7 +86,7 @@
     <a href="#" data-cat="">전체</a>
     <a href="#" data-cat="free">자유게시판</a>
     <a href="#" data-cat="club">소모임</a>
-    <a href="#" data-cat="mentoring">멘티멘토</a>
+    <a href="#" data-cat="mentoring">멘토멘티</a>
     <a href="#" data-cat="promo">홍보·채용</a>
     <a href="#" data-cat="condolence">경조사</a>
     <a href="#" data-cat="notice">공지사항</a>
@@ -110,7 +110,7 @@
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
-const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘티멘토", promo:"홍보·채용", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
+const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
 const SRC = {
   band: '<span class="src-tag band">네이버밴드</span>',
   facebook: '<span class="src-tag fb">페이스북</span>',
@@ -154,7 +154,7 @@ if (user) {
   document.getElementById("loginNotice").style.display = "block";
   document.getElementById("loginNotice").innerHTML =
     '공지사항 · 홍보 게시판은 누구나 보실 수 있습니다. ' +
-    '<b>자유게시판 · 소모임 · 멘티멘토 · 경조사</b>는 로그인 후 이용해주세요. ' +
+    '<b>자유게시판 · 소모임 · 멘토멘티 · 경조사</b>는 로그인 후 이용해주세요. ' +
     '<a href="../auth/login.html">로그인</a> · <a href="../auth/signup.html">회원가입</a>';
   // 회원 전용 탭 숨기기
   document.querySelectorAll("#catTabs a").forEach(a => {
