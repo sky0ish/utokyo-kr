@@ -291,11 +291,20 @@
 
   /* ── 참여마당 ── */
   .join-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
-  .jcard{border:1px solid var(--line);border-radius:2px;padding:30px;transition:.25s;background:#fff;}
-  .jcard:hover{border-color:var(--gold);box-shadow:0 12px 36px rgba(60,50,20,.08);transform:translateY(-3px);}
-  .jcard .no{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);}
-  .jcard h3{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;margin:8px 0 10px;}
-  .jcard p{font-size:13.5px;color:#6f6a5c;font-weight:300;}
+  .jcard{border:1px solid #e2dbc8;border-radius:12px;padding:28px 26px 30px;transition:.25s;
+    background:linear-gradient(#fffdf7,#f8f4ea);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 3px 6px rgba(60,50,20,.1), 0 10px 24px rgba(60,50,20,.14);}
+  .jcard:hover{border-color:var(--gold);transform:translateY(-4px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 6px 12px rgba(60,50,20,.14), 0 20px 40px rgba(60,50,20,.2);}
+  .jcard:active{transform:translateY(1px);box-shadow:inset 0 3px 8px rgba(0,0,0,.12);}
+  .jcard .no{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--gold);font-weight:500;}
+  .jcard h3{font-family:'Noto Serif KR',serif;font-size:23px;font-weight:700;margin:6px 0 12px;letter-spacing:-.01em;color:#1d2333;}
+  .jcard p{font-size:14px;color:#575246;font-weight:400;line-height:1.8;word-break:keep-all;}
+  /* 카드별 포인트 색 */
+  .join-grid .jcard:nth-child(1){background:linear-gradient(#fffaf0,#f9f0dd);}
+  .join-grid .jcard:nth-child(2){background:linear-gradient(#f6fbf7,#eaf4ec);border-color:#d5e6d9;}
+  .join-grid .jcard:nth-child(3){background:linear-gradient(#f6f9fc,#e9f1f7);border-color:#d3e2ee;}
+  .join-grid .jcard:nth-child(4){background:linear-gradient(#faf8fd,#f1ecf8);border-color:#e0d8ee;}
 
   /* ── 갤러리 ── */
   .gal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
