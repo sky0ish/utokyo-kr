@@ -168,10 +168,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=11"></script>
+<script src="gallery-data.js?v=12"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=11";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=12";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (!CATS.some(c => c[0] === cur)) cur = "assembly";

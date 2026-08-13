@@ -32,6 +32,11 @@ where category = 'forum' and title ~ '(화학공학|응용화학|기계|전기|�
 
 
 -- ── 2) 자료 폴더에서 정리한 포럼·세미나 기록 등록 ──
+-- 다시 실행해도 같은 글이 쌓이지 않도록 먼저 지웁니다.
+delete from public.posts
+where org = 'OB' and source = 'legacy' and author_name = '총동문회 사무국'
+  and category in ('forum', 'seminar');
+
 insert into public.posts (org, category, title, content, author_name, visibility, source, created_at)
 values
 ('OB', 'forum', '[건축학] 2025 건축학 구조계 동문회 국제세미나',

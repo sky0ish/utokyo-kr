@@ -24,7 +24,7 @@ const V = window.GALLERY_V ? "?v=" + window.GALLERY_V : "";
 
 const iso = (d) => (d || "").replace(/\./g, "-").slice(0, 10);
 
-/** 기본 제공 사진을 평평한 목록으로 */
+/** 기본 제공 사진을 평평한 목록으로 (어느 앨범 소속인지 함께) */
 function staticPhotos() {
   const G = window.GALLERY || {};
   const out = [];
@@ -32,6 +32,7 @@ function staticPhotos() {
     albums.forEach(alb => alb.p.forEach((p, i) => out.push({
       key: `${cat}/${p.k}`, kind: "static", cat,
       date: iso(p.d), cap: p.c || alb.t, sort: i,
+      album: alb.i, albumTitle: alb.t, albumDate: iso(alb.d),
       thumb: `${BASE}${cat}/${p.k}_t.jpg${V}`, full: `${BASE}${cat}/${p.k}.jpg${V}`,
     })));
   }
@@ -58,8 +59,9 @@ export async function loadGallery() {
       const o = ovMap.get(p.key);
       if (!o) return true;
       if (o.hidden) return false;
-      if (o.category) p.cat = o.category;
-      if (o.taken_at) p.date = iso(o.taken_at);
+      // 분류나 날짜를 바꾸면 원래 앨범에서 빼내 연도 앨범으로 보낸다
+      if (o.category && o.category !== p.cat) { p.cat = o.category; p.album = null; }
+      if (o.taken_at) { p.date = iso(o.taken_at); p.album = null; }
       if (o.caption != null) p.cap = o.caption;
       if (o.sort != null) p.sort = o.sort;
       return true;
@@ -91,16 +93,23 @@ export async function loadGallery() {
       photos: [],
     });
   }
-  // 나머지는 분류 + 연도로 묶기
+  // 기본 제공 사진은 만들어질 때 정해진 앨범(날짜별)에 그대로 담는다
   for (const p of photos) {
     if (p.album && map.has(p.album)) { map.get(p.album).photos.push(p); continue; }
-    const y = (p.date || "").slice(0, 4) || "기타";
-    const key = `${p.cat}|${y}`;
+    let key, title, date;
+    if (p.album) {                       // 기본 제공 앨범
+      key = p.album; title = p.albumTitle; date = p.albumDate || p.date;
+    } else {                             // 회원이 올린 사진 · 옮겨진 사진 → 분류+연도
+      const y = (p.date || "").slice(0, 4) || "기타";
+      key = `${p.cat}|${y}`; date = p.date;
+      title = (ALBUM_NAME[p.cat] || "{y}년").replace("{y}", y);
+    }
     if (!map.has(key)) {
       const ov = albumTitles[key] || {};
       map.set(key, {
-        key, cat: p.cat, year: y,
-        title: ov.title || (ALBUM_NAME[p.cat] || "{y}년").replace("{y}", y),
+        key, cat: p.cat, year: (date || "").slice(0, 4),
+        title: ov.title || title,                 // 운영진이 고친 이름이 있으면 그것으로
+        fixedDate: p.album ? date : null,
         sort: ov.sort != null ? ov.sort : 0,
         photos: [],
       });
@@ -114,10 +123,10 @@ export async function loadGallery() {
     if (a.custom) {
       const ov = albumTitles[a.key] || {};
       a.date = iso(ov.event_date) || newest;
-      a.year = a.year || (a.date || "").slice(0, 4);
     } else {
-      a.date = newest;
+      a.date = a.fixedDate || newest;
     }
+    a.year = (a.date || "").slice(0, 4);
   });
   albums.sort((a, b) => (a.sort - b.sort) || (b.date || "").localeCompare(a.date || ""));
 
