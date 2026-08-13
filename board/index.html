@@ -132,7 +132,8 @@ document.querySelectorAll("#catTabs a").forEach(a => {
 });
 (document.querySelector('#catTabs a[data-cat="' + cat + '"]') || document.querySelector('#catTabs a[data-cat=""]')).classList.add("on");
 
-// 로그인 상태 표시
+// 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
+const PUBLIC_CATS = ["notice", "promo"];
 const user = await currentUser();
 if (user) {
   const p = await myProfile();
@@ -140,6 +141,20 @@ if (user) {
     `<a href="../auth/mypage.html">${(p && p.name) ? p.name + "님" : "내 정보"}</a>`;
 } else {
   document.getElementById("loginNotice").style.display = "block";
+  document.getElementById("loginNotice").innerHTML =
+    '공지사항 · 홍보 게시판은 누구나 보실 수 있습니다. ' +
+    '<b>자유게시판 · 소모임 · 멘티멘토 · 경조사</b>는 로그인 후 이용해주세요. ' +
+    '<a href="../auth/login.html">로그인</a> · <a href="../auth/signup.html">회원가입</a>';
+  // 회원 전용 탭 숨기기
+  document.querySelectorAll("#catTabs a").forEach(a => {
+    const c = a.dataset.cat || "";
+    if (c && !PUBLIC_CATS.includes(c)) a.style.display = "none";
+  });
+  if (cat && !PUBLIC_CATS.includes(cat)) {   // 회원 전용 게시판으로 바로 들어온 경우
+    cat = "";
+    document.querySelectorAll("#catTabs a").forEach(x => x.classList.remove("on"));
+    document.querySelector('#catTabs a[data-cat=""]').classList.add("on");
+  }
 }
 
 document.getElementById("writeBtn").addEventListener("click", async () => {
