@@ -39,7 +39,7 @@
   .addbox .amsg.err{color:#b3453b;} .addbox .amsg.ok{color:#2f7a45;}
   .ph .rm{position:absolute;top:5px;right:5px;border:none;border-radius:6px;padding:3px 8px;
     font-size:10.5px;cursor:pointer;font-family:inherit;color:#fff;background:rgba(180,60,50,.9);display:none;}
-  body.admin .ph .rm{display:block;}
+  .ph.can-rm .rm{display:block;}
   .agrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
   .ph{cursor:pointer;position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;
     background:#eceae2;border:1px solid #e5e0d0;box-shadow:0 2px 5px rgba(60,50,20,.08);transition:.2s;}
@@ -160,11 +160,13 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     if (e.key === "ArrowRight") open(idx + 1);
   });
 
-  // ─── 운영진 : 이 앨범에 사진 추가 / 내리기 ───
+  // ─── 회원 : 이 사진첩에 사진 추가 / 내리기 ───
   try {
     const user = await currentUser();
     const me = user ? await myProfile() : null;
-    if (me && me.is_admin) {
+    const isAdmin = !!(me && me.is_admin);
+    const canAdd = !!(me && (me.approved || me.is_admin));
+    if (canAdd) {
       document.body.classList.add("admin");
       const box = document.getElementById("addbox");
       box.classList.add("on");
@@ -180,7 +182,8 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         const date = document.getElementById("aDate").value;
         const capv = document.getElementById("aCap").value.trim();
         if (!files.length) { msg.className = "amsg err"; msg.textContent = "사진을 선택해주세요."; return; }
-        if (!date || date.slice(0, 4) !== album.year) {
+        if (!date) { msg.className = "amsg err"; msg.textContent = "촬영일을 입력해주세요."; return; }
+        if (!album.custom && date.slice(0, 4) !== album.year) {
           msg.className = "amsg err";
           msg.textContent = `촬영일은 ${album.year}년이어야 이 앨범에 들어갑니다.`;
           return;
@@ -196,6 +199,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
           const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
           const ins = await sb.from("gallery_photos").insert({
             category: cat, taken_at: date, caption: capv || null,
+            album_key: album.custom ? album.key : null,
             image_url: pub.publicUrl, storage_path: path,
             sort: album.photos.length + n, created_by: user.id,
           });
@@ -207,8 +211,13 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         if (ok) setTimeout(() => location.reload(), 700);
       });
 
-      // 사진 내리기
-      grid.querySelectorAll(".rm").forEach(b => b.addEventListener("click", async (e) => {
+      // 사진 내리기 — 내가 올린 사진 또는 운영진만
+      grid.querySelectorAll(".ph").forEach(el => {
+        const p = album.photos[+el.dataset.i];
+        const mine = p.kind === "db" && p.owner && user && p.owner === user.id;
+        if (mine || isAdmin) el.classList.add("can-rm");
+      });
+      grid.querySelectorAll(".can-rm .rm").forEach(b => b.addEventListener("click", async (e) => {
         e.stopPropagation();
         const p = album.photos[+b.closest(".ph").dataset.i];
         if (!confirm(p.kind === "db" ? "이 사진을 삭제할까요?" : "이 사진을 갤러리에서 감출까요?")) return;

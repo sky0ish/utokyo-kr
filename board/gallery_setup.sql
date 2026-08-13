@@ -32,14 +32,28 @@ create table if not exists public.gallery_overrides (
   updated_at timestamptz not null default now()
 );
 
--- ── 3) 앨범 제목 수정 내역 ──
+-- ── 3) 사진첩(앨범) ──
+--    · 'assembly|2026' 처럼 연도로 자동 생성되는 앨범의 제목 수정
+--    · 'custom:<uuid>' 로 회원이 직접 만든 사진첩
 create table if not exists public.gallery_albums (
-  album_key  text primary key,      -- 'assembly|2026'
+  album_key  text primary key,
   title      text,
+  category   text,                  -- 직접 만든 사진첩의 분류
+  event_date date,                  -- 행사 날짜
   sort       int,
+  created_by uuid references auth.users(id),
+  created_at timestamptz not null default now(),
   updated_by uuid references auth.users(id),
   updated_at timestamptz not null default now()
 );
+alter table public.gallery_albums add column if not exists category   text;
+alter table public.gallery_albums add column if not exists event_date date;
+alter table public.gallery_albums add column if not exists created_by uuid references auth.users(id);
+alter table public.gallery_albums add column if not exists created_at timestamptz not null default now();
+
+-- 사진이 어느 사진첩에 속하는지 (비어 있으면 촬영 연도 앨범으로 들어갑니다)
+alter table public.gallery_photos add column if not exists album_key text;
+create index if not exists gallery_photos_album_idx on public.gallery_photos (album_key);
 
 -- 이전 버전에서 만든 표가 있으면 내용을 옮기고 정리
 do $$
@@ -57,18 +71,39 @@ alter table public.gallery_photos    enable row level security;
 alter table public.gallery_overrides enable row level security;
 alter table public.gallery_albums    enable row level security;
 
--- ── 4) 정책 : 누구나 보기 / 관리자만 추가·수정·삭제 ──
+-- ── 4) 정책 ──
+--    보기      : 누구나
+--    올리기    : 승인된 회원 누구나 (사진첩 만들기 · 사진 추가)
+--    수정·삭제 : 올린 본인 또는 운영진
 do $$
 declare t text;
 begin
-  foreach t in array array['gallery_photos','gallery_overrides','gallery_albums'] loop
+  foreach t in array array['gallery_photos','gallery_albums'] loop
     execute format('drop policy if exists "%s_select" on public.%I', t, t);
     execute format('create policy "%s_select" on public.%I for select using (true)', t, t);
-    execute format('drop policy if exists "%s_admin" on public.%I', t, t);
-    execute format('create policy "%s_admin" on public.%I for all
-                    using (public.is_admin()) with check (public.is_admin())', t, t);
+
+    execute format('drop policy if exists "%s_admin" on public.%I', t, t);          -- 이전 버전 정리
+    execute format('drop policy if exists "%s_insert" on public.%I', t, t);
+    execute format('create policy "%s_insert" on public.%I for insert
+                    with check (public.is_approved() or public.is_admin())', t, t);
+
+    execute format('drop policy if exists "%s_update" on public.%I', t, t);
+    execute format('create policy "%s_update" on public.%I for update
+                    using (created_by = auth.uid() or public.is_admin())
+                    with check (created_by = auth.uid() or public.is_admin())', t, t);
+
+    execute format('drop policy if exists "%s_delete" on public.%I', t, t);
+    execute format('create policy "%s_delete" on public.%I for delete
+                    using (created_by = auth.uid() or public.is_admin())', t, t);
   end loop;
 end $$;
+
+-- 기본 제공 사진 수정 내역은 운영진만
+drop policy if exists "gallery_overrides_select" on public.gallery_overrides;
+create policy "gallery_overrides_select" on public.gallery_overrides for select using (true);
+drop policy if exists "gallery_overrides_admin" on public.gallery_overrides;
+create policy "gallery_overrides_admin" on public.gallery_overrides
+  for all using (public.is_admin()) with check (public.is_admin());
 
 -- ── 5) 사진 저장소(Storage) 버킷 ──
 insert into storage.buckets (id, name, public)
@@ -80,16 +115,19 @@ create policy "gallery_read" on storage.objects
   for select using (bucket_id = 'gallery');
 
 drop policy if exists "gallery_admin_upload" on storage.objects;
-create policy "gallery_admin_upload" on storage.objects
-  for insert with check (bucket_id = 'gallery' and public.is_admin());
+drop policy if exists "gallery_member_upload" on storage.objects;
+create policy "gallery_member_upload" on storage.objects
+  for insert with check (bucket_id = 'gallery' and (public.is_approved() or public.is_admin()));
 
 drop policy if exists "gallery_admin_update" on storage.objects;
-create policy "gallery_admin_update" on storage.objects
-  for update using (bucket_id = 'gallery' and public.is_admin());
+drop policy if exists "gallery_member_update" on storage.objects;
+create policy "gallery_member_update" on storage.objects
+  for update using (bucket_id = 'gallery' and (owner = auth.uid() or public.is_admin()));
 
 drop policy if exists "gallery_admin_delete" on storage.objects;
-create policy "gallery_admin_delete" on storage.objects
-  for delete using (bucket_id = 'gallery' and public.is_admin());
+drop policy if exists "gallery_member_delete" on storage.objects;
+create policy "gallery_member_delete" on storage.objects
+  for delete using (bucket_id = 'gallery' and (owner = auth.uid() or public.is_admin()));
 
 -- ── 확인용 ──
 -- select category, count(*) from public.gallery_photos group by 1;

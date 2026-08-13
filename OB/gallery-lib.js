@@ -42,7 +42,7 @@ function staticPhotos() {
  */
 export async function loadGallery() {
   let photos = staticPhotos();
-  let albumTitles = {}, ok = true;
+  let albumTitles = {}, custom = [], ok = true;
 
   try {
     const [ph, ov, al] = await Promise.all([
@@ -62,21 +62,36 @@ export async function loadGallery() {
       if (o.sort != null) p.sort = o.sort;
       return true;
     });
-    // 관리자가 올린 사진
+    // 회원이 올린 사진
     (ph.data || []).forEach(r => photos.push({
       key: `db:${r.id}`, kind: "db", id: r.id, cat: r.category,
       date: iso(r.taken_at), cap: r.caption || "", sort: r.sort || 0,
+      album: r.album_key || null, owner: r.created_by,
       thumb: r.image_url, full: r.image_url, storage_path: r.storage_path,
     }));
-    (al.data || []).forEach(a => { albumTitles[a.album_key] = a; });
+    (al.data || []).forEach(a => {
+      albumTitles[a.album_key] = a;
+      if (String(a.album_key || "").startsWith("custom:")) custom.push(a);
+    });
     if (ph.error || ov.error || al.error) ok = false;
   } catch (e) {
     ok = false;   // 접속 실패 시 기본 사진만 표시
   }
 
-  // 연도별 앨범으로 묶기
   const map = new Map();
+  // 회원이 직접 만든 사진첩 (사진이 없어도 목록에 보이도록 먼저 등록)
+  for (const a of custom) {
+    map.set(a.album_key, {
+      key: a.album_key, cat: a.category || "etc",
+      year: (iso(a.event_date) || "").slice(0, 4) || "",
+      title: a.title || "사진첩", custom: true, owner: a.created_by,
+      sort: a.sort != null ? a.sort : -1,     // 직접 만든 사진첩을 위로
+      photos: [],
+    });
+  }
+  // 나머지는 분류 + 연도로 묶기
   for (const p of photos) {
+    if (p.album && map.has(p.album)) { map.get(p.album).photos.push(p); continue; }
     const y = (p.date || "").slice(0, 4) || "기타";
     const key = `${p.cat}|${y}`;
     if (!map.has(key)) {
@@ -93,9 +108,16 @@ export async function loadGallery() {
   const albums = [...map.values()];
   albums.forEach(a => {
     a.photos.sort((x, y) => (x.sort - y.sort) || (y.date || "").localeCompare(x.date || ""));
-    a.date = a.photos.reduce((m, p) => (p.date > m ? p.date : m), "");   // 대표 날짜(최신)
+    const newest = a.photos.reduce((m, p) => (p.date > m ? p.date : m), "");
+    if (a.custom) {
+      const ov = albumTitles[a.key] || {};
+      a.date = iso(ov.event_date) || newest;
+      a.year = a.year || (a.date || "").slice(0, 4);
+    } else {
+      a.date = newest;
+    }
   });
-  albums.sort((a, b) => (a.sort - b.sort) || b.year.localeCompare(a.year));
+  albums.sort((a, b) => (a.sort - b.sort) || (b.date || "").localeCompare(a.date || ""));
 
   const byCat = {};
   CATS.forEach(([c]) => byCat[c] = []);
