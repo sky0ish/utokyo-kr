@@ -175,6 +175,9 @@ let byCat = (await loadGallery()).byCat;
 document.getElementById("gtabs").innerHTML = CATS.map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
 
+const esc = s => String(s == null ? "" : s)
+  .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
 function render() {
   document.querySelectorAll("#gtabs a").forEach(a => a.classList.toggle("on", a.dataset.c === cur));
   const list = byCat[cur] || [];
@@ -190,12 +193,13 @@ function render() {
   grid.innerHTML = list.map(a => `
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener">
       <span class="sq">
-        ${a.custom && a.owner ? '<span class="mine">회원 사진첩</span>' : ""}
+        ${a.custom && (a.ownerName || a.owner)
+          ? `<span class="mine">${a.ownerName ? "공유자(" + esc(a.ownerName) + ")" : "회원 사진첩"}</span>` : ""}
         ${a.photos.length
           ? `<img src="${a.photos[0].thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
           : '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#a9b8ae;font-size:13px;">사진을 올려주세요</span>'}
       </span>
-      <span class="cp"><b>${a.title}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
+      <span class="cp"><b>${esc(a.title)}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
     </a>`).join("");
 }
 
@@ -212,7 +216,7 @@ try {
   const user = await currentUser();
   if (user) {
     const p = await myProfile();
-    if (p && (p.approved || p.is_admin)) setupNewAlbum(user);
+    if (p && (p.approved || p.is_admin)) setupNewAlbum(user, p);
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
     const st = document.createElement("span");
@@ -227,7 +231,7 @@ try {
   }
 } catch (e) { /* 무시 */ }
 
-function setupNewAlbum(user) {
+function setupNewAlbum(user, me) {
   const modal = document.getElementById("mNew");
   document.getElementById("nCat").innerHTML =
     CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
@@ -259,6 +263,7 @@ function setupNewAlbum(user) {
     const { error } = await sb.from("gallery_albums").insert({
       album_key: key, title, category: cat, event_date: date, org: "YB",
       created_by: user.id, updated_by: user.id,
+      owner_name: (me && me.name) || "",       // 사진첩에 공유자 이름을 남긴다
     });
     if (error) {
       save.disabled = false; msg.className = "msg err";
