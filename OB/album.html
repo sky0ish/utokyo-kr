@@ -27,6 +27,9 @@
   .rename input{padding:8px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.35);
     background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:14px;min-width:280px;}
   .rename input::placeholder{color:rgba(255,255,255,.45);}
+  .rename select{padding:8px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:14px;cursor:pointer;}
+  .rename select option{color:#2f2a1d;background:#fff;}
   .rename .rbtn{padding:8px 18px;border-radius:7px;border:1px solid #e8c876;background:#e8c876;
     color:#2b2410;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
   .rename .rbtn:disabled{opacity:.5;cursor:default;}
@@ -103,7 +106,8 @@
     <h1 id="atitle">불러오는 중…</h1>
     <div class="rename" id="rename">
       <input type="text" id="rTitle" maxlength="60" placeholder="앨범 이름">
-      <button class="rbtn" id="rSave">이름 저장</button>
+      <select id="rCat" title="앨범을 옮길 분류"></select>
+      <button class="rbtn" id="rSave">저장</button>
       <span class="rmsg" id="rMsg"></span>
     </div>
     <div class="meta" id="ameta"></div>
@@ -149,9 +153,9 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=17"></script>
+<script src="gallery-data.js?v=18"></script>
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=17";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=18";
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
@@ -259,26 +263,62 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         const box = document.getElementById("rename");
         const input = document.getElementById("rTitle");
         const rmsg = document.getElementById("rMsg");
+        const sel = document.getElementById("rCat");
         box.classList.add("on");
         input.value = album.title;
+        sel.innerHTML = CATS.map(([k, v]) =>
+          `<option value="${k}"${k === cat ? " selected" : ""}>${v}</option>`).join("");
+
         document.getElementById("rSave").addEventListener("click", async () => {
           const b = document.getElementById("rSave");
           const t = input.value.trim();
+          const newCat = sel.value;
           if (!t) { rmsg.textContent = "이름을 입력해주세요."; return; }
+          if (newCat !== cat &&
+              !confirm(`이 앨범(사진 ${album.photos.length}장)을\n「${CAT_NAME[newCat]}」 분류로 옮길까요?`)) return;
+
           b.disabled = true; rmsg.textContent = "저장 중…";
-          const { error } = await sb.from("gallery_albums").upsert({
+          const now = new Date().toISOString();
+
+          // ① 앨범 이름
+          const r1 = await sb.from("gallery_albums").upsert({
             album_key: album.key, title: t, org: "OB",
-            updated_by: user.id, updated_at: new Date().toISOString(),
+            updated_by: user.id, updated_at: now,
           }, { onConflict: "album_key" });
+
+          // ② 분류를 바꾸면 앨범 안의 사진을 모두 옮긴다
+          let r2 = { error: null }, r3 = { error: null };
+          if (!r1.error && newCat !== cat) {
+            const statics = album.photos.filter(p => p.kind !== "db");
+            const dbs = album.photos.filter(p => p.kind === "db");
+            if (statics.length) {
+              r2 = await sb.from("gallery_overrides").upsert(
+                statics.map(p => ({ photo_key: p.key, category: newCat,
+                                    album_key: album.key, updated_by: user.id, updated_at: now })),
+                { onConflict: "photo_key" });
+            }
+            if (dbs.length) {
+              r3 = await sb.from("gallery_photos")
+                     .update({ category: newCat }).in("id", dbs.map(p => p.id));
+            }
+          }
           b.disabled = false;
-          if (error) {
-            rmsg.textContent = "저장 실패: " + error.message +
+          const err = r1.error || r2.error || r3.error;
+          if (err) {
+            rmsg.textContent = "저장 실패: " + err.message +
               " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.";
             return;
           }
-          rmsg.textContent = "저장했습니다.";
           document.getElementById("atitle").textContent = t;
           document.title = t + " | 갤러리";
+          if (newCat !== cat) {
+            rmsg.textContent = `${CAT_NAME[newCat]} 분류로 옮겼습니다.`;
+            setTimeout(() => {
+              location.href = `album.html?cat=${newCat}&id=${encodeURIComponent(album.key)}`;
+            }, 700);
+          } else {
+            rmsg.textContent = "저장했습니다.";
+          }
         });
       }
 
