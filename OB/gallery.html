@@ -224,8 +224,8 @@ function render() {
         <button class="edit" title="앨범 이름 고치기">✎ 이름</button>
         ${a.custom && (a.ownerName || a.owner)
           ? `<span class="mine">${a.ownerName ? "공유자(" + esc(a.ownerName) + ")" : "회원 사진첩"}</span>` : ""}
-        ${a.photos.length
-          ? `<img src="${a.photos[0].thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
+        ${a.cover
+          ? `<img src="${a.cover.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
           : '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#b7b09b;font-size:13px;">사진을 올려주세요</span>'}
       </span>
       <span class="cp"><b>${esc(a.title)}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>

@@ -90,7 +90,7 @@ export async function loadGallery() {
       key: a.album_key, cat: a.category || "etc",
       year: (iso(a.event_date) || "").slice(0, 4) || "",
       title: a.title || "사진첩", custom: true, owner: a.created_by,
-      ownerName: a.owner_name || "",
+      ownerName: a.owner_name || "", coverKey: a.cover_key || "",
       sort: a.sort != null ? a.sort : 0,      // 순서는 행사 날짜로 정한다(위로 띄우지 않음)
       photos: [],
     });
@@ -103,6 +103,7 @@ export async function loadGallery() {
       map.set(alb.i, {
         key: alb.i, cat, year: (alb.d || "").slice(0, 4),
         title: ov.title || alb.t, fixedDate: iso(ov.event_date) || iso(alb.d),
+        coverKey: ov.cover_key || "",
         sort: ov.sort != null ? ov.sort : 0, photos: [],
       });
     });
@@ -118,6 +119,7 @@ export async function loadGallery() {
       map.set(key, {
         key, cat: p.cat, year: y,
         title: ov.title || (ALBUM_NAME[p.cat] || "{y}년").replace("{y}", y),
+        coverKey: ov.cover_key || "",
         sort: ov.sort != null ? ov.sort : 0, photos: [],
       });
     }
@@ -138,6 +140,8 @@ export async function loadGallery() {
       a.date = a.fixedDate || newest;
     }
     a.year = (a.date || "").slice(0, 4);
+    // 앨범 버튼에 쓸 대표사진 (올린 사람이 고른 것, 없으면 첫 사진)
+    a.cover = a.photos.find(p => p.key === a.coverKey) || a.photos[0] || null;
   });
   // 앨범도 행사 날짜순(최신이 위). 날짜가 같을 때만 수동 배치순서를 따른다
   albums.sort((a, b) => (b.date || "").localeCompare(a.date || "")

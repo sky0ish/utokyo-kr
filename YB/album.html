@@ -64,6 +64,12 @@
   .ph.can-rm .rm{display:block;}
   .ph .pick{position:absolute;top:6px;left:6px;width:18px;height:18px;cursor:pointer;display:none;z-index:3;}
   .ph.can-rm .pick{display:block;}
+  .ph .cov{position:absolute;bottom:5px;left:5px;border:none;border-radius:6px;padding:3px 9px;
+    font-size:10.5px;cursor:pointer;font-family:inherit;color:#fff;background:rgba(47,122,69,.92);display:none;}
+  body.cancover .ph.can-rm .cov{display:block;}
+  .ph .cov:hover{background:#1e5230;}
+  .ph.iscover .cov{background:#14361f;color:#d8ecdd;}
+  .ph.iscover{outline:3px solid #2f7a45;outline-offset:-3px;}
   .ph.sel{outline:3px solid #b3453b;outline-offset:-3px;}
   .aempty{padding:60px 0;text-align:center;color:#98a89d;line-height:1.9;}
 
@@ -162,6 +168,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         `<div class="ph" data-i="${i}" title="${(p.cap || "").replace(/"/g, "&quot;")} (${p.date})">
            <input type="checkbox" class="pick" title="선택">
            <button class="rm" title="사진 내리기">✕</button>
+           <button class="cov" title="앨범 대표사진으로">★ 대표</button>
            <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
            <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
          </div>`).join("")
@@ -246,6 +253,31 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
         const mine = p.owner && user && p.owner === user.id;
         if (mine || isAdmin) el.classList.add("can-rm");
       });
+
+      // ── 앨범 대표사진 고르기 ──
+      //    사진첩을 만든 회원 본인, 또는 운영진만 바꿀 수 있습니다.
+      const canCover = isAdmin || !!(album.custom && user && album.owner === user.id);
+      if (canCover) document.body.classList.add("cancover");
+      const markCover = () => grid.querySelectorAll(".ph").forEach(el =>
+        el.classList.toggle("iscover", album.photos[+el.dataset.i].key === album.coverKey));
+      markCover();
+      grid.querySelectorAll(".cov").forEach(b => b.addEventListener("click", async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (!canCover) return;
+        const el = b.closest(".ph");
+        const p = album.photos[+el.dataset.i];
+        b.disabled = true;
+        const { error } = await sb.from("gallery_albums").upsert(
+          { album_key: album.key, cover_key: p.key, org: "YB" }, { onConflict: "album_key" });
+        b.disabled = false;
+        if (error) {
+          alert("대표사진 지정 실패: " + error.message +
+                " — board/gallery_cover.sql 을 실행하셨는지 확인해주세요.");
+          return;
+        }
+        album.coverKey = p.key;
+        markCover();
+      }));
 
       async function removeMany(photos) {
         const paths = photos.map(p => p.storage_path).filter(Boolean);
