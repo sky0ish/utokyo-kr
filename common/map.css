@@ -1,0 +1,53 @@
+/* ─── 캠퍼스 지도 (총동문회 · 학생회 공용) ───────────────────
+   색상만 페이지에서 --map-accent 로 정해 주면 됩니다.            */
+
+.mapwrap{background:#fff;border:1px solid var(--map-line,#e6dfcb);border-radius:12px;
+  overflow:hidden;box-shadow:0 2px 8px rgba(60,50,20,.07);margin-bottom:34px;}
+.maphead{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;padding:20px 26px 16px;}
+.maphead h3{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:600;
+  color:var(--map-accent,#4a3c14);margin:0;}
+.mtabs{display:flex;gap:8px;flex-wrap:wrap;}
+.mtabs a{display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:8px 18px;border-radius:9px;font-size:14px;font-weight:500;color:#5a5648;
+  background:#fff;border:1px solid var(--map-line,#e6dfcb);transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 2px 4px rgba(60,50,20,.1);}
+.mtabs a small{font-size:10.5px;font-weight:300;color:#a8a291;letter-spacing:.02em;}
+.mtabs a:hover{transform:translateY(-2px);color:var(--map-accent,#4a3c14);}
+.mtabs a.on{background:var(--map-soft,#fdf1d3);border-color:var(--map-accent,#c9a24b);
+  color:var(--map-accent,#4a3c14);}
+.mtabs a.on small{color:var(--map-accent,#8a6d2b);}
+
+/* 지도는 좌우 가득, 설명은 그 아래 */
+.mapbox{width:100%;height:clamp(380px,58vh,620px);background:#f1efe8;}
+#cmap{width:100%;height:100%;}
+#cmap .leaflet-container{font-family:inherit;}
+.cmark{display:flex;flex-direction:column;align-items:center;line-height:1.2;}
+.cmark i{width:16px;height:16px;border-radius:50%;background:var(--map-accent,#c9a24b);
+  border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);}
+.cmark b{margin-top:4px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,.95);
+  border:1px solid var(--map-line,#e6dfcb);font-size:11.5px;font-weight:600;
+  color:var(--map-accent,#4a3c14);white-space:nowrap;}
+.cmark.on i{background:#c9452f;transform:scale(1.15);}
+.cmark.on b{background:#c9452f;color:#fff;border-color:#c9452f;}
+
+.mapinfo{display:grid;grid-template-columns:minmax(240px,1fr) 1.6fr;gap:26px;
+  padding:24px 26px 26px;border-top:1px solid var(--map-line,#eee7d6);}
+.mapinfo .mname{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;
+  color:var(--map-accent,#4a3c14);}
+.mapinfo .maddr{margin-top:10px;font-size:15px;color:#2f2a1d;font-weight:500;word-break:keep-all;}
+.mapinfo .mjp{margin-top:4px;font-size:13.5px;color:#8b8474;}
+.mways{list-style:none;margin:0;padding:0;}
+.mways li{position:relative;padding:9px 0 9px 18px;font-size:14.5px;color:#2f2a1d;
+  line-height:1.7;border-bottom:1px solid var(--map-line,#f4efe2);word-break:keep-all;}
+.mways li:last-child{border-bottom:none;}
+.mways li::before{content:"";position:absolute;left:2px;top:16px;width:5px;height:5px;
+  border-radius:50%;background:var(--map-accent,#c9a24b);}
+.mways b{font-weight:600;color:var(--map-accent,#4a3c14);}
+.mlink{display:inline-block;margin-top:16px;font-size:13px;color:var(--map-accent,#4a3c14);
+  font-weight:500;border-bottom:1px solid var(--map-line,#e6dfcb);padding-bottom:2px;transition:.2s;}
+.mlink:hover{border-color:var(--map-accent,#c9a24b);}
+.maptip{padding:11px 22px;font-size:12px;color:#a8a291;background:var(--map-tip,#faf7ef);
+  border-top:1px solid var(--map-line,#eee7d6);}
+
+@media (max-width:860px){ .mapinfo{grid-template-columns:1fr;gap:6px;} }
