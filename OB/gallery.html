@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>갤러리 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../board/board.css">
+<style>
+  .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+  .gtabs{display:flex;flex-wrap:wrap;gap:9px;margin:34px 0 8px;}
+  .gtabs a{padding:11px 24px;border-radius:9px;font-size:15px;font-weight:500;color:#5c563f;
+    background:linear-gradient(#fffdf7,#f4efe1);border:1px solid #e0d7bf;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(90,70,20,.14), 0 6px 14px rgba(90,70,20,.12);
+    transition:.18s;}
+  .gtabs a:hover{transform:translateY(-2px);color:#3f3a29;}
+  .gtabs a.on{color:#4a3c14;background:linear-gradient(#fdf1d3,#f0dfb2);border-color:#d3bd85;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(90,70,20,.2);transform:translateY(1px);}
+  .gcount{font-size:13px;color:#a8a291;margin:14px 0 20px;}
+  .ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .gcell{cursor:pointer;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #e8e2d2;
+    box-shadow:0 2px 6px rgba(60,50,20,.07);transition:.22s;}
+  .gcell:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(60,50,20,.16);}
+  .gcell .sq{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:#f3f0e8;}
+  .gcell .sq img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gcell .cp{padding:12px 13px 14px;}
+  .gcell .cp b{display:block;font-size:13.5px;font-weight:500;color:#332e22;line-height:1.5;}
+  .gcell .cp small{display:block;margin-top:5px;font-size:11.5px;color:#a09a86;}
+  .gempty{padding:70px 0;text-align:center;color:#a8a291;}
+
+  /* 라이트박스 */
+  .glb{position:fixed;inset:0;background:rgba(8,10,16,.94);display:none;z-index:900;
+    align-items:center;justify-content:center;padding:26px;}
+  .glb.on{display:flex;}
+  .glb img{max-width:100%;max-height:82vh;border-radius:4px;display:block;margin:0 auto;}
+  .glb .gcap{color:#fff;text-align:center;margin-top:16px;font-size:14.5px;}
+  .glb .gcap small{display:block;margin-top:5px;font-size:12px;color:rgba(255,255,255,.5);}
+  .glb .x{position:absolute;top:20px;right:24px;background:none;border:1px solid rgba(255,255,255,.4);
+    color:#fff;border-radius:100px;padding:8px 20px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .glb .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.25);color:#fff;width:46px;height:46px;border-radius:100px;
+    font-size:20px;cursor:pointer;line-height:1;}
+  .glb .prev{left:22px;} .glb .next{right:22px;}
+  @media (max-width:980px){ .ggrid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:680px){ .ggrid{grid-template-columns:repeat(2,1fr);gap:11px;} .gtabs a{font-size:13.5px;padding:9px 16px;} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="javascript:history.back()">← 이전화면으로</a>
+      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="index.html">재한 도쿄대학 총동문회</a>
+    </div>
+    <div class="links" id="authLinks"><a href="../auth/login.html">로그인</a></div>
+  </div>
+</div>
+
+<header class="mhead">
+  <div class="inner">
+    <a class="mlogo" href="index.html">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></a>
+    <nav>
+      <div class="dd">
+        <a href="index.html#greeting">동문회 소개</a>
+        <div class="dd-menu">
+          <a href="index.html#greeting">인사말</a>
+          <a href="index.html#org">조직도</a>
+          <a href="index.html#history">연혁</a>
+          <a href="rules.html">정관</a>
+        </div>
+      </div>
+      <div class="dd">
+        <a href="../board/index.html">게시판</a>
+        <div class="dd-menu">
+          <a href="../board/index.html?cat=free">자유게시판</a>
+          <a href="../board/index.html?cat=promo">홍보·채용</a>
+          <a href="../board/index.html?cat=condolence">경조사</a>
+          <a href="../board/index.html?cat=notice">공지사항</a>
+        </div>
+      </div>
+      <div class="dd">
+        <a href="index.html#join">참여마당</a>
+        <div class="dd-menu">
+          <a href="index.html#news">동문회 총회</a>
+          <a href="../board/index.html?cat=club">소모임</a>
+          <a href="../board/index.html?cat=mentoring">멘토멘티</a>
+          <a href="../board/index.html?cat=forum">단과대포럼</a>
+          <a href="../board/index.html?cat=seminar">세미나</a>
+        </div>
+      </div>
+      <a href="gallery.html">갤러리</a>
+      <a href="index.html#sponsor">후원</a>
+    </nav>
+    <div class="mpills">
+      <a class="band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 →</a>
+      <a class="fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>
+    </div>
+  </div>
+</header>
+
+<div class="banner">
+  <div class="binner">
+    <span class="en">Gallery</span>
+    <h1>갤러리</h1>
+  </div>
+</div>
+
+<div class="gwrap">
+  <div class="gtabs" id="gtabs"></div>
+  <div class="gcount" id="gcount"></div>
+  <div class="ggrid" id="ggrid"></div>
+</div>
+
+<div class="glb" id="glb">
+  <button class="x" id="gx">닫기 ✕</button>
+  <button class="nav prev" id="gprev">‹</button>
+  <button class="nav next" id="gnext">›</button>
+  <div style="max-width:1180px;width:100%;">
+    <img id="glbImg" src="" alt="">
+    <div class="gcap"><span id="glbCap"></span><small id="glbDate"></small></div>
+  </div>
+</div>
+
+<script src="gallery-data.js"></script>
+<script type="module">
+import { sb, currentUser, myProfile } from "../auth/auth.js";
+
+const CATS = [
+  ["assembly", "총회"],
+  ["old",      "옛날사진"],
+  ["club",     "소모임"],
+  ["daily",    "일상"],
+  ["etc",      "기타"],
+];
+const G = window.GALLERY || {};
+const BASE = "../images/gallery/";
+
+let cur = new URLSearchParams(location.search).get("cat") || "assembly";
+if (!CATS.some(c => c[0] === cur)) cur = "assembly";
+let list = [];
+
+document.getElementById("gtabs").innerHTML =
+  CATS.map(([k, v]) => `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(G[k]||[]).length}</span></a>`).join("");
+
+function render() {
+  document.querySelectorAll("#gtabs a").forEach(a => a.classList.toggle("on", a.dataset.c === cur));
+  list = G[cur] || [];
+  const name = (CATS.find(c => c[0] === cur) || [,""])[1];
+  document.getElementById("gcount").textContent = `${name} · 총 ${list.length}장`;
+  const grid = document.getElementById("ggrid");
+  if (!list.length) { grid.innerHTML = '<div class="gempty">등록된 사진이 없습니다.</div>'; return; }
+  grid.innerHTML = list.map((p, i) => `
+    <div class="gcell" data-i="${i}">
+      <div class="sq"><img src="${BASE}${p.t}" alt="${p.c}" loading="lazy"></div>
+      <div class="cp"><b>${p.c}</b><small>${p.d}</small></div>
+    </div>`).join("");
+  grid.querySelectorAll(".gcell").forEach(c =>
+    c.addEventListener("click", () => open(+c.dataset.i)));
+}
+
+const lb = document.getElementById("glb");
+let idx = 0;
+function open(i) {
+  idx = (i + list.length) % list.length;
+  const p = list[idx];
+  document.getElementById("glbImg").src = BASE + p.f;
+  document.getElementById("glbCap").textContent = p.c;
+  document.getElementById("glbDate").textContent = p.d;
+  lb.classList.add("on");
+}
+document.getElementById("gx").addEventListener("click", () => lb.classList.remove("on"));
+document.getElementById("gprev").addEventListener("click", (e) => { e.stopPropagation(); open(idx - 1); });
+document.getElementById("gnext").addEventListener("click", (e) => { e.stopPropagation(); open(idx + 1); });
+lb.addEventListener("click", (e) => { if (e.target === lb) lb.classList.remove("on"); });
+document.addEventListener("keydown", (e) => {
+  if (!lb.classList.contains("on")) return;
+  if (e.key === "Escape") lb.classList.remove("on");
+  if (e.key === "ArrowLeft") open(idx - 1);
+  if (e.key === "ArrowRight") open(idx + 1);
+});
+
+document.querySelectorAll("#gtabs a").forEach(a => a.addEventListener("click", (e) => {
+  e.preventDefault();
+  cur = a.dataset.c;
+  history.replaceState(null, "", "?cat=" + cur);
+  render();
+}));
+render();
+
+// 상단바 로그인 표시 (갤러리 렌더 뒤에 — 접속 지연이 사진 표시를 막지 않도록)
+try {
+  const user = await currentUser();
+  if (user) {
+    const p = await myProfile();
+    const el = document.getElementById("authLinks");
+    el.innerHTML = "";
+    const st = document.createElement("span");
+    st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+    const my = document.createElement("a");
+    my.href = "../auth/mypage.html";
+    my.textContent = (p && p.name) ? p.name + "님" : "내 정보";
+    const out = document.createElement("a");
+    out.href = "#"; out.textContent = "로그아웃";
+    out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+    el.append(st, my, out);
+  }
+} catch (e) { /* 로그인 상태 표시 실패는 무시 */ }
+</script>
+
+</body>
+</html>
