@@ -71,6 +71,10 @@
   .ph .own{position:absolute;left:6px;bottom:6px;z-index:2;max-width:calc(100% - 12px);
     background:rgba(20,54,31,.75);color:#dcf0e2;border-radius:100px;padding:3px 10px;
     font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ph .covmark{display:none;position:absolute;left:30px;top:6px;z-index:3;
+    background:#2f7a45;color:#fff;border-radius:100px;padding:3px 10px;
+    font-size:10.5px;font-weight:700;white-space:nowrap;}
+  .ph.iscover .covmark{display:block;}
   .ph.sel{outline:3px solid #b3453b;outline-offset:-3px;}
   .aempty{padding:60px 0;text-align:center;color:#98a89d;line-height:1.9;}
 
@@ -171,6 +175,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
       ? album.photos.map((p, i) =>
         `<div class="ph" data-i="${i}" title="${(p.cap || "").replace(/"/g, "&quot;")} (${p.date})">
            <input type="checkbox" class="pick" title="선택">
+           <span class="covmark">★ 대표사진</span>
            <button class="rm" title="사진 내리기">✕</button>
            <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
            ${p.ownerAdmin ? '<span class="own">관리자</span>'
@@ -180,6 +185,11 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
       : '<div class="aempty" style="grid-column:1/-1;">아직 사진이 없습니다.<br>위에서 사진을 올려주세요.</div>';
   };
   draw();
+
+  // 대표사진 표시 (로그인하지 않아도 보이도록)
+  grid.querySelectorAll(".ph").forEach(el =>
+    el.classList.toggle("iscover", album.photos[+el.dataset.i].key === album.coverKey));
+
 
   const lb = document.getElementById("lb");
   const img = document.getElementById("lbimg");
