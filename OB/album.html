@@ -22,6 +22,24 @@
   .ahead .back:hover{border-color:#e8c876;color:#e8c876;}
 
   .awrap{max-width:1180px;margin:0 auto;padding:30px 24px 80px;}
+  /* 운영진 사진 추가 */
+  .addbox{display:none;background:#fff;border:1px solid #e6dfcb;border-radius:10px;
+    padding:16px 18px;margin-bottom:22px;box-shadow:0 2px 6px rgba(60,50,20,.06);}
+  .addbox.on{display:block;}
+  .addbox .ttl{font-size:14px;font-weight:500;color:#4a3c14;margin-bottom:12px;}
+  .addbox .ttl span{font-weight:300;color:#a09a86;font-size:12.5px;}
+  .addbox .fields{display:flex;flex-wrap:wrap;gap:9px;align-items:center;}
+  .addbox input{padding:9px 11px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:13.5px;background:#fffdf8;color:#2f2a1d;}
+  .addbox input[type=text]{flex:1;min-width:200px;}
+  .addbox .btn{padding:9px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;}
+  .addbox .btn:disabled{opacity:.5;cursor:default;}
+  .addbox .amsg{margin-top:10px;font-size:12.5px;color:#7d7768;}
+  .addbox .amsg.err{color:#b3453b;} .addbox .amsg.ok{color:#2f7a45;}
+  .ph .rm{position:absolute;top:5px;right:5px;border:none;border-radius:6px;padding:3px 8px;
+    font-size:10.5px;cursor:pointer;font-family:inherit;color:#fff;background:rgba(180,60,50,.9);display:none;}
+  body.admin .ph .rm{display:block;}
   .agrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
   .ph{cursor:pointer;position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;
     background:#eceae2;border:1px solid #e5e0d0;box-shadow:0 2px 5px rgba(60,50,20,.08);transition:.2s;}
@@ -64,6 +82,18 @@
 </div>
 
 <div class="awrap">
+  <!-- 운영진 전용 : 이 앨범에 사진 추가 -->
+  <div class="addbox" id="addbox">
+    <div class="ttl">＋ 이 앨범에 사진 추가 <span id="addWhere"></span></div>
+    <div class="fields">
+      <input type="file" id="aFiles" accept="image/*" multiple>
+      <input type="date" id="aDate">
+      <input type="text" id="aCap" maxlength="80" placeholder="설명 (선택)">
+      <button class="btn" id="aUp">올리기</button>
+    </div>
+    <div class="amsg" id="aMsg"></div>
+  </div>
+
   <div class="agrid" id="agrid"></div>
 </div>
 
@@ -77,9 +107,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=4"></script>
+<script src="gallery-data.js?v=5"></script>
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=4";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=5";
+import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
@@ -101,6 +132,7 @@ import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=4";
   const grid = document.getElementById("agrid");
   grid.innerHTML = album.photos.map((p, i) =>
     `<div class="ph" data-i="${i}" title="${(p.cap || "").replace(/"/g, "&quot;")} (${p.date})">
+       <button class="rm" title="사진 내리기">✕</button>
        <img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
        <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
      </div>`).join("");
@@ -127,6 +159,74 @@ import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=4";
     if (e.key === "ArrowLeft") open(idx - 1);
     if (e.key === "ArrowRight") open(idx + 1);
   });
+
+  // ─── 운영진 : 이 앨범에 사진 추가 / 내리기 ───
+  try {
+    const user = await currentUser();
+    const me = user ? await myProfile() : null;
+    if (me && me.is_admin) {
+      document.body.classList.add("admin");
+      const box = document.getElementById("addbox");
+      box.classList.add("on");
+      document.getElementById("addWhere").textContent =
+        `— ${CAT_NAME[cat]} · ${album.title}`;
+      document.getElementById("aDate").value = (album.date || "").slice(0, 10)
+        || `${album.year}-01-01`;
+
+      document.getElementById("aUp").addEventListener("click", async () => {
+        const btn = document.getElementById("aUp");
+        const msg = document.getElementById("aMsg");
+        const files = [...document.getElementById("aFiles").files];
+        const date = document.getElementById("aDate").value;
+        const capv = document.getElementById("aCap").value.trim();
+        if (!files.length) { msg.className = "amsg err"; msg.textContent = "사진을 선택해주세요."; return; }
+        if (!date || date.slice(0, 4) !== album.year) {
+          msg.className = "amsg err";
+          msg.textContent = `촬영일은 ${album.year}년이어야 이 앨범에 들어갑니다.`;
+          return;
+        }
+        btn.disabled = true;
+        let ok = 0, fail = 0, last = "";
+        for (const [n, f] of files.entries()) {
+          msg.className = "amsg"; msg.textContent = `올리는 중… (${n + 1}/${files.length})`;
+          const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+          const path = `${cat}/${date}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+          const up = await sb.storage.from("gallery").upload(path, f, { cacheControl: "3600" });
+          if (up.error) { fail++; last = up.error.message; continue; }
+          const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
+          const ins = await sb.from("gallery_photos").insert({
+            category: cat, taken_at: date, caption: capv || null,
+            image_url: pub.publicUrl, storage_path: path,
+            sort: album.photos.length + n, created_by: user.id,
+          });
+          if (ins.error) { fail++; last = ins.error.message; } else ok++;
+        }
+        btn.disabled = false;
+        msg.className = "amsg " + (fail ? "err" : "ok");
+        msg.textContent = `완료 — 성공 ${ok}장` + (fail ? ` · 실패 ${fail}장 (${last})` : "");
+        if (ok) setTimeout(() => location.reload(), 700);
+      });
+
+      // 사진 내리기
+      grid.querySelectorAll(".rm").forEach(b => b.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const p = album.photos[+b.closest(".ph").dataset.i];
+        if (!confirm(p.kind === "db" ? "이 사진을 삭제할까요?" : "이 사진을 갤러리에서 감출까요?")) return;
+        b.disabled = true;
+        if (p.kind === "db") {
+          if (p.storage_path) await sb.storage.from("gallery").remove([p.storage_path]);
+          const { error } = await sb.from("gallery_photos").delete().eq("id", p.id);
+          if (error) { alert("삭제 실패: " + error.message); b.disabled = false; return; }
+        } else {
+          const { error } = await sb.from("gallery_overrides").upsert(
+            { photo_key: p.key, hidden: true, updated_by: user.id, updated_at: new Date().toISOString() },
+            { onConflict: "photo_key" });
+          if (error) { alert("숨김 실패: " + error.message); b.disabled = false; return; }
+        }
+        location.reload();
+      }));
+    }
+  } catch (e) { /* 로그인/권한 확인 실패는 무시 */ }
 }
 </script>
 
