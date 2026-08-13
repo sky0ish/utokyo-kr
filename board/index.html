@@ -151,6 +151,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
+import { applyYB } from "./yb-nav.js?v=1";
 
 // ── 조직별 게시판 구성 ──
 const ORG = (new URLSearchParams(location.search).get("org") || "").toUpperCase() === "YB" ? "YB" : "OB";
@@ -163,12 +164,7 @@ const TABS_YB = ["notice","free","qna","jobs","parttime","market"];
 const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
 const TABS = ORG === "YB" ? TABS_YB : TABS_OB;
 
-if (ORG === "YB") {
-  document.body.classList.add("yb");
-  document.title = "게시판 | 도쿄대학 한국인학생회";
-  document.querySelector(".mlogo").innerHTML = "도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small>";
-  document.querySelector(".mlogo").setAttribute("href", "../YB/index.html");
-}
+if (ORG === "YB") applyYB("게시판 | 도쿄대학 한국인학생회");
 // 분류 탭 다시 그리기
 {
   const cur = new URLSearchParams(location.search).get("cat") || "";

@@ -122,6 +122,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
+import { applyYB } from "./yb-nav.js?v=1";
 
 const topMsg = document.getElementById("topMsg");
 const form = document.getElementById("postForm");
@@ -193,11 +194,7 @@ if (!profile || !profile.approved) {
   // 분류 버튼 다시 그리기
   document.getElementById("catPick").innerHTML =
     Object.entries(CATS).map(([k, v]) => `<a href="#" data-v="${k}">${v}</a>`).join("");
-  if (ORG === "YB") {
-    document.body.classList.add("yb");
-    document.querySelector(".mlogo").innerHTML = "도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small>";
-    document.querySelector(".mlogo").setAttribute("href", "../YB/index.html");
-  }
+  if (ORG === "YB") applyYB("글쓰기 | 도쿄대학 한국인학생회");
   let category = "free", headTag = "";
   const catPick = document.getElementById("catPick");
   const tagPick = document.getElementById("tagPick");

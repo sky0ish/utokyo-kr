@@ -103,6 +103,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
+import { applyYB } from "./yb-nav.js?v=1";
 
 const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"취업정보", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
               forum:"단과대포럼", seminar:"세미나",
@@ -127,6 +128,8 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
 
 const { data: p, error } = await sb.from("posts").select("*").eq("id", id).single();
 if (p && typeof p.images === "string") { try { p.images = JSON.parse(p.images); } catch (e) { p.images = null; } }
+// 학생회 글이면 화면을 학생회 것으로 (초록 화면에 총동문회 메뉴가 남지 않도록)
+if (p && p.org === "YB") applyYB("게시글 | 도쿄대학 한국인학생회");
 if (error || !p) {
   box.innerHTML = '<div class="empty">글을 찾을 수 없거나 열람 권한이 없습니다.<br><br><a class="btn line" href="index.html">목록으로</a>' +
     (user ? "" : ' <a class="btn dark" href="../auth/login.html">로그인</a>') + '</div>';
