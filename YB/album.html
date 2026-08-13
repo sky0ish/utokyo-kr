@@ -122,6 +122,7 @@
       <input type="text" id="aCap" maxlength="80" placeholder="설명 (선택)">
       <button class="btn" id="aUp">올리기</button>
     </div>
+    <div class="drophint" id="dropHint">사진을 이 칸에 끌어다 놓아도 됩니다 (여러 장 한꺼번에 가능).</div>
     <div class="amsg" id="aMsg"></div>
   </div>
 
@@ -190,6 +191,49 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
   grid.querySelectorAll(".ph").forEach(el =>
     el.classList.toggle("iscover", album.photos[+el.dataset.i].key === album.coverKey));
 
+
+
+  // ── 사진을 끌어다 놓아 올리기 ──
+  //    내 컴퓨터에서 사진 여러 장을 한꺼번에 끌어와도 됩니다.
+  {
+    const drop = document.getElementById("addbox");
+    const files = document.getElementById("aFiles");
+    const hint = document.getElementById("dropHint");
+    const show = () => {
+      const n = files.files.length;
+      hint.textContent = n
+        ? `사진 ${n}장이 준비됐습니다. 오른쪽 ［올리기］ 를 눌러주세요.`
+        : "사진을 이 칸에 끌어다 놓아도 됩니다 (여러 장 한꺼번에 가능).";
+    };
+    files.addEventListener("change", show);
+    show();
+    ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation();
+      drop.classList.add("drop");
+      hint.textContent = "여기에 놓으세요";
+    }));
+    ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation();
+      if (ev === "dragleave" && drop.contains(e.relatedTarget)) return;
+      drop.classList.remove("drop");
+      show();
+    }));
+    drop.addEventListener("drop", (e) => {
+      const dropped = [...(e.dataTransfer?.files || [])].filter(f => /^image\//.test(f.type));
+      if (!dropped.length) {
+        hint.textContent = "사진 파일만 올릴 수 있습니다.";
+        return;
+      }
+      const dt = new DataTransfer();
+      [...files.files].forEach(f => dt.items.add(f));      // 이미 고른 것에 더한다
+      dropped.forEach(f => dt.items.add(f));
+      files.files = dt.files;
+      show();
+    });
+    // 창 전체에서 사진을 놓쳤을 때 브라우저가 파일을 열어버리지 않도록
+    ["dragover", "drop"].forEach(ev =>
+      window.addEventListener(ev, (e) => { if (e.target !== files) e.preventDefault(); }));
+  }
 
   const lb = document.getElementById("lb");
   const img = document.getElementById("lbimg");
