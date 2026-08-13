@@ -125,6 +125,7 @@ document.querySelectorAll("#catTabs a").forEach(a => {
   a.addEventListener("click", (e) => {
     e.preventDefault();
     cat = a.dataset.cat || "";
+    if (typeof memberOnlyBlocked !== "undefined") memberOnlyBlocked = null;
     document.querySelectorAll("#catTabs a").forEach(x => x.classList.remove("on"));
     a.classList.add("on");
     load();
@@ -134,6 +135,7 @@ document.querySelectorAll("#catTabs a").forEach(a => {
 
 // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
 const PUBLIC_CATS = ["notice", "promo"];
+let memberOnlyBlocked = null;
 const user = await currentUser();
 if (user) {
   const p = await myProfile();
@@ -160,9 +162,7 @@ if (user) {
     if (c && !PUBLIC_CATS.includes(c)) a.style.display = "none";
   });
   if (cat && !PUBLIC_CATS.includes(cat)) {   // 회원 전용 게시판으로 바로 들어온 경우
-    cat = "";
-    document.querySelectorAll("#catTabs a").forEach(x => x.classList.remove("on"));
-    document.querySelector('#catTabs a[data-cat=""]').classList.add("on");
+    memberOnlyBlocked = CAT[cat] || cat;
   }
 }
 
@@ -185,6 +185,14 @@ const countInfo = document.getElementById("countInfo");
 moreBtn.addEventListener("click", () => load(true));
 
 async function load(append = false) {
+  if (memberOnlyBlocked) {   // 비로그인 상태에서 회원 전용 게시판 요청
+    listEl.innerHTML = `<div class="empty"><b>${memberOnlyBlocked}</b> 게시판은 회원 전용입니다.<br><br>` +
+      '<a class="btn dark" href="../auth/login.html">로그인</a> ' +
+      '<a class="btn line" href="../auth/signup.html">회원가입</a></div>';
+    moreBox.style.display = "none";
+    document.getElementById("statBox").innerHTML = "";
+    return;
+  }
   if (!append) { loaded = []; listEl.innerHTML = '<div class="empty">불러오는 중…</div>'; moreBox.style.display = "none"; }
   else { moreBtn.disabled = true; moreBtn.textContent = "불러오는 중…"; }
 
