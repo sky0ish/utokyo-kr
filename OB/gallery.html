@@ -53,6 +53,24 @@
   body.admin .alb .share{display:block;}
   .alb .share:hover{background:#2f7a45;}
 
+  /* 운영진 : 앨범 통째로 옮기기 */
+  .alb .apick{display:none;position:absolute;top:9px;left:9px;z-index:4;
+    width:19px;height:19px;cursor:pointer;}
+  body.admin .alb .apick{display:block;}
+  .alb.apicked{outline:3px solid #c9a961;outline-offset:2px;}
+  .movebar{display:none;align-items:center;gap:11px;flex-wrap:wrap;margin:0 0 16px;
+    padding:11px 16px;background:#fff;border:1px solid #e6dfcb;border-radius:9px;
+    font-size:13px;color:#5c563f;}
+  .movebar.on{display:flex;}
+  .movebar b{color:#4a3c14;}
+  .movebar select{padding:8px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:13.5px;background:#fffdf8;color:#2f2a1d;}
+  .movebar .mvbtn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:inherit;border:1px solid #b8933f;background:#c9a961;color:#2b2410;transition:.2s;}
+  .movebar .mvbtn:hover{background:#d8b976;}
+  .movebar .mvbtn:disabled{opacity:.5;cursor:default;}
+  .movebar .note{color:#a09a86;font-size:12px;}
+
   /* 사진첩 만들기 */
   .modal{position:fixed;inset:0;background:rgba(10,14,22,.6);display:none;z-index:800;
     align-items:center;justify-content:center;padding:24px;}
@@ -199,6 +217,15 @@
     </div>
     <button class="upbtn" id="autoMerge">⟳ 새 사진 자동 정리</button>
   </div>
+
+  <div class="movebar" id="movebar">
+    <b>선택한 앨범 <span id="mvCnt">0</span>개</b>
+    <span>를</span>
+    <select id="mvCat"></select>
+    <span>분류로</span>
+    <button class="mvbtn" id="mvGo">선택한 앨범 옮기기</button>
+    <span class="note">앨범 안의 사진이 모두 함께 옮겨집니다.</span>
+  </div>
   <div class="ggrid" id="ggrid"></div>
 </div>
 
@@ -282,6 +309,7 @@ function render() {
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
        data-key="${a.key}" draggable="false">
       <span class="sq">
+        <input type="checkbox" class="apick" title="이 앨범 선택">
         <button class="share" title="공유자(올린 사람) 이름 적기">👤 공유자</button>
         <button class="edit" title="앨범 이름 고치기">✎ 이름</button>
         ${a.ownerAdmin
@@ -362,6 +390,64 @@ function enableMerge(list) {
   const find = k => list.find(a => a.key === k);
 
   // 앨범 이름 고치기
+  // ── 앨범 통째로 다른 분류로 옮기기 ──
+  const mvBar = document.getElementById("movebar");
+  const mvSel = document.getElementById("mvCat");
+  const mvGo  = document.getElementById("mvGo");
+  mvSel.innerHTML = CATS.map(([k, v]) =>
+    `<option value="${k}"${k === cur ? " selected" : ""}>${v}</option>`).join("");
+  const apicks = [...document.querySelectorAll(".alb .apick")];
+  const mvCnt = () => {
+    const n = apicks.filter(c => c.checked).length;
+    document.getElementById("mvCnt").textContent = n;
+    apicks.forEach(c => c.closest(".alb").classList.toggle("apicked", c.checked));
+  };
+  apicks.forEach(c => c.addEventListener("click", (e) => {
+    e.preventDefault(); e.stopPropagation();     // 앨범이 열리지 않도록
+    c.checked = !c.checked;
+    mvCnt();
+  }));
+  mvBar.classList.add("on");
+  mvGo.addEventListener("click", async () => {
+    const chosen = apicks.filter(c => c.checked)
+      .map(c => find(c.closest(".alb").dataset.key)).filter(Boolean);
+    if (!chosen.length) { alert("옮길 앨범을 먼저 골라주세요."); return; }
+    const newCat = mvSel.value;
+    const shots = chosen.reduce((n, a) => n + a.photos.length, 0);
+    if (!confirm(`앨범 ${chosen.length}개(사진 ${shots}장)를 「${CAT_NAME[newCat]}」 분류로 옮길까요?`)) return;
+    mvGo.disabled = true; mvGo.textContent = "옮기는 중…";
+    const now = new Date().toISOString();
+    let err = null;
+    for (const a of chosen) {
+      const r1 = await sb.from("gallery_albums").upsert({
+        album_key: a.key, category: newCat, org: "OB",
+        updated_by: adminId, updated_at: now,
+      }, { onConflict: "album_key" });
+      if (r1.error) { err = r1.error; break; }
+      const statics = a.photos.filter(p => p.kind !== "db");
+      const dbs = a.photos.filter(p => p.kind === "db");
+      if (statics.length) {
+        const r2 = await sb.from("gallery_overrides").upsert(
+          statics.map(p => ({ photo_key: p.key, category: newCat, album_key: a.key,
+                              updated_by: adminId, updated_at: now })),
+          { onConflict: "photo_key" });
+        if (r2.error) { err = r2.error; break; }
+      }
+      if (dbs.length) {
+        const r3 = await sb.from("gallery_photos")
+                     .update({ category: newCat }).in("id", dbs.map(p => p.id));
+        if (r3.error) { err = r3.error; break; }
+      }
+    }
+    mvGo.disabled = false; mvGo.textContent = "선택한 앨범 옮기기";
+    if (err) {
+      alert("옮기기 실패: " + err.message +
+            " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
+      return;
+    }
+    location.href = "gallery.html?cat=" + newCat;
+  });
+
   // 공유자(올린 사람) 이름 적기
   document.querySelectorAll(".alb .share").forEach(b => b.addEventListener("click", async (e) => {
     e.preventDefault(); e.stopPropagation();
