@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>앨범 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f7f5ef;color:#2f2a1d;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;}
+
+  .ahead{background:linear-gradient(120deg,#1b2436 0%,#2b3446 60%,#3a3527 100%);color:#fff;
+    padding:26px 0 24px;box-shadow:0 2px 10px rgba(0,0,0,.14);}
+  .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .ahead .en{font-family:'Noto Serif KR',serif;font-style:italic;font-size:12.5px;color:#e8c876;letter-spacing:.06em;}
+  .ahead h1{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:600;margin-top:5px;line-height:1.35;}
+  .ahead .meta{margin-top:9px;font-size:13px;color:rgba(255,255,255,.6);}
+  .ahead .back{display:inline-block;margin-top:16px;font-size:13px;color:rgba(255,255,255,.75);
+    border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:7px 18px;transition:.2s;}
+  .ahead .back:hover{border-color:#e8c876;color:#e8c876;}
+
+  .awrap{max-width:1180px;margin:0 auto;padding:30px 24px 80px;}
+  .agrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .ph{cursor:pointer;position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;
+    background:#eceae2;border:1px solid #e5e0d0;box-shadow:0 2px 5px rgba(60,50,20,.08);transition:.2s;}
+  .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:.35s;}
+  .ph:hover{transform:translateY(-3px);border-color:#c9a961;box-shadow:0 8px 18px rgba(60,50,20,.18);}
+  .ph:hover img{transform:scale(1.06);}
+
+  /* 확대 보기 */
+  .lb{position:fixed;inset:0;background:rgba(8,10,16,.95);display:none;z-index:900;
+    align-items:center;justify-content:center;padding:30px;}
+  .lb.on{display:flex;}
+  .lb img{max-width:100%;max-height:84vh;border-radius:4px;display:block;margin:0 auto;}
+  .lb .cap{color:rgba(255,255,255,.72);text-align:center;margin-top:14px;font-size:13.5px;}
+  .lb .x{position:absolute;top:20px;right:24px;background:none;border:1px solid rgba(255,255,255,.4);
+    color:#fff;border-radius:100px;padding:8px 20px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .lb .x:hover{border-color:#e8c876;color:#e8c876;}
+  .lb .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.25);color:#fff;width:48px;height:48px;border-radius:100px;
+    font-size:22px;cursor:pointer;line-height:1;}
+  .lb .nav:hover{background:rgba(255,255,255,.22);}
+  .lb .prev{left:22px;} .lb .next{right:22px;}
+
+  @media (max-width:980px){ .agrid{grid-template-columns:repeat(4,1fr);} }
+  @media (max-width:680px){ .agrid{grid-template-columns:repeat(3,1fr);gap:8px;} .ahead h1{font-size:20px;}
+    .lb .nav{width:40px;height:40px;font-size:18px;} .lb .prev{left:8px;} .lb .next{right:8px;} }
+</style>
+</head>
+<body>
+
+<div class="ahead">
+  <div class="inner">
+    <span class="en">Album</span>
+    <h1 id="atitle">불러오는 중…</h1>
+    <div class="meta" id="ameta"></div>
+    <a class="back" id="aback" href="gallery.html">← 갤러리 목록</a>
+  </div>
+</div>
+
+<div class="awrap">
+  <div class="agrid" id="agrid"></div>
+</div>
+
+<div class="lb" id="lb">
+  <button class="x" id="lbx">닫기 ✕</button>
+  <button class="nav prev" id="lbp">‹</button>
+  <button class="nav next" id="lbn">›</button>
+  <div style="max-width:1180px;width:100%;">
+    <img id="lbimg" src="" alt="">
+    <div class="cap" id="lbcap"></div>
+  </div>
+</div>
+
+<script src="gallery-data.js"></script>
+<script>
+(function () {
+  const NAME = { assembly:"총회", club:"소모임", faculty:"단과대모임", forum:"포럼·세미나", old:"옛날사진", daily:"일상", etc:"기타" };
+  const q = new URLSearchParams(location.search);
+  const cat = q.get("cat") || "assembly";
+  const id  = q.get("id");
+  const G = window.GALLERY || {};
+  const album = (G[cat] || []).find(a => a.i === id) || (G[cat] || [])[0];
+  const BASE = "../images/gallery/" + cat + "/";
+
+  document.getElementById("aback").href = "gallery.html?cat=" + cat;
+  if (!album) {
+    document.getElementById("atitle").textContent = "앨범을 찾을 수 없습니다.";
+    return;
+  }
+  document.title = album.t + " | 갤러리";
+  document.getElementById("atitle").textContent = album.t;
+  document.getElementById("ameta").textContent = `${NAME[cat] || cat} · ${album.d} · 사진 ${album.p.length}장`;
+
+  const grid = document.getElementById("agrid");
+  grid.innerHTML = album.p.map((k, i) =>
+    `<div class="ph" data-i="${i}"><img src="${BASE}${k}_t.jpg" alt="${album.t} ${i + 1}" loading="lazy"></div>`).join("");
+
+  const lb = document.getElementById("lb");
+  const img = document.getElementById("lbimg");
+  let idx = 0;
+  function open(i) {
+    idx = (i + album.p.length) % album.p.length;
+    img.src = BASE + album.p[idx] + ".jpg";
+    document.getElementById("lbcap").textContent = `${album.t} · ${idx + 1} / ${album.p.length}`;
+    lb.classList.add("on");
+  }
+  grid.querySelectorAll(".ph").forEach(p => p.addEventListener("click", () => open(+p.dataset.i)));
+  document.getElementById("lbx").addEventListener("click", () => lb.classList.remove("on"));
+  document.getElementById("lbp").addEventListener("click", e => { e.stopPropagation(); open(idx - 1); });
+  document.getElementById("lbn").addEventListener("click", e => { e.stopPropagation(); open(idx + 1); });
+  lb.addEventListener("click", e => { if (e.target === lb) lb.classList.remove("on"); });
+  document.addEventListener("keydown", e => {
+    if (!lb.classList.contains("on")) return;
+    if (e.key === "Escape") lb.classList.remove("on");
+    if (e.key === "ArrowLeft") open(idx - 1);
+    if (e.key === "ArrowRight") open(idx + 1);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -336,7 +336,7 @@
 
   /* ── 갤러리 ── */
   /* 갤러리 — 분류별 대표 사진 (정사각) */
-  .gal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;max-width:840px;}
+  .gal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;}
   .gsq{display:block;transition:.24s;}
   .gsq .ph{display:block;position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:10px;
     background:#f3f0e8;border:1px solid #e8e2d2;
@@ -345,7 +345,7 @@
   .gsq:hover{transform:translateY(-4px);}
   .gsq:hover .ph{box-shadow:0 8px 20px rgba(60,50,20,.2);border-color:var(--gold);}
   .gsq:hover .ph img{transform:scale(1.06);}
-  .gsq .cap{display:block;margin-top:11px;font-size:14px;font-weight:500;color:#332e22;text-align:center;}
+  .gsq .cap{display:block;margin-top:10px;font-size:13px;font-weight:500;color:#332e22;text-align:center;}
   .gsq .cap small{display:block;margin-top:3px;font-size:11.5px;font-weight:300;color:#a09a86;}
 
 
@@ -387,7 +387,7 @@
     .join-grid{grid-template-columns:1fr 1fr;}
     .rb-grid{grid-template-columns:repeat(3,1fr);}
     .join-grid .jcard.on::after{display:none;}
-    .gal-grid{grid-template-columns:repeat(3,1fr);max-width:none;}
+    .gal-grid{grid-template-columns:repeat(4,1fr);max-width:none;}
     .timeline::before{left:79px;}
     .trow .yr{width:60px;font-size:18px;}
   }
@@ -455,8 +455,10 @@
         <a href="gallery.html">갤러리</a>
         <div class="dd-menu">
           <a href="gallery.html?cat=assembly">총회</a>
-          <a href="gallery.html?cat=old">옛날사진</a>
           <a href="gallery.html?cat=club">소모임</a>
+          <a href="gallery.html?cat=faculty">단과대모임</a>
+          <a href="gallery.html?cat=forum">포럼·세미나</a>
+          <a href="gallery.html?cat=old">옛날사진</a>
           <a href="gallery.html?cat=daily">일상</a>
           <a href="gallery.html?cat=etc">기타</a>
         </div>
@@ -554,10 +556,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/01_t.jpg" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/old/01_t.jpg" alt="옛날사진" loading="lazy"></span>
-          <span><img src="../images/gallery/club/01_t.jpg" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/daily/01_t.jpg" alt="일상" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg" alt="단과대모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -827,23 +829,31 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/01_t.jpg" alt="총회" loading="lazy"></span>
-        <span class="cap">총회<small>2011 – 2026 정기총회</small></span>
-      </a>
-      <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/01_t.jpg" alt="옛날사진" loading="lazy"></span>
-        <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg" alt="총회" loading="lazy"></span>
+        <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/01_t.jpg" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
+      <a class="gsq" href="gallery.html?cat=faculty">
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg" alt="단과대모임" loading="lazy"></span>
+        <span class="cap">단과대모임<small>계열 · 학과별</small></span>
+      </a>
+      <a class="gsq" href="gallery.html?cat=forum">
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg" alt="포럼·세미나" loading="lazy"></span>
+        <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
+      </a>
+      <a class="gsq" href="gallery.html?cat=old">
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg" alt="옛날사진" loading="lazy"></span>
+        <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
+      </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/01_t.jpg" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=etc">
-        <span class="ph"><img src="../images/gallery/etc/01_t.jpg" alt="기타" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/etc/cover_t.jpg" alt="기타" loading="lazy"></span>
         <span class="cap">기타<small>안내장 · 기록물</small></span>
       </a>
     </div>
