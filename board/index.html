@@ -230,8 +230,10 @@ function render(data) {
       <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
       <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
       ${p.image_url ? `<img class="thumb" src="${p.image_url}" alt="">` : ""}
-      ${SRC[p.source] || ""}
-      <span class="meta">${escapeHtml(p.author_name || "")} <span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span><br>${p.created_at.slice(0,10)}</span>
+      <span class="meta">
+        <span class="mrow">${SRC[p.source] || ""}<span class="who">${escapeHtml(p.author_name || "")}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>
+        <span class="dt">${p.created_at.slice(0,10)}</span>
+      </span>
     </a>`).join("");
 }
 
