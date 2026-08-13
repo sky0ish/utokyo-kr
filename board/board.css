@@ -77,6 +77,31 @@ a{text-decoration:none;color:inherit;}
 .chip.faculty{background:#efe9db;color:#7a6428;}
 .chip.mentoring{background:#e6ede4;color:#3f6a3a;}
 .chip.promo{background:#f5e9e2;color:#9a5a2b;}
+.chip.qna{background:#e7eef7;color:#2f4b8f;}
+.chip.parttime{background:#eef3e8;color:#5a7a33;}
+
+/* ═══ 학생회(YB) 초록 테마 ═══ */
+body.yb .mhead{background:#1e5230;}
+body.yb .mhead nav > a:hover,body.yb .mhead nav .dd > a:hover{color:#bfe8c2;border-bottom-color:#7fc48a;}
+body.yb .mhead .dd-menu a:hover{color:#1e5230;border-color:#7fc48a;}
+body.yb .mpills .band{background:#7fc48a;color:#14301c;}
+body.yb .mpills .band:hover{background:#a5dcae;}
+body.yb .mpills .fb:hover{border-color:#bfe8c2;color:#bfe8c2;}
+body.yb .topbar{background:#132c1c;}
+body.yb .topbar a:hover{color:#bfe8c2;}
+body.yb .banner{background:linear-gradient(rgba(12,32,18,.72),rgba(12,32,18,.62)),url('../images/green_avenue.jpg') center 58%/cover;}
+body.yb .banner .en{color:#bfe8c2;}
+body.yb .tabs a.on{background:#1e5230;border-color:#1e5230;box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 3px 5px rgba(30,82,48,.28), 0 8px 18px rgba(30,82,48,.3);}
+body.yb .tabs a.on:hover{color:#bfe8c2;border-color:#1e5230;}
+body.yb .tabs a:hover{border-color:#4f9d5d;color:#1e5230;}
+body.yb .btn.dark{background:#1e5230;}
+body.yb .btn.dark:hover{background:#2a6b40;}
+body.yb .btn.line:hover{border-color:#4f9d5d;color:#1e5230;}
+body.yb .pickrow a.on{background:#1e5230;border-color:#1e5230;}
+body.yb .pickrow a:hover{border-color:#4f9d5d;color:#1e5230;}
+body.yb .cmt-title{border-bottom-color:#1e5230;}
+body.yb .cmt-title span{color:#4f9d5d;}
+body.yb .list .row .t a:hover{color:#1e5230;}
 .chip.org-YB{background:#e2f0e5;color:#1e5230;}
 .chip.org-OB{background:#fdf1dc;color:#a06a10;}
 .chip.org-ALL{background:#eee;color:#555;}

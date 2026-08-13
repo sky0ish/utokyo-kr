@@ -144,7 +144,7 @@ if (!profile || !profile.approved) {
 } else {
   form.style.display = "block";
 
-  // OB/YB 탭 — 회원 프로필의 소속이 기본 선택
+  // OB/YB 탭 — 주소의 org 우선, 없으면 회원 소속
   let org = (preOrg === "YB" || preOrg === "OB") ? preOrg
           : (profile.member_type === "YB" ? "YB" : "OB");
   const orgTabs = document.querySelectorAll("#orgTabs a");
@@ -155,8 +155,13 @@ if (!profile || !profile.approved) {
   setOrg(org);
   orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
-  // 게시판 분류 · 말머리 선택
-  const TAGS = {
+  // 게시판 분류 · 말머리 선택 (조직별)
+  const ORG = (new URLSearchParams(location.search).get("org") || "").toUpperCase() === "YB" ? "YB" : "OB";
+  const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", notice:"공지사항" };
+  const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
+  const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
+
+  const TAGS_OB = {
     free: ["일상", "질문", "정보공유", "후기"],
     club: ["골프", "등산", "전공별", "친목", "기타"],
     mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"],
@@ -164,6 +169,24 @@ if (!profile || !profile.approved) {
     condolence: ["부고", "결혼", "출산", "축하"],
     notice: ["총회", "회비", "행사", "안내"]
   };
+  const TAGS_YB = {
+    notice: ["학생회", "행사", "장학", "안내"],
+    free: ["일상", "질문", "정보공유", "후기"],
+    qna: ["입학", "비자·재류", "생활", "학업", "기타"],
+    jobs: ["신입", "경력", "인턴", "설명회"],
+    parttime: ["단기", "장기", "과외", "번역·통역"],
+    market: ["삽니다", "팝니다", "나눔", "구합니다"]
+  };
+  const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
+
+  // 분류 버튼 다시 그리기
+  document.getElementById("catPick").innerHTML =
+    Object.entries(CATS).map(([k, v]) => `<a href="#" data-v="${k}">${v}</a>`).join("");
+  if (ORG === "YB") {
+    document.body.classList.add("yb");
+    document.querySelector(".mlogo").innerHTML = "도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small>";
+    document.querySelector(".mlogo").setAttribute("href", "../YB/index.html");
+  }
   let category = "free", headTag = "";
   const catPick = document.getElementById("catPick");
   const tagPick = document.getElementById("tagPick");
@@ -178,7 +201,7 @@ if (!profile || !profile.approved) {
       renderTags();
     }));
   }
-  const PUBLIC_CATS = ["notice", "promo"];
+  const PUBLIC_CATS = ORG === "YB" ? ["notice", "jobs", "parttime"] : ["notice", "promo"];
   function setCat(v) {
     category = v;
     catPick.querySelectorAll("a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
@@ -190,7 +213,7 @@ if (!profile || !profile.approved) {
   catPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); setCat(a.dataset.v); }));
 
   const preCat = new URLSearchParams(location.search).get("cat");
-  setCat(TAGS[preCat] ? preCat : "free");
+  setCat(CATS[preCat] ? preCat : Object.keys(CATS)[0]);
 
   // 수정 모드
   if (editId) {

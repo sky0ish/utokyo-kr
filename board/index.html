@@ -110,14 +110,31 @@
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 
-const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
+// ── 조직별 게시판 구성 ──
+const ORG = (new URLSearchParams(location.search).get("org") || "").toUpperCase() === "YB" ? "YB" : "OB";
+const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
+const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
+const TABS_OB = ["free","club","mentoring","promo","condolence","notice"];
+const TABS_YB = ["notice","free","qna","jobs","parttime","market"];
+const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
+const TABS = ORG === "YB" ? TABS_YB : TABS_OB;
+
+if (ORG === "YB") {
+  document.body.classList.add("yb");
+  document.title = "게시판 | 도쿄대학 한국인학생회";
+  document.querySelector(".mlogo").innerHTML = "도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small>";
+  document.querySelector(".mlogo").setAttribute("href", "../YB/index.html");
+}
+// 분류 탭 다시 그리기
+document.getElementById("catTabs").innerHTML =
+  '<a href="#" data-cat="">전체</a>' + TABS.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
 const SRC = {
   band: '<span class="src-tag band">네이버밴드</span>',
   facebook: '<span class="src-tag fb">페이스북</span>',
   legacy: '<span class="src-tag legacy">(구)게시판</span>'
 };
 const params = new URLSearchParams(location.search);
-const org = params.get("org") || "";
+const org = ORG;
 let cat = params.get("cat") || "";
 if (!CAT[cat]) cat = "";
 
@@ -134,7 +151,7 @@ document.querySelectorAll("#catTabs a").forEach(a => {
 (document.querySelector('#catTabs a[data-cat="' + cat + '"]') || document.querySelector('#catTabs a[data-cat=""]')).classList.add("on");
 
 // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
-const PUBLIC_CATS = ["notice", "promo"];
+const PUBLIC_CATS = ORG === "YB" ? ["notice", "jobs", "parttime"] : ["notice", "promo"];
 let memberOnlyBlocked = null;
 const user = await currentUser();
 if (user) {
@@ -153,8 +170,8 @@ if (user) {
 } else {
   document.getElementById("loginNotice").style.display = "block";
   document.getElementById("loginNotice").innerHTML =
-    '공지사항 · 홍보 게시판은 누구나 보실 수 있습니다. ' +
-    '<b>자유게시판 · 소모임 · 멘토멘티 · 경조사</b>는 로그인 후 이용해주세요. ' +
+    `<b>${PUBLIC_CATS.map(c => CAT[c]).join(" · ")}</b> 게시판은 누구나 보실 수 있습니다. ` +
+    `그 밖의 게시판은 로그인 후 이용해주세요. ` +
     '<a href="../auth/login.html">로그인</a> · <a href="../auth/signup.html">회원가입</a>';
   // 회원 전용 탭 숨기기
   document.querySelectorAll("#catTabs a").forEach(a => {
@@ -198,7 +215,7 @@ async function load(append = false) {
 
   // 전체 건수 (첫 로드 때만)
   if (!append) {
-    let cq = sb.from("posts").select("id", { count: "exact", head: true });
+    let cq = sb.from("posts").select("id", { count: "exact", head: true }).eq("org", ORG);
     if (cat) cq = cq.eq("category", cat);
     const { count } = await cq;
     total = count || 0;
@@ -206,6 +223,7 @@ async function load(append = false) {
 
   let q = sb.from("posts")
     .select("id,title,org,category,author_name,visibility,source,image_url,created_at")
+    .eq("org", ORG)
     .order("created_at", { ascending: false })
     .range(loaded.length, loaded.length + PAGE - 1);
   if (cat) q = q.eq("category", cat);

@@ -9,138 +9,167 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --tansei:#3e8450;        /* YB 여름의 초록 */
-    --tansei-light:#7fc48a;
-    --tansei-deep:#1e5230;
-    --ink:#182420;
-    --paper:#f7faf7;
-    --line:#e2eae3;
+    --green:#1e5230;        /* YB 상징 초록 */
+    --green-2:#2a6b40;
+    --leaf:#7fc48a;
+    --leaf-bright:#bfe8c2;
+    --ivory:#f4f8f4;
+    --ink:#1b2620;
+    --line:#dfe8e0;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#fff;line-height:1.7;}
+  body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#fff;line-height:1.75;}
   a{text-decoration:none;color:inherit;}
-  img{max-width:100%;}
   .container{max-width:1140px;margin:0 auto;padding:0 24px;}
 
-  /* ── 상단 유틸바 ── */
-  .utilbar{background:var(--ink);color:rgba(255,255,255,.75);font-size:12px;}
+  /* ── 유틸바 ── */
+  .utilbar{background:#132c1c;color:rgba(255,255,255,.72);font-size:12px;}
   .utilbar .container{display:flex;justify-content:space-between;padding-top:8px;padding-bottom:8px;}
-  .utilbar a:hover,.utilbar a:active{color:var(--tansei-light);}
+  .utilbar a:hover{color:var(--leaf-bright);}
   .utilbar .links{display:flex;gap:18px;}
 
   /* ── 헤더 ── */
-  header.site{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
-  header.site .container{display:flex;align-items:center;justify-content:space-between;height:76px;}
-  .logo{display:flex;align-items:center;gap:12px;}
-  .logo .mark{width:40px;height:40px;border-radius:50%;background:var(--tansei-deep);display:flex;align-items:center;justify-content:center;}
-  .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;letter-spacing:.02em;}
-  .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:400;font-size:10.5px;color:#8a99a5;letter-spacing:.14em;}
-  nav.gnb{display:flex;gap:4px;}
-  nav.gnb>a{padding:10px 16px;font-size:15px;font-weight:500;border-radius:6px;transition:.2s;}
-  nav.gnb>a:hover{background:#ecf5ee;color:var(--tansei-deep);}
-  nav.gnb>a.on{color:var(--tansei-deep);}
+  header.site{position:sticky;top:0;z-index:100;background:rgba(30,82,48,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.1);}
+  header.site .container{display:flex;align-items:center;justify-content:space-between;height:80px;}
+  .logo{display:flex;align-items:center;gap:13px;}
+  .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--leaf);display:flex;align-items:center;justify-content:center;}
+  .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;}
+  .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:10.5px;color:rgba(255,255,255,.6);letter-spacing:.14em;}
+  nav.gnb{display:flex;gap:2px;align-items:center;margin-left:auto;margin-right:20px;}
+  nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 12px;font-size:14px;color:rgba(255,255,255,.88);border-bottom:2px solid transparent;transition:.2s;}
+  nav.gnb>a:hover,nav.gnb .dd>a:hover{color:var(--leaf-bright);border-bottom-color:var(--leaf);}
+  .gnb .dd{position:relative;}
+  .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:22px;min-width:150px;z-index:200;white-space:nowrap;}
+  .dd:hover .dd-menu{display:flex;}
+  .dd-menu a{display:block;text-align:center;padding:10px 20px;font-size:13.5px;color:#1b2620;font-weight:500;
+    background:rgba(255,255,255,.6);backdrop-filter:blur(6px);
+    border:1px solid #9a9a94;border-radius:7px;transition:.2s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 4px rgba(0,0,0,.07), 0 3px 8px rgba(0,0,0,.16);}
+  .dd-menu a:hover{background:#fff;color:var(--green);border-color:var(--leaf);transform:translateY(-1px);}
+  .sns-btns{display:flex;gap:7px;align-items:center;margin-right:-26px;}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;transition:.25s;white-space:nowrap;}
+  .pill.ksa{background:var(--leaf);color:#14301c;}
+  .pill.ksa:hover{background:var(--leaf-bright);transform:translateY(-1px);}
+  .pill.ut{border:1.5px solid rgba(255,255,255,.6);color:#fff;}
+  .pill.ut:hover{border-color:var(--leaf-bright);color:var(--leaf-bright);}
+  @media (max-width:900px){ nav.gnb,.sns-btns{display:none;} }
 
   /* ── 히어로 ── */
-  .hero{
-    position:relative;color:#fff;overflow:hidden;
-    background:
-      linear-gradient(165deg, rgba(20,50,30,.66) 0%, rgba(14,38,22,.5) 45%, rgba(8,24,13,.78) 100%),
-      url('../images/green_avenue.jpg') center 58%/cover;
-  }
-  .hero .container{position:relative;z-index:2;padding-top:96px;padding-bottom:130px;}
-  .hero .eyebrow{display:flex;align-items:center;gap:12px;font-size:12.5px;letter-spacing:.4em;color:rgba(255,255,255,.85);margin-bottom:20px;}
-  .hero .eyebrow::before{content:"";width:36px;height:1px;background:rgba(255,255,255,.6);}
-  .hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(30px,4.4vw,52px);font-weight:600;line-height:1.35;margin-bottom:18px;}
-  .hero p.lead{font-weight:300;font-size:16.5px;max-width:520px;color:rgba(255,255,255,.9);}
-  .hero .cta{display:flex;gap:12px;margin-top:34px;}
-  .btn{display:inline-block;padding:13px 28px;border-radius:100px;font-size:14px;font-weight:500;letter-spacing:.06em;transition:.25s;}
-  .btn-solid{background:#fff;color:var(--tansei-deep);}
-  .btn-solid:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.18);}
-  .btn-line{border:1px solid rgba(255,255,255,.6);color:#fff;}
-  .btn-line:hover{background:rgba(255,255,255,.12);}
-  .hero svg.deco{position:absolute;right:-40px;bottom:0;height:88%;z-index:1;opacity:.5;}
+  .hero{position:relative;color:#fff;overflow:hidden;
+    background:linear-gradient(165deg, rgba(16,44,26,.68) 0%, rgba(12,34,20,.5) 45%, rgba(8,24,14,.8) 100%),
+      url('../images/green_avenue.jpg') center 58%/cover;}
+  .hero .container{position:relative;z-index:2;padding-top:60px;padding-bottom:68px;}
+  .hero .eyebrow{display:flex;align-items:center;gap:12px;font-size:12.5px;letter-spacing:.42em;color:var(--leaf-bright);margin-bottom:22px;}
+  .hero .eyebrow::before{content:"";width:36px;height:1px;background:var(--leaf);}
+  .hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(30px,4.4vw,52px);font-weight:600;line-height:1.4;margin-bottom:20px;}
+  .hero h1 em{font-style:normal;color:var(--leaf-bright);}
+  .hero p.lead{font-weight:300;font-size:16.5px;max-width:560px;color:rgba(255,255,255,.9);word-break:keep-all;}
+  .hero svg.deco{position:absolute;right:-20px;bottom:-10px;height:95%;z-index:1;opacity:.5;}
 
-  /* ── 퀵링크 카드 ── */
-  .quick{margin-top:-58px;position:relative;z-index:10;}
-  .quick .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-  .qcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 24px;box-shadow:0 6px 30px rgba(20,60,90,.08);transition:.25s;}
-  .qcard:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(20,60,90,.14);border-color:var(--tansei-light);}
-  .qcard .ico{width:42px;height:42px;border-radius:10px;background:#ecf5ee;display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--tansei-deep);font-size:19px;}
-  .qcard h3{font-size:16px;font-weight:700;margin-bottom:6px;}
-  .qcard p{font-size:13px;color:#7d8c98;line-height:1.6;}
+  /* ── 로그인 안내 ── */
+  #loginNotice{background:#eef5ef;border-bottom:1px solid var(--line);}
+
+  /* ── 모음판 ── */
+  .dash{background:#f7fbf7;padding:56px 0 60px;border-bottom:1px solid var(--line);}
+  .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  .dcard{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    box-shadow:0 4px 16px rgba(20,50,30,.06);transition:.25s;display:flex;flex-direction:column;}
+  .dcard:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(20,50,30,.14);}
+  .dcard .dhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 20px;border-bottom:1px solid #eef3ee;}
+  .dcard .dhead h3{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;display:flex;align-items:center;gap:9px;}
+  .dcard .dhead .ico{width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;}
+  .dcard .dhead .more{font-size:12px;color:#9aa79c;letter-spacing:.1em;}
+  .dcard:hover .dhead .more{color:var(--green);}
+  .dcard .dbody{padding:6px 20px 16px;flex:1;}
+  .dcard ul{list-style:none;}
+  .dcard li{border-bottom:1px solid #f4f8f4;}
+  .dcard li:last-child{border-bottom:none;}
+  .dcard li a{display:flex;align-items:center;gap:10px;padding:10px 2px;font-size:13.5px;color:#3d4a41;}
+  .dcard li a:hover{color:var(--green);}
+  .dcard li .tt{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dcard li .dt{flex:none;font-size:11.5px;color:#a9b5ab;}
+  .dsum{display:flex;gap:12px;align-items:center;padding:12px 2px;border-bottom:1px solid #f4f8f4;}
+  .dsum:last-child{border-bottom:none;}
+  .dsum b{font-size:13.5px;color:var(--ink);font-weight:600;flex:none;width:70px;}
+  .dsum span{font-size:13px;color:#68746b;font-weight:300;line-height:1.6;}
+  .dc-school .ico{background:#eef5ef;color:var(--green);}
+  .dc-council .ico{background:#eaf3fb;color:#2e6a8f;}
+  .dc-board .ico{background:#f5f1e8;color:#8a6d2b;}
+  .dc-gal .ico{background:#f3eef8;color:#5b4a86;}
+  .dc-school{border-top:3px solid #84b08d;}
+  .dc-council{border-top:3px solid #7fa3bd;}
+  .dc-board{border-top:3px solid #c9a24b;}
+  .dc-gal{border-top:3px solid #9d8ec2;}
+  .dgal{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:14px 20px 18px;}
+  .dgal span{display:block;border-radius:4px;overflow:hidden;aspect-ratio:4/3;}
+  .dgal img{width:100%;height:100%;object-fit:cover;display:block;transition:.3s;}
+  .dgal span:hover img{transform:scale(1.06);}
+  @media (max-width:820px){ .dash-grid{grid-template-columns:1fr;} }
 
   /* ── 공통 섹션 ── */
   section.block{padding:84px 0;}
-  section.block.tint{background:var(--paper);}
+  section.block.tint{background:var(--ivory);}
   .sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;}
-  .sec-head .t .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--tansei);letter-spacing:.14em;}
+  .sec-head .t .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:#4f9d5d;letter-spacing:.14em;}
   .sec-head .t h2{font-family:'Noto Serif KR',serif;font-size:30px;font-weight:600;margin-top:4px;}
-  .sec-head .more{font-size:13px;letter-spacing:.18em;color:#8a99a5;border-bottom:1px solid #cfd8de;padding-bottom:3px;transition:.2s;}
-  .sec-head .more:hover{color:var(--tansei-deep);border-color:var(--tansei-deep);}
+  .sec-head .more{font-size:13px;letter-spacing:.18em;color:#9aa79c;border-bottom:1px solid var(--line);padding-bottom:3px;transition:.2s;}
+  .sec-head .more:hover{color:var(--green);border-color:var(--green);}
 
-  /* ── 공지 + 일정 2단 ── */
-  .two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;}
-  ul.notice{border-top:2px solid var(--ink);list-style:none;}
-  ul.notice li{list-style:none;border-bottom:1px solid var(--line);}
-  ul.notice a{display:flex;align-items:center;gap:16px;padding:17px 6px;transition:.15s;}
-  ul.notice a:hover{background:#f3f9f4;}
-  .badge{flex:none;font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:100px;}
-  .badge.b1{background:#e2f0e5;color:var(--tansei-deep);}
-  .badge.b2{background:#fdf1e2;color:#b0762a;}
-  .badge.b3{background:#eef2ee;color:#4c7a55;}
-  ul.notice .tt{flex:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  ul.notice .dt{flex:none;font-size:13px;color:#9aa8b2;}
-  .cal-card{background:linear-gradient(165deg,#265e38,#14371f);border-radius:18px;color:#fff;padding:32px;height:100%;}
-  .cal-card h3{font-family:'Noto Serif KR',serif;font-size:20px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;}
-  .cal-card h3 span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;opacity:.7;}
-  .ev{display:flex;gap:16px;padding:14px 0;border-top:1px solid rgba(255,255,255,.16);}
-  .ev .d{flex:none;text-align:center;width:52px;}
-  .ev .d b{display:block;font-size:22px;font-weight:700;line-height:1.1;}
-  .ev .d span{font-size:11px;letter-spacing:.12em;opacity:.7;}
-  .ev .i h4{font-size:15px;font-weight:500;}
-  .ev .i p{font-size:12.5px;opacity:.7;}
+  /* 학교안내 */
+  .school-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .scard{border:1px solid var(--line);border-radius:12px;padding:28px 26px;background:linear-gradient(#fbfefb,#f1f8f2);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 3px 6px rgba(20,50,30,.08), 0 10px 22px rgba(20,50,30,.12);transition:.25s;}
+  .scard:hover{transform:translateY(-4px);border-color:var(--leaf);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 6px 12px rgba(20,50,30,.12), 0 18px 36px rgba(20,50,30,.18);}
+  .scard .no{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:#4f9d5d;font-weight:500;}
+  .scard h3{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;margin:6px 0 10px;}
+  .scard p{font-size:14px;color:#57614f;line-height:1.8;word-break:keep-all;}
 
-  /* ── 취업/게시판 그리드 ── */
-  .board-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-  .bcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;}
-  .bcard h3{font-size:16px;font-weight:700;padding-bottom:12px;border-bottom:2px solid var(--ink);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-  .bcard h3 a{font-size:12px;color:#9aa8b2;font-weight:400;}
-  .bcard li{list-style:none;border-bottom:1px solid #f0f3f5;}
-  .bcard li a{display:block;padding:11px 2px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#3d4c58;}
-  .bcard li a:hover{color:var(--tansei-deep);}
+  /* 학생회 소개 */
+  .council{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .cbox{background:#fff;border:1px solid var(--line);border-top:3px solid var(--leaf);border-radius:4px;padding:26px 28px;}
+  .cbox h3{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;margin-bottom:10px;}
+  .cbox p{font-size:14px;color:#57614f;font-weight:300;line-height:1.85;word-break:keep-all;}
+  .cbox ul{list-style:none;margin-top:8px;}
+  .cbox li{font-size:14px;color:#3d4a41;padding:7px 0;border-bottom:1px dashed #e8f0e9;}
+  .cbox li:last-child{border-bottom:none;}
+  .cbox li b{color:var(--green);font-weight:600;margin-right:8px;}
+  @media (max-width:760px){ .council,.school-grid{grid-template-columns:1fr;} }
 
-  /* ── 갤러리 ── */
+  /* 갤러리 */
   .gal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-  .gitem{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:flex-end;color:#fff;transition:.3s;}
+  .gitem{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:flex-end;color:#fff;transition:.3s;}
   .gitem:hover{transform:translateY(-4px);}
-  .gitem .ph{position:absolute;inset:0;}
-  .g1 .ph{background:url('../images/yasuda.jpg') center/cover;}
-  .g2 .ph{background:linear-gradient(150deg,#f0c987,#c2884e);}
-  .g3 .ph{background:linear-gradient(150deg,#9bc4a0,#4c7a55);}
-  .g4 .ph{background:linear-gradient(150deg,#c7a6d9,#7a5494);}
-  .gitem::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 55%);}
+  .gitem .ph{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .g1 .ph{background-image:url('../images/green_avenue.jpg');}
+  .g2 .ph{background-image:url('../images/yasuda.jpg');}
+  .g3 .ph{background-image:url('../images/akamon.jpg');}
+  .g4 .ph{background-image:url('../images/ginkgo_leaves.jpg');}
+  .gitem::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 55%);}
   .gitem .cap{position:relative;z-index:2;padding:16px;font-size:13.5px;font-weight:500;}
-  .gitem .cap small{display:block;font-size:11px;opacity:.75;font-weight:300;}
+  .gitem .cap small{display:block;font-size:11px;opacity:.8;font-weight:300;}
+  @media (max-width:760px){ .gal-grid{grid-template-columns:repeat(2,1fr);} }
 
-  /* ── 후원사 ── */
-  .sponsor{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;align-items:center;}
-  .sponsor span{font-family:'Cormorant Garamond',serif;font-size:20px;color:#aab7c0;letter-spacing:.1em;transition:.2s;}
-  .sponsor span:hover{color:var(--tansei-deep);}
+  /* 후원 */
+  .prow{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:12px 0;}
+  .plabel{flex:none;width:104px;font-size:15px;letter-spacing:.1em;color:#3f4a41;font-weight:700;}
+  .pitems{display:flex;gap:14px;flex-wrap:wrap;}
+  .pitems a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    background:#fff;border:1px solid #d5e2d7;border-radius:9px;padding:15px 24px;min-width:172px;
+    font-size:15px;font-weight:600;color:#25322a;text-align:center;transition:.22s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(20,50,30,.1), 0 7px 16px rgba(20,50,30,.14);}
+  .pitems img{height:38px;width:auto;max-width:190px;object-fit:contain;}
+  .pitems small{display:block;font-size:13px;color:#5c6a5f;font-weight:500;}
+  .pitems a:hover{border-color:var(--leaf);color:var(--green);transform:translateY(-3px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 5px 8px rgba(20,50,30,.12), 0 14px 28px rgba(20,50,30,.2);}
 
-  /* ── 푸터 ── */
-  footer.site{background:var(--ink);color:rgba(255,255,255,.65);padding:52px 0 40px;font-size:13px;}
+  /* 푸터 */
+  footer.site{background:#132c1c;color:rgba(255,255,255,.62);padding:54px 0 40px;font-size:13px;}
   footer.site .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:32px;}
   footer.site h4{font-family:'Noto Serif KR',serif;color:#fff;font-size:17px;margin-bottom:10px;}
   footer.site .links{display:flex;gap:22px;}
-  footer.site .links a:hover{color:#fff;}
-  footer.site .cr{border-top:1px solid rgba(255,255,255,.12);padding-top:22px;font-size:12px;color:rgba(255,255,255,.4);}
-
-  @media (max-width:900px){
-    nav.gnb{display:none;}
-    .quick .grid{grid-template-columns:repeat(2,1fr);}
-    .two-col,.board-grid{grid-template-columns:1fr;}
-    .gal-grid{grid-template-columns:repeat(2,1fr);}
-  }
+  footer.site .links a:hover{color:var(--leaf-bright);}
+  footer.site .cr{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;font-size:12px;color:rgba(255,255,255,.38);}
 </style>
 </head>
 <body>
@@ -153,8 +182,8 @@
       <a href="../OB/index.html">재한 도쿄대학 총동문회</a>
       <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener">한국인학생회(기존)</a>
     </div>
-    <div class="links">
-      <a href="../auth/login.html">로그인</a><a href="../auth/signup.html">회원가입</a><a href="../auth/mypage.html">내 정보</a>
+    <div class="links" id="authLinks">
+      <a href="../auth/login.html">로그인</a><a href="../auth/signup.html">회원가입</a>
     </div>
   </div>
 </div>
@@ -163,7 +192,7 @@
   <div class="container">
     <a class="logo" href="index.html">
       <span class="mark">
-        <svg width="30" height="30" viewBox="-1 -1 48 48" stroke-linejoin="round" stroke-width="1.3">
+        <svg width="30" height="30" viewBox="-1 -1 48 48" fill="none" stroke-linejoin="round" stroke-width="1.3">
           <g transform="translate(-0.003,-5.157)">
             <path stroke="#7fc48a" fill="rgba(127,196,138,0.5)" d="M45.507,27.589C45.507,27.122 45.122,26.735 44.658,26.735C44.588,26.735 44.526,26.744 44.456,26.761C36.916,28.32 29.06,28.936 21.011,28.496C18.533,28.364 16.089,28.496 13.69,28.681C13.506,28.699 13.322,28.716 13.147,28.743C11.22,29.007 9.389,29.852 7.953,31.244C6.683,32.476 5.79,34.07 5.405,35.796C4.949,37.875 5.273,40.023 6.158,41.952C7.016,43.819 8.391,45.439 10.09,46.601C11.938,47.834 13.979,48.803 16.116,49.445C17.464,49.851 18.664,50.097 20.074,50.273C20.092,49.745 20.906,48.908 20.933,48.512C20.959,48.116 20.652,47.755 20.258,47.728C18.051,47.808 16.431,47.755 14.364,46.989C12.245,46.196 10.318,44.893 8.794,43.211C8.058,42.41 7.454,41.52 7.069,40.499C6.683,39.486 6.517,38.394 6.578,37.311C6.788,33.674 9.626,30.601 13.252,30.081C15.257,29.791 17.333,30.31 18.962,31.499C19.812,32.124 20.547,32.917 21.081,33.824C21.686,34.845 22.194,35.928 22.544,37.073C23.28,39.442 23.341,42.04 23.026,44.488C22.885,45.527 22.675,46.557 22.377,47.561C22.211,48.133 22.01,48.706 21.782,49.252C21.738,49.357 21.721,49.463 21.721,49.578C21.721,50.044 22.088,50.414 22.553,50.423L22.763,50.423C28.342,50.423 33.448,48.424 37.406,45.113C37.406,45.113 37.415,45.113 37.424,45.104C37.581,44.946 37.678,44.734 37.678,44.505C37.678,44.329 37.616,44.18 37.538,44.039C36.058,41.476 32.826,37.795 32.826,37.795C32.826,37.795 36.478,41.053 39.105,42.48C39.245,42.559 39.403,42.621 39.578,42.621C39.815,42.621 40.025,42.524 40.174,42.374C40.174,42.366 40.191,42.357 40.2,42.348C43.528,38.412 45.525,33.339 45.525,27.8L45.525,27.589Z"/>
             <path stroke="#FFCD00" fill="none" d="M4.309,37.954C3.407,35.972 2.855,33.824 2.724,31.649C2.706,31.358 2.715,30.962 2.706,30.662C2.706,30.257 2.374,29.923 1.971,29.923C1.568,29.923 0.701,30.662 0.088,30.662C0.71,35.444 2.882,39.97 6.245,43.449C7.882,45.157 9.923,46.469 12.235,47.094C14.223,47.632 16.325,47.385 18.164,46.469C19.04,46.029 19.846,45.43 20.52,44.708C21.229,43.942 21.781,43.008 22.289,42.101C22.824,41.142 23.288,40.138 23.708,39.125C24.155,38.042 24.523,36.932 25.013,35.867C26.861,31.842 29.471,28.162 32.992,25.423C34.717,24.084 36.591,22.957 38.588,22.077C39.604,21.628 40.646,21.249 41.706,20.923C42.214,20.773 42.73,20.632 43.247,20.509C43.711,20.368 43.965,19.875 43.816,19.426C42.52,16.177 40.453,13.244 37.835,10.919C37.817,10.902 37.8,10.893 37.782,10.875C37.633,10.743 37.441,10.664 37.222,10.664C36.994,10.664 36.792,10.805 36.609,10.928C32.414,13.834 29.313,18.678 29.313,18.678C29.313,18.678 30.951,14.539 34.445,9.431C34.533,9.308 34.568,9.149 34.568,8.991C34.568,8.7 34.428,8.445 34.209,8.295C34.183,8.278 34.156,8.26 34.121,8.242C31.967,6.992 29.602,6.085 27.141,5.601C25.355,5.24 23.515,5.099 21.694,5.178L21.65,5.178C21.195,5.196 20.844,5.565 20.827,6.023C20.599,11.967 21.764,22.191 21.764,22.191C21.764,22.191 19.679,12.117 17.621,6.525C17.499,6.182 17.192,5.926 16.815,5.926C16.763,5.926 16.702,5.926 16.649,5.944L16.632,5.944C16.483,5.988 16.334,6.023 16.194,6.067C12.761,7.08 9.581,8.912 6.989,11.36C6.542,11.782 6.113,12.223 5.702,12.681C5.693,12.689 5.684,12.707 5.675,12.707C5.535,12.857 5.448,13.059 5.448,13.279C5.448,13.5 5.527,13.755 5.702,13.878C10.186,17.269 13.496,21.134 13.496,21.134C13.496,21.134 9.257,18.017 4.204,16.036C4.064,15.983 3.924,15.912 3.766,15.912C3.477,15.912 3.214,16.062 3.057,16.282L3.057,16.3C2.321,17.533 1.708,18.845 1.226,20.192C0.605,21.927 0.21,23.723 0.027,25.537C-0.017,26.004 -0.052,26.48 0.429,26.735C0.622,26.841 0.823,26.858 1.034,26.814C1.349,26.753 1.655,26.691 1.971,26.638C3.171,26.444 4.397,26.348 5.605,26.365C8.04,26.392 10.475,26.832 12.761,27.677C14.871,28.461 16.798,29.694 18.252,31.411C21.002,34.66 22.464,40.243 19.294,43.695C17.849,45.289 15.703,46.064 13.558,45.87C12.454,45.765 11.482,45.386 10.519,44.866C9.643,44.391 8.811,43.845 8.058,43.185C6.429,41.749 5.185,39.882 4.3,37.919Z"/>
@@ -173,148 +202,211 @@
       <span class="name">도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small></span>
     </a>
     <nav class="gnb">
-      <a href="#" class="on">홈</a>
-      <a href="#about">학생회 소개</a>
-      <a href="#campus">학교안내</a>
-      <a href="../board/index.html?org=YB">게시판</a>
+      <div class="dd">
+        <a href="#school">학교안내</a>
+        <div class="dd-menu">
+          <a href="#school">학교 소개</a>
+          <a href="#school">오시는 길</a>
+          <a href="#school">캠퍼스 안내</a>
+          <a href="#school">FAQ</a>
+        </div>
+      </div>
+      <div class="dd">
+        <a href="#council">학생회</a>
+        <div class="dd-menu">
+          <a href="#council">인사말</a>
+          <a href="#council">임원진</a>
+          <a href="#council">활동 이력</a>
+          <a href="#council">소모임</a>
+          <a href="#council">회칙</a>
+        </div>
+      </div>
+      <div class="dd">
+        <a href="../board/index.html?org=YB">게시판</a>
+        <div class="dd-menu">
+          <a href="../board/index.html?org=YB&cat=notice">공지사항</a>
+          <a href="../board/index.html?org=YB&cat=free">자유게시판</a>
+          <a href="../board/index.html?org=YB&cat=qna">Q&amp;A</a>
+          <a href="../board/index.html?org=YB&cat=jobs">취업정보</a>
+          <a href="../board/index.html?org=YB&cat=parttime">아르바이트</a>
+          <a href="../board/index.html?org=YB&cat=market">벼룩시장</a>
+        </div>
+      </div>
       <a href="#gallery">갤러리</a>
       <a href="#sponsor">후원</a>
     </nav>
+    <div class="sns-btns">
+      <a class="pill ksa" href="https://www.tokyoksa.com/" target="_blank" rel="noopener">학생회 홈 →</a>
+      <a class="pill ut" href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener">도쿄대학</a>
+    </div>
   </div>
 </header>
 
 <section class="hero">
   <svg class="deco" viewBox="0 0 400 500" aria-hidden="true">
-    <g fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2">
-      <circle cx="200" cy="250" r="150" opacity=".35"/>
-      <circle cx="200" cy="250" r="105" opacity=".5"/>
+    <g fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2">
+      <circle cx="200" cy="250" r="150" opacity=".3"/>
+      <circle cx="200" cy="250" r="105" opacity=".45"/>
       <path d="M200 330 C200 285 200 270 200 250 C150 268 122 232 130 196 C166 178 200 196 200 240 C200 196 234 178 270 196 C278 232 250 268 200 250" stroke-width="3"/>
     </g>
   </svg>
   <div class="container">
-    <div class="eyebrow">TOKYO · HONGO CAMPUS</div>
-    <h1>도쿄에서 함께,<br>세계로 나아가는 우리</h1>
-    <p class="lead">도쿄대학 한국인학생회는 유학 생활의 시작부터 진로까지, 서로의 든든한 동반자가 되어주는 한국인 유학생 커뮤니티입니다.</p>
-    <div class="cta">
-      <a class="btn btn-solid" href="#board">공지사항 보기</a>
-      <a class="btn btn-line" href="#about">학생회 소개</a>
-    </div>
+    <div class="eyebrow">TOKYO · 東京大学韓国人学生会</div>
+    <h1><em>초록의 계절</em>,<br>도쿄에서 함께 자라다</h1>
+    <p class="lead">도쿄대학 한국인학생회는 혼고·고마바 캠퍼스의 한국인 유학생들이 서로의 학업과 생활을 돕고, 선후배·동문과 이어지는 커뮤니티입니다.</p>
   </div>
 </section>
 
-<div class="quick container">
-  <div class="grid">
-    <a class="qcard" href="#" >
-      <div class="ico">🏫</div>
-      <h3>신입생 가이드</h3>
-      <p>입학 준비부터 정착까지, 선배들이 정리한 도쿄 생활 안내서</p>
-    </a>
-    <a class="qcard" href="#">
-      <div class="ico">💼</div>
-      <h3>취업 정보</h3>
-      <p>한국·일본 기업 채용 공고와 인턴십 정보를 한곳에</p>
-    </a>
-    <a class="qcard" href="#">
-      <div class="ico">🗓️</div>
-      <h3>행사 일정</h3>
-      <p>신입생 환영회, 체육대회, 송년회 등 연간 행사 안내</p>
-    </a>
-    <a class="qcard" href="#">
-      <div class="ico">🤝</div>
-      <h3>동문회 연결</h3>
-      <p>졸업 후에도 이어지는 인연, 재한 도쿄대학 총동문회 바로가기</p>
-    </a>
+<div id="loginNotice">
+  <div class="container" style="padding-top:13px;padding-bottom:13px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;font-size:14px;color:#4a5a4d;">
+    <span>🔒 <b style="color:#1b2620;font-weight:600;">로그인하시면 학생회 회원 전용 게시판을 이용하실 수 있습니다</b></span>
+    <span>
+      <a href="../auth/login.html" style="color:#2a6b40;font-weight:600;border-bottom:1px solid #a9cfb4;">로그인</a>
+      <span style="color:#b9c9bc;margin:0 6px;">|</span>
+      <a href="../auth/signup.html" style="color:#2a6b40;font-weight:600;border-bottom:1px solid #a9cfb4;">회원가입</a>
+    </span>
   </div>
 </div>
 
-<section class="block" id="board">
+<!-- ═══ 모음판 ═══ -->
+<section class="dash">
   <div class="container">
     <div class="sec-head">
-      <div class="t"><span class="en">Notice & Community</span><h2>공지사항</h2></div>
-      <a class="more" href="../board/index.html?org=YB">전체보기 +</a>
+      <div class="t"><span class="en">At a Glance</span><h2>한눈에 보기</h2></div>
     </div>
-    <div class="two-col">
-      <ul class="notice">
-        <li><a href="#"><span class="badge b1">공지</span><span class="tt">2026년도 가을학기 신입생 환영회 안내 (9/26 혼고캠퍼스)</span><span class="dt">2026.08.10</span></a></li>
-        <li><a href="#"><span class="badge b2">채용</span><span class="tt">[삼성디스플레이] 2027 상반기 글로벌 채용 — 도쿄 설명회</span><span class="dt">2026.08.07</span></a></li>
-        <li><a href="#"><span class="badge b1">공지</span><span class="tt">학생회 회칙 개정안 공고 및 의견 수렴 (~8/31)</span><span class="dt">2026.08.03</span></a></li>
-        <li><a href="#"><span class="badge b3">모집</span><span class="tt">한국 문화체험 프로그램 호스트 패밀리 모집</span><span class="dt">2026.07.28</span></a></li>
-        <li><a href="#"><span class="badge b2">채용</span><span class="tt">[LG디스플레이] R&D 석·박사 채용 상담회 참가자 모집</span><span class="dt">2026.07.21</span></a></li>
-        <li><a href="#"><span class="badge b1">공지</span><span class="tt">여름방학 도서관·기숙사 이용 안내 및 긴급 연락망</span><span class="dt">2026.07.15</span></a></li>
-      </ul>
-      <div class="cal-card">
-        <h3>다가오는 행사 <span>Upcoming</span></h3>
-        <div class="ev"><div class="d"><b>26</b><span>SEP</span></div><div class="i"><h4>가을학기 신입생 환영회</h4><p>혼고캠퍼스 산조회관 · 18:00</p></div></div>
-        <div class="ev"><div class="d"><b>17</b><span>OCT</span></div><div class="i"><h4>한일 학생 교류 체육대회</h4><p>고마바 그라운드 · 10:00</p></div></div>
-        <div class="ev"><div class="d"><b>21</b><span>NOV</span></div><div class="i"><h4>진로 세미나 — 선배와의 대화</h4><p>공학부 2호관 · 14:00</p></div></div>
-        <div class="ev"><div class="d"><b>19</b><span>DEC</span></div><div class="i"><h4>송년회 &amp; 동문회 합동 모임</h4><p>도쿄 시내 · 추후 공지</p></div></div>
+    <div class="dash-grid">
+
+      <a class="dcard dc-school" href="#school">
+        <div class="dhead"><h3><span class="ico">🏫</span>학교안내</h3><span class="more">자세히 +</span></div>
+        <div class="dbody">
+          <div class="dsum"><b>캠퍼스</b><span>혼고 · 고마바 · 가시와 세 캠퍼스</span></div>
+          <div class="dsum"><b>오시는 길</b><span>도쿄메트로 혼고산초메역 · 도다이마에역</span></div>
+          <div class="dsum"><b>학사일정</b><span>4월 입학(S세메스터) · 9월 입학(A세메스터)</span></div>
+          <div class="dsum"><b>FAQ</b><span>입학·재류자격·기숙사·장학금 자주 묻는 질문</span></div>
+        </div>
+      </a>
+
+      <a class="dcard dc-council" href="#council">
+        <div class="dhead"><h3><span class="ico">🎓</span>학생회</h3><span class="more">자세히 +</span></div>
+        <div class="dbody">
+          <div class="dsum"><b>인사말</b><span>회장 인사와 올해의 학생회 방향</span></div>
+          <div class="dsum"><b>임원진</b><span>회장 · 부회장 · 총무 · 홍보 · 학술</span></div>
+          <div class="dsum"><b>활동</b><span>신입생 환영회 · 체육대회 · 송년회 · 진로 세미나</span></div>
+          <div class="dsum"><b>소모임</b><span>스터디 · 스포츠 · 문화 동아리</span></div>
+        </div>
+      </a>
+
+      <div class="dcard dc-board">
+        <a class="dhead" href="../board/index.html?org=YB">
+          <h3><span class="ico">📋</span>게시판</h3><span class="more">전체보기 +</span>
+        </a>
+        <div class="dbody">
+          <ul id="dashPosts"><li><a><span class="tt">불러오는 중…</span></a></li></ul>
+        </div>
+      </div>
+
+      <a class="dcard dc-gal" href="#gallery">
+        <div class="dhead"><h3><span class="ico">🖼</span>갤러리</h3><span class="more">전체보기 +</span></div>
+        <div class="dgal">
+          <span><img src="../images/green_avenue.jpg" alt="혼고 은행나무길"></span>
+          <span><img src="../images/yasuda.jpg" alt="야스다강당"></span>
+          <span><img src="../images/akamon.jpg" alt="아카몬"></span>
+          <span><img src="../images/ginkgo_leaves.jpg" alt="은행잎"></span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- 학교안내 -->
+<section class="block" id="school">
+  <div class="container">
+    <div class="sec-head"><div class="t"><span class="en">Campus Guide</span><h2>학교안내</h2></div></div>
+    <div class="school-grid">
+      <a class="scard" href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener">
+        <span class="no">01</span><h3>학교 소개</h3>
+        <p>1877년 창립, 일본 최초의 근대 대학. 10개 학부와 15개 대학원 연구과를 두고 있습니다.</p>
+      </a>
+      <a class="scard" href="https://www.u-tokyo.ac.jp/en/about/access.html" target="_blank" rel="noopener">
+        <span class="no">02</span><h3>오시는 길 · 캠퍼스</h3>
+        <p>혼고(본부) · 고마바(교양) · 가시와(신령역) 캠퍼스 위치와 교통편을 안내합니다.</p>
+      </a>
+      <a class="scard" href="../board/index.html?org=YB&cat=qna">
+        <span class="no">03</span><h3>FAQ · Q&amp;A</h3>
+        <p>입학, 재류자격, 기숙사, 장학금, 아르바이트 등 유학 생활의 궁금증을 나눕니다.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 학생회 -->
+<section class="block tint" id="council">
+  <div class="container">
+    <div class="sec-head"><div class="t"><span class="en">Student Council</span><h2>학생회</h2></div></div>
+    <div class="council">
+      <div class="cbox">
+        <h3>인사말</h3>
+        <p>안녕하세요, 도쿄대학 한국인학생회입니다. 낯선 도시에서 시작하는 유학 생활이 외롭지 않도록, 학업과 생활 정보를 나누고 선후배가 이어지는 자리를 만들어 가고 있습니다. 이곳에서 좋은 인연을 만나시길 바랍니다.</p>
+        <p style="margin-top:12px;color:#7d8a80;">— 도쿄대학 한국인학생회 회장</p>
+      </div>
+      <div class="cbox">
+        <h3>임원진</h3>
+        <ul>
+          <li><b>회장</b>학생회 대표 · 대외 협력</li>
+          <li><b>부회장</b>회장 보좌 · 행사 총괄</li>
+          <li><b>총무</b>회계 · 회원 관리</li>
+          <li><b>홍보</b>홈페이지 · SNS · 뉴스레터</li>
+          <li><b>학술</b>스터디 · 진로 세미나</li>
+        </ul>
+      </div>
+      <div class="cbox">
+        <h3>활동 이력</h3>
+        <ul>
+          <li><b>4월</b>신입생 환영회 · 오리엔테이션</li>
+          <li><b>6월</b>한일 학생 교류 행사</li>
+          <li><b>10월</b>체육대회 · 홈커밍데이 참가</li>
+          <li><b>12월</b>송년회 · 동문회 합동 모임</li>
+        </ul>
+      </div>
+      <div class="cbox">
+        <h3>소모임 · 회칙</h3>
+        <p>스터디, 스포츠, 문화 등 다양한 소모임이 운영됩니다. 학생회 회칙과 소모임 등록 방법은 게시판 공지사항에서 확인하실 수 있습니다.</p>
+        <p style="margin-top:10px;"><a href="../board/index.html?org=YB&cat=notice" style="color:#2a6b40;font-weight:600;border-bottom:1px solid #a9cfb4;">공지사항 보기 →</a></p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="block tint" id="campus">
-  <div class="container">
-    <div class="sec-head">
-      <div class="t"><span class="en">Community Boards</span><h2>커뮤니티</h2></div>
-    </div>
-    <div class="board-grid">
-      <div class="bcard">
-        <h3>자유게시판 <a href="#">더보기 +</a></h3>
-        <ul>
-          <li><a href="#">혼고 근처 맛집 공유합니다 (우설 전문점)</a></li>
-          <li><a href="#">여름 코미케 같이 가실 분 구해요</a></li>
-          <li><a href="#">기숙사 → 시부야 통학 루트 질문</a></li>
-          <li><a href="#">한국 식재료 공동구매 8월 신청</a></li>
-        </ul>
-      </div>
-      <div class="bcard">
-        <h3>질문답변 Q&amp;A <a href="#">더보기 +</a></h3>
-        <ul>
-          <li><a href="#">재류카드 갱신 절차가 어떻게 되나요?</a></li>
-          <li><a href="#">국민건강보험 감면 신청 방법</a></li>
-          <li><a href="#">대학원 입시 연구계획서 첨삭 가능한가요?</a></li>
-          <li><a href="#">아르바이트 자격외활동허가 관련 질문</a></li>
-        </ul>
-      </div>
-      <div class="bcard">
-        <h3>벼룩시장 <a href="#">더보기 +</a></h3>
-        <ul>
-          <li><a href="#">[판매] 자전거 (혼고 직거래, 상태 좋음)</a></li>
-          <li><a href="#">[나눔] 전공 서적 — 계량경제학 외 5권</a></li>
-          <li><a href="#">[판매] 냉장고·세탁기 세트 (귀국 정리)</a></li>
-          <li><a href="#">[구함] 워셔블 이불 세트</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- 갤러리 -->
 <section class="block" id="gallery">
   <div class="container">
     <div class="sec-head">
-      <div class="t"><span class="en">Gallery</span><h2>활동 갤러리</h2></div>
+      <div class="t"><span class="en">Gallery</span><h2>갤러리</h2></div>
       <a class="more" href="#">전체보기 +</a>
     </div>
     <div class="gal-grid">
-      <a class="gitem g1" href="#"><div class="ph"></div><div class="cap">2026 봄 신입생 환영회<small>2026.04 · 혼고캠퍼스</small></div></a>
-      <a class="gitem g2" href="#"><div class="cap">고쇼가와라 벚꽃 나들이<small>2026.04 · 우에노공원</small></div><div class="ph"></div></a>
-      <a class="gitem g3" href="#"><div class="ph"></div><div class="cap">한일 교류 체육대회<small>2025.10 · 고마바</small></div></a>
-      <a class="gitem g4" href="#"><div class="ph"></div><div class="cap">송년의 밤<small>2025.12 · 도쿄</small></div></a>
+      <a class="gitem g1" href="#"><div class="ph"></div><div class="cap">혼고캠퍼스 은행나무길<small>일상의 풍경</small></div></a>
+      <a class="gitem g2" href="#"><div class="ph"></div><div class="cap">야스다강당<small>安田講堂</small></div></a>
+      <a class="gitem g3" href="#"><div class="ph"></div><div class="cap">아카몬<small>赤門</small></div></a>
+      <a class="gitem g4" href="#"><div class="ph"></div><div class="cap">은행잎<small>도쿄대학의 상징</small></div></a>
     </div>
   </div>
 </section>
 
+<!-- 후원 -->
 <section class="block tint" id="sponsor">
   <div class="container">
     <div class="sec-head" style="justify-content:center;text-align:center;">
-      <div class="t"><span class="en">Sponsors</span><h2>후원사</h2></div>
+      <div class="t"><span class="en">Sponsors</span><h2>후원</h2></div>
     </div>
-    <div class="sponsor">
-      <span>SAMSUNG DISPLAY</span>
-      <span>LG DISPLAY</span>
-      <span>在日韓国科学技術者協会</span>
-      <span>東京大学韓国同窓会</span>
+    <div class="prow">
+      <span class="plabel">협력 기관</span>
+      <div class="pitems">
+        <a href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener"><img src="../images/partners/utokyo.png" alt="도쿄대학교"><small>도쿄대학교</small></a>
+        <a href="../OB/index.html"><small style="font-size:15px;color:#25322a;font-weight:600;">재한 도쿄대학 총동문회</small><small>在韓東京大学総同門会</small></a>
+        <a href="http://www.kseaj.com/" target="_blank" rel="noopener"><img src="../images/partners/kseaj_bw.png" alt="재일한국과학기술자협회"><small>재일한국과학기술자협회</small></a>
+      </div>
     </div>
   </div>
 </section>
@@ -324,18 +416,65 @@
     <div class="top">
       <div>
         <h4>도쿄대학 한국인학생회</h4>
-        <p>東京大学韓国人学生会 (UT-KSA)<br>7-3-1 Hongo, Bunkyo-ku, Tokyo, Japan<br>utksa@example.com</p>
+        <p>東京大学韓国人学生会 (UT-KSA)<br>7-3-1 Hongo, Bunkyo-ku, Tokyo, Japan</p>
       </div>
       <div class="links">
         <a href="../index.html">통합 홈</a>
         <a href="../OB/index.html">재한 도쿄대학 총동문회</a>
-        <a href="#">회칙</a>
-        <a href="#">개인정보처리방침</a>
+        <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener">학생회 홈페이지(기존)</a>
       </div>
     </div>
-    <div class="cr">© 2026 The University of Tokyo Korean Student Association. All rights reserved. — 본 페이지는 디자인 초안입니다.</div>
+    <div class="cr">© 2026 The University of Tokyo Korean Student Association. — 본 페이지는 초기 포맷입니다.</div>
   </div>
 </footer>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "../auth/auth.js";
+
+// 최근 게시글 (학생회)
+(async () => {
+  const CAT = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
+  const el = document.getElementById("dashPosts");
+  const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  try {
+    const { data } = await sb.from("posts")
+      .select("id,title,category,created_at").eq("org", "YB")
+      .order("created_at", { ascending: false }).limit(6);
+    if (!data || !data.length) {
+      el.innerHTML = '<li><a href="../board/index.html?org=YB"><span class="tt">아직 등록된 글이 없습니다. 첫 글을 남겨보세요 →</span></a></li>';
+      return;
+    }
+    el.innerHTML = data.map(p => `
+      <li><a href="../board/post.html?id=${p.id}">
+        <span class="tt">${esc(p.title)}</span>
+        <span class="dt">${(p.created_at||"").slice(0,10)}</span>
+      </a></li>`).join("");
+  } catch (e) {
+    el.innerHTML = '<li><a href="../board/index.html?org=YB"><span class="tt">게시판 바로가기 →</span></a></li>';
+  }
+})();
+
+// 로그인 상태
+try {
+  const user = await currentUser();
+  if (user) {
+    const p = await myProfile();
+    const el = document.getElementById("authLinks");
+    el.innerHTML = "";
+    const st = document.createElement("span");
+    st.textContent = "[로그인중]"; st.style.color = "#bfe8c2"; st.style.fontWeight = "700";
+    const my = document.createElement("a");
+    my.href = "../auth/mypage.html";
+    my.textContent = (p && p.name) ? p.name + "님" : "내 정보";
+    const out = document.createElement("a");
+    out.href = "#"; out.textContent = "로그아웃";
+    out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+    el.append(st, my, out);
+    const ln = document.getElementById("loginNotice");
+    if (ln) ln.remove();
+  }
+} catch (e) {}
+</script>
 
 </body>
 </html>
