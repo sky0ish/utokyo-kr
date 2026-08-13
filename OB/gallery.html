@@ -28,6 +28,14 @@
   .newalb:hover{transform:translateY(-2px);}
   .alb .mine{position:absolute;top:8px;left:8px;background:rgba(47,122,69,.88);color:#fff;
     border-radius:100px;padding:3px 10px;font-size:10.5px;}
+  /* 운영진 : 앨범을 끌어다 놓아 합치기 */
+  .mergetip{display:none;margin:0 0 16px;padding:11px 16px;background:#fff;border:1px solid #e6dfcb;
+    border-radius:9px;font-size:12.5px;color:#7d7768;}
+  .mergetip.on{display:block;}
+  .mergetip b{color:#4a3c14;}
+  body.admin .alb{cursor:grab;}
+  .alb.dragging{opacity:.4;}
+  .alb.dropzone{outline:3px solid #c9a961;outline-offset:2px;}
 
   /* 사진첩 만들기 */
   .modal{position:fixed;inset:0;background:rgba(10,14,22,.6);display:none;z-index:800;
@@ -144,6 +152,10 @@
     <div class="gcount" id="gcount" style="margin:0;"></div>
     <button class="newalb" id="newAlb">＋ 사진첩 만들기</button>
   </div>
+  <div class="mergetip" id="mergetip">
+    <b>운영진</b> — 앨범을 <b>끌어다 다른 앨범 위에 놓으면</b> 두 앨범이 하나로 합쳐집니다.
+    (끌어온 앨범의 사진이 놓은 앨범으로 옮겨집니다)
+  </div>
   <div class="ggrid" id="ggrid"></div>
 </div>
 
@@ -168,10 +180,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=14"></script>
+<script src="gallery-data.js?v=15"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=14";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=15";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (!CATS.some(c => c[0] === cur)) cur = "assembly";
@@ -190,7 +202,8 @@ function render() {
   const grid = document.getElementById("ggrid");
   if (!list.length) { grid.innerHTML = '<div class="gempty">등록된 사진이 없습니다.</div>'; return; }
   grid.innerHTML = list.map(a => `
-    <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener">
+    <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
+       data-key="${a.key}" draggable="false">
       <span class="sq">
         ${a.custom ? '<span class="mine">회원 사진첩</span>' : ""}
         ${a.photos.length
@@ -199,6 +212,57 @@ function render() {
       </span>
       <span class="cp"><b>${a.title}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
     </a>`).join("");
+  if (isAdmin) enableMerge(list);
+}
+
+// ─── 운영진 : 앨범을 끌어다 놓아 합치기 ───
+let isAdmin = false, adminId = null;
+function enableMerge(list) {
+  const find = k => list.find(a => a.key === k);
+  let from = null;
+  document.querySelectorAll(".alb").forEach(el => {
+    el.draggable = true;
+    el.addEventListener("dragstart", (e) => {
+      from = el.dataset.key; el.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", from);
+    });
+    el.addEventListener("dragend", () => el.classList.remove("dragging"));
+    el.addEventListener("dragover", (e) => {
+      if (!from || from === el.dataset.key) return;
+      e.preventDefault(); el.classList.add("dropzone");
+    });
+    el.addEventListener("dragleave", () => el.classList.remove("dropzone"));
+    el.addEventListener("drop", async (e) => {
+      e.preventDefault(); e.stopPropagation();
+      el.classList.remove("dropzone");
+      const src = find(from), dst = find(el.dataset.key);
+      from = null;
+      if (!src || !dst || src.key === dst.key) return;
+      if (!confirm(`「${src.title}」의 사진 ${src.photos.length}장을\n「${dst.title}」 앨범으로 합칠까요?`)) return;
+
+      const statics = src.photos.filter(p => p.kind !== "db");
+      const dbs = src.photos.filter(p => p.kind === "db");
+      const now = new Date().toISOString();
+      let err = null;
+      if (statics.length) {
+        const r = await sb.from("gallery_overrides").upsert(
+          statics.map(p => ({ photo_key: p.key, album_key: dst.key, updated_by: adminId, updated_at: now })),
+          { onConflict: "photo_key" });
+        err = r.error;
+      }
+      if (!err && dbs.length) {
+        const r = await sb.from("gallery_photos").update({ album_key: dst.key }).in("id", dbs.map(p => p.id));
+        err = r.error;
+      }
+      if (err) {
+        alert("합치기 실패: " + err.message +
+              " — board/gallery_setup.sql 을 다시 실행하셨는지 확인해주세요.");
+        return;
+      }
+      location.reload();
+    });
+  });
 }
 
 document.querySelectorAll("#gtabs a").forEach(a => a.addEventListener("click", (e) => {
@@ -219,6 +283,10 @@ try {
     if (p && (p.approved || p.is_admin)) setupNewAlbum(user);
 
     if (p && p.is_admin) {                     // 운영진에게만 관리 버튼
+      isAdmin = true; adminId = user.id;
+      document.body.classList.add("admin");
+      document.getElementById("mergetip").classList.add("on");
+      render();                                // 끌어놓기 기능을 붙여 다시 그림
       const ad = document.createElement("a");
       ad.href = "../admin/gallery.html";
       ad.textContent = "⚙ 갤러리 관리";

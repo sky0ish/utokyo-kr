@@ -27,10 +27,12 @@ create table if not exists public.gallery_overrides (
   taken_at   date,                  -- 다른 연도(앨범)로 옮길 때
   caption    text,
   sort       int,
+  album_key  text,                  -- 다른 앨범으로 옮길 때 (앨범 합치기)
   hidden     boolean not null default false,
   updated_by uuid references auth.users(id),
   updated_at timestamptz not null default now()
 );
+alter table public.gallery_overrides add column if not exists album_key text;
 
 -- ── 3) 사진첩(앨범) ──
 --    · 'assembly|2026' 처럼 연도로 자동 생성되는 앨범의 제목 수정

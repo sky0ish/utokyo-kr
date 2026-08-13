@@ -62,6 +62,7 @@ export async function loadGallery() {
       // 분류나 날짜를 바꾸면 원래 앨범에서 빼내 연도 앨범으로 보낸다
       if (o.category && o.category !== p.cat) { p.cat = o.category; p.album = null; }
       if (o.taken_at) { p.date = iso(o.taken_at); p.album = null; }
+      if (o.album_key) p.album = o.album_key;      // 다른 앨범으로 옮김(합치기)
       if (o.caption != null) p.cap = o.caption;
       if (o.sort != null) p.sort = o.sort;
       return true;
@@ -93,29 +94,35 @@ export async function loadGallery() {
       photos: [],
     });
   }
-  // 기본 제공 사진은 만들어질 때 정해진 앨범(날짜별)에 그대로 담는다
+  // 기본 제공 앨범을 먼저 만들어 둔다 (사진이 다른 앨범으로 옮겨져도 이름이 유지되도록)
+  const G0 = window.GALLERY || {};
+  for (const [cat, albums0] of Object.entries(G0)) {
+    albums0.forEach(alb => {
+      const ov = albumTitles[alb.i] || {};
+      map.set(alb.i, {
+        key: alb.i, cat, year: (alb.d || "").slice(0, 4),
+        title: ov.title || alb.t, fixedDate: iso(alb.d),
+        sort: ov.sort != null ? ov.sort : 0, photos: [],
+      });
+    });
+  }
+
+  // 사진을 제 앨범에 담는다
   for (const p of photos) {
     if (p.album && map.has(p.album)) { map.get(p.album).photos.push(p); continue; }
-    let key, title, date;
-    if (p.album) {                       // 기본 제공 앨범
-      key = p.album; title = p.albumTitle; date = p.albumDate || p.date;
-    } else {                             // 회원이 올린 사진 · 옮겨진 사진 → 분류+연도
-      const y = (p.date || "").slice(0, 4) || "기타";
-      key = `${p.cat}|${y}`; date = p.date;
-      title = (ALBUM_NAME[p.cat] || "{y}년").replace("{y}", y);
-    }
+    const y = (p.date || "").slice(0, 4) || "기타";     // 회원이 올린 사진 · 옮겨진 사진
+    const key = `${p.cat}|${y}`;
     if (!map.has(key)) {
       const ov = albumTitles[key] || {};
       map.set(key, {
-        key, cat: p.cat, year: (date || "").slice(0, 4),
-        title: ov.title || title,                 // 운영진이 고친 이름이 있으면 그것으로
-        fixedDate: p.album ? date : null,
-        sort: ov.sort != null ? ov.sort : 0,
-        photos: [],
+        key, cat: p.cat, year: y,
+        title: ov.title || (ALBUM_NAME[p.cat] || "{y}년").replace("{y}", y),
+        sort: ov.sort != null ? ov.sort : 0, photos: [],
       });
     }
     map.get(key).photos.push(p);
   }
+  for (const [k, a] of [...map]) if (!a.photos.length && !a.custom) map.delete(k);   // 빈 앨범 정리
   const albums = [...map.values()];
   albums.forEach(a => {
     a.photos.sort((x, y) => (x.sort - y.sort) || (y.date || "").localeCompare(x.date || ""));
