@@ -45,7 +45,7 @@ export async function loadGallery() {
       key: a.album_key, cat: a.category || "general",
       year: (iso(a.event_date) || "").slice(0, 4) || "",
       title: a.title || "사진첩", custom: true, owner: a.created_by,
-      sort: a.sort != null ? a.sort : -1,
+      sort: a.sort != null ? a.sort : 0,      // 순서는 행사 날짜로 정한다(위로 띄우지 않음)
       photos: [],
     });
   }

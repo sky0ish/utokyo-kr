@@ -243,8 +243,9 @@ function planAutoMerge(all) {
   const plan = [];
   for (const a of all) {
     if (!a.key.includes("|")) continue;                           // 연도 임시 앨범만 대상
+    if (a.custom && a.owner) continue;                            // 회원이 만든 사진첩은 그대로 둔다
     for (const p of a.photos) {
-      if (p.kind !== "db" || p.album) continue;                   // 회원이 올린 미분류 사진
+      if (p.kind !== "db" || p.album) continue;                   // 아직 사진첩에 담기지 않은 사진만
       const sub = subjectOf(p.cap);
       const to =
         targets.find(t => t.cat === p.cat && t.date === p.date) ||   // ① 날짜가 같은 앨범
