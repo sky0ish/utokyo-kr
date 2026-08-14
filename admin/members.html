@@ -191,9 +191,18 @@ async function start() {
   let rows = [], filter = "all";
 
   async function load() {
-    const { data, error } = await sb.from("profiles")
-      .select("id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at,welcome_sent_at")
-      .order("created_at", { ascending: false });
+    // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
+    const COLS = "id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at";
+    let { data, error } = await sb.from("profiles")
+      .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
+    if (error && /welcome_sent_at/.test(error.message || "")) {
+      const again = await sb.from("profiles").select(COLS).order("created_at", { ascending: false });
+      data = again.data; error = again.error;
+      const m = document.getElementById("listMsg");
+      m.className = "msg";
+      m.textContent = "메일 발송 기록 칸이 아직 없습니다 — auth/admin_members.sql 을 한 번 실행하시면 " +
+                      "‘아직 안 보낸 회원’ 기능까지 쓰실 수 있습니다.";
+    }
     if (error) {
       document.getElementById("listMsg").className = "msg err";
       document.getElementById("listMsg").textContent =
@@ -220,7 +229,14 @@ async function start() {
       `전체 ${rows.length}명 · 승인 ${rows.filter(r=>r.approved).length}명 · 대기 ${rows.filter(r=>!r.approved).length}명` +
       (filter === "all" ? "" : ` (표시 ${list.length}명)`);
     const t = document.getElementById("tbl");
-    if (!list.length) { t.innerHTML = '<tr><td class="empty">해당하는 회원이 없습니다.</td></tr>'; return; }
+    if (!list.length) {
+      t.innerHTML = '<tr><td class="empty">' + (rows.length
+        ? "이 조건에 맞는 회원이 없습니다."
+        : "회원이 한 명도 보이지 않습니다.<br><br>" +
+          "운영진이 다른 회원까지 보려면 <b>auth/admin_members.sql</b> 을 한 번 실행해야 합니다.<br>" +
+          "(그 전에는 본인 정보만 보입니다)") + '</td></tr>';
+      return;
+    }
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th>안내메일</th><th></th></tr></thead><tbody>" +
