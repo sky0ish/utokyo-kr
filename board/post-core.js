@@ -84,7 +84,14 @@ export async function initPost(ORG) {
       const { data, error } = await sb.from("comments")
         .select("id,author_id,author_name,content,created_at")
         .eq("post_id", p.id).order("created_at", { ascending: true });
-      if (error) { listEl.innerHTML = '<div class="cmt-empty">댓글을 불러올 수 없습니다. 로그인 후 확인해주세요.</div>'; return; }
+      if (error) {
+        // 표가 아직 없으면 원인을 정확히 알려준다 (로그인 문제로 오해하지 않도록)
+        const noTable = /schema cache|does not exist|relation .* does not exist/i.test(error.message || "");
+        listEl.innerHTML = '<div class="cmt-empty">' + (noTable
+          ? '댓글 기능이 아직 켜지지 않았습니다.<br>운영진이 <b>board/comments_setup.sql</b> 을 한 번 실행하면 바로 쓰실 수 있습니다.'
+          : '댓글을 불러올 수 없습니다. 로그인 후 확인해주세요.') + '</div>';
+        return;
+      }
       document.getElementById("cmtCount").textContent = data.length;
       if (!data.length) { listEl.innerHTML = '<div class="cmt-empty">첫 댓글을 남겨보세요.</div>'; return; }
       listEl.innerHTML = data.map(c => `
@@ -113,7 +120,12 @@ export async function initPost(ORG) {
           post_id: p.id, author_id: user.id, author_name: profile.name || "", content: text
         });
         btn.disabled = false;
-        if (error) { msg.className = "msg err"; msg.textContent = "등록 실패: " + error.message; }
+        if (error) {
+          msg.className = "msg err";
+          msg.textContent = /schema cache|does not exist/i.test(error.message || "")
+            ? "댓글 기능이 아직 켜지지 않았습니다 — 운영진이 board/comments_setup.sql 을 한 번 실행해주세요."
+            : "등록 실패: " + error.message;
+        }
         else { input.value = ""; msg.className = "msg"; msg.textContent = ""; loadComments(); }
       });
     }
