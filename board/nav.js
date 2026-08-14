@@ -101,7 +101,8 @@ const LOGO = {
 const PILLS = {
   OB: '<a class="band" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">네이버 밴드 →</a>' +
       '<a class="fb" href="https://www.facebook.com/groups/286637871392457" target="_blank" rel="noopener">페이스북 그룹</a>',
-  YB: '<a class="band" href="https://www.tokyoksa.com/" target="_blank" rel="noopener">학생회 홈 →</a>',
+  YB: '<a class="band" href="https://www.tokyoksa.com/" target="_blank" rel="noopener">학생회 홈 →</a>' +
+      '<a class="fb" href="https://www.facebook.com/tokyoksa" target="_blank" rel="noopener">페이스북</a>',
 };
 
 /**
