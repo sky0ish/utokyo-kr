@@ -41,6 +41,15 @@
   font-weight:600;cursor:pointer;transition:.18s;}
 .apbtn:hover{filter:brightness(1.1);}
 .apbtn:disabled{opacity:.5;cursor:default;}
+.apfields textarea{flex:1;min-width:100%;padding:11px 13px;border:1px solid var(--map-line,#ddd6c4);
+  border-radius:8px;font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;
+  resize:vertical;line-height:1.7;}
+.apfields textarea:focus{outline:0;border-color:var(--map-accent,#c9a24b);}
+.apfields{margin-bottom:9px;}
+.apfile{display:flex;align-items:center;gap:10px;flex:1;min-width:200px;padding:9px 13px;
+  border:1px dashed var(--map-line,#ddd6c4);border-radius:8px;font-size:13.5px;color:#8b8474;
+  background:#fffdf8;cursor:pointer;}
+.apfile input{font-size:12.5px;}
 .apmsg{margin-top:10px;font-size:13px;color:#8b8474;}
 
 /* 장소 안내 창 */
@@ -59,7 +68,11 @@
   margin:12px 0 10px;line-height:1.35;word-break:keep-all;}
 .paddr{font-size:16px;color:#2f2a1d;font-weight:500;word-break:keep-all;}
 .pjp{margin-top:4px;font-size:14px;color:#8b8474;}
-.pnote{margin-top:14px;font-size:15px;color:#4a463a;line-height:1.8;word-break:keep-all;}
+.pimg{display:block;width:100%;max-height:340px;object-fit:cover;border-radius:10px;margin-top:18px;}
+.pblock{margin-top:18px;padding-top:16px;border-top:1px solid var(--map-line,#f4efe2);}
+.plab{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--map-accent,#8a6d2b);
+  margin-bottom:7px;}
+.pnote{font-size:15px;color:#4a463a;line-height:1.85;word-break:keep-all;white-space:pre-wrap;}
 .mways{list-style:none;margin:16px 0 0;padding:0;}
 .mways li{position:relative;padding:9px 0 9px 18px;font-size:14.5px;color:#2f2a1d;
   line-height:1.7;border-bottom:1px solid var(--map-line,#f4efe2);word-break:keep-all;}

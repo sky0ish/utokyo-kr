@@ -52,9 +52,18 @@ const SHELL = `
   <div class="addplace" id="addplace">
     <div class="apttl">＋ 이 분류에 장소 추가 <span id="apWhere"></span></div>
     <div class="apfields">
-      <input type="text" id="apName" maxlength="60" placeholder="장소 이름 (예: 아카몬 라멘)">
-      <input type="text" id="apAddr" maxlength="120" placeholder="주소 (예: 東京都文京区本郷5-25-16)">
-      <input type="text" id="apNote" maxlength="200" placeholder="한 줄 소개 (선택)">
+      <input type="text" id="apName" maxlength="60" placeholder="장소 이름 * (예: 아카몬 앞 커피집)">
+      <input type="text" id="apAddr" maxlength="120" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
+    </div>
+    <div class="apfields">
+      <input type="text" id="apNote" maxlength="200" placeholder="이곳의 특징 (예: 창가에서 아카몬이 보입니다)">
+    </div>
+    <div class="apfields">
+      <textarea id="apMemo" maxlength="600" rows="2"
+        placeholder="이곳에 얽힌 추억 (선택) — 언제, 누구와, 무엇을 하셨는지 편하게 적어주세요"></textarea>
+    </div>
+    <div class="apfields">
+      <label class="apfile">사진 (선택)<input type="file" id="apImg" accept="image/*"></label>
       <button class="apbtn" id="apGo">지도에 올리기</button>
     </div>
     <div class="apmsg" id="apMsg">주소를 적으면 위치를 찾아 지도 위에 표시로 올려드립니다.</div>
@@ -67,7 +76,15 @@ const SHELL = `
       <h3 id="pName"></h3>
       <div class="paddr" id="pAddr"></div>
       <div class="pjp" id="pJp"></div>
-      <div class="pnote" id="pNote"></div>
+      <img class="pimg" id="pImg" alt="" style="display:none;">
+      <div class="pblock" id="pNoteBox" style="display:none;">
+        <div class="plab">이곳의 특징</div>
+        <div class="pnote" id="pNote"></div>
+      </div>
+      <div class="pblock" id="pMemoBox" style="display:none;">
+        <div class="plab">추억</div>
+        <div class="pnote" id="pMemo"></div>
+      </div>
       <ul class="mways" id="pWays"></ul>
       <div class="pfoot">
         <a class="pbtn" id="pMap" href="#" target="_blank" rel="noopener">구글 지도에서 길찾기 →</a>
@@ -169,7 +186,12 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     document.getElementById("pName").textContent = p.name;
     document.getElementById("pAddr").textContent = p.address || "";
     document.getElementById("pJp").textContent = p.jp || "";
+    const img = document.getElementById("pImg");
+    if (p.image_url) { img.src = p.image_url; img.style.display = ""; } else img.style.display = "none";
     document.getElementById("pNote").textContent = p.note || "";
+    document.getElementById("pNoteBox").style.display = p.note ? "" : "none";
+    document.getElementById("pMemo").textContent = p.memory || "";
+    document.getElementById("pMemoBox").style.display = p.memory ? "" : "none";
     document.getElementById("pWays").innerHTML =
       (p.ways || []).map(w => `<li>${w}</li>`).join("");
     document.getElementById("pMap").href =
@@ -186,6 +208,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     del.style.display = (mine || (isAdmin && !p.builtin)) ? "" : "none";
     del.onclick = async () => {
       if (!confirm(`「${p.name}」 을 지도에서 지울까요?`)) return;
+      if (p.storage_path) await sb.storage.from("gallery").remove([p.storage_path]);
       const { error } = await sb.from("map_places").delete().eq("id", p.id);
       if (error) { alert("지우기 실패: " + error.message); return; }
       close(); draw();
@@ -199,6 +222,8 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     const name = document.getElementById("apName").value.trim();
     const addr = document.getElementById("apAddr").value.trim();
     const note = document.getElementById("apNote").value.trim();
+    const memo = document.getElementById("apMemo").value.trim();
+    const file = document.getElementById("apImg").files[0] || null;
     if (!name) { msg.textContent = "장소 이름을 적어주세요."; return; }
     if (!addr) { msg.textContent = "주소를 적어주세요."; return; }
     const btn = document.getElementById("apGo");
@@ -216,8 +241,22 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       msg.textContent = "그 주소를 찾지 못했습니다. 우편번호를 빼거나 일본어 주소로 적어보세요.";
       return;
     }
+    // 사진이 있으면 먼저 올린다
+    let image_url = null, storage_path = null;
+    if (file) {
+      msg.textContent = "사진을 올리는 중…";
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+      storage_path = `map/${cur}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+      const up = await sb.storage.from("gallery").upload(storage_path, file, { cacheControl: "3600" });
+      if (up.error) {
+        btn.disabled = false; msg.textContent = "사진 올리기 실패: " + up.error.message;
+        return;
+      }
+      image_url = sb.storage.from("gallery").getPublicUrl(storage_path).data.publicUrl;
+    }
     const { error } = await sb.from("map_places").insert({
       category: cur, name, address: addr, note: note || null,
+      memory: memo || null, image_url, storage_path,
       lat: parseFloat(hit.lat), lng: parseFloat(hit.lon),
       owner_name: (me && me.is_admin) ? "" : ((me && me.name) || ""),
       owner_admin: !!(me && me.is_admin),
@@ -232,6 +271,8 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     document.getElementById("apName").value = "";
     document.getElementById("apAddr").value = "";
     document.getElementById("apNote").value = "";
+    document.getElementById("apMemo").value = "";
+    document.getElementById("apImg").value = "";
     msg.textContent = `「${name}」 을 지도에 올렸습니다.`;
     draw();
   });

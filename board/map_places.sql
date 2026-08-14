@@ -12,7 +12,10 @@ create table if not exists public.map_places (
                 ('utokyo','food','cafe','memory','arch')),
   name        text not null,
   address     text not null,
-  note        text,
+  note        text,          -- 사이트 특징
+  memory      text,          -- 이곳에 얽힌 추억
+  image_url   text,          -- 사진 (선택)
+  storage_path text,
   lat         double precision not null,
   lng         double precision not null,
   post_id     uuid references public.posts(id) on delete set null,  -- 게시판 글과 연결(선택)
@@ -23,6 +26,11 @@ create table if not exists public.map_places (
   created_at  timestamptz not null default now()
 );
 create index if not exists map_places_cat_idx on public.map_places (category, created_at desc);
+
+-- 이미 표를 만든 뒤 다시 실행해도 안전하도록
+alter table public.map_places add column if not exists memory       text;
+alter table public.map_places add column if not exists image_url    text;
+alter table public.map_places add column if not exists storage_path text;
 
 alter table public.map_places enable row level security;
 
