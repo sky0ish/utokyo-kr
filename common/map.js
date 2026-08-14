@@ -374,20 +374,73 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     addrEl.addEventListener("input", () => { picked = null; });      // 직접 고치면 다시 찾습니다
     document.addEventListener("click", (e) => { if (!sug.contains(e.target) && e.target !== nameEl) hide(); });
 
+    /** 한글 이름은 OpenStreetMap 에 거의 없다 → 위키백과로 일본어 이름을 찾아 다시 검색 */
+    async function viaWiki(q) {
+      const api = (host, p) => fetch(`https://${host}/w/api.php?origin=*&format=json&` + p)
+                                 .then(r => r.json()).catch(() => null);
+      const sr = await api("ko.wikipedia.org",
+        "action=query&list=search&srlimit=3&srsearch=" + encodeURIComponent(q));
+      const hits = (sr && sr.query && sr.query.search) || [];
+      if (!hits.length) return [];
+      const titles = hits.map(h => h.title);
+      const info = await api("ko.wikipedia.org",
+        "action=query&prop=coordinates|langlinks&lllang=ja&lllimit=1&titles="
+        + encodeURIComponent(titles.join("|")));
+      const pages = (info && info.query && info.query.pages) || {};
+      const out = [];
+      for (const key of Object.keys(pages)) {
+        const p = pages[key];
+        const ja = p.langlinks && p.langlinks[0] && p.langlinks[0]["*"];
+        const co = p.coordinates && p.coordinates[0];
+        out.push({ ko: p.title, ja, lat: co && co.lat, lon: co && co.lon });
+      }
+      return out.filter(x => x.ja || (x.lat && x.lon));
+    }
+
+    async function nomi(q) {
+      const u = "https://nominatim.openstreetmap.org/search?format=json&limit=6"
+              + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
+              + TOKYO + "&q=" + encodeURIComponent(q);
+      try { return await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json()); }
+      catch (e) { return []; }
+    }
+
     async function look(q) {
       if (q.length < 2 || q === lastQ) return;
       lastQ = q;
       sug.innerHTML = '<div class="apsmsg">주소를 찾는 중…</div>';
       sug.classList.add("on");
-      let list = [];
-      try {
-        const u = "https://nominatim.openstreetmap.org/search?format=json&limit=6"
-                + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
-                + TOKYO + "&q=" + encodeURIComponent(q);
-        list = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
-      } catch (e) { list = []; }
+      let list = await nomi(q);
+      // 한글로 적으셨는데 못 찾으면 위키백과로 일본어 이름을 찾아 다시 검색합니다
+      if ((!list || !list.length) && /[가-힣]/.test(q)) {
+        sug.innerHTML = '<div class="apsmsg">한국어 이름으로 다시 찾는 중…</div>';
+        const wk = await viaWiki(q);
+        for (const w of wk) {
+          if (w.ja) {
+            const r = await nomi(w.ja);
+            if (r && r.length) { list = r; break; }
+          }
+        }
+        // 그래도 없으면 위키백과 좌표로 주소를 되찾습니다
+        if ((!list || !list.length) && wk.length) {
+          const w = wk.find(x => x.lat && x.lon);
+          if (w) {
+            try {
+              const ru = "https://nominatim.openstreetmap.org/reverse?format=json&zoom=18"
+                       + "&addressdetails=1&extratags=1&accept-language=ko"
+                       + `&lat=${w.lat}&lon=${w.lon}`;
+              const rv = await fetch(ru, { headers: { Accept: "application/json" } }).then(r => r.json());
+              if (rv && rv.display_name) {
+                rv.name = w.ko;
+                list = [rv];
+              }
+            } catch (e) {}
+          }
+        }
+      }
       if (!list || !list.length) {
-        sug.innerHTML = '<div class="apsmsg">찾지 못했습니다. 주소를 직접 적어주세요.</div>';
+        sug.innerHTML = '<div class="apsmsg">찾지 못했습니다.<br>' +
+          '일본어나 영어 이름으로 적어보시거나(예: teamLab Planets), 주소를 직접 적어주세요.</div>';
         return;
       }
       sug.innerHTML = list.map((h, i) => {
