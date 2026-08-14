@@ -97,9 +97,13 @@ const SHELL = `
   <div class="addplace" id="addplace">
     <div class="apttl">＋ 이 분류에 장소 추가</div>
     <div class="apcats" id="apCats"></div>
-    <div class="apfields">
-      <input type="text" id="apName" maxlength="60" placeholder="장소 이름 * (예: 아카몬 앞 커피집)">
-      <input type="text" id="apAddr" maxlength="120" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
+    <div class="apfields aprow">
+      <div class="apcell">
+        <input type="text" id="apName" maxlength="60" autocomplete="off"
+               placeholder="장소 이름 * (예: 아카몬 앞 커피집) — 상호를 적으면 아래에 주소 후보가 뜹니다">
+        <div class="apsug" id="apSug"></div>
+      </div>
+      <input type="text" id="apAddr" maxlength="160" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
     </div>
     <div class="apfields">
       <input type="text" id="apNote" maxlength="200" placeholder="이곳의 특징 (예: 창가에서 아카몬이 보입니다)">
@@ -297,9 +301,11 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     if (p.post_id) { post.style.display = ""; post.href = `${HOME}/post.html?id=${p.post_id}`; }
     else post.style.display = "none";
     const who = document.getElementById("pWho");
-    who.textContent = p.builtin ? ""
-      : p.owner_admin ? "관리자가 올린 장소"
-      : p.owner_name ? `공유자(${p.owner_name})` : "";
+    const when = p.created_at ? String(p.created_at).slice(0, 10).replace(/-/g, ".") : "";
+    who.innerHTML = p.builtin ? ""
+      : p.owner_admin ? `<b>관리자</b>${when ? " · " + when : ""} 가 올린 장소입니다`
+      : p.owner_name ? `<b>공유자(${esc(p.owner_name)})</b>${when ? " · " + when : ""} 가 올린 장소입니다`
+      : (when ? when + " 에 올라온 장소입니다" : "");
     const del = document.getElementById("pDel");
     const mine = !p.builtin && user && p.created_by === user.id;
     del.style.display = (mine || (isAdmin && !p.builtin)) ? "" : "none";
@@ -311,6 +317,56 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       close(); draw();
     };
     modal.classList.add("on");
+  }
+
+  // ── 상호명을 적으면 주소 후보를 보여준다 ──
+  let picked = null;                     // 후보에서 고른 위치 (있으면 다시 찾지 않습니다)
+  {
+    const nameEl = document.getElementById("apName");
+    const addrEl = document.getElementById("apAddr");
+    const sug = document.getElementById("apSug");
+    const TOKYO = "&viewbox=138.90,36.25,140.55,35.15&bounded=1";
+    let timer = null, lastQ = "";
+
+    const hide = () => { sug.classList.remove("on"); sug.innerHTML = ""; };
+    addrEl.addEventListener("input", () => { picked = null; });      // 직접 고치면 다시 찾습니다
+    document.addEventListener("click", (e) => { if (!sug.contains(e.target) && e.target !== nameEl) hide(); });
+
+    async function look(q) {
+      if (q.length < 2 || q === lastQ) return;
+      lastQ = q;
+      sug.innerHTML = '<div class="apsmsg">주소를 찾는 중…</div>';
+      sug.classList.add("on");
+      let list = [];
+      try {
+        const u = "https://nominatim.openstreetmap.org/search?format=json&limit=6"
+                + "&addressdetails=1&accept-language=ko" + TOKYO + "&q=" + encodeURIComponent(q);
+        list = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
+      } catch (e) { list = []; }
+      if (!list || !list.length) {
+        sug.innerHTML = '<div class="apsmsg">찾지 못했습니다. 주소를 직접 적어주세요.</div>';
+        return;
+      }
+      sug.innerHTML = list.map((h, i) => {
+        const head = (h.name || h.display_name.split(",")[0]).trim();
+        return `<button type="button" class="apsitem" data-i="${i}">` +
+               `<b>${esc(head)}</b><span>${esc(h.display_name)}</span></button>`;
+      }).join("");
+      sug.querySelectorAll(".apsitem").forEach(b => b.addEventListener("click", () => {
+        const h = list[+b.dataset.i];
+        addrEl.value = h.display_name;
+        picked = { lat: parseFloat(h.lat), lon: parseFloat(h.lon) };
+        hide();
+        msgSafe("주소를 넣었습니다. 특징과 추억도 적어주시면 좋습니다.");
+      }));
+    }
+    const msgSafe = (t) => { const m = document.getElementById("apMsg"); if (m) m.textContent = t; };
+    nameEl.addEventListener("input", () => {
+      clearTimeout(timer);
+      const q = nameEl.value.trim();
+      if (q.length < 2) { hide(); return; }
+      timer = setTimeout(() => look(q), 550);        // 타이핑이 멈추면 찾습니다
+    });
   }
 
   // ── 사진 붙여넣기 · 끌어놓기 ──
@@ -362,9 +418,11 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     if (!name) { msg.textContent = "장소 이름을 적어주세요."; return; }
     if (!addr) { msg.textContent = "주소를 적어주세요."; return; }
     const btn = document.getElementById("apGo");
-    btn.disabled = true; msg.textContent = "주소로 위치를 찾는 중…";
-    let hit = null;
-    try {
+    btn.disabled = true;
+    let hit = picked ? { lat: picked.lat, lon: picked.lon } : null;
+    if (hit) msg.textContent = "올리는 중…";
+    else try {
+      msg.textContent = "주소로 위치를 찾는 중…";
       const u = "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ko&q="
               + encodeURIComponent(addr);
       const r = await fetch(u, { headers: { "Accept": "application/json" } });
@@ -403,6 +461,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         " — board/map_places.sql 을 실행하셨는지 확인해주세요.";
       return;
     }
+    picked = null;
     document.getElementById("apName").value = "";
     document.getElementById("apAddr").value = "";
     document.getElementById("apNote").value = "";
