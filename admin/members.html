@@ -116,7 +116,7 @@
         <span id="selCnt">선택 0명</span>
         <button class="btn sm dark" id="okSel">선택 승인</button>
         <button class="btn sm" id="noSel">선택 승인 취소</button>
-        <button class="btn sm" id="autoGrade">전체 회원여부 자동 확인</button>
+        <button class="btn sm" id="autoGrade">회원여부 일괄확인</button>
         <button class="btn sm" id="okWait">대기자 전체 승인</button>
       </div>
       <div class="msg" id="listMsg"></div>
@@ -235,7 +235,7 @@ async function start() {
     const msg = document.getElementById("listMsg");
     b.disabled = true; b.textContent = "확인 중…";
     const { data, error } = await sb.rpc("roster_autoset");
-    b.disabled = false; b.textContent = "전체 회원여부 자동 확인";
+    b.disabled = false; b.textContent = "회원여부 일괄확인";
     if (error) {
       msg.className = "msg err";
       msg.textContent = "자동 확인 실패: " + error.message +
