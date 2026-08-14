@@ -9,7 +9,7 @@
 create table if not exists public.map_places (
   id          uuid primary key default gen_random_uuid(),
   category    text not null check (category in
-                ('utokyo','food','cafe','memory','arch')),
+                ('utokyo','food','cafe','memory','arch','sight')),
   name        text not null,
   address     text not null,
   note        text,          -- 사이트 특징
@@ -31,6 +31,11 @@ create index if not exists map_places_cat_idx on public.map_places (category, cr
 alter table public.map_places add column if not exists memory       text;
 alter table public.map_places add column if not exists image_url    text;
 alter table public.map_places add column if not exists storage_path text;
+
+-- 분류가 늘어나도 다시 실행하면 반영됩니다 (관광·명소 추가)
+alter table public.map_places drop constraint if exists map_places_category_check;
+alter table public.map_places add constraint map_places_category_check
+  check (category in ('utokyo','food','cafe','memory','arch','sight'));
 
 alter table public.map_places enable row level security;
 
