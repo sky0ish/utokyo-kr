@@ -371,17 +371,19 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         '<div class="plempty">아직 없습니다.<br>아래에서 올려주세요.</div>';
       return;
     }
-    let html = '<div class="pltitle">등록된 장소 ' + total + '곳</div><div class="plbody">';
+    const canAny = places.some(p => !p.builtin && ((user && p.created_by === user.id) || isAdmin));
+    let html = '<div class="pltitle">등록된 장소 ' + total + '곳'
+             + (canAny ? '<em>끌어서 분류 옮기기</em>' : '') + '</div><div class="plbody">';
     for (const [k, v] of CATS) {
       const rows = places.map((p, i) => ({ p, i })).filter(x => x.p.category === k);
       if (!rows.length) continue;
-      html += `<div class="plcat c-${k}">
+      html += `<div class="plcat c-${k}" data-c="${k}">
         <span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>
         ${v}<em>${rows.length}</em></div>`;
       html += rows.map(({ p, i }) => {
         const mine = !p.builtin && user && p.created_by === user.id;
         const can = mine || (isAdmin && !p.builtin);
-        return `<div class="plrow">
+        return `<div class="plrow${can ? " movable" : ""}" data-i="${i}"${can ? ' draggable="true"' : ""}>
           <span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>
           <button class="plname" data-i="${i}" title="${esc(p.name)}">${esc(p.name)}</button>
           ${can ? `<button class="pldel" data-i="${i}" title="이 장소 지우기">✕</button>` : ""}
@@ -404,6 +406,46 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       map.setView([p.lat, p.lng], 16);
       open(+b.dataset.i);
     }));
+    // 줄을 끌어다 분류 머리줄에 놓으면 그 분류로 옮겨집니다
+    let dragI = null;
+    box.querySelectorAll(".plrow.movable").forEach(row => {
+      row.addEventListener("dragstart", (e) => {
+        dragI = +row.dataset.i;
+        row.classList.add("dragging");
+        try { e.dataTransfer.setData("text/plain", String(dragI)); } catch (err) {}
+        e.dataTransfer.effectAllowed = "move";
+      });
+      row.addEventListener("dragend", () => {
+        row.classList.remove("dragging");
+        box.querySelectorAll(".plcat").forEach(c => c.classList.remove("over"));
+        dragI = null;
+      });
+    });
+    box.querySelectorAll(".plcat").forEach(head => {
+      head.addEventListener("dragover", (e) => {
+        e.preventDefault(); e.dataTransfer.dropEffect = "move";
+        head.classList.add("over");
+      });
+      head.addEventListener("dragleave", () => head.classList.remove("over"));
+      head.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        head.classList.remove("over");
+        const i = dragI != null ? dragI : +(e.dataTransfer.getData("text/plain") || -1);
+        const p = places[i];
+        const to = head.dataset.c;
+        if (!p || !to || p.category === to) return;
+        const { error } = await sb.from("map_places").update({ category: to }).eq("id", p.id);
+        if (error) { alert("옮기기 실패: " + error.message); return; }
+        p.category = to;
+        if (!shown.has(to)) {
+          shown.add(to);
+          const c = boxes.querySelector(`input[data-c="${to}"]`);
+          if (c) { c.checked = true; c.closest(".ly").classList.remove("off"); }
+        }
+        draw();
+      });
+    });
+
     box.querySelectorAll(".pldel").forEach(b => b.addEventListener("click", async () => {
       const p = places[+b.dataset.i];
       if (!confirm(`「${p.name}」 을 지도에서 지울까요?`)) return;

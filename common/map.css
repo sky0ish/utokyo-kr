@@ -83,8 +83,10 @@
 .plist{flex:1;min-width:0;height:100%;min-height:0;display:flex;flex-direction:column;
   border:1px solid var(--map-line,#e6dfcb);border-radius:10px;background:#fff;
   box-shadow:0 1px 3px rgba(20,24,34,.07);overflow:hidden;}
-.pltitle{flex:none;padding:8px 11px;font-size:9.5px;font-weight:700;letter-spacing:.03em;
+.pltitle{flex:none;display:flex;align-items:center;justify-content:space-between;gap:6px;
+  padding:8px 11px;font-size:9.5px;font-weight:700;letter-spacing:.03em;
   color:#a8a291;border-bottom:1px solid #f2ede1;}
+.pltitle em{font-style:normal;font-weight:600;font-size:9px;color:#b9b2a0;}
 .plbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
   scrollbar-gutter:stable;padding:0 0 6px;}
 /* 목록 전용 스크롤 막대 — 늘어나도 옆칸이 밀리지 않게 */
@@ -101,6 +103,10 @@
 .plcat em{margin-left:auto;font-style:normal;font-size:9.5px;color:#7a9152;}
 .plcat:first-child{margin-top:0;border-top:none;}
 .plrow{display:flex;align-items:center;gap:7px;padding:0 6px 0 10px;transition:.14s;}
+.plrow.movable{cursor:grab;}
+.plrow.dragging{opacity:.4;}
+.plcat.over{background:linear-gradient(180deg,#d9f0b8,#c9e7a2);
+  outline:2px dashed #7fae3f;outline-offset:-2px;}
 .plrow:hover{background:#f7f4ec;}
 .plname{flex:1;min-width:0;text-align:left;border:0;background:transparent;cursor:pointer;
   font-family:inherit;font-size:11.5px;font-weight:600;color:#2f2a1d;padding:5px 2px;
