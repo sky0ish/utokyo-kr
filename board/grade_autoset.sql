@@ -14,7 +14,10 @@
 -- ※ 여러 번 실행해도 안전합니다.
 -- ═══════════════════════════════════════════════════════════
 
--- ── 0) 확인한 시각을 적어 두는 칸 (한 번 확인한 사람은 버튼이 회색 [확인] 으로 바뀝니다) ──
+-- ── 0) 손으로 등급을 정한 시각 (운영진이 직접 회원으로 올린 경우 = 재승인) ──
+alter table public.profiles add column if not exists grade_manual_at timestamptz;
+
+-- 확인한 시각을 적어 두는 칸 (한 번 확인한 사람은 버튼이 회색 [확인] 으로 바뀝니다) ──
 alter table public.profiles add column if not exists grade_checked_at timestamptz;
 
 -- 이름을 견주기 좋게 다듬는 함수 (띄어쓰기·대소문자 무시)
@@ -27,6 +30,7 @@ $$;
 update public.profiles p
    set grade = 'member'
  where coalesce(p.is_admin, false) = false
+   and p.grade_manual_at is null            -- 손으로 정한 분은 그대로 둡니다
    and public.name_key(p.name) <> ''
    and exists (
      select 1 from private.roster r
@@ -37,6 +41,7 @@ update public.profiles p
 update public.profiles p
    set grade = 'guest'
  where coalesce(p.is_admin, false) = false
+   and p.grade_manual_at is null            -- 손으로 정한 분은 그대로 둡니다
    and not exists (
      select 1 from private.roster r
       where public.name_key(r.name_ko)    = public.name_key(p.name)
@@ -77,6 +82,7 @@ begin
   update public.profiles p
      set grade = 'member'
    where coalesce(p.is_admin, false) = false
+     and p.grade_manual_at is null
      and public.name_key(p.name) <> ''
      and exists (
        select 1 from private.roster r
@@ -87,6 +93,7 @@ begin
   update public.profiles p
      set grade = 'guest'
    where coalesce(p.is_admin, false) = false
+     and p.grade_manual_at is null
      and not exists (
        select 1 from private.roster r
         where public.name_key(r.name_ko)    = public.name_key(p.name)

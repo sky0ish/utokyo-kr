@@ -214,7 +214,7 @@ async function start() {
 
   async function load() {
     // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
-    const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at";
+    const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at";
     let { data, error } = await sb.from("profiles")
       .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
     if (error && /welcome_sent_at/.test(error.message || "")) {
@@ -273,10 +273,13 @@ async function start() {
       "</select>";
   }
 
+  /** 명단에 없었지만 운영진이 직접 회원으로 올린 경우 = 재승인 */
+  const isRegrant = (r) => !r.is_admin && r.grade === "member" && !!r.grade_manual_at;
+
   function gradeChip(r) {
     const g = r.is_admin ? "admin" : (r.grade || "guest");
     const [t, c] = GRADE[g] || GRADE.guest;
-    return `<span class="chip ${c}">${t}</span>`;
+    return `<span class="chip ${c}">${isRegrant(r) ? "재승인" : t}</span>`;
   }
 
   function render() {
@@ -320,7 +323,9 @@ async function start() {
       const r = rows.find(x => x.id === tr.dataset.id);
       const to = sel.value;
       sel.disabled = true;
-      const { error } = await sb.from("profiles").update({ grade: to }).eq("id", r.id);
+      const now = new Date().toISOString();
+      const { error } = await sb.from("profiles")
+        .update({ grade: to, grade_manual_at: now }).eq("id", r.id);
       sel.disabled = false;
       if (error) {
         alert("등급 변경 실패: " + error.message +
@@ -328,7 +333,7 @@ async function start() {
         sel.value = r.grade || "guest";
         return;
       }
-      r.grade = to;
+      r.grade = to; r.grade_manual_at = now;
       const cell = tr.querySelector(".gcell");
       cell.innerHTML = gradeChip(r) + gradeSel(r);
       render();
@@ -583,7 +588,7 @@ async function start() {
   const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
   const HEADER = "이름,이메일,연락처,구분,전공,졸업연도,등급,승인,가입일";
   const csvLine = (r) => [r.name, r.email, r.phone, r.member_type, r.faculty, r.grad_year,
-                          GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
+                          isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
                           r.approved ? "승인" : "대기", (r.created_at || "").slice(0, 10)]
     .map(v => `"${(v || "").toString().replace(/"/g, '""')}"`).join(",");
 
