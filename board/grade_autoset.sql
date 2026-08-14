@@ -14,7 +14,10 @@
 -- ※ 여러 번 실행해도 안전합니다.
 -- ═══════════════════════════════════════════════════════════
 
--- ── 0) 이름을 견주기 좋게 다듬는 함수 (띄어쓰기·대소문자 무시) ──
+-- ── 0) 확인한 시각을 적어 두는 칸 (한 번 확인한 사람은 버튼이 회색 [확인] 으로 바뀝니다) ──
+alter table public.profiles add column if not exists grade_checked_at timestamptz;
+
+-- 이름을 견주기 좋게 다듬는 함수 (띄어쓰기·대소문자 무시)
 create or replace function public.name_key(t text)
 returns text language sql immutable as $$
   select lower(regexp_replace(coalesce(t, ''), '[[:space:]．·・.]', '', 'g'))
@@ -41,6 +44,10 @@ update public.profiles p
          or public.name_key(r.name_kanji) = public.name_key(p.name));
 
 update public.profiles set grade = 'admin' where is_admin = true;
+
+-- 위에서 대조한 사람들에게 확인 시각을 남긴다
+update public.profiles set grade_checked_at = now()
+ where grade_checked_at is null;
 
 -- ── 2) 이름 하나 조회 (관리자 화면의 「회원여부 확인」 버튼) ──
 create or replace function public.roster_check(q text)
@@ -87,6 +94,7 @@ begin
            or public.name_key(r.name_kanji) = public.name_key(p.name));
 
   update public.profiles set grade = 'admin' where is_admin = true;
+  update public.profiles set grade_checked_at = now();
 
   return query
     select coalesce(pr.grade, '(없음)')::text, count(*)::bigint

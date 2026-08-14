@@ -80,6 +80,8 @@
   .gsel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
     font-family:inherit;font-size:11.5px;background:#fffdf8;color:#2f2a1d;cursor:pointer;}
   .gsel:focus{outline:0;border-color:#c9a24b;}
+  .btn.sm.done{background:#eeeae0;border-color:#ddd6c4;color:#a09a86;font-weight:400;}
+  .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
 </style>
 </head>
 <body>
@@ -200,7 +202,7 @@ async function start() {
 
   async function load() {
     // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
-    const COLS = "id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade";
+    const COLS = "id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at";
     let { data, error } = await sb.from("profiles")
       .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
     if (error && /welcome_sent_at/.test(error.message || "")) {
@@ -294,7 +296,9 @@ async function start() {
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
         <td>${r.approved ? '<span class="chip ok">승인</span>' : '<span class="chip wait">대기</span>'}</td>
         <td class="acts"><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button>
-            <button class="btn sm chk2">회원여부 확인</button></td>
+            ${r.grade_checked_at
+                ? '<button class="btn sm chk2 done" title="다시 확인">확인</button>'
+                : '<button class="btn sm chk2">회원여부 확인</button>'}</td>
       </tr>`).join("") + "</tbody>";
 
     // ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
@@ -327,12 +331,19 @@ async function start() {
       if (!r || !r.name) { alert("이름이 없는 회원입니다."); return; }
       b.disabled = true; b.textContent = "확인 중…";
       const { data, error } = await sb.rpc("roster_check", { q: r.name });
-      b.disabled = false; b.textContent = "회원여부 확인";
+      b.disabled = false;
       if (error) {
+        b.textContent = "회원여부 확인";
         alert("확인 실패: " + error.message +
               " — board/roster_import.sql 을 실행하셨는지 확인해주세요.");
         return;
       }
+      b.textContent = "확인";
+      b.classList.add("done");
+      b.title = "다시 확인";
+      const now = new Date().toISOString();
+      sb.from("profiles").update({ grade_checked_at: now }).eq("id", r.id)
+        .then(() => { r.grade_checked_at = now; });
       const hits = data || [];
       const cell = tr.querySelector(".gcell");
       if (!hits.length) {
