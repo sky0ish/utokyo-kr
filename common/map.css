@@ -84,13 +84,13 @@
 #cmap .leaflet-container{font-family:inherit;}
 .cmark{display:flex;flex-direction:column;align-items:center;line-height:1.2;cursor:pointer;}
 /* 표시 모양 — 동그라미 · 별 */
-.cmark i,.cdmark i{display:block;width:19px;height:19px;border-radius:50%;
+.cmark i,.cdmark i{display:block;width:11px;height:11px;border-radius:50%;
   background:var(--map-accent,#c9a24b);border:none;transition:.15s;
-  box-shadow:inset 0 2px 3px rgba(255,255,255,.5),
-             inset 0 -3px 5px rgba(0,0,0,.25),
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.5),
+             inset 0 -2px 3px rgba(0,0,0,.25),
              0 1px 2px rgba(0,0,0,.35),
-             0 4px 9px rgba(0,0,0,.3);}
-.cmark.star i,.cdmark.star i{width:28px;height:28px;border:none;border-radius:0;
+             0 3px 6px rgba(0,0,0,.28);}
+.cmark.star i,.cdmark.star i{width:17px;height:17px;border:none;border-radius:0;
   box-shadow:none;
   filter:drop-shadow(0 1px 1px rgba(255,255,255,.5)) drop-shadow(0 2px 3px rgba(0,0,0,.45))
          drop-shadow(0 5px 8px rgba(0,0,0,.32));
@@ -101,7 +101,7 @@
 .cmark.c-cafe   i,.cdmark.c-cafe   i{background:#e8b53a;}
 .cmark.c-memory i,.cdmark.c-memory i{background:#7a4fa3;}
 .cmark.c-arch   i,.cdmark.c-arch   i{background:#1f5136;}
-.cmark b{margin-top:3px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,.95);
+.cmark b{margin-top:2px;padding:1px 7px;border-radius:100px;background:rgba(255,255,255,.95);
   border:1px solid var(--map-line,#e6dfcb);font-size:11.5px;font-weight:600;
   color:#2f2a1d;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.18);}
 .cmark:hover i{transform:scale(1.25);}
