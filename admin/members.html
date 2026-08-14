@@ -113,6 +113,7 @@
         <span id="selCnt">선택 0명</span>
         <button class="btn sm dark" id="okSel">선택 승인</button>
         <button class="btn sm" id="noSel">선택 승인 취소</button>
+        <button class="btn sm" id="autoGrade">전체 회원여부 자동 확인</button>
         <button class="btn sm" id="okWait">대기자 전체 승인</button>
       </div>
       <div class="msg" id="listMsg"></div>
@@ -224,6 +225,25 @@ async function start() {
     f === "approved" ? r.approved :
     f === "unsent" ? !r.welcome_sent_at :
     r.member_type === f);
+
+  // 전체 자동 확인 — 가입자 이름을 동문 명단과 한꺼번에 대조
+  document.getElementById("autoGrade").addEventListener("click", async () => {
+    const b = document.getElementById("autoGrade");
+    const msg = document.getElementById("listMsg");
+    b.disabled = true; b.textContent = "확인 중…";
+    const { data, error } = await sb.rpc("roster_autoset");
+    b.disabled = false; b.textContent = "전체 회원여부 자동 확인";
+    if (error) {
+      msg.className = "msg err";
+      msg.textContent = "자동 확인 실패: " + error.message +
+        " — board/roster_import.sql 과 board/grade_autoset.sql 을 실행하셨는지 확인해주세요.";
+      return;
+    }
+    const line = (data || []).map(x => `${x["등급"]} ${x["인원"]}명`).join(" · ");
+    await load();
+    msg.className = "msg ok";
+    msg.textContent = "동문 명단과 대조했습니다 — " + line;
+  });
 
   const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
   function gradeChip(r) {
