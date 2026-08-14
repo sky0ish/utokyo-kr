@@ -116,6 +116,7 @@
         <span class="csvbtns">
           <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV</button>
           <button class="btn csvtop" id="csvGuest">⤓ 준회원만 CSV</button>
+          <button class="btn csvtop" id="csvPick">⤓ 선택한 분만 CSV</button>
         </span>
       </div>
       <div class="hint">가입 신청이 들어오면 <b>승인</b>을 눌러야 게시판 글쓰기·사진 올리기를 할 수 있습니다.</div>
@@ -623,15 +624,19 @@ async function start() {
     download(HEADER + "\n" + list.map(csvLine).join("\n"), "회원명단.csv");
   }
 
-  /** 전체 명단 (체크한 분이 있으면 그분들만) */
+  /** 전체 명단 — 관리자·회원·재승인·준회원 모두 (체크 여부와 무관) */
   function saveCsvAll() {
-    const ids = selected();
-    const list = ids.length
-      ? ids.map(id => rows.find(r => r.id === id)).filter(Boolean)
-      : rows.slice();
     const today = new Date().toISOString().slice(0, 10);
-    saveNamed(list, ids.length ? "회원명단_선택_" + today : "회원명단_전체_" + today,
-              ids.length ? "선택한 분" : "전체 명단");
+    saveNamed(rows.slice(), "회원명단_전체_" + today, "전체 명단");
+  }
+
+  /** 체크한 분만 따로 */
+  function saveCsvPicked() {
+    const ids = selected();
+    if (!ids.length) { alert("먼저 회원을 선택해주세요."); return; }
+    const list = ids.map(id => rows.find(r => r.id === id)).filter(Boolean);
+    const today = new Date().toISOString().slice(0, 10);
+    saveNamed(list, "회원명단_선택_" + today, "선택한 분");
   }
 
   /** 준회원만 따로 (별도 파일) */
@@ -661,6 +666,7 @@ async function start() {
     () => saveCsv(pick(document.getElementById("target").value)));
   document.getElementById("csvTop").addEventListener("click", saveCsvAll);
   document.getElementById("csvGuest").addEventListener("click", saveCsvGuest);
+  document.getElementById("csvPick").addEventListener("click", saveCsvPicked);
 
   load();
 }
