@@ -56,6 +56,19 @@
     font-size:14.5px;color:#4a463a;line-height:1.7;word-break:keep-all;}
   .mapnote b{color:#2f2a1d;font-weight:600;}
 </style>
+<script>
+  /* 옛 화면이 캐시에 남아 새 기능이 안 보이는 것을 막는다 */
+  (function () {
+    var HERE = 50;
+    fetch("/common/version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (v) {
+        if (Number(v.map) > HERE && location.search.indexOf("r=") < 0) {
+          location.replace(location.pathname + "?r=" + v.map);
+        }
+      }).catch(function () {});
+  })();
+</script>
 </head>
 <body class="yb">
 
