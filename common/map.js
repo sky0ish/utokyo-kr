@@ -80,15 +80,17 @@ const esc = s => String(s == null ? "" : s)
 const SHELL = `
   <div class="catdesc" id="catDesc"></div>
   <div class="mapwrap">
-    <div class="mapbox">
-      <div id="cmap"></div>
-      <div class="layers" id="mlayers">
-        <span class="lytitle">선택가능</span>
-        <span class="lyboxes" id="lyBoxes"></span>
-        <button type="button" class="lyall" id="lyAll">전체 켜기 / 끄기</button>
-        <span class="lytitle lybase">바탕지도</span>
-        <select class="lysel" id="lyBase"></select>
-      </div>
+    <div class="maprow">
+      <div class="mapbox"><div id="cmap"></div></div>
+      <aside class="mapside">
+        <div class="layers" id="mlayers">
+          <span class="lytitle">선택가능</span>
+          <span class="lyboxes" id="lyBoxes"></span>
+          <button type="button" class="lyall" id="lyAll">전체 켜기 / 끄기</button>
+          <span class="lytitle lybase">바탕지도</span>
+          <select class="lysel" id="lyBase"></select>
+        </div>
+      </aside>
     </div>
     <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소.
       지도 위 <b>표시를 누르면</b> 그 장소 안내가 크게 열립니다.</div>
