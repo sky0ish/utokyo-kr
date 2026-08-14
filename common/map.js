@@ -195,6 +195,13 @@ const SHELL = `
     <div class="apmsg" id="apMsg">주소를 적으면 위치를 찾아 지도 위에 표시로 올려드립니다.</div>
   </div>
 
+  <div class="movebar" id="moveBar">
+    <b id="moveName"></b>
+    <span>표시를 끌어서 옮긴 뒤 저장하세요.</span>
+    <button type="button" class="mvok" id="moveOk">이 자리로 저장</button>
+    <button type="button" class="mvno" id="moveNo">취소</button>
+  </div>
+
   <div class="pmodal" id="pmodal">
     <div class="pbox">
       <button class="px" id="pClose">✕</button>
@@ -215,6 +222,7 @@ const SHELL = `
       <div class="pfoot">
         <a class="pbtn" id="pMap" href="#" target="_blank" rel="noopener">구글 지도에서 길찾기 →</a>
         <a class="pbtn line" id="pPost" href="#" style="display:none;">관련 글 보기</a>
+        <button class="pbtn move" id="pMove" style="display:none;">📍 위치 옮기기</button>
         <button class="pbtn del" id="pDel" style="display:none;">이 장소 지우기</button>
       </div>
       <div class="pwho" id="pWho"></div>
@@ -273,6 +281,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   });
 
   let places = [];                          // 지도에 그려진 장소들
+  let markers = [];                         // 그 장소들의 지도 표시
   const shown = new Set(CATS.map(([k]) => k));   // 지도에 보이는 분류 (처음엔 모두)
   let layer = L.layerGroup().addTo(map);
 
@@ -333,9 +342,10 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     load().then(() => {
       layer.clearLayers();
       const pts = [];
+      markers = [];
       places.forEach((p, i) => {
         pts.push([p.lat, p.lng]);
-        L.marker([p.lat, p.lng], {
+        markers[i] = L.marker([p.lat, p.lng], {
           icon: L.divIcon({ className: "", iconSize: [0, 0],
             html: `<div class="cmark c-${p.category} ${(CAT_INFO[p.category] || {}).shape || "dot"}" data-i="${i}">`
                 + `<i></i><b>${esc(p.name.split(" (")[0])}</b></div>` }),
@@ -434,6 +444,10 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       : p.owner_admin ? `<b>관리자</b>${when ? " · " + when : ""} 가 올린 장소입니다`
       : p.owner_name ? `<b>공유자(${esc(p.owner_name)})</b>${when ? " · " + when : ""} 가 올린 장소입니다`
       : (when ? when + " 에 올라온 장소입니다" : "");
+    const mv = document.getElementById("pMove");
+    const canEdit = !p.builtin && ((user && p.created_by === user.id) || isAdmin);
+    mv.style.display = canEdit ? "" : "none";
+    mv.onclick = () => startMove(i);
     const del = document.getElementById("pDel");
     const mine = !p.builtin && user && p.created_by === user.id;
     del.style.display = (mine || (isAdmin && !p.builtin)) ? "" : "none";
@@ -788,6 +802,47 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       }
     });
   }
+
+  // ── 올린 장소의 위치를 마우스로 옮기기 ──
+  let moving = null;                       // { i, marker, from }
+  function startMove(i) {
+    const p = places[i], mk = markers[i];
+    if (!p || !mk) return;
+    close();
+    moving = { i, marker: mk, from: mk.getLatLng() };
+    mk.dragging && mk.dragging.enable();
+    mk.setZIndexOffset(1000);
+    const el = mk.getElement && mk.getElement();
+    if (el) el.querySelector(".cmark")?.classList.add("moving");
+    document.getElementById("moveName").textContent = p.name;
+    document.getElementById("moveBar").classList.add("on");
+    map.setView(mk.getLatLng(), Math.max(map.getZoom(), 16));
+  }
+  function endMove(keep) {
+    if (!moving) return;
+    const { marker, from } = moving;
+    marker.dragging && marker.dragging.disable();
+    const el = marker.getElement && marker.getElement();
+    if (el) el.querySelector(".cmark")?.classList.remove("moving");
+    document.getElementById("moveBar").classList.remove("on");
+    if (!keep) marker.setLatLng(from);
+    moving = null;
+  }
+  document.getElementById("moveNo").addEventListener("click", () => endMove(false));
+  document.getElementById("moveOk").addEventListener("click", async () => {
+    if (!moving) return;
+    const { i, marker } = moving;
+    const p = places[i];
+    const ll = marker.getLatLng();
+    const btn = document.getElementById("moveOk");
+    btn.disabled = true; btn.textContent = "저장 중…";
+    const { error } = await sb.from("map_places")
+      .update({ lat: ll.lat, lng: ll.lng }).eq("id", p.id);
+    btn.disabled = false; btn.textContent = "이 자리로 저장";
+    if (error) { alert("위치 저장 실패: " + error.message); return; }
+    endMove(true);
+    draw();
+  });
 
   // ── 장소 추가 (주소 → 위치 찾기) ──
   const msg = document.getElementById("apMsg");

@@ -252,6 +252,23 @@
 .apsmsg{padding:11px 14px;font-size:12.5px;color:#a09a86;}
 .apmsg{margin-top:10px;font-size:13px;color:#8b8474;}
 
+/* 위치 옮기기 도구막대 */
+.movebar{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:950;
+  display:none;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:12px 18px;border-radius:12px;background:#fff;
+  border:1px solid var(--map-line,#e6dfcb);font-size:13.5px;color:#5a5648;
+  box-shadow:0 4px 12px rgba(20,24,34,.18), 0 16px 40px rgba(20,24,34,.22);}
+.movebar.on{display:flex;}
+.movebar b{color:#2f2a1d;}
+.movebar .mvok{padding:9px 20px;border-radius:8px;border:1px solid #c79a2f;
+  background:linear-gradient(180deg,#ffdf9a,#e0ac3c);color:#4a3610;
+  font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;}
+.movebar .mvno{padding:9px 16px;border-radius:8px;border:1px solid var(--map-line,#ddd6c4);
+  background:#fff;color:#7d7768;font-family:inherit;font-size:13px;cursor:pointer;}
+.cmark.moving i{outline:3px solid #c9452f;outline-offset:3px;
+  animation:pinpop .9s ease-in-out infinite;}
+.pbtn.move{background:#fff;color:var(--map-accent,#4a3c14);}
+
 /* 장소 안내 창 — 지도를 가리지 않도록 오른쪽에 붙는 패널 */
 .pmodal{position:fixed;top:0;right:0;bottom:0;left:auto;width:min(430px,40vw);display:none;
   align-items:center;justify-content:flex-end;padding:18px 18px 18px 0;z-index:900;
