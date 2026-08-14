@@ -112,14 +112,16 @@
 .apmsg{margin-top:10px;font-size:13px;color:#8b8474;}
 
 /* 장소 안내 창 — 지도를 가리지 않도록 오른쪽에 붙는 패널 */
-.pmodal{position:fixed;top:0;right:0;bottom:0;width:min(430px,42vw);display:none;
-  align-items:center;justify-content:flex-end;padding:20px 20px 20px 0;z-index:900;
-  pointer-events:none;}
+.pmodal{position:fixed;top:0;right:0;bottom:0;left:auto;width:min(430px,40vw);display:none;
+  align-items:center;justify-content:flex-end;padding:18px 18px 18px 0;z-index:900;
+  pointer-events:none;background:transparent;}
 .pmodal.on{display:flex;}
 .pbox{position:relative;background:#fff;border-radius:14px;padding:30px 30px 26px;
   width:100%;max-height:calc(100vh - 40px);overflow:auto;pointer-events:auto;
-  border:1px solid var(--map-line,#e6dfcb);
-  box-shadow:0 18px 50px rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 2px 6px rgba(20,24,34,.10),
+             0 14px 34px rgba(20,24,34,.20),
+             0 34px 80px rgba(20,24,34,.26);
   animation:pslide .22s ease-out;}
 @keyframes pslide{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:none;}}
 .pbox .px{position:absolute;top:14px;right:16px;border:0;background:transparent;
