@@ -113,6 +113,35 @@ function kindOf(h) {
   return bits.slice(0, 3).join(" · ");
 }
 
+/** 위키백과에서 「무엇을 하는 곳인지」 한 문장을 찾아온다 */
+async function describeFromWiki(name) {
+  if (!name) return "";
+  const get = (host, path) => fetch(`https://${host}/api/rest_v1/page/summary/${encodeURIComponent(path)}`)
+                                .then(r => r.ok ? r.json() : null).catch(() => null);
+  const find = async (host) => {
+    try {
+      const sr = await fetch(`https://${host}/w/api.php?origin=*&format=json&action=query&list=search`
+                           + `&srlimit=1&srsearch=${encodeURIComponent(name)}`)
+                       .then(r => r.json());
+      const hit = sr && sr.query && sr.query.search && sr.query.search[0];
+      return hit ? hit.title : null;
+    } catch (e) { return null; }
+  };
+  for (const host of ["ko.wikipedia.org", "ja.wikipedia.org"]) {
+    const title = await find(host);
+    if (!title) continue;
+    const sum = await get(host, title);
+    const tx = sum && (sum.extract || "");
+    if (!tx) continue;
+    // 첫 문장만, 괄호 안 설명은 덜어낸다
+    let one = tx.split(/(?<=[.。])\s/)[0] || tx;
+    one = one.replace(/\([^)]*\)/g, "").replace(/（[^）]*）/g, "").replace(/\s{2,}/g, " ").trim();
+    if (one.length > 90) one = one.slice(0, 88).trim() + "…";
+    if (one.length >= 8) return one;
+  }
+  return "";
+}
+
 const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -452,14 +481,28 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         const h = list[+b.dataset.i];
         addrEl.value = h.display_name;
         picked = { lat: parseFloat(h.lat), lon: parseFloat(h.lon) };
-        // 장소 종류를 찾아 「이곳의 특징」에 미리 넣어드립니다 (고치셔도 됩니다)
+        // 「이곳의 특징」을 채워드립니다 (고치셔도 됩니다)
         const noteEl = document.getElementById("apNote");
         const kind = kindOf(h);
-        if (kind && !noteEl.value.trim()) noteEl.value = kind;
+        const already = noteEl.value.trim();
+        const tags = h.extratags || {};
+        const osmDesc = tags["description:ko"] || tags["description"] || "";
+        if (!already) noteEl.value = osmDesc || kind;      // 우선 종류만이라도 넣어두고
         hide();
-        msgSafe(kind
-          ? `주소와 특징(${kind})을 넣었습니다. 추억은 원하실 때만 적으시면 됩니다.`
-          : "주소를 넣었습니다. 추억은 원하실 때만 적으시면 됩니다.");
+        msgSafe("주소를 넣었습니다. 어떤 곳인지 찾아보는 중…");
+        if (!already && !osmDesc) {
+          const nm = (h.namedetails && (h.namedetails["name:ko"] || h.namedetails.name))
+                   || h.name || (h.display_name || "").split(",")[0];
+          describeFromWiki(nm).then(d => {
+            const now = noteEl.value.trim();
+            if (d && (now === "" || now === kind)) {          // 손대지 않으셨을 때만 채웁니다
+              noteEl.value = kind ? `${kind} — ${d}` : d;
+            }
+            msgSafe("특징을 채웠습니다. 맞지 않으면 고쳐주세요. 추억은 원하실 때만 적으시면 됩니다.");
+          });
+        } else {
+          msgSafe("주소를 넣었습니다. 추억은 원하실 때만 적으시면 됩니다.");
+        }
       }));
     }
     const msgSafe = (t) => { const m = document.getElementById("apMsg"); if (m) m.textContent = t; };
