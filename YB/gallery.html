@@ -26,6 +26,17 @@
   .newalb.on{display:inline-block;}
   .newalb:hover{transform:translateY(-2px);}
 
+  /* 갤러리 배너 — 왼쪽 제목, 오른쪽 스카이라인, 왼쪽으로 길게 뻗는 기준선 */
+  .banner.galban{position:relative;overflow:hidden;padding-bottom:0;}
+  .banner.galban .binner{padding-bottom:8px;}
+  .skyrow{position:relative;z-index:2;max-width:1180px;margin:0 auto;
+    padding:0 24px;display:flex;align-items:flex-end;gap:0;}
+  .ssline{flex:1;height:3px;background:rgba(255,255,255,.92);border-radius:2px;margin-bottom:5px;
+    box-shadow:0 1px 6px rgba(0,0,0,.35);}
+  .ssky{flex:none;height:96px;width:auto;display:block;margin-bottom:0;
+    filter:brightness(0) invert(1) drop-shadow(0 1px 6px rgba(0,0,0,.45));opacity:.96;}
+  @media (max-width:760px){ .ssky{height:62px;} .ssline{height:2px;margin-bottom:3px;} }
+
   /* 키워드 검색 */
   .srch{display:flex;gap:9px;align-items:center;margin:26px 0 4px;flex-wrap:wrap;}
   .srch .box{flex:1;min-width:230px;display:flex;align-items:center;background:#fff;
@@ -144,10 +155,14 @@
   </div>
 </header>
 
-<div class="banner">
+<div class="banner galban">
   <div class="binner">
     <span class="en">Gallery</span>
     <h1>갤러리</h1>
+  </div>
+  <div class="skyrow">
+    <span class="ssline"></span>
+    <img class="ssky" src="../images/yb_skyline.png" alt="도쿄 스카이라인">
   </div>
 </div>
 
