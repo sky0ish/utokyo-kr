@@ -180,7 +180,7 @@ const SHELL = `
              placeholder="이곳의 특징 — 주소를 고르면 자동으로 채워집니다 (고치셔도 됩니다)">
     </div>
     <div class="apfields">
-      <textarea id="apMemo" maxlength="600" rows="2"
+      <textarea id="apMemo" maxlength="600" rows="1"
         placeholder="추천사유 및 추억공유&#10;예시) 첫사랑을 만난 장소 / 아르바이트하던 곳 / 논문 쓰며 밤새우던 자리 / 유학 첫날 밥 먹은 집  (안 적으셔도 됩니다)"></textarea>
     </div>
     <div class="apfields">
