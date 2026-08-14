@@ -190,7 +190,7 @@ const SHELL = `
         <input type="file" id="apImg" accept="image/*" hidden>
         <img id="apPrev" alt="" style="display:none;">
       </label>
-      <button class="apbtn" id="apGo"><span id="apGoCat"></span>지도에 올리기</button>
+      <button class="apbtn" id="apGo">지도에 올리기</button>
     </div>
     <div class="apmsg" id="apMsg">주소를 적으면 위치를 찾아 지도 위에 표시로 올려드립니다.</div>
   </div>
@@ -315,8 +315,6 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     pick.innerHTML = CATS.map(([k, v]) =>
       `<button type="button" class="apcat c-${k}${k === cur ? " on" : ""}" data-c="${k}">` +
       `<span class="apdot ${(CAT_INFO[k] || {}).shape || "dot"}"><i></i></span>${v}</button>`).join("");
-    const goCat = document.getElementById("apGoCat");
-    if (goCat) goCat.textContent = CAT_NAME[cur] + " · ";
     pick.querySelectorAll(".apcat").forEach(b => b.addEventListener("click", () => {
       cur = b.dataset.c;
       history.replaceState(null, "", "?cat=" + cur);
