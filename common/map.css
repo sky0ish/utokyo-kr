@@ -66,15 +66,16 @@
 .lydot.star i{width:15px;height:15px;border:none;box-shadow:none;border-radius:0;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));
   clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
-.ly.c-utokyo .lydot i{background:#2a5fa8;}
-.ly.c-food   .lydot i{background:#d63a2f;}
-.ly.c-cafe   .lydot i{background:#e8b53a;}
-.ly.c-memory .lydot i{background:#7a4fa3;}
-.ly.c-arch   .lydot i{background:#1f5136;}
+/* 분류 색 — 범례·목록 어디서나 같게 */
+.ly.c-utokyo .lydot i, .lydot.c-utokyo i{background:#2a5fa8;}
+.ly.c-food   .lydot i, .lydot.c-food   i{background:#d63a2f;}
+.ly.c-cafe   .lydot i, .lydot.c-cafe   i{background:#e8b53a;}
+.ly.c-memory .lydot i, .lydot.c-memory i{background:#7a4fa3;}
+.ly.c-arch   .lydot i, .lydot.c-arch   i{background:#1f5136;}
 .lyall{margin-top:5px;padding:4px 5px;border-radius:5px;border:1px solid #e5ddc9;
   background:#fff;font-family:inherit;font-size:9.5px;color:#a09a86;cursor:pointer;width:100%;}
 .lyall:hover{background:#f7f4ec;}
-.lylayer{margin-top:11px;}
+.lybase{margin-top:11px;}
 .lysel{margin-top:1px;margin-bottom:2px;padding:4px 5px;border-radius:5px;border:1px solid #8f8773;
   background:#fff;font-family:inherit;font-size:10.5px;color:#2f2a1d;cursor:pointer;width:100%;}
 .lysel:focus{outline:0;border-color:#4a4438;}

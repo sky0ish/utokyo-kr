@@ -151,11 +151,11 @@ const SHELL = `
       <div class="mapbox"><div id="cmap"></div></div>
       <aside class="mapside">
         <div class="layers" id="mlayers">
-          <span class="lytitle">바탕지도 선택</span>
-          <select class="lysel" id="lyBase"></select>
-          <span class="lytitle lylayer">레이어 선택</span>
+          <span class="lytitle">레이어 선택</span>
           <span class="lyboxes" id="lyBoxes"></span>
           <button type="button" class="lyall" id="lyAll">전체 켜기 / 끄기</button>
+          <span class="lytitle lybase">바탕지도 선택</span>
+          <select class="lysel" id="lyBase"></select>
         </div>
         <div class="plist" id="plist"></div>
       </aside>
