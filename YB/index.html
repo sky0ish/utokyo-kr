@@ -85,11 +85,15 @@
 
   /* ── 구간 머리 사진 위에 제목 얹기 ── */
   .block.hasbanner{padding-top:0;}
+  /* 상단 메뉴가 덮지 않도록 이동 여유 */
+  section[id]{scroll-margin-top:104px;}
+  .block.hasbanner{scroll-margin-top:0;}
+  .block.hasbanner .secbanner{scroll-margin-top:0;}
   .secbanner{position:relative;line-height:0;margin:0 0 34px;overflow:hidden;}
   .secbanner img{width:100%;height:clamp(240px,34vw,430px);object-fit:cover;object-position:center 42%;display:block;}
   .secbanner::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(180deg,rgba(8,26,15,.55) 0%,rgba(8,26,15,.18) 42%,rgba(8,26,15,.42) 100%);}
-  .sb-tx{position:absolute;left:0;right:0;top:26px;z-index:2;line-height:1.35;
+    background:linear-gradient(180deg,rgba(8,26,15,.42) 0%,rgba(8,26,15,.10) 34%,rgba(8,26,15,.62) 100%);}
+  .sb-tx{position:absolute;left:0;right:0;top:auto;bottom:56px;z-index:2;line-height:1.35;
     max-width:1180px;margin:0 auto;padding:0 24px;}
   .sb-tx .en{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;
     letter-spacing:.12em;color:#cfeacf;display:block;margin-bottom:2px;
@@ -100,7 +104,7 @@
     margin:0 auto;left:0;padding:0 24px;text-align:right;
     font-size:12px;letter-spacing:.24em;color:rgba(255,255,255,.82);
     text-shadow:0 1px 8px rgba(0,0,0,.6);line-height:1.5;}
-  @media (max-width:700px){ .sb-tx h2{font-size:24px;} .sb-tx{top:18px;} }
+  @media (max-width:700px){ .sb-tx h2{font-size:24px;} .sb-tx{bottom:44px;} }
 
   /* ── 아카몬 사진 (구간 머리) ── */
   .akamon{position:relative;line-height:0;margin:0 0 30px;border-radius:12px;overflow:hidden;
