@@ -185,15 +185,15 @@ textarea{min-height:280px;resize:vertical;line-height:1.8;}
 .row.pinned{background:linear-gradient(90deg,#fffdf6,#fff 60%);}
 .row.pinned .t{font-weight:600;color:#2b2a24;}
 .row.pinned:hover{background:linear-gradient(90deg,#fdf7e6,#fffdf6 60%);}
-.chip.notice-pin{background:#b3453b;border-color:#b3453b;color:#fff;font-weight:700;
-  letter-spacing:.02em;box-shadow:0 1px 2px rgba(140,50,40,.28);}
+.chip.notice-pin{background:#5a6068;border-color:#4e545c;color:#fff;font-weight:700;
+  letter-spacing:.02em;box-shadow:0 1px 2px rgba(40,45,52,.22);}
 body.yb .row.pinned{background:linear-gradient(90deg,#f6fbf7,#fff 60%);}
 body.yb .row.pinned:hover{background:linear-gradient(90deg,#eaf5ec,#f8fcf9 60%);}
-body.yb .chip.notice-pin{background:#1e5230;border-color:#1e5230;
-  box-shadow:0 1px 2px rgba(20,60,35,.28);}
+body.yb .chip.notice-pin{background:#5a6068;border-color:#4e545c;
+  box-shadow:0 1px 2px rgba(40,45,52,.22);}
 
 /* 글 화면 : 알림 고정 버튼 */
 .pactions .btn.pin{border-color:#c9a24b;background:linear-gradient(#fdf6e6,#f5e8c8);color:#7a5c10;font-weight:600;}
-.pactions .btn.pin.on{background:#b3453b;border-color:#b3453b;color:#fff;}
+.pactions .btn.pin.on{background:#5a6068;border-color:#4e545c;color:#fff;}
 body.yb .pactions .btn.pin{border-color:#a9cfb4;background:linear-gradient(#f3faf4,#e3f1e7);color:#1e5230;}
-body.yb .pactions .btn.pin.on{background:#1e5230;border-color:#1e5230;color:#fff;}
+body.yb .pactions .btn.pin.on{background:#5a6068;border-color:#4e545c;color:#fff;}
