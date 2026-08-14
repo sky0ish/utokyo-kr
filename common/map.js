@@ -223,7 +223,8 @@ const SHELL = `
       </div>
       <ul class="mways" id="pWays"></ul>
       <div class="pfoot">
-        <a class="pbtn" id="pMap" href="#" target="_blank" rel="noopener">구글 지도에서 길찾기 →</a>
+        <a class="pbtn" id="pMap" href="#" target="_blank" rel="noopener">구글 지도에서 보기</a>
+        <a class="pbtn line" id="pDir" href="#" target="_blank" rel="noopener">길찾기 →</a>
         <a class="pbtn line" id="pPost" href="#" style="display:none;">관련 글 보기</a>
         <button class="pbtn move" id="pMove" style="display:none;">📍 위치 옮기기</button>
         <button class="pbtn del" id="pDel" style="display:none;">이 장소 지우기</button>
@@ -511,8 +512,16 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     document.getElementById("pMemoBox").style.display = p.memory ? "" : "none";
     document.getElementById("pWays").innerHTML =
       (p.ways || []).map(w => `<li>${w}</li>`).join("");
-    document.getElementById("pMap").href =
-      `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
+    // 이름으로 찾아야 구글 지도에 가게 정보·메뉴·사진·후기가 함께 나옵니다
+    const gq = [p.name, (p.address || "").split(",").slice(0, 3).join(" ")]
+                 .filter(Boolean).join(" ").trim();
+    const gmap = gq
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gq)}`
+      : `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
+    document.getElementById("pMap").href = gmap;
+    document.getElementById("pDir").href = gq
+      ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(gq)}`
+      : `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
     const post = document.getElementById("pPost");
     if (p.post_id) { post.style.display = ""; post.href = `${HOME}/post.html?id=${p.post_id}`; }
     else post.style.display = "none";
