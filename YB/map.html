@@ -9,47 +9,34 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=37">
+<link rel="stylesheet" href="/common/map.css?v=38">
 <style>
   :root{ --map-accent:#1e5230; --map-line:#cfe3d4; --map-soft:#e4f3e7; --map-tip:#f7fbf7; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
-  /* 배너 — 노을 지는 도쿄 스카이라인 */
-  .banner{position:relative;background:linear-gradient(180deg,#12314a 0%,#25566a 32%,#4f8a72 58%,#c88a5c 80%,#f0be7e 100%);color:#12271f;
-    border-bottom:1px solid #1c3a2c;overflow:hidden;}
-  /* 지는 해 */
-  .banner::before{content:"";position:absolute;left:72%;bottom:34px;width:132px;height:132px;
+  /* 배너 — 노을 하늘 + 도쿄 스카이라인 */
+  .banner{position:relative;background:linear-gradient(180deg,#12314a 0%,#265b6c 26%,#4f8d72 48%,#c98d5c 70%,#f0c184 86%,#fbe6c2 100%);overflow:hidden;padding-bottom:0;}
+  .banner::before{content:"";position:absolute;left:63%;bottom:66px;width:150px;height:150px;
     transform:translateX(-50%);border-radius:50%;z-index:1;
-    background:radial-gradient(circle,#ffe0a3 0%,#ffe0a3 42%,rgba(255,210,140,.5) 58%,transparent 72%);
-    filter:blur(.4px);}
-  /* 옅은 구름결 */
-  .banner::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:
-      linear-gradient(180deg,rgba(255,255,255,0) 55%,rgba(255,255,255,.10) 70%,rgba(255,255,255,0) 78%),
-      linear-gradient(180deg,rgba(255,255,255,0) 62%,rgba(255,255,255,.07) 68%,rgba(255,255,255,0) 73%);}
+    background:radial-gradient(circle,#fff2ce 0%,#fff2ce 40%,rgba(255,214,150,.5) 56%,transparent 72%);}
   .banner .binner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
-    padding:30px 24px 0;}
+    padding:26px 24px 0;}
   .banner .en{font-family:Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.14em;
-    color:#d8f0dc;display:block;margin-bottom:3px;text-shadow:0 1px 8px rgba(0,0,0,.35);}
+    color:#dcf2e0;display:block;margin-bottom:3px;text-shadow:0 1px 8px rgba(0,0,0,.4);}
   .banner h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;
-    color:#f4fbf5;text-shadow:0 2px 14px rgba(0,0,0,.45);margin:0;}
-  /* 아래쪽 : 왼쪽 스카이라인 — 선 — 오른쪽 TOKYO */
-  .skyrow{position:relative;z-index:3;max-width:1180px;margin:0 auto;
-    padding:0 24px;display:flex;align-items:flex-end;gap:16px;
-    color:#12271f;margin-top:-10px;}
-  .ssky{flex:none;height:66px;width:auto;display:block;
-    filter:drop-shadow(0 -1px 2px rgba(0,0,0,.25));}
-  .ssline{flex:1;height:3px;background:currentColor;border-radius:2px;
-    box-shadow:0 -1px 2px rgba(0,0,0,.2);}
-  .ssword{flex:none;font-family:Georgia,serif;font-size:22px;font-weight:700;
-    letter-spacing:.30em;line-height:1;padding-bottom:2px;
-    text-shadow:0 1px 6px rgba(255,255,255,.25);}
+    color:#f6fcf7;text-shadow:0 2px 14px rgba(0,0,0,.5);margin:0;}
+  /* 스카이라인 — 좌우 가득 */
+  .ssky{position:relative;z-index:2;display:block;width:100%;height:132px;
+    margin-top:-26px;color:#0f2419;}
+  .skyword{position:relative;z-index:3;text-align:center;padding:8px 0 14px;
+    font-family:Georgia,serif;font-size:22px;font-weight:700;letter-spacing:.34em;
+    color:#0f2419;background:#0f241900;}
   @media (max-width:680px){
-    .banner::before{left:70%;bottom:26px;width:92px;height:92px;}
-    .banner .binner{padding:22px 16px 0;}
+    .banner::before{left:60%;bottom:52px;width:104px;height:104px;}
+    .banner .binner{padding:20px 16px 0;}
     .banner h1{font-size:21px;}
-    .skyrow{padding:0 16px;gap:10px;margin-top:-6px;}
-    .ssky{height:44px;} .ssword{font-size:15px;letter-spacing:.22em;} .ssline{height:2px;}
+    .ssky{height:92px;margin-top:-16px;}
+    .skyword{font-size:15px;letter-spacing:.26em;padding:6px 0 11px;}
   }
   .mapnote{margin:26px 0 22px;font-size:14.5px;color:#3e5344;line-height:1.85;word-break:keep-all;}
   .mapnote b{color:#1e5230;font-weight:600;}
@@ -81,39 +68,81 @@
     <span class="en">Campus Map</span>
     <h1>도쿄 지도</h1>
   </div>
-  <div class="skyrow">
-<svg class="ssky" viewBox="0 0 560 120" aria-hidden="true">
-        <g fill="currentColor">
-          <rect x="0"   y="86" width="30" height="34"/>
-          <rect x="36"  y="70" width="22" height="50"/>
-          <rect x="64"  y="94" width="38" height="26"/>
-          <rect x="108" y="58" width="26" height="62"/>
-          <rect x="140" y="80" width="20" height="40"/>
-          <!-- 도쿄타워 -->
-          <path d="M182 120 L194 48 L198 48 L210 120 Z"/>
-          <path d="M190 42 h12 v6 h-12 z"/>
-          <rect x="194" y="20" width="4" height="22"/>
-          <rect x="184" y="74" width="24" height="4"/>
-          <rect x="180" y="96" width="32" height="4"/>
-          <rect x="222" y="76" width="26" height="44"/>
-          <rect x="254" y="60" width="22" height="60"/>
-          <rect x="282" y="90" width="34" height="30"/>
-          <rect x="322" y="72" width="24" height="48"/>
-          <!-- 스카이트리 -->
-          <path d="M368 120 L377 26 L382 26 L391 120 Z"/>
-          <ellipse cx="379.5" cy="38" rx="13" ry="6"/>
-          <ellipse cx="379.5" cy="18" rx="9" ry="4"/>
-          <rect x="377.5" y="0" width="4" height="18"/>
-          <rect x="402" y="84" width="28" height="36"/>
-          <rect x="436" y="64" width="22" height="56"/>
-          <rect x="464" y="92" width="40" height="28"/>
-          <rect x="510" y="76" width="24" height="44"/>
-          <rect x="540" y="98" width="20" height="22"/>
-        </g>
-      </svg>
-    <span class="ssline"></span>
-    <span class="ssword">T O K Y O</span>
-  </div>
+  <svg class="ssky" viewBox="0 0 1600 190" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="currentColor">
+      <rect x="8" y="154" width="18" height="14"/>
+      <rect x="28" y="154" width="30" height="14"/>
+      <rect x="60" y="141.56688665190526" width="18" height="26.433113348094725"/>
+      <rect x="83" y="147.20395624157138" width="18" height="20.796043758428624"/>
+      <rect x="106" y="151.9844260152135" width="30" height="16.015573984786514"/>
+      <rect x="139" y="137.7295909400952" width="30" height="30.270409059904793"/>
+      <rect x="174" y="148.0081474058068" width="18" height="19.991852594193197"/>
+      <rect x="195" y="140.6110198365475" width="18" height="27.38898016345249"/>
+      <rect x="217" y="131.5504782760944" width="34" height="36.44952172390561"/>
+      <rect x="254" y="133.5019542886418" width="30" height="34.49804571135821"/>
+      <rect x="286" y="122.86622177133373" width="26" height="45.13377822866628"/>
+      <rect x="317" y="114.23688999808067" width="26" height="53.76311000191934"/>
+      <rect x="348" y="125.93176114121079" width="18" height="42.068238858789215"/>
+      <rect x="369" y="134.8553037261938" width="22" height="33.14469627380621"/>
+      <rect x="395" y="107.23177040287756" width="22" height="60.76822959712244"/>
+      <rect x="419" y="130.16489085840738" width="26" height="37.83510914159262"/>
+      <rect x="449" y="126.68626865449633" width="26" height="41.31373134550366"/>
+      <rect x="477" y="96.51987501998678" width="30" height="71.48012498001322"/>
+      <rect x="511" y="113.28894460717142" width="22" height="54.711055392828584"/>
+      <rect x="538" y="124.78753262495067" width="14" height="43.21246737504932"/>
+      <rect x="557" y="90.95260996919502" width="14" height="77.04739003080498"/>
+      <rect x="561.9" y="78.95260996919502" width="3" height="12"/>
+      <rect x="575" y="91.65876878024515" width="34" height="76.34123121975485"/>
+      <rect x="613" y="83.77802010612457" width="34" height="84.22197989387543"/>
+      <rect x="652" y="100.76799356102578" width="30" height="67.23200643897422"/>
+      <rect x="662.5" y="88.76799356102578" width="4.2" height="12"/>
+      <rect x="684" y="106.50338519736397" width="22" height="61.49661480263604"/>
+      <rect x="691.7" y="94.50338519736397" width="3.08" height="12"/>
+      <rect x="709" y="93.3307632237486" width="40" height="74.6692367762514"/>
+      <rect x="752" y="86.20909337857776" width="30" height="81.79090662142224"/>
+      <rect x="785" y="57.82080113220782" width="40" height="110.17919886779218"/>
+      <rect x="830" y="50" width="34" height="118"/>
+      <rect x="867" y="98.0814601839289" width="18" height="69.9185398160711"/>
+      <rect x="873.3" y="86.0814601839289" width="3" height="12"/>
+      <rect x="888" y="108.15509504902643" width="40" height="59.84490495097357"/>
+      <rect x="932" y="91.3489119408802" width="18" height="76.6510880591198"/>
+      <rect x="954" y="70.05559141895823" width="22" height="97.94440858104177"/>
+      <rect x="978" y="82.98770035097037" width="40" height="85.01229964902963"/>
+      <rect x="1023" y="90.89423461375767" width="26" height="77.10576538624233"/>
+      <rect x="1032.1" y="78.89423461375767" width="3.6400000000000006" height="12"/>
+      <rect x="1054" y="114.69170581054807" width="14" height="53.30829418945193"/>
+      <rect x="1073" y="109.71976398335778" width="22" height="58.28023601664222"/>
+      <rect x="1097" y="121.06356851088819" width="18" height="46.93643148911181"/>
+      <rect x="1119" y="86.67850661998085" width="14" height="81.32149338001915"/>
+      <rect x="1138" y="115.00935151792758" width="22" height="52.990648482072416"/>
+      <rect x="1164" y="98.93874097277399" width="14" height="69.06125902722601"/>
+      <rect x="1183" y="100.35695481308657" width="22" height="67.64304518691343"/>
+      <rect x="1190.7" y="88.35695481308657" width="3.08" height="12"/>
+      <rect x="1207" y="88.6671892916125" width="34" height="79.3328107083875"/>
+      <rect x="1244" y="104.24932316157023" width="18" height="63.75067683842976"/>
+      <rect x="1266" y="123.85310323305731" width="30" height="44.14689676694268"/>
+      <rect x="1300" y="88.8508760652897" width="40" height="79.1491239347103"/>
+      <rect x="1314.0" y="76.8508760652897" width="5.6000000000000005" height="12"/>
+      <rect x="1344" y="113.69206978951134" width="18" height="54.307930210488664"/>
+      <rect x="1365" y="115.12691354873445" width="40" height="52.87308645126556"/>
+      <rect x="1408" y="116.2950848848115" width="40" height="51.7049151151885"/>
+      <rect x="1451" y="114.17641825289952" width="40" height="53.82358174710048"/>
+      <rect x="1494" y="137.77424242375582" width="26" height="30.22575757624418"/>
+      <rect x="1522" y="117.19524426743092" width="40" height="50.80475573256907"/>
+      <rect x="1566" y="143.12694649385466" width="26" height="24.873053506145336"/>
+      <path d="M556 168 L575 74 L581 74 L600 168 Z"/>
+      <path d="M571 66 h14 v8 h-14 z"/>
+      <rect x="576" y="38" width="4" height="28"/>
+      <rect x="561" y="104" width="34" height="5"/>
+      <rect x="553" y="134" width="50" height="5"/>
+      <path d="M878 168 L890 34 L897 34 L909 168 Z"/>
+      <ellipse cx="893.5" cy="50" rx="19" ry="8"/>
+      <ellipse cx="893.5" cy="24" rx="13" ry="6"/>
+      <rect x="891" y="0" width="5" height="24"/>
+      <rect x="0" y="168" width="1600" height="5" rx="2"/>
+    </g>
+  </svg>
+  <div class="skyword">T O K Y O</div>
 </div>
 
 <div class="wrap">
@@ -128,7 +157,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=37";
+import { initMap } from "/common/map.js?v=38";
 applyNav("YB", "캠퍼스 지도 | 도쿄대학 한국인학생회");
 initMap("YB");
 </script>
