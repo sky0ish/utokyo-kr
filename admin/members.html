@@ -77,6 +77,9 @@
   .rnote a{color:#2f6ea8;}
   td.acts{white-space:nowrap;}
   td.acts .btn{margin:1px 0;}
+  .gsel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
+    font-family:inherit;font-size:11.5px;background:#fffdf8;color:#2f2a1d;cursor:pointer;}
+  .gsel:focus{outline:0;border-color:#c9a24b;}
 </style>
 </head>
 <body>
@@ -246,6 +249,16 @@ async function start() {
   });
 
   const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
+  /** 등급을 손으로 바꾸는 칸 (운영진 계정은 관리자로 고정) */
+  function gradeSel(r) {
+    if (r.is_admin) return "";
+    const g = r.grade || "guest";
+    return '<select class="gsel">' +
+      [["member", "회원"], ["guest", "준회원"]]
+        .map(([k, v]) => `<option value="${k}"${k === g ? " selected" : ""}>${v}</option>`).join("") +
+      "</select>";
+  }
+
   function gradeChip(r) {
     const g = r.is_admin ? "admin" : (r.grade || "guest");
     const [t, c] = GRADE[g] || GRADE.guest;
@@ -278,11 +291,34 @@ async function start() {
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
-        <td class="gcell">${gradeChip(r)}</td>
+        <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
         <td>${r.approved ? '<span class="chip ok">승인</span>' : '<span class="chip wait">대기</span>'}</td>
         <td class="acts"><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button>
             <button class="btn sm chk2">회원여부 확인</button></td>
       </tr>`).join("") + "</tbody>";
+
+    // ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
+    t.querySelectorAll(".gsel").forEach(sel => sel.addEventListener("change", async () => {
+      const tr = sel.closest("tr");
+      const r = rows.find(x => x.id === tr.dataset.id);
+      const to = sel.value;
+      sel.disabled = true;
+      const { error } = await sb.from("profiles").update({ grade: to }).eq("id", r.id);
+      sel.disabled = false;
+      if (error) {
+        alert("등급 변경 실패: " + error.message +
+              " — board/grade_setup.sql 을 실행하셨는지 확인해주세요.");
+        sel.value = r.grade || "guest";
+        return;
+      }
+      r.grade = to;
+      const cell = tr.querySelector(".gcell");
+      cell.innerHTML = gradeChip(r) + gradeSel(r);
+      render();
+      const m = document.getElementById("listMsg");
+      m.className = "msg ok";
+      m.textContent = `${r.name || "회원"} 님을 ${to === "member" ? "회원" : "준회원"}으로 바꿨습니다.`;
+    }));
 
     // ── 동문 명단에서 회원 여부 확인 ──
     t.querySelectorAll(".chk2").forEach(b => b.addEventListener("click", async () => {
