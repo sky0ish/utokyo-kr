@@ -546,7 +546,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       }
       const noteEl = document.getElementById("apNote");
       const kind = kindOf(hit);
-      if (kind && !noteEl.value.trim()) noteEl.value = kind;
+      if (kind && !noteEl.value.trim()) noteEl.value = `(${kind})`;
       msgEl().textContent = "지도에 찍었습니다. 자리가 다르면 표시를 끌어 옮기거나 ［📍 지도에서 찍기］ 로 다시 눌러주세요.";
       document.querySelector(".mapbox").scrollIntoView({ behavior: "smooth", block: "center" });
     });
@@ -562,7 +562,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         const h = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
         addrEl.value = (h && h.display_name) || `위도 ${lat.toFixed(5)}, 경도 ${lng.toFixed(5)}`;
         const kind = h ? kindOf(h) : "";
-        if (kind && !noteEl.value.trim()) noteEl.value = kind;
+        if (kind && !noteEl.value.trim()) noteEl.value = `(${kind})`;
       } catch (e) {
         addrEl.value = `위도 ${lat.toFixed(5)}, 경도 ${lng.toFixed(5)}`;
       }
@@ -724,7 +724,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
           } catch (e) {}
         }
         const osmDesc = tags["description:ko"] || tags["description"] || "";
-        if (!already) noteEl.value = osmDesc || kind;      // 우선 종류만이라도 넣어두고
+        if (!already) noteEl.value = osmDesc || (kind ? `(${kind})` : "");   // 우선 종류만이라도
         hide();
         msgSafe("주소를 넣었습니다. 어떤 곳인지 찾아보는 중…");
         if (!already && !osmDesc) {
@@ -732,8 +732,8 @@ export async function initMap(org = "OB", mountId = "mapapp") {
                    || h.name || (h.display_name || "").split(",")[0];
           describeFromWiki(nm).then(d => {
             const now = noteEl.value.trim();
-            if (d && (now === "" || now === kind)) {          // 손대지 않으셨을 때만 채웁니다
-              noteEl.value = kind ? `${kind} — ${d}` : d;
+            if (d && (now === "" || now === kind || now === `(${kind})`)) {   // 손대지 않으셨을 때만
+              noteEl.value = kind ? `(${kind}) ${d}` : d;
             }
             msgSafe("특징을 채웠습니다. 맞지 않으면 고쳐주세요. 추억은 원하실 때만 적으시면 됩니다.");
           });
