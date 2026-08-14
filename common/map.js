@@ -61,7 +61,7 @@ const SHELL = `
     <div class="mapbox">
       <div id="cmap"></div>
       <div class="layers" id="mlayers">
-        <span class="lytitle">지도에 보이기</span>
+        <span class="lytitle">범례 · 눌러서 켜고 끄기</span>
         <span class="lyboxes" id="lyBoxes"></span>
         <button type="button" class="lyall" id="lyAll">전체 켜기 / 끄기</button>
       </div>
