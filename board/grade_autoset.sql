@@ -14,7 +14,13 @@
 -- ※ 여러 번 실행해도 안전합니다.
 -- ═══════════════════════════════════════════════════════════
 
--- ── 0) 손으로 등급을 정한 시각 (운영진이 직접 회원으로 올린 경우 = 재승인) ──
+-- ── 0) 명단에서 확인된 내용을 함께 적어 두는 칸 (CSV 저장에 함께 나갑니다) ──
+alter table public.profiles add column if not exists roster_dept   text;
+alter table public.profiles add column if not exists roster_year    text;
+alter table public.profiles add column if not exists roster_belong  text;
+alter table public.profiles add column if not exists roster_email   text;
+
+-- 손으로 등급을 정한 시각 (운영진이 직접 회원으로 올린 경우 = 재승인) ──
 alter table public.profiles add column if not exists grade_manual_at timestamptz;
 
 -- 확인한 시각을 적어 두는 칸 (한 번 확인한 사람은 버튼이 회색 [확인] 으로 바뀝니다) ──
@@ -49,6 +55,17 @@ update public.profiles p
          or public.name_key(r.name_kanji) = public.name_key(p.name));
 
 update public.profiles set grade = 'admin' where is_admin = true;
+
+-- 명단에서 확인된 분의 전공·학위연도·소속·명단 이메일을 채워 넣는다
+update public.profiles p
+   set roster_dept   = r.department,
+       roster_year   = r.degree_year,
+       roster_belong = r.belong,
+       roster_email  = r.email
+  from private.roster r
+ where public.name_key(r.name_ko)    = public.name_key(p.name)
+    or public.name_key(r.name_en)    = public.name_key(p.name)
+    or public.name_key(r.name_kanji) = public.name_key(p.name);
 
 -- 위에서 대조한 사람들에게 확인 시각을 남긴다
 update public.profiles set grade_checked_at = now()
@@ -101,6 +118,17 @@ begin
            or public.name_key(r.name_kanji) = public.name_key(p.name));
 
   update public.profiles set grade = 'admin' where is_admin = true;
+
+  update public.profiles p
+     set roster_dept   = r.department,
+         roster_year   = r.degree_year,
+         roster_belong = r.belong,
+         roster_email  = r.email
+    from private.roster r
+   where public.name_key(r.name_ko)    = public.name_key(p.name)
+      or public.name_key(r.name_en)    = public.name_key(p.name)
+      or public.name_key(r.name_kanji) = public.name_key(p.name);
+
   update public.profiles set grade_checked_at = now();
 
   return query
