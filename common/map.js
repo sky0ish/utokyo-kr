@@ -705,7 +705,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         return `<button type="button" class="apsitem" data-i="${i}">` +
                `<b>${esc(head)}</b><span>${esc(h.display_name)}</span></button>`;
       }).join("");
-      sug.querySelectorAll(".apsitem").forEach(b => b.addEventListener("click", () => {
+      sug.querySelectorAll(".apsitem").forEach(b => b.addEventListener("click", async () => {
         const h = list[+b.dataset.i];
         addrEl.value = h.display_name;
         picked = { lat: parseFloat(h.lat), lon: parseFloat(h.lon) };
