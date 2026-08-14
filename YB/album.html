@@ -230,6 +230,20 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
       files.files = dt.files;
       show();
     });
+    // 붙여넣기(Ctrl+V) 로도 사진을 넣을 수 있게
+    window.addEventListener("paste", (e) => {
+      const items = [...(e.clipboardData?.items || [])]
+        .filter(x => x.kind === "file" && /^image\//.test(x.type));
+      if (!items.length) return;
+      const dt = new DataTransfer();
+      [...files.files].forEach(f => dt.items.add(f));
+      items.forEach(x => { const f = x.getAsFile(); if (f) dt.items.add(f); });
+      files.files = dt.files;
+      show();
+      drop.scrollIntoView({ behavior: "smooth", block: "center" });
+      e.preventDefault();
+    });
+
     // 창 전체에서 사진을 놓쳤을 때 브라우저가 파일을 열어버리지 않도록
     ["dragover", "drop"].forEach(ev =>
       window.addEventListener(ev, (e) => { if (e.target !== files) e.preventDefault(); }));

@@ -65,7 +65,12 @@ const SHELL = `
         placeholder="이곳에 얽힌 추억 (선택) — 언제, 누구와, 무엇을 하셨는지 편하게 적어주세요"></textarea>
     </div>
     <div class="apfields">
-      <label class="apfile">사진 (선택)<input type="file" id="apImg" accept="image/*"></label>
+      <label class="apdrop" id="apDrop">
+        <b>사진</b>
+        <span id="apImgMsg">여기에 <b>붙여넣기(Ctrl+V)</b> 하거나, 사진을 <b>끌어다 놓으세요</b>. 눌러서 고르셔도 됩니다.</span>
+        <input type="file" id="apImg" accept="image/*" hidden>
+        <img id="apPrev" alt="" style="display:none;">
+      </label>
       <button class="apbtn" id="apGo">지도에 올리기</button>
     </div>
     <div class="apmsg" id="apMsg">주소를 적으면 위치를 찾아 지도 위에 표시로 올려드립니다.</div>
@@ -225,6 +230,44 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     modal.classList.add("on");
   }
 
+  // ── 사진 붙여넣기 · 끌어놓기 ──
+  {
+    const zone = document.getElementById("apDrop");
+    const input = document.getElementById("apImg");
+    const prev = document.getElementById("apPrev");
+    const note = document.getElementById("apImgMsg");
+    const setFile = (file) => {
+      if (!file || !/^image\//.test(file.type)) return false;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      prev.src = URL.createObjectURL(file);
+      prev.style.display = "";
+      note.innerHTML = "사진 1장이 준비됐습니다. <b>다시 붙여넣으면 바뀝니다.</b>";
+      return true;
+    };
+    input.addEventListener("change", () => setFile(input.files[0]));
+    // 끌어놓기
+    ["dragenter", "dragover"].forEach(ev => zone.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation(); zone.classList.add("on");
+    }));
+    ["dragleave", "drop"].forEach(ev => zone.addEventListener(ev, (e) => {
+      e.preventDefault(); e.stopPropagation(); zone.classList.remove("on");
+    }));
+    zone.addEventListener("drop", (e) => setFile((e.dataTransfer?.files || [])[0]));
+    // 붙여넣기 (화면 어디서 눌러도 이 칸에 들어갑니다)
+    window.addEventListener("paste", (e) => {
+      const items = [...(e.clipboardData?.items || [])];
+      const it = items.find(x => x.kind === "file" && /^image\//.test(x.type));
+      if (!it) return;
+      const f = it.getAsFile();
+      if (f && setFile(f)) {
+        e.preventDefault();
+        zone.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
   // ── 장소 추가 (주소 → 위치 찾기) ──
   const msg = document.getElementById("apMsg");
   document.getElementById("apGo").addEventListener("click", async () => {
@@ -282,6 +325,9 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     document.getElementById("apNote").value = "";
     document.getElementById("apMemo").value = "";
     document.getElementById("apImg").value = "";
+    document.getElementById("apPrev").style.display = "none";
+    document.getElementById("apImgMsg").innerHTML =
+      "여기에 <b>붙여넣기(Ctrl+V)</b> 하거나, 사진을 <b>끌어다 놓으세요</b>. 눌러서 고르셔도 됩니다.";
     msg.textContent = `「${name}」 을 지도에 올렸습니다.`;
     draw();
   });
