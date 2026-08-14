@@ -146,7 +146,6 @@ const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 const SHELL = `
-  <div class="catdesc" id="catDesc"></div>
   <div class="mapwrap">
     <div class="maprow">
       <div class="mapbox"><div id="cmap"></div></div>
@@ -302,12 +301,6 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   });
 
   function tabHtml() {
-    const info = CAT_INFO[cur] || {};
-    document.getElementById("catDesc").innerHTML =
-      `<span class="cdmark c-${cur} ${info.shape || "dot"}"><i></i></span>` +
-      `<span class="cdtx"><b class="cdname">${CAT_NAME[cur]}</b> — ${info.desc || ""}` +
-      `<em>지도 위 ${info.mark || ""} 표시를 누르면 자세한 내용이 열립니다.</em></span>`;
-    // 장소를 올릴 분류도 같은 자리에서 바로 고를 수 있게 (누르면 지도도 함께 바뀝니다)
     const pick = document.getElementById("apCats");
     pick.innerHTML = CATS.map(([k, v]) =>
       `<button type="button" class="apcat c-${k}${k === cur ? " on" : ""}" data-c="${k}">` +
