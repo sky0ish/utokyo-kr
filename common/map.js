@@ -294,6 +294,21 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   boxes.innerHTML = CATS.map(([k, v]) =>
     `<label class="ly c-${k}"><input type="checkbox" data-c="${k}" checked>` +
     `<span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"}"><i></i></span>${v}</label>`).join("");
+  // 도쿄대학 캠퍼스는 범례 아래에 바로 붙여 둔다 (오른쪽 목록에는 넣지 않는다)
+  {
+    const li = boxes.querySelector(".ly.c-utokyo");
+    if (li) {
+      const camp = document.createElement("div");
+      camp.className = "lycamp";
+      camp.innerHTML = CAMPUS.map(c =>
+        `<button type="button" data-k="${c.k}">${c.name.split(" ")[0]}</button>`).join("");
+      li.insertAdjacentElement("afterend", camp);
+      camp.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+        const i = places.findIndex(p => p.builtin && p.id === "campus-" + b.dataset.k);
+        if (i >= 0) open(i);
+      }));
+    }
+  }
   boxes.querySelectorAll("input").forEach(c => c.addEventListener("change", () => {
     c.checked ? shown.add(c.dataset.c) : shown.delete(c.dataset.c);
     c.closest(".ly").classList.toggle("off", !c.checked);
@@ -366,17 +381,19 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   /** 오른쪽 목록 — 분류별로 묶어서 보여준다 */
   function drawList() {
     const box = document.getElementById("plist");
-    const total = places.length;
+    const listed = places.filter(p => !p.builtin);   // 기본 캠퍼스는 왼쪽 범례에서 봅니다
+    const total = listed.length;
     if (!total) {
-      box.innerHTML = '<div class="pltitle">등록된 장소 0곳</div>' +
+      box.innerHTML = '<div class="pltitle">회원이 올린 장소 0곳</div>' +
         '<div class="plempty">아직 없습니다.<br>아래에서 올려주세요.</div>';
       return;
     }
     const canAny = places.some(p => !p.builtin && ((user && p.created_by === user.id) || isAdmin));
-    let html = '<div class="pltitle">등록된 장소 ' + total + '곳'
+    let html = '<div class="pltitle">회원이 올린 장소 ' + total + '곳'
              + (canAny ? '<em>표시를 눌러 분류 바꾸기</em>' : '') + '</div><div class="plbody">';
     for (const [k, v] of CATS) {
-      const rows = places.map((p, i) => ({ p, i })).filter(x => x.p.category === k);
+      const rows = places.map((p, i) => ({ p, i }))
+                         .filter(x => !x.p.builtin && x.p.category === k);
       if (!rows.length) continue;
       html += `<div class="plcat c-${k}" data-c="${k}">
         <span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>

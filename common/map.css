@@ -43,11 +43,12 @@
 .layers{flex:none;width:152px;align-self:flex-start;display:flex;flex-direction:column;gap:1px;padding:10px 11px;
   border-radius:10px;background:#fff;border:1px solid var(--map-line,#e6dfcb);
   box-shadow:0 1px 3px rgba(20,24,34,.07);}
-.lytitle{font-size:9.5px;font-weight:700;letter-spacing:.03em;color:#a8a291;margin-bottom:3px;
-  padding-bottom:4px;border-bottom:1px solid #f2ede1;}
-.lyboxes{display:flex;flex-direction:column;gap:1px;}
-.ly{display:flex;align-items:center;gap:6px;padding:3px 3px;border-radius:5px;
-  font-size:11.5px;font-weight:600;color:#2f2a1d;cursor:pointer;user-select:none;transition:.14s;}
+.lytitle{font-size:9px;font-weight:700;letter-spacing:.03em;color:#a8a291;margin-bottom:2px;
+  padding-bottom:3px;border-bottom:1px solid #f2ede1;}
+.lyboxes{display:flex;flex-direction:column;gap:0;}
+.ly{display:flex;align-items:center;gap:6px;padding:1px 3px;border-radius:4px;
+  font-size:11px;font-weight:600;color:#2f2a1d;cursor:pointer;user-select:none;transition:.14s;
+  line-height:1.35;}
 .ly:hover{background:#f7f4ec;}
 /* 체크상자 — 아주 작게, 흰 바탕에 테두리만 */
 .ly input[type=checkbox]{appearance:none;-webkit-appearance:none;position:relative;flex:none;
@@ -59,7 +60,7 @@
   width:2.5px;height:6px;border:solid #3f3a2e;border-width:0 1.6px 1.6px 0;transform:rotate(45deg);}
 .ly.off{color:#b5afa0;}
 .ly.off .lydot i{opacity:.28;}
-.lydot{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:none;}
+.lydot{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;}
 .lydot i{display:block;width:11px;height:11px;border-radius:50%;border:none;
   box-shadow:inset 0 1px 2px rgba(255,255,255,.5), inset 0 -2px 3px rgba(0,0,0,.25),
              0 1px 2px rgba(0,0,0,.3);}
@@ -72,10 +73,10 @@
 .ly.c-cafe   .lydot i, .lydot.c-cafe   i{background:#e8b53a;}
 .ly.c-memory .lydot i, .lydot.c-memory i{background:#ff2d95;}
 .ly.c-arch   .lydot i, .lydot.c-arch   i{background:#ef7d18;}
-.lyall{margin-top:5px;padding:4px 5px;border-radius:5px;border:1px solid #e5ddc9;
+.lyall{margin-top:4px;padding:4px 5px;border-radius:5px;border:1px solid #e5ddc9;
   background:#fff;font-family:inherit;font-size:9.5px;color:#a09a86;cursor:pointer;width:100%;}
 .lyall:hover{background:#f7f4ec;}
-.lybase{margin-top:11px;}
+.lybase{margin-top:7px;}
 .lysel{margin-top:1px;margin-bottom:2px;padding:4px 5px;border-radius:5px;border:1px solid #8f8773;
   background:#fff;font-family:inherit;font-size:10.5px;color:#2f2a1d;cursor:pointer;width:100%;}
 .lysel:focus{outline:0;border-color:#4a4438;}
@@ -342,3 +343,10 @@
   @keyframes pup{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:none;}}
   .pbox h3{font-size:21px;}
 }
+
+
+/* 범례 안 도쿄대학 캠퍼스 바로가기 */
+.lycamp{display:flex;flex-direction:column;gap:1px;margin:1px 0 3px 21px;}
+.lycamp button{text-align:left;border:0;background:transparent;cursor:pointer;padding:1px 4px;
+  border-radius:4px;font-family:inherit;font-size:10.5px;color:#6f6a5c;line-height:1.4;}
+.lycamp button:hover{background:#eef3f9;color:#2a5fa8;}
