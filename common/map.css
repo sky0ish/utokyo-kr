@@ -51,10 +51,13 @@
 .ly.off{color:#b5afa0;}
 .ly.off .lydot i{opacity:.28;}
 .lydot{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;}
-.lydot i{display:block;width:16px;height:16px;border-radius:50%;border:2px solid #fff;
-  box-shadow:0 1px 3px rgba(0,0,0,.32);}
+.lydot i{display:block;width:16px;height:16px;border-radius:50%;border:none;
+  box-shadow:inset 0 2px 2px rgba(255,255,255,.5),
+             inset 0 -2px 4px rgba(0,0,0,.25),
+             0 1px 2px rgba(0,0,0,.3),
+             0 3px 6px rgba(0,0,0,.24);}
 .lydot.star i{width:22px;height:22px;border:none;box-shadow:none;border-radius:0;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.4)) drop-shadow(0 3px 5px rgba(0,0,0,.28));
   clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
 .ly.c-utokyo .lydot i{background:#2a5fa8;}
 .ly.c-food   .lydot i{background:#d63a2f;}
@@ -69,11 +72,16 @@
 #cmap .leaflet-container{font-family:inherit;}
 .cmark{display:flex;flex-direction:column;align-items:center;line-height:1.2;cursor:pointer;}
 /* 표시 모양 — 동그라미 · 별 */
-.cmark i,.cdmark i{display:block;width:16px;height:16px;border-radius:50%;
-  background:var(--map-accent,#c9a24b);border:3px solid #fff;
-  box-shadow:0 2px 6px rgba(0,0,0,.35);transition:.15s;}
-.cmark.star i,.cdmark.star i{width:26px;height:26px;border:none;border-radius:0;
-  box-shadow:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));
+.cmark i,.cdmark i{display:block;width:19px;height:19px;border-radius:50%;
+  background:var(--map-accent,#c9a24b);border:none;transition:.15s;
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.5),
+             inset 0 -3px 5px rgba(0,0,0,.25),
+             0 1px 2px rgba(0,0,0,.35),
+             0 4px 9px rgba(0,0,0,.3);}
+.cmark.star i,.cdmark.star i{width:28px;height:28px;border:none;border-radius:0;
+  box-shadow:none;
+  filter:drop-shadow(0 1px 1px rgba(255,255,255,.5)) drop-shadow(0 2px 3px rgba(0,0,0,.45))
+         drop-shadow(0 5px 8px rgba(0,0,0,.32));
   clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
 /* 분류별 색 */
 .cmark.c-utokyo i,.cdmark.c-utokyo i{background:#2a5fa8;}
@@ -102,8 +110,9 @@
 .apcat.on{background:var(--map-soft,#fdf1d3);border-color:var(--map-accent,#c9a24b);
   color:var(--map-accent,#4a3c14);font-weight:700;}
 .apdot{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;}
-.apdot i{display:block;width:11px;height:11px;border-radius:50%;border:2px solid #fff;
-  box-shadow:0 1px 2px rgba(0,0,0,.3);}
+.apdot i{display:block;width:12px;height:12px;border-radius:50%;border:none;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.5), inset 0 -2px 3px rgba(0,0,0,.25),
+             0 1px 2px rgba(0,0,0,.28);}
 .apdot.star i{width:16px;height:16px;border:none;box-shadow:none;border-radius:0;
   clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
 .apcat.c-utokyo .apdot i{background:#2a5fa8;}
