@@ -346,8 +346,4 @@
 }
 
 
-/* 범례 안 도쿄대학 캠퍼스 바로가기 */
-.lycamp{display:flex;flex-direction:column;gap:1px;margin:1px 0 3px 21px;}
-.lycamp button{text-align:left;border:0;background:transparent;cursor:pointer;padding:1px 4px;
-  border-radius:4px;font-family:inherit;font-size:10.5px;color:#6f6a5c;line-height:1.4;}
-.lycamp button:hover{background:#eef3f9;color:#2a5fa8;}
+

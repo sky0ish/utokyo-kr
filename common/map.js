@@ -291,24 +291,10 @@ export async function initMap(org = "OB", mountId = "mapapp") {
 
   // ── 레이어 체크박스 ──
   const boxes = document.getElementById("lyBoxes");
-  boxes.innerHTML = CATS.map(([k, v]) =>
+  const LEG = CATS.filter(([k]) => k !== "utokyo").concat(CATS.filter(([k]) => k === "utokyo"));
+  boxes.innerHTML = LEG.map(([k, v]) =>
     `<label class="ly c-${k}"><input type="checkbox" data-c="${k}" checked>` +
     `<span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"}"><i></i></span>${v}</label>`).join("");
-  // 도쿄대학 캠퍼스는 범례 아래에 바로 붙여 둔다 (오른쪽 목록에는 넣지 않는다)
-  {
-    const li = boxes.querySelector(".ly.c-utokyo");
-    if (li) {
-      const camp = document.createElement("div");
-      camp.className = "lycamp";
-      camp.innerHTML = CAMPUS.map(c =>
-        `<button type="button" data-k="${c.k}">${c.name.split(" ")[0]}</button>`).join("");
-      li.insertAdjacentElement("afterend", camp);
-      camp.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
-        const i = places.findIndex(p => p.builtin && p.id === "campus-" + b.dataset.k);
-        if (i >= 0) open(i);
-      }));
-    }
-  }
   boxes.querySelectorAll("input").forEach(c => c.addEventListener("change", () => {
     c.checked ? shown.add(c.dataset.c) : shown.delete(c.dataset.c);
     c.closest(".ly").classList.toggle("off", !c.checked);
@@ -390,7 +376,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     }
     const canAny = places.some(p => !p.builtin && ((user && p.created_by === user.id) || isAdmin));
     let html = '<div class="pltitle">회원이 올린 장소 ' + total + '곳'
-             + (canAny ? '<em>표시를 눌러 분류 바꾸기</em>' : '') + '</div><div class="plbody">';
+             + '</div><div class="plbody">';
     for (const [k, v] of CATS) {
       const rows = places.map((p, i) => ({ p, i }))
                          .filter(x => !x.p.builtin && x.p.category === k);
