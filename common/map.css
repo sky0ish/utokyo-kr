@@ -65,6 +65,10 @@
 .ly.c-cafe   .lydot i{background:#e8b53a;}
 .ly.c-memory .lydot i{background:#7a4fa3;}
 .ly.c-arch   .lydot i{background:#1f5136;}
+.lybase{margin-top:6px;}
+.lysel{margin-top:1px;padding:3px 5px;border-radius:5px;border:1.5px solid #8f8773;
+  background:#fff;font-family:inherit;font-size:10px;color:#2f2a1d;cursor:pointer;width:100%;}
+.lysel:focus{outline:0;border-color:#5f5849;}
 .lyall{margin-top:3px;padding:3px 5px;border-radius:5px;border:1px solid #e9e1cf;
   background:#fff;font-family:inherit;font-size:9px;color:#a09a86;cursor:pointer;}
 .lyall:hover{background:#f6f2e8;}

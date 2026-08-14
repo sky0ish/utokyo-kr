@@ -52,6 +52,28 @@ export const CAMPUS = [
            "신령역 연구·대학원 중심 캠퍼스입니다"] },
 ];
 
+/** 바탕지도 — 열쇠(API key) 없이 쓸 수 있는 것들 */
+export const BASEMAPS = [
+  { k: "voyager", n: "부드러운 컬러", sub: "CARTO Voyager",
+    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
+  { k: "positron", n: "밝은 회색", sub: "CARTO Positron",
+    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
+  { k: "osm", n: "기본", sub: "OpenStreetMap",
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' },
+  { k: "dark", n: "어두운", sub: "CARTO Dark",
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
+  { k: "topo", n: "지형", sub: "OpenTopoMap",
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", maxZoom: 17,
+    att: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)' },
+  { k: "sat", n: "위성사진", sub: "Esri World Imagery",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    sd: false, att: 'Tiles &copy; Esri' },
+];
+
 const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -64,6 +86,8 @@ const SHELL = `
         <span class="lytitle">선택가능</span>
         <span class="lyboxes" id="lyBoxes"></span>
         <button type="button" class="lyall" id="lyAll">전체 켜기 / 끄기</button>
+        <span class="lytitle lybase">바탕지도</span>
+        <select class="lysel" id="lyBase"></select>
       </div>
     </div>
     <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소.
@@ -138,10 +162,26 @@ export async function initMap(org = "OB", mountId = "mapapp") {
 
   const map = L.map("cmap", { scrollWheelZoom: true, zoomControl: true })
                .setView([35.6895, 139.7], 12);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map);
+  // ── 바탕지도 고르기 ──
+  let baseLayer = null;
+  function setBase(k) {
+    const b = BASEMAPS.find(x => x.k === k) || BASEMAPS[0];
+    if (baseLayer) map.removeLayer(baseLayer);
+    baseLayer = L.tileLayer(b.url, {
+      maxZoom: b.maxZoom || 19,
+      subdomains: b.sd === false ? [] : ["a", "b", "c"],
+      attribution: b.att,
+    }).addTo(map);
+    baseLayer.bringToBack();
+    try { localStorage.setItem("utk-basemap", b.k); } catch (e) {}
+  }
+  const baseSel = document.getElementById("lyBase");
+  baseSel.innerHTML = BASEMAPS.map(b => `<option value="${b.k}">${b.n}</option>`).join("");
+  let saved = "voyager";
+  try { saved = localStorage.getItem("utk-basemap") || "voyager"; } catch (e) {}
+  baseSel.value = BASEMAPS.some(b => b.k === saved) ? saved : "voyager";
+  baseSel.addEventListener("change", () => setBase(baseSel.value));
+  setBase(baseSel.value);
 
   // ── 로그인 상태 ──
   const user = await currentUser();
