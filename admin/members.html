@@ -82,6 +82,11 @@
   .gsel:focus{outline:0;border-color:#c9a24b;}
   .btn.sm.done{background:#eeeae0;border-color:#ddd6c4;color:#a09a86;font-weight:400;}
   .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
+  .cardhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .cardhead h2{margin:0;}
+  .btn.csvtop{padding:8px 16px;font-size:13px;background:#fff;border:1px solid #ddcb9e;color:#4a3c14;
+    border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;}
+  .btn.csvtop:hover{background:#fdf6e6;}
 </style>
 </head>
 <body>
@@ -105,7 +110,10 @@
 
     <!-- 회원 목록 -->
     <div class="card">
-      <h2>회원 목록</h2>
+      <div class="cardhead">
+        <h2>회원 목록</h2>
+        <button class="btn csvtop" id="csvTop">⤓ CSV 로 저장</button>
+      </div>
       <div class="hint">가입 신청이 들어오면 <b>승인</b>을 눌러야 게시판 글쓰기·사진 올리기를 할 수 있습니다.</div>
       <div class="tabs" id="tabs">
         <a data-f="all" class="on">전체</a>
@@ -568,8 +576,7 @@ async function start() {
     msg.textContent = "메일 앱을 열었습니다. 내용을 확인하고 보내주세요.";
   });
 
-  document.getElementById("csvBtn").addEventListener("click", () => {
-    const list = pick(document.getElementById("target").value);
+  function saveCsv(list) {
     const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
     const csv = "﻿이름,이메일,연락처,구분,전공,졸업연도,등급,승인,가입일\n" +
       list.map(r => [r.name, r.email, r.phone, r.member_type, r.faculty, r.grad_year,
@@ -580,7 +587,11 @@ async function start() {
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     a.download = "회원명단.csv";
     a.click();
-  });
+  }
+  document.getElementById("csvBtn").addEventListener("click",
+    () => saveCsv(pick(document.getElementById("target").value)));
+  document.getElementById("csvTop").addEventListener("click",
+    () => saveCsv(pick(filter)));
 
   load();
 }
