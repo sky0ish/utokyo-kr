@@ -53,11 +53,11 @@
   .rmbar .btn.cover.on{display:inline-block;}
   .rmbar .btn.cover:hover{background:#3d9257;}
 
-  .agrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .ph{cursor:pointer;position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;
     background:#eef3ef;border:1px solid #dfe9e1;box-shadow:0 2px 5px rgba(30,60,40,.08);transition:.2s;}
   .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:.35s;}
-  .ph .dt{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 6px;font-size:10.5px;color:#fff;
+  .ph .dt{position:absolute;left:0;right:0;bottom:0;padding:18px 11px 8px;font-size:12px;color:#fff;
     text-align:right;background:linear-gradient(transparent,rgba(0,0,0,.55));opacity:0;transition:.2s;}
   .ph:hover .dt{opacity:1;}
   .ph:hover{transform:translateY(-3px);border-color:#7fc48a;box-shadow:0 8px 18px rgba(30,60,40,.18);}
@@ -68,9 +68,9 @@
   .ph .pick{position:absolute;top:6px;left:6px;width:18px;height:18px;cursor:pointer;display:none;z-index:3;}
   .ph.can-rm .pick{display:block;}
   .ph.iscover{outline:3px solid #2f7a45;outline-offset:-3px;}
-  .ph .own{position:absolute;left:6px;bottom:6px;z-index:2;max-width:calc(100% - 12px);
+  .ph .own{position:absolute;left:8px;bottom:8px;z-index:2;max-width:calc(100% - 12px);
     background:rgba(20,54,31,.75);color:#dcf0e2;border-radius:100px;padding:3px 10px;
-    font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ph .covmark{display:none;position:absolute;left:30px;top:6px;z-index:3;
     background:#2f7a45;color:#fff;border-radius:100px;padding:3px 10px;
     font-size:10.5px;font-weight:700;white-space:nowrap;}
@@ -93,8 +93,8 @@
   .lb .nav:hover{background:rgba(255,255,255,.22);}
   .lb .prev{left:22px;} .lb .next{right:22px;}
 
-  @media (max-width:980px){ .agrid{grid-template-columns:repeat(4,1fr);} }
-  @media (max-width:680px){ .agrid{grid-template-columns:repeat(3,1fr);gap:8px;} .ahead h1{font-size:20px;}
+  @media (max-width:980px){ .agrid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:680px){ .agrid{grid-template-columns:repeat(2,1fr);gap:10px;} .ahead h1{font-size:20px;}
     .lb .nav{width:40px;height:40px;font-size:18px;} .lb .prev{left:8px;} .lb .next{right:8px;} }
 </style>
 </head>
