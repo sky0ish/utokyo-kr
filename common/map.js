@@ -181,7 +181,7 @@ const SHELL = `
     </div>
     <div class="apfields">
       <textarea id="apMemo" maxlength="600" rows="2"
-        placeholder="예: 첫사랑을 만난 장소 / 아르바이트하던 곳 / 논문 쓰며 밤새우던 자리 / 유학 첫날 밥 먹은 집  (안 적으셔도 됩니다)"></textarea>
+        placeholder="추천사유 및 추억공유&#10;예시) 첫사랑을 만난 장소 / 아르바이트하던 곳 / 논문 쓰며 밤새우던 자리 / 유학 첫날 밥 먹은 집  (안 적으셔도 됩니다)"></textarea>
     </div>
     <div class="apfields">
       <label class="apdrop" id="apDrop">
@@ -208,7 +208,7 @@ const SHELL = `
         <div class="pnote" id="pNote"></div>
       </div>
       <div class="pblock" id="pMemoBox" style="display:none;">
-        <div class="plab">추억</div>
+        <div class="plab">추천사유 및 추억</div>
         <div class="pnote" id="pMemo"></div>
       </div>
       <ul class="mways" id="pWays"></ul>
