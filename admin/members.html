@@ -310,7 +310,10 @@ async function start() {
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
-        <td>${r.approved ? '<span class="chip ok">승인</span>' : '<span class="chip wait">대기</span>'}</td>
+        <td>${r.approved
+              ? (isRegrant(r) ? '<span class="chip ok">재승인</span>'
+                              : '<span class="chip ok">승인</span>')
+              : '<span class="chip wait">대기</span>'}</td>
         <td class="acts"><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button>
             ${r.grade_checked_at
                 ? '<button class="btn sm chk2 done" title="다시 확인">확인</button>'
@@ -603,7 +606,8 @@ async function start() {
 
   const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year,
                           isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
-                          r.approved ? "승인" : "대기", (r.created_at || "").slice(0, 10),
+                          r.approved ? (isRegrant(r) ? "재승인" : "승인") : "대기",
+                          (r.created_at || "").slice(0, 10),
                           r.roster_dept, r.roster_year, r.roster_belong, r.roster_email]
     .map(v => `"${(v || "").toString().replace(/"/g, '""')}"`).join(",");
 
