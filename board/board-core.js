@@ -160,8 +160,20 @@ export async function initBoard(ORG) {
       total = count || 0;
     }
 
+    // 알림으로 고정된 글은 늘 맨 위에 (검색 중에는 빼고 결과만 보여준다)
+    let pins = [];
+    if (!append && !kw) {
+      let pq = sb.from("posts")
+        .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned")
+        .eq("org", ORG).eq("pinned", true)
+        .order("pinned_at", { ascending: false });
+      if (cat) pq = pq.eq("category", cat);
+      const pr = await pq;
+      pins = pr.data || [];          // 표에 pinned 칸이 없으면 조용히 넘어간다
+    }
+
     let q = sb.from("posts")
-      .select("id,title,org,category,author_name,visibility,source,image_url,created_at")
+      .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned")
       .eq("org", ORG)
       .order("created_at", { ascending: false })
       .range(loaded.length, loaded.length + PAGE - 1);
@@ -183,7 +195,8 @@ export async function initBoard(ORG) {
 
     loaded = loaded.concat(data || []);
     drawStat(loaded);
-    render(loaded);
+    const pinIds = new Set(pins.map(p => p.id));
+    render(pins.concat(loaded.filter(p => !pinIds.has(p.id))));
 
     if (loaded.length < total) {
       moreBox.style.display = "block";
@@ -198,8 +211,8 @@ export async function initBoard(ORG) {
 
   function render(data) {
     listEl.innerHTML = data.map(p => `
-      <a class="row" href="${HOME}/post.html?id=${p.id}">
-        <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
+      <a class="row${p.pinned ? " pinned" : ""}" href="${HOME}/post.html?id=${p.id}">
+        <span class="chip ${p.pinned ? "notice-pin" : p.category}">${p.pinned ? "알림" : (CAT[p.category] || p.category)}</span>
         <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
         ${p.image_url ? `<img class="thumb" src="${p.image_url}" alt="">` : ""}
         <span class="meta">

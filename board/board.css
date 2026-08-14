@@ -179,3 +179,21 @@ textarea{min-height:280px;resize:vertical;line-height:1.8;}
 .msg.err{background:#f8e8e6;color:#8a3b32;display:block;}
 .msg.ok{background:#e8f0e6;color:#3f6a3a;display:block;}
 @media (max-width:640px){ .row3{grid-template-columns:1fr;} .row .meta{display:none;} .post{padding:24px 18px;} }
+
+
+/* ─── 알림(고정) 글 ─────────────────────────────────────── */
+.row.pinned{background:linear-gradient(90deg,#fffdf6,#fff 60%);}
+.row.pinned .t{font-weight:600;color:#2b2a24;}
+.row.pinned:hover{background:linear-gradient(90deg,#fdf7e6,#fffdf6 60%);}
+.chip.notice-pin{background:#b3453b;border-color:#b3453b;color:#fff;font-weight:700;
+  letter-spacing:.02em;box-shadow:0 1px 2px rgba(140,50,40,.28);}
+body.yb .row.pinned{background:linear-gradient(90deg,#f6fbf7,#fff 60%);}
+body.yb .row.pinned:hover{background:linear-gradient(90deg,#eaf5ec,#f8fcf9 60%);}
+body.yb .chip.notice-pin{background:#1e5230;border-color:#1e5230;
+  box-shadow:0 1px 2px rgba(20,60,35,.28);}
+
+/* 글 화면 : 알림 고정 버튼 */
+.pactions .btn.pin{border-color:#c9a24b;background:linear-gradient(#fdf6e6,#f5e8c8);color:#7a5c10;font-weight:600;}
+.pactions .btn.pin.on{background:#b3453b;border-color:#b3453b;color:#fff;}
+body.yb .pactions .btn.pin{border-color:#a9cfb4;background:linear-gradient(#f3faf4,#e3f1e7);color:#1e5230;}
+body.yb .pactions .btn.pin.on{background:#1e5230;border-color:#1e5230;color:#fff;}

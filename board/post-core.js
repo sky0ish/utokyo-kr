@@ -91,6 +91,30 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
     const canEdit = !!(user && (p.author_id === user.id || (meProfile && meProfile.is_admin)));
     if (canEdit) {
       document.getElementById("actions").style.display = "flex";
+      // 운영진 : 이 글을 목록 맨 위 「알림」 으로 고정
+      if (meProfile && meProfile.is_admin) {
+        const pin = document.createElement("button");
+        pin.className = "btn pin" + (p.pinned ? " on" : "");
+        pin.textContent = p.pinned ? "알림 고정 해제" : "알림으로 고정";
+        pin.addEventListener("click", async () => {
+          pin.disabled = true;
+          const next = !p.pinned;
+          const { error } = await sb.from("posts")
+            .update({ pinned: next, pinned_at: next ? new Date().toISOString() : null })
+            .eq("id", p.id);
+          pin.disabled = false;
+          if (error) {
+            alert(/pinned/.test(error.message)
+              ? "board/pinned_setup.sql 을 먼저 실행해주세요."
+              : "바꾸지 못했습니다: " + error.message);
+            return;
+          }
+          p.pinned = next;
+          pin.textContent = next ? "알림 고정 해제" : "알림으로 고정";
+          pin.classList.toggle("on", next);
+        });
+        document.getElementById("actions").appendChild(pin);
+      }
       document.getElementById("editBtn").addEventListener("click", () => location.href = HOME + "/write.html?edit=" + p.id);
       document.getElementById("delBtn").addEventListener("click", async () => {
         if (!confirm("이 글을 삭제할까요?")) return;
