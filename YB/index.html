@@ -71,6 +71,15 @@
   .hero p.lead{font-weight:300;font-size:16.5px;max-width:560px;color:rgba(255,255,255,.9);word-break:keep-all;}
   .hero svg.deco{position:absolute;right:-20px;bottom:-10px;height:95%;z-index:1;opacity:.5;}
 
+  /* ── 아카몬 대문 (구 홈페이지 대문사진) ── */
+  .akamon{background:#0d1f14;}
+  .akamon .wrap{max-width:965px;margin:0 auto;position:relative;line-height:0;}
+  .akamon img{width:100%;height:auto;display:block;}
+  .akamon .cap{position:absolute;left:0;right:0;bottom:0;line-height:1.5;
+    padding:26px 22px 10px;font-size:12px;letter-spacing:.24em;color:rgba(255,255,255,.82);
+    background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));text-align:right;}
+  @media (max-width:700px){ .akamon .cap{font-size:10.5px;letter-spacing:.14em;} }
+
   /* ── 로그인 안내 ── */
   #loginNotice{background:#eef5ef;border-bottom:1px solid var(--line);}
 
@@ -309,6 +318,13 @@
     <div class="eyebrow">TOKYO · 東京大学韓国人学生会</div>
     <h1><em>초록의 계절</em>,<br>도쿄에서 함께 자라다</h1>
     <p class="lead">도쿄대학 한국인학생회는 혼고·고마바 캠퍼스의 한국인 유학생들이 서로의 학업과 생활을 돕고, 선후배·동문과 이어지는 커뮤니티입니다.</p>
+  </div>
+</section>
+
+<section class="akamon">
+  <div class="wrap">
+    <img src="../images/yb_akamon.jpg" alt="도쿄대학 아카몬(赤門) — Korean Student Association at the University of Tokyo">
+    <div class="cap">赤門 · 도쿄대학 한국인학생회</div>
   </div>
 </section>
 
