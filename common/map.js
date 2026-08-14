@@ -150,7 +150,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
 
   function tabHtml() {
     tabs.innerHTML = CATS.map(([k, v]) =>
-      `<a href="?cat=${k}" data-c="${k}"${k === cur ? ' class="on"' : ""}>${v}</a>`).join("");
+      `<a href="?cat=${k}" data-c="${k}" class="c-${k}${k === cur ? " on" : ""}">${v}</a>`).join("");
     tabs.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
       e.preventDefault();
       cur = a.dataset.c;
