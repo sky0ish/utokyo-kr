@@ -158,6 +158,7 @@ const SHELL = `
           <span class="lytitle lybase">바탕지도 선택</span>
           <select class="lysel" id="lyBase"></select>
         </div>
+        <div class="plist" id="plist"></div>
       </aside>
     </div>
     <div class="maptip">
@@ -349,11 +350,47 @@ export async function initMap(org = "OB", mountId = "mapapp") {
                 + `<i></i><b>${esc(p.name.split(" (")[0])}</b></div>` }),
         }).addTo(layer).on("click", () => open(i));
       });
+      drawList();
       if (!pts.length) map.setView([35.6895, 139.7], 12);          // 장소가 아직 없으면 도쿄 전경
       else if (pts.length === 1) map.setView(pts[0], 16);
       else map.fitBounds(pts, { padding: [50, 50], maxZoom: 15 });
       setTimeout(() => map.invalidateSize(), 100);
     });
+  }
+
+  /** 오른쪽 목록 — 지금 지도에 보이는 장소들 */
+  function drawList() {
+    const box = document.getElementById("plist");
+    if (!places.length) {
+      box.innerHTML = '<div class="pltitle">등록된 장소 0곳</div>' +
+        '<div class="plempty">아직 없습니다.<br>아래에서 올려주세요.</div>';
+      return;
+    }
+    box.innerHTML = '<div class="pltitle">등록된 장소 ' + places.length + '곳</div>' +
+      '<div class="plbody">' + places.map((p, i) => {
+        const mine = !p.builtin && user && p.created_by === user.id;
+        const can = mine || (isAdmin && !p.builtin);
+        return `<div class="plrow" data-i="${i}">
+          <span class="lydot ${(CAT_INFO[p.category] || {}).shape || "dot"} c-${p.category}"><i></i></span>
+          <button class="plname" data-i="${i}" title="${esc(p.name)}">${esc(p.name)}</button>
+          ${can ? `<button class="pldel" data-i="${i}" title="이 장소 지우기">✕</button>` : ""}
+        </div>`;
+      }).join("") + "</div>";
+
+    box.querySelectorAll(".plname").forEach(b => b.addEventListener("click", () => {
+      const p = places[+b.dataset.i];
+      map.setView([p.lat, p.lng], 16);
+      open(+b.dataset.i);
+    }));
+    box.querySelectorAll(".pldel").forEach(b => b.addEventListener("click", async () => {
+      const p = places[+b.dataset.i];
+      if (!confirm(`「${p.name}」 을 지도에서 지울까요?`)) return;
+      b.disabled = true;
+      if (p.storage_path) await sb.storage.from("gallery").remove([p.storage_path]);
+      const { error } = await sb.from("map_places").delete().eq("id", p.id);
+      if (error) { alert("지우기 실패: " + error.message); b.disabled = false; return; }
+      draw();
+    }));
   }
 
   // ── 장소 안내 창 ──
@@ -645,7 +682,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     } catch (e) { hit = null; }
     if (!hit) {
       btn.disabled = false;
-      msg.textContent = "그 주소를 찾지 못했습니다. 우편번호를 빼거나 일본어 주소로 적어보세요.";
+      msg.textContent = "그 주소를 찾지 못했습니다. 위 ［📍 지도에서 찍기］ 로 위치를 직접 눌러주세요.";
       return;
     }
     // 사진이 있으면 먼저 올린다
@@ -671,8 +708,13 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     });
     btn.disabled = false;
     if (error) {
-      msg.textContent = "올리기 실패: " + error.message +
-        " — board/map_places.sql 을 실행하셨는지 확인해주세요.";
+      const m = error.message || "";
+      msg.textContent =
+        /schema cache|does not exist/i.test(m)
+          ? "지도 기능이 아직 켜지지 않았습니다 — 운영진이 board/map_places.sql 을 한 번 실행해주세요."
+        : /row-level security|policy/i.test(m)
+          ? "승인된 회원만 올릴 수 있습니다. 운영진 승인 후 다시 시도해주세요."
+        : "올리기 실패: " + m;
       return;
     }
     picked = null;
