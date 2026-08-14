@@ -76,7 +76,7 @@ const SHELL = `
     </div>
     <div class="apfields">
       <textarea id="apMemo" maxlength="600" rows="2"
-        placeholder="이곳에 얽힌 추억 (선택) — 언제, 누구와, 무엇을 하셨는지 편하게 적어주세요"></textarea>
+        placeholder="이곳에 얽힌 추억 (선택) — 언제, 누구와, 무엇을 하셨는지 편하게 적어주세요.&#10;예: 첫사랑을 만난 장소, 아르바이트하던 곳, 논문 쓰며 밤새우던 자리, 유학 첫날 밥 먹은 집"></textarea>
     </div>
     <div class="apfields">
       <label class="apdrop" id="apDrop">
