@@ -79,10 +79,14 @@
 .pltitle{flex:none;padding:8px 11px;font-size:9.5px;font-weight:700;letter-spacing:.03em;
   color:#a8a291;border-bottom:1px solid #f2ede1;}
 .plbody{flex:1;overflow-y:auto;padding:4px 5px 6px;}
+.plcat{display:flex;align-items:center;gap:6px;margin:8px 3px 3px;padding:4px 6px;
+  border-radius:6px;font-size:10.5px;font-weight:700;color:#5a5648;background:#f7f4ec;}
+.plcat em{margin-left:auto;font-style:normal;font-size:9.5px;color:#a8a291;}
+.plcat:first-child{margin-top:3px;}
 .plrow{display:flex;align-items:center;gap:5px;border-radius:6px;transition:.14s;}
 .plrow:hover{background:#f7f4ec;}
 .plname{flex:1;min-width:0;text-align:left;border:0;background:transparent;cursor:pointer;
-  font-family:inherit;font-size:11.5px;font-weight:600;color:#2f2a1d;padding:5px 2px;
+  font-family:inherit;font-size:11.5px;font-weight:600;color:#2f2a1d;padding:5px 2px 5px 20px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pldel{flex:none;border:0;background:transparent;cursor:pointer;color:#c0b9a6;
   font-family:inherit;font-size:12px;padding:4px 6px;border-radius:5px;}
@@ -162,12 +166,10 @@
 .apcat.c-memory{background:#f4eefa;border-color:#d8c7e9;color:#63407f;}
 .apcat.c-arch  {background:#eaf3ee;border-color:#bcd8c8;color:#1b4a31;}
 .apcat:hover{filter:brightness(.97);}
-.apcat.c-utokyo.on{background:#d8e6f8;border-color:#2a5fa8;color:#1c4478;}
-.apcat.c-food.on  {background:#fbdcd8;border-color:#d63a2f;color:#8e281f;}
-.apcat.c-cafe.on  {background:#fbedc9;border-color:#d9a52c;color:#7a5c10;}
-.apcat.c-memory.on{background:#e9dcf5;border-color:#7a4fa3;color:#4e3168;}
-.apcat.c-arch.on  {background:#d6e9dd;border-color:#1f5136;color:#143b26;}
-.apcat.on{font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 2px 5px rgba(60,50,20,.14);}
+/* 고른 분류는 회색으로 — 어느 것을 고르셨는지 한눈에 */
+.apcat.on{background:#5c6068 !important;border-color:#464a51 !important;color:#fff !important;
+  font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 2px 6px rgba(30,34,40,.28);}
+.apcat.on .apdot i{box-shadow:0 0 0 2px rgba(255,255,255,.75);}
 .apfields{display:flex;gap:9px;flex-wrap:wrap;}
 .apfields input{flex:1;min-width:170px;padding:10px 13px;border:1px solid var(--map-line,#ddd6c4);
   border-radius:8px;font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}

@@ -358,24 +358,32 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     });
   }
 
-  /** 오른쪽 목록 — 지금 지도에 보이는 장소들 */
+  /** 오른쪽 목록 — 분류별로 묶어서 보여준다 */
   function drawList() {
     const box = document.getElementById("plist");
-    if (!places.length) {
+    const total = places.length;
+    if (!total) {
       box.innerHTML = '<div class="pltitle">등록된 장소 0곳</div>' +
         '<div class="plempty">아직 없습니다.<br>아래에서 올려주세요.</div>';
       return;
     }
-    box.innerHTML = '<div class="pltitle">등록된 장소 ' + places.length + '곳</div>' +
-      '<div class="plbody">' + places.map((p, i) => {
+    let html = '<div class="pltitle">등록된 장소 ' + total + '곳</div><div class="plbody">';
+    for (const [k, v] of CATS) {
+      const rows = places.map((p, i) => ({ p, i })).filter(x => x.p.category === k);
+      if (!rows.length) continue;
+      html += `<div class="plcat c-${k}">
+        <span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>
+        ${v}<em>${rows.length}</em></div>`;
+      html += rows.map(({ p, i }) => {
         const mine = !p.builtin && user && p.created_by === user.id;
         const can = mine || (isAdmin && !p.builtin);
-        return `<div class="plrow" data-i="${i}">
-          <span class="lydot ${(CAT_INFO[p.category] || {}).shape || "dot"} c-${p.category}"><i></i></span>
+        return `<div class="plrow">
           <button class="plname" data-i="${i}" title="${esc(p.name)}">${esc(p.name)}</button>
           ${can ? `<button class="pldel" data-i="${i}" title="이 장소 지우기">✕</button>` : ""}
         </div>`;
-      }).join("") + "</div>";
+      }).join("");
+    }
+    box.innerHTML = html + "</div>";
 
     box.querySelectorAll(".plname").forEach(b => b.addEventListener("click", () => {
       const p = places[+b.dataset.i];
