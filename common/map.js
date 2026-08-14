@@ -9,13 +9,12 @@ export const CATS = [
   ["cafe",   "도쿄까페"],
   ["memory", "추억핫플"],
   ["arch",   "건축물"],
-  ["sight",  "관광·명소"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 
 /** 분류별 지도 표시 모양과 안내 문구 */
 export const CAT_INFO = {
-  utokyo: { shape: "sq",   mark: "남색 네모",
+  utokyo: { shape: "dot",  mark: "파란 동그라미",
     desc: "도쿄대학 <b>혼고 · 고마바 · 가시와</b> 세 캠퍼스입니다. 주소와 가는 길, 가까운 역을 확인하실 수 있습니다." },
   food:   { shape: "star", mark: "빨간 별",
     desc: "동문·재학생이 추천하는 <b>도쿄의 맛집</b>입니다. 표시를 누르면 주소와 그곳의 특징, 얽힌 추억이 열립니다." },
@@ -25,8 +24,6 @@ export const CAT_INFO = {
     desc: "유학 시절 자주 찾던 곳, 잊지 못할 일이 있었던 곳 — <b>추억의 장소</b>입니다." },
   arch:   { shape: "dot",  mark: "짙은 초록 동그라미",
     desc: "<b>유명 건축가가 지은 멋진 장소</b>를 찾아가 보세요. 설계자와 특징을 함께 적어주시면 좋습니다." },
-  sight:  { shape: "dot",  mark: "파란 동그라미",
-    desc: "도쿄에 오시면 꼭 한 번 들러볼 만한 <b>관광지와 명소</b>입니다." },
 };
 
 /** 도쿄대학 분류에 기본으로 들어 있는 세 캠퍼스 */
