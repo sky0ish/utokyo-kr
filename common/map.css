@@ -31,7 +31,11 @@
   border:1px solid var(--map-line,#e6dfcb);border-radius:11px;}
 .addplace.on{display:block;}
 .addplace .apttl{font-size:14.5px;font-weight:600;color:var(--map-accent,#4a3c14);margin-bottom:12px;}
-.addplace .apttl span{font-weight:400;color:#a09a86;font-size:13px;}
+.addplace .apttl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.addplace .apttl select{padding:7px 32px 7px 13px;border:1px solid var(--map-accent,#c9a24b);
+  border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:600;
+  color:var(--map-accent,#4a3c14);background:var(--map-soft,#fdf1d3);cursor:pointer;}
+.addplace .apttl select:focus{outline:0;}
 .apfields{display:flex;gap:9px;flex-wrap:wrap;}
 .apfields input{flex:1;min-width:170px;padding:10px 13px;border:1px solid var(--map-line,#ddd6c4);
   border-radius:8px;font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}

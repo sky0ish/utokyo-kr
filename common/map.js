@@ -50,7 +50,9 @@ const SHELL = `
   </div>
 
   <div class="addplace" id="addplace">
-    <div class="apttl">＋ 이 분류에 장소 추가 <span id="apWhere"></span></div>
+    <div class="apttl">＋ 이 분류에 장소 추가
+      <select id="apCat" title="올릴 분류를 고르세요"></select>
+    </div>
     <div class="apfields">
       <input type="text" id="apName" maxlength="60" placeholder="장소 이름 * (예: 아카몬 앞 커피집)">
       <input type="text" id="apAddr" maxlength="120" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
@@ -136,7 +138,14 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       history.replaceState(null, "", "?cat=" + cur);
       tabHtml(); draw();
     }));
-    document.getElementById("apWhere").textContent = "— " + CAT_NAME[cur];
+    const sel = document.getElementById("apCat");
+    sel.innerHTML = CATS.map(([k, v]) =>
+      `<option value="${k}"${k === cur ? " selected" : ""}>${v}</option>`).join("");
+    sel.onchange = () => {                       // 여기서 분류를 바꾸면 지도도 함께 바뀝니다
+      cur = sel.value;
+      history.replaceState(null, "", "?cat=" + cur);
+      tabHtml(); draw();
+    };
   }
 
   async function load() {
