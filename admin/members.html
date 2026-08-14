@@ -623,8 +623,7 @@ async function start() {
   }
 
   function saveNamed(list, fileName, label) {
-    const B = "
-";
+    const B = String.fromCharCode(10);
     const today = new Date().toISOString().slice(0, 10);
     const text = '"[' + label + ']  ' + list.length + "명 · " + today + '"' + B
                + HEADER + B + list.map(csvLine).join(B);
