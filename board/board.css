@@ -97,12 +97,12 @@ body.yb .mpills .fb:hover{border-color:#bfe8c2;color:#bfe8c2;}
 body.yb .topbar{background:#132c1c;}
 body.yb .topbar a:hover{color:#bfe8c2;}
 body.yb .banner{background:linear-gradient(rgba(12,32,18,.72),rgba(12,32,18,.62)),url('/images/green_avenue.jpg') center 58%/cover;}
-/* 갤러리 화면은 도쿄 야경 */
-body.yb.gal .banner{background:
-  linear-gradient(rgba(8,20,38,.60),rgba(8,22,30,.72)),
+/* MAP 화면은 도쿄 야경 */
+body.yb.mapbg .banner{background:
+  linear-gradient(rgba(8,20,38,.58),rgba(8,22,30,.70)),
   url('/images/yb_gallery_bg.jpg') center 55%/cover;}
-body.yb.gal .banner .en{color:#8fd6ff;}
-body.yb.gal .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
+body.yb.mapbg .banner .en{color:#8fd6ff;}
+body.yb.mapbg .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
 body.yb .banner .en{color:#bfe8c2;}
 body.yb .tabs a.on{background:#1e5230;border-color:#1e5230;box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 3px 5px rgba(30,82,48,.28), 0 8px 18px rgba(30,82,48,.3);}
 body.yb .tabs a.on:hover{color:#bfe8c2;border-color:#1e5230;}
