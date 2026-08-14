@@ -84,6 +84,7 @@
   .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
   .cardhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
   .cardhead h2{margin:0;}
+  .csvbtns{display:flex;gap:7px;flex-wrap:wrap;}
   .btn.csvtop{padding:8px 16px;font-size:13px;background:#fff;border:1px solid #ddcb9e;color:#4a3c14;
     border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;}
   .btn.csvtop:hover{background:#fdf6e6;}
@@ -112,7 +113,10 @@
     <div class="card">
       <div class="cardhead">
         <h2>회원 목록</h2>
-        <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV 저장</button>
+        <span class="csvbtns">
+          <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV</button>
+          <button class="btn csvtop" id="csvGuest">⤓ 준회원만 CSV</button>
+        </span>
       </div>
       <div class="hint">가입 신청이 들어오면 <b>승인</b>을 눌러야 게시판 글쓰기·사진 올리기를 할 수 있습니다.</div>
       <div class="tabs" id="tabs">
@@ -595,32 +599,45 @@ async function start() {
     download(HEADER + "\n" + list.map(csvLine).join("\n"), "회원명단.csv");
   }
 
-  /** 전체 명단 + 그 아래에 따로 한 벌 더 (선택한 분, 없으면 준회원) */
+  /** 전체 명단 (체크한 분이 있으면 그분들만) */
   function saveCsvAll() {
-    const all = rows.slice();
     const ids = selected();
-    const sub = ids.length
-      ? { title: "선택한 분", list: ids.map(id => rows.find(r => r.id === id)).filter(Boolean) }
-      : { title: "준회원 — 동문 명단에서 확인되지 않은 분",
-          list: all.filter(r => !r.is_admin && (r.grade || "guest") === "guest") };
+    const list = ids.length
+      ? ids.map(id => rows.find(r => r.id === id)).filter(Boolean)
+      : rows.slice();
     const today = new Date().toISOString().slice(0, 10);
-    const B = "\n";
-    const text =
-      '"[전체 명단]  ' + all.length + "명 · " + today + '"' + B +
-      HEADER + B + all.map(csvLine).join(B) + B + B +
-      '"[' + sub.title + "]  " + sub.list.length + '명"' + B +
-      (sub.list.length ? HEADER + B + sub.list.map(csvLine).join(B)
-                       : '"해당하는 분이 없습니다"');
-    download(text, "회원명단_" + today + ".csv");
+    saveNamed(list, ids.length ? "회원명단_선택_" + today : "회원명단_전체_" + today,
+              ids.length ? "선택한 분" : "전체 명단");
+  }
+
+  /** 준회원만 따로 (별도 파일) */
+  function saveCsvGuest() {
+    const list = rows.filter(r => !r.is_admin && (r.grade || "guest") === "guest");
+    const today = new Date().toISOString().slice(0, 10);
+    if (!list.length) {
+      const m = document.getElementById("listMsg");
+      m.className = "msg"; m.textContent = "준회원이 없습니다.";
+      return;
+    }
+    saveNamed(list, "회원명단_준회원_" + today, "준회원");
+  }
+
+  function saveNamed(list, fileName, label) {
+    const B = "
+";
+    const today = new Date().toISOString().slice(0, 10);
+    const text = '"[' + label + ']  ' + list.length + "명 · " + today + '"' + B
+               + HEADER + B + list.map(csvLine).join(B);
+    download(text, fileName + ".csv");
     const m = document.getElementById("listMsg");
     m.className = "msg ok";
-    m.textContent = "전체 " + all.length + "명 · " + sub.title.split(" ")[0] + " "
-                  + sub.list.length + "명을 CSV 로 저장했습니다.";
+    m.textContent = label + " " + list.length + "명을 CSV 로 저장했습니다. (" + fileName + ".csv)";
   }
 
   document.getElementById("csvBtn").addEventListener("click",
     () => saveCsv(pick(document.getElementById("target").value)));
   document.getElementById("csvTop").addEventListener("click", saveCsvAll);
+  document.getElementById("csvGuest").addEventListener("click", saveCsvGuest);
 
   load();
 }
