@@ -570,8 +570,10 @@ async function start() {
 
   document.getElementById("csvBtn").addEventListener("click", () => {
     const list = pick(document.getElementById("target").value);
-    const csv = "﻿이름,이메일,구분,전공,졸업연도,승인,가입일\n" +
-      list.map(r => [r.name, r.email, r.member_type, r.faculty, r.grad_year,
+    const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
+    const csv = "﻿이름,이메일,연락처,구분,전공,졸업연도,등급,승인,가입일\n" +
+      list.map(r => [r.name, r.email, r.phone, r.member_type, r.faculty, r.grad_year,
+                     GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
                      r.approved ? "승인" : "대기", (r.created_at || "").slice(0, 10)]
         .map(v => `"${(v || "").toString().replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
