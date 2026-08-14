@@ -529,9 +529,15 @@ async function start() {
 
     btn.disabled = true;
     msg.className = "msg"; msg.textContent = `보내는 중… (${list.length}명)`;
-    const { data, error } = await sb.functions.invoke("send-mail", {
-      body: { to: list, subject, text },
-    });
+    // 함수 이름이 send-mail 이 아니어도 되도록, 흔한 이름들을 차례로 시도합니다
+    const NAMES = ["send-mail", "send_mail", "sendmail", "hyper-responder"];
+    let data = null, error = null;
+    for (const nm of NAMES) {
+      const r = await sb.functions.invoke(nm, { body: { to: list, subject, text } });
+      const notFound = r.error && /not ?found|404|Failed to send a request/i.test(r.error.message || "");
+      if (!notFound) { data = r.data; error = r.error; break; }
+      error = r.error;
+    }
     btn.disabled = false;
 
     if (error || (data && data.error)) {
