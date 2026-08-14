@@ -155,6 +155,15 @@
 .apfields input{flex:1;min-width:170px;padding:10px 13px;border:1px solid var(--map-line,#ddd6c4);
   border-radius:8px;font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
 .apfields input:focus{outline:0;border-color:var(--map-accent,#c9a24b);}
+.appin{flex:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-family:inherit;
+  font-size:13.5px;font-weight:600;border:1px solid var(--map-line,#ddd6c4);
+  background:#fff;color:#5a5648;transition:.16s;white-space:nowrap;}
+.appin:hover{border-color:var(--map-accent,#c9a24b);color:var(--map-accent,#4a3c14);}
+.appin.on{background:var(--map-accent,#c9a961);border-color:var(--map-accent,#b8933f);color:#fff;}
+.cmark.pinmark i{background:#c9452f !important;width:15px;height:15px;
+  animation:pinpop .9s ease-in-out infinite;}
+.cmark.pinmark b{background:#c9452f;color:#fff;border-color:#c9452f;}
+@keyframes pinpop{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
 .apbtn{flex:none;padding:10px 22px;border-radius:8px;border:1px solid var(--map-accent,#b8933f);
   background:var(--map-accent,#c9a961);color:#fff;font-family:inherit;font-size:14px;
   font-weight:600;cursor:pointer;transition:.18s;}

@@ -177,6 +177,7 @@ const SHELL = `
         <div class="apsug" id="apSug"></div>
       </div>
       <input type="text" id="apAddr" maxlength="160" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
+      <button type="button" class="appin" id="apPin">📍 지도에서 찍기</button>
     </div>
     <div class="apfields">
       <input type="text" id="apNote" maxlength="200"
@@ -400,6 +401,64 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     modal.classList.add("on");
   }
 
+  // ── 지도를 눌러 위치를 직접 찍기 ──
+  //    주소 검색이 잘 안 될 때 지도를 확대해 원하는 자리를 찍으시면 됩니다.
+  let pinMode = false, pin = null;
+  {
+    const btn = document.getElementById("apPin");
+    const msgEl = () => document.getElementById("apMsg");
+    const setMode = (on) => {
+      pinMode = on;
+      btn.classList.toggle("on", on);
+      btn.textContent = on ? "📍 지도를 누르세요 (끄기)" : "📍 지도에서 찍기";
+      document.getElementById("cmap").style.cursor = on ? "crosshair" : "";
+      if (on) {
+        msgEl().textContent = "지도를 확대해서 원하는 자리를 누르세요. 표시를 끌어 옮길 수도 있습니다.";
+        document.querySelector(".mapbox").scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+    btn.addEventListener("click", () => setMode(!pinMode));
+
+    async function reverse(lat, lng) {
+      const addrEl = document.getElementById("apAddr");
+      const noteEl = document.getElementById("apNote");
+      addrEl.value = "위치를 확인하는 중…";
+      try {
+        const u = "https://nominatim.openstreetmap.org/reverse?format=json&zoom=18"
+                + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
+                + `&lat=${lat}&lon=${lng}`;
+        const h = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
+        addrEl.value = (h && h.display_name) || `위도 ${lat.toFixed(5)}, 경도 ${lng.toFixed(5)}`;
+        const kind = h ? kindOf(h) : "";
+        if (kind && !noteEl.value.trim()) noteEl.value = kind;
+      } catch (e) {
+        addrEl.value = `위도 ${lat.toFixed(5)}, 경도 ${lng.toFixed(5)}`;
+      }
+      msgEl().textContent = "위치를 찍었습니다. 이름과 추천사유를 적고 ［지도에 올리기］ 를 눌러주세요.";
+    }
+
+    window.__utkSetPin = (ll) => {
+      picked = { lat: ll.lat, lon: ll.lng };
+      if (pin) pin.setLatLng(ll);
+      else {
+        pin = L.marker(ll, { draggable: true, zIndexOffset: 900,
+          icon: L.divIcon({ className: "", iconSize: [0, 0],
+            html: '<div class="cmark pinmark"><i></i><b>여기</b></div>' }) }).addTo(map);
+        pin.on("dragend", () => {
+          const p = pin.getLatLng();
+          picked = { lat: p.lat, lon: p.lng };
+          reverse(p.lat, p.lng);
+        });
+      }
+      reverse(ll.lat, ll.lng);
+    };
+    window.__utkClearPin = () => {
+      if (pin) { map.removeLayer(pin); pin = null; }
+      setMode(false);
+    };
+    map.on("click", (e) => { if (pinMode) window.__utkSetPin(e.latlng); });
+  }
+
   // ── 상호명을 적으면 주소 후보를 보여준다 ──
   let picked = null;                     // 후보에서 고른 위치 (있으면 다시 찾지 않습니다)
   {
@@ -617,6 +676,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       return;
     }
     picked = null;
+    if (window.__utkClearPin) window.__utkClearPin();
     document.getElementById("apName").value = "";
     document.getElementById("apAddr").value = "";
     document.getElementById("apNote").value = "";
