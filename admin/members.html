@@ -592,35 +592,30 @@ async function start() {
 
   /** 지금 보고 있는 목록만 저장 (메일 칸의 버튼) */
   function saveCsv(list) {
-    download(HEADER + "
-" + list.map(csvLine).join("
-"), "회원명단.csv");
+    download(HEADER + "\n" + list.map(csvLine).join("\n"), "회원명단.csv");
   }
 
-  /** 전체 명단 + 그 아래에 준회원만 다시 (오른쪽 위 버튼) */
+  /** 전체 명단 + 그 아래에 따로 한 벌 더 (선택한 분, 없으면 준회원) */
   function saveCsvAll() {
     const all = rows.slice();
-    const guests = all.filter(r => !r.is_admin && (r.grade || "guest") === "guest");
+    const ids = selected();
+    const sub = ids.length
+      ? { title: "선택한 분", list: ids.map(id => rows.find(r => r.id === id)).filter(Boolean) }
+      : { title: "준회원 — 동문 명단에서 확인되지 않은 분",
+          list: all.filter(r => !r.is_admin && (r.grade || "guest") === "guest") };
     const today = new Date().toISOString().slice(0, 10);
+    const B = "\n";
     const text =
-      `"[전체 명단]  ${all.length}명 · ${today}"
-` +
-      HEADER + "
-" + all.map(csvLine).join("
-") +
-      "
-
-" +
-      `"[준회원]  ${guests.length}명 — 동문 명단에서 확인되지 않은 분"
-` +
-      (guests.length ? HEADER + "
-" + guests.map(csvLine).join("
-")
-                     : '"해당하는 분이 없습니다"');
-    download(text, `회원명단_${today}.csv`);
+      '"[전체 명단]  ' + all.length + "명 · " + today + '"' + B +
+      HEADER + B + all.map(csvLine).join(B) + B + B +
+      '"[' + sub.title + "]  " + sub.list.length + '명"' + B +
+      (sub.list.length ? HEADER + B + sub.list.map(csvLine).join(B)
+                       : '"해당하는 분이 없습니다"');
+    download(text, "회원명단_" + today + ".csv");
     const m = document.getElementById("listMsg");
     m.className = "msg ok";
-    m.textContent = `전체 ${all.length}명 · 준회원 ${guests.length}명을 CSV 로 저장했습니다.`;
+    m.textContent = "전체 " + all.length + "명 · " + sub.title.split(" ")[0] + " "
+                  + sub.list.length + "명을 CSV 로 저장했습니다.";
   }
 
   document.getElementById("csvBtn").addEventListener("click",
