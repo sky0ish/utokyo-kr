@@ -195,7 +195,7 @@ const SHELL = `
         <input type="file" id="apImg" accept="image/*" hidden>
         <img id="apPrev" alt="" style="display:none;">
       </label>
-      <button class="apbtn" id="apGo">지도에 올리기</button>
+      <button class="apbtn" id="apGo"><span id="apGoCat"></span>지도에 올리기</button>
     </div>
     <div class="apmsg" id="apMsg">주소를 적으면 위치를 찾아 지도 위에 표시로 올려드립니다.</div>
   </div>
@@ -312,6 +312,8 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     pick.innerHTML = CATS.map(([k, v]) =>
       `<button type="button" class="apcat c-${k}${k === cur ? " on" : ""}" data-c="${k}">` +
       `<span class="apdot ${(CAT_INFO[k] || {}).shape || "dot"}"><i></i></span>${v}</button>`).join("");
+    const goCat = document.getElementById("apGoCat");
+    if (goCat) goCat.textContent = CAT_NAME[cur] + " · ";
     pick.querySelectorAll(".apcat").forEach(b => b.addEventListener("click", () => {
       cur = b.dataset.c;
       history.replaceState(null, "", "?cat=" + cur);
@@ -378,12 +380,22 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         const mine = !p.builtin && user && p.created_by === user.id;
         const can = mine || (isAdmin && !p.builtin);
         return `<div class="plrow">
+          <span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>
           <button class="plname" data-i="${i}" title="${esc(p.name)}">${esc(p.name)}</button>
           ${can ? `<button class="pldel" data-i="${i}" title="이 장소 지우기">✕</button>` : ""}
         </div>`;
       }).join("");
     }
-    box.innerHTML = html + "</div>";
+    box.innerHTML = html + '</div><button type="button" class="plmore" id="plMore">▼ 길게 보기</button>';
+    const more = document.getElementById("plMore");
+    const row = document.querySelector(".maprow");
+    const sync = () => { more.textContent = row.classList.contains("tall") ? "▲ 접기" : "▼ 길게 보기"; };
+    sync();
+    more.addEventListener("click", () => {
+      row.classList.toggle("tall");
+      sync();
+      setTimeout(() => map.invalidateSize(), 150);
+    });
 
     box.querySelectorAll(".plname").forEach(b => b.addEventListener("click", () => {
       const p = places[+b.dataset.i];
