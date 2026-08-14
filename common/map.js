@@ -213,7 +213,6 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   const modal = document.getElementById("pmodal");
   const close = () => modal.classList.remove("on");
   document.getElementById("pClose").addEventListener("click", close);
-  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 
   function open(i) {

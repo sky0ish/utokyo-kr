@@ -111,13 +111,17 @@
   border:1px solid var(--map-line,#ddd6c4);}
 .apmsg{margin-top:10px;font-size:13px;color:#8b8474;}
 
-/* 장소 안내 창 */
-.pmodal{position:fixed;inset:0;background:rgba(12,16,24,.62);display:none;z-index:900;
-  align-items:center;justify-content:center;padding:24px;}
+/* 장소 안내 창 — 지도를 가리지 않도록 오른쪽에 붙는 패널 */
+.pmodal{position:fixed;top:0;right:0;bottom:0;width:min(430px,42vw);display:none;
+  align-items:center;justify-content:flex-end;padding:20px 20px 20px 0;z-index:900;
+  pointer-events:none;}
 .pmodal.on{display:flex;}
-.pbox{position:relative;background:#fff;border-radius:14px;padding:34px 38px 30px;
-  max-width:620px;width:100%;max-height:86vh;overflow:auto;
-  box-shadow:0 24px 70px rgba(0,0,0,.35);}
+.pbox{position:relative;background:#fff;border-radius:14px;padding:30px 30px 26px;
+  width:100%;max-height:calc(100vh - 40px);overflow:auto;pointer-events:auto;
+  border:1px solid var(--map-line,#e6dfcb);
+  box-shadow:0 18px 50px rgba(0,0,0,.28);
+  animation:pslide .22s ease-out;}
+@keyframes pslide{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:none;}}
 .pbox .px{position:absolute;top:14px;right:16px;border:0;background:transparent;
   font-size:20px;color:#a8a291;cursor:pointer;line-height:1;font-family:inherit;}
 .pbox .px:hover{color:#2f2a1d;}
@@ -148,4 +152,11 @@
 .pbtn.del{background:#b3453b;border-color:#b3453b;color:#fff;}
 .pwho{margin-top:14px;font-size:12.5px;color:#a09a86;}
 
-@media (max-width:680px){ .pbox{padding:28px 22px 24px;} .pbox h3{font-size:21px;} }
+/* 좁은 화면에서는 아래에서 올라오는 창으로 */
+@media (max-width:860px){
+  .pmodal{top:auto;left:0;width:auto;padding:0;align-items:flex-end;}
+  .pbox{border-radius:14px 14px 0 0;max-height:72vh;padding:26px 22px 22px;
+    animation:pup .22s ease-out;}
+  @keyframes pup{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:none;}}
+  .pbox h3{font-size:21px;}
+}
