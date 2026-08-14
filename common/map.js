@@ -177,6 +177,7 @@ const SHELL = `
         <div class="apsug" id="apSug"></div>
       </div>
       <input type="text" id="apAddr" maxlength="160" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
+      <button type="button" class="appin" id="apFind">🔎 주소로 찾기</button>
       <button type="button" class="appin" id="apPin">📍 지도에서 찍기</button>
     </div>
     <div class="apfields">
@@ -451,6 +452,45 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     modal.classList.add("on");
   }
 
+  /** 일본 주소는 표기가 제각각이라, 여러 형태로 바꿔가며 찾아본다 */
+  async function geocode(raw) {
+    const one = async (q, extra = "") => {
+      try {
+        const u = "https://nominatim.openstreetmap.org/search?format=json&limit=1"
+                + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
+                + "&countrycodes=jp" + extra + "&q=" + encodeURIComponent(q);
+        const j = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
+        return (j && j[0]) || null;
+      } catch (e) { return null; }
+    };
+    const base = String(raw || "").trim();
+    if (!base) return null;
+    const tries = [];
+    tries.push(base);
+    const nospace = base.replace(/\s+/g, "");
+    if (nospace !== base) tries.push(nospace);
+    // 우편번호(〒123-4567)는 빼고
+    const nozip = nospace.replace(/〒?\d{3}-?\d{4}/g, "");
+    if (nozip && nozip !== nospace) tries.push(nozip);
+    // 번지(6-51-11)를 뒤에서부터 하나씩 덜어내며
+    let cut = nozip || nospace;
+    for (let i = 0; i < 3; i++) {
+      const m = cut.match(/^(.*?)[-−ー]\d+$/);
+      if (!m) break;
+      cut = m[1];
+      if (cut.length > 4) tries.push(cut);
+    }
+    // 번지를 통째로 떼고 동네 이름까지만
+    const town = (nozip || nospace).replace(/[0-9０-９]+([-−ー][0-9０-９]+)*.*$/, "");
+    if (town.length > 4) tries.push(town);
+
+    for (const q of [...new Set(tries)]) {
+      const hit = await one(q);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
   // ── 지도를 눌러 위치를 직접 찍기 ──
   //    주소 검색이 잘 안 될 때 지도를 확대해 원하는 자리를 찍으시면 됩니다.
   let pinMode = false, pin = null;
@@ -468,6 +508,41 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       }
     };
     btn.addEventListener("click", () => setMode(!pinMode));
+
+    // 적어 넣은 주소로 찾아 지도에 찍기
+    document.getElementById("apFind").addEventListener("click", async () => {
+      const addrEl = document.getElementById("apAddr");
+      const q = addrEl.value.trim();
+      if (!q) { msgEl().textContent = "먼저 주소를 적어주세요."; return; }
+      const fb = document.getElementById("apFind");
+      fb.disabled = true; msgEl().textContent = "주소로 위치를 찾는 중…";
+      const hit = await geocode(q);
+      fb.disabled = false;
+      if (!hit) {
+        msgEl().textContent = "그 주소를 찾지 못했습니다. ［📍 지도에서 찍기］ 로 직접 눌러주세요.";
+        setMode(true);
+        return;
+      }
+      const ll = { lat: parseFloat(hit.lat), lng: parseFloat(hit.lon) };
+      picked = { lat: ll.lat, lon: ll.lng };
+      map.setView([ll.lat, ll.lng], 17);
+      if (pin) pin.setLatLng(ll);
+      else {
+        pin = L.marker(ll, { draggable: true, zIndexOffset: 900,
+          icon: L.divIcon({ className: "", iconSize: [0, 0],
+            html: '<div class="cmark pinmark"><i></i><b>여기</b></div>' }) }).addTo(map);
+        pin.on("dragend", () => {
+          const p = pin.getLatLng();
+          picked = { lat: p.lat, lon: p.lng };
+          reverse(p.lat, p.lng);
+        });
+      }
+      const noteEl = document.getElementById("apNote");
+      const kind = kindOf(hit);
+      if (kind && !noteEl.value.trim()) noteEl.value = kind;
+      msgEl().textContent = "지도에 찍었습니다. 자리가 다르면 표시를 끌어 옮기거나 ［📍 지도에서 찍기］ 로 다시 눌러주세요.";
+      document.querySelector(".mapbox").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
 
     async function reverse(lat, lng) {
       const addrEl = document.getElementById("apAddr");
@@ -685,14 +760,10 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     btn.disabled = true;
     let hit = picked ? { lat: picked.lat, lon: picked.lon } : null;
     if (hit) msg.textContent = "올리는 중…";
-    else try {
+    else {
       msg.textContent = "주소로 위치를 찾는 중…";
-      const u = "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=ko&q="
-              + encodeURIComponent(addr);
-      const r = await fetch(u, { headers: { "Accept": "application/json" } });
-      const j = await r.json();
-      hit = j && j[0];
-    } catch (e) { hit = null; }
+      hit = await geocode(addr);
+    }
     if (!hit) {
       btn.disabled = false;
       msg.textContent = "그 주소를 찾지 못했습니다. 위 ［📍 지도에서 찍기］ 로 위치를 직접 눌러주세요.";
