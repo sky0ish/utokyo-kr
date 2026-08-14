@@ -18,6 +18,9 @@
 board/fb_import_*.sql
 board/roster_import.sql
 
+# (구)한국인학생회 홈페이지 회원 전용 게시판 글(이름·본문 포함)
+board/yb_import*.sql
+
 # 저장소 관리 파일 허용
 !/.gitignore
 !/README.md
