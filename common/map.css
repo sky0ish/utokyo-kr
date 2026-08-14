@@ -12,7 +12,7 @@
 .mtabs a.c-utokyo.on{background:#d8e6f8;border-color:#2a5fa8;color:#1c4478;}
 .mtabs a.c-food.on  {background:#fbdcd8;border-color:#d63a2f;color:#8e281f;}
 .mtabs a.c-cafe.on  {background:#fbedc9;border-color:#d9a52c;color:#7a5c10;}
-.mtabs a.c-memory.on{background:#e9dcf5;border-color:#e2559b;color:#4e3168;}
+.mtabs a.c-memory.on{background:#e9dcf5;border-color:#ff2d95;color:#4e3168;}
 .mtabs a.c-arch.on  {background:#d6e9dd;border-color:#ef7d18;color:#143b26;}
 
 /* 분류 설명 */
@@ -70,7 +70,7 @@
 .ly.c-utokyo .lydot i, .lydot.c-utokyo i{background:#2a5fa8;}
 .ly.c-food   .lydot i, .lydot.c-food   i{background:#d63a2f;}
 .ly.c-cafe   .lydot i, .lydot.c-cafe   i{background:#e8b53a;}
-.ly.c-memory .lydot i, .lydot.c-memory i{background:#e2559b;}
+.ly.c-memory .lydot i, .lydot.c-memory i{background:#ff2d95;}
 .ly.c-arch   .lydot i, .lydot.c-arch   i{background:#ef7d18;}
 .lyall{margin-top:5px;padding:4px 5px;border-radius:5px;border:1px solid #e5ddc9;
   background:#fff;font-family:inherit;font-size:9.5px;color:#a09a86;cursor:pointer;width:100%;}
@@ -147,7 +147,7 @@
 .cmark.c-utokyo i,.cdmark.c-utokyo i{background:#2a5fa8;}
 .cmark.c-food   i,.cdmark.c-food   i{background:#d63a2f;}
 .cmark.c-cafe   i,.cdmark.c-cafe   i{background:#e8b53a;}
-.cmark.c-memory i,.cdmark.c-memory i{background:#e2559b;}
+.cmark.c-memory i,.cdmark.c-memory i{background:#ff2d95;}
 .cmark.c-arch   i,.cdmark.c-arch   i{background:#ef7d18;}
 .cmark b{margin-top:2px;padding:1px 7px;border-radius:100px;background:rgba(255,255,255,.95);
   border:1px solid var(--map-line,#e6dfcb);font-size:11.5px;font-weight:600;
@@ -183,14 +183,14 @@
 .apcat.c-utokyo .apdot i{background:#2a5fa8;}
 .apcat.c-food   .apdot i{background:#d63a2f;}
 .apcat.c-cafe   .apdot i{background:#e8b53a;}
-.apcat.c-memory .apdot i{background:#e2559b;}
+.apcat.c-memory .apdot i{background:#ff2d95;}
 .apcat.c-arch   .apdot i{background:#ef7d18;}
 
 /* 분류별 파스텔 버튼 */
 .apcat.c-utokyo{background:#eef3fb;border-color:#c6d7ee;color:#24548f;}
 .apcat.c-food  {background:#fdefed;border-color:#f2c6c0;color:#a83127;}
 .apcat.c-cafe  {background:#fdf7e8;border-color:#f0ddb2;color:#8f6c15;}
-.apcat.c-memory{background:#fdeef5;border-color:#f3c9dd;color:#a83069;}
+.apcat.c-memory{background:#ffe9f3;border-color:#ffb6d5;color:#c01467;}
 .apcat.c-arch  {background:#fdf0e2;border-color:#f4d3ae;color:#a1550a;}
 .apcat:hover{filter:brightness(.97);}
 /* 고른 분류는 회색으로 — 어느 것을 고르셨는지 한눈에 */
