@@ -202,7 +202,7 @@ async function start() {
 
   async function load() {
     // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
-    const COLS = "id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at";
+    const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at";
     let { data, error } = await sb.from("profiles")
       .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
     if (error && /welcome_sent_at/.test(error.message || "")) {
@@ -285,11 +285,12 @@ async function start() {
     }
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
-      "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>등급</th><th>상태</th><th></th></tr></thead><tbody>" +
+      "<th>이름</th><th>이메일</th><th>연락처</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>등급</th><th>상태</th><th></th></tr></thead><tbody>" +
       list.map(r => `<tr data-id="${r.id}">
         <td><input type="checkbox" class="chk"></td>
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
         <td class="em">${esc(r.email) || "-"}</td>
+        <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(r.phone)}</a>` : "-"}</td>
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
