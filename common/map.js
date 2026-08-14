@@ -160,8 +160,11 @@ const SHELL = `
         </div>
       </aside>
     </div>
-    <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소.
-      지도 위 <b>표시를 누르면</b> 그 장소 안내가 크게 열립니다.</div>
+    <div class="maptip">
+      <span>지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소.
+        지도 위 <b>표시를 누르면</b> 그 장소 안내가 크게 열립니다.</span>
+      <a class="down" id="mapDown" href="#addplace">▼ 아래에서 내가 아는 곳을 올려보세요</a>
+    </div>
   </div>
 
   <div class="addplace" id="addplace">
@@ -264,6 +267,13 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   const canAdd = !!(me && (me.approved || me.is_admin));
   const isAdmin = !!(me && me.is_admin);
   document.getElementById("addplace").classList.toggle("on", canAdd);
+  const down = document.getElementById("mapDown");
+  down.classList.toggle("on", canAdd);
+  down.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("addplace").scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("apName").focus({ preventScroll: true });
+  });
 
   let places = [];                          // 지도에 그려진 장소들
   const shown = new Set(CATS.map(([k]) => k));   // 지도에 보이는 분류 (처음엔 모두)
