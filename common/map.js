@@ -65,9 +65,8 @@ const SHELL = `
   </div>
 
   <div class="addplace" id="addplace">
-    <div class="apttl">＋ 이 분류에 장소 추가
-      <select id="apCat" title="올릴 분류를 고르세요"></select>
-    </div>
+    <div class="apttl">＋ 이 분류에 장소 추가</div>
+    <div class="apcats" id="apCats"></div>
     <div class="apfields">
       <input type="text" id="apName" maxlength="60" placeholder="장소 이름 * (예: 아카몬 앞 커피집)">
       <input type="text" id="apAddr" maxlength="120" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
@@ -163,14 +162,16 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       `<span class="cdmark c-${cur} ${info.shape || "dot"}"><i></i></span>` +
       `<span class="cdtx"><b class="cdname">${CAT_NAME[cur]}</b> — ${info.desc || ""}` +
       `<em>지도 위 ${info.mark || ""} 표시를 누르면 자세한 내용이 열립니다.</em></span>`;
-    const sel = document.getElementById("apCat");
-    sel.innerHTML = CATS.map(([k, v]) =>
-      `<option value="${k}"${k === cur ? " selected" : ""}>${v}</option>`).join("");
-    sel.onchange = () => {                       // 여기서 분류를 바꾸면 지도도 함께 바뀝니다
-      cur = sel.value;
+    // 장소를 올릴 분류도 같은 자리에서 바로 고를 수 있게 (누르면 지도도 함께 바뀝니다)
+    const pick = document.getElementById("apCats");
+    pick.innerHTML = CATS.map(([k, v]) =>
+      `<button type="button" class="apcat c-${k}${k === cur ? " on" : ""}" data-c="${k}">` +
+      `<span class="apdot ${(CAT_INFO[k] || {}).shape || "dot"}"><i></i></span>${v}</button>`).join("");
+    pick.querySelectorAll(".apcat").forEach(b => b.addEventListener("click", () => {
+      cur = b.dataset.c;
       history.replaceState(null, "", "?cat=" + cur);
       tabHtml(); draw();
-    };
+    }));
   }
 
   async function load() {
