@@ -103,7 +103,17 @@
 .plcat em{margin-left:auto;font-style:normal;font-size:9.5px;color:#7a9152;}
 .plcat:first-child{margin-top:0;border-top:none;}
 .plrow{display:flex;align-items:center;gap:7px;padding:0 6px 0 10px;transition:.14s;}
-.plrow.movable{cursor:grab;}
+.plmark{border:0;background:transparent;padding:0;margin:0;cursor:pointer;
+  display:inline-flex;align-items:center;border-radius:6px;transition:.14s;}
+.plmark:hover{background:#efe9db;box-shadow:0 0 0 3px #efe9db;}
+.plpick{display:none;gap:4px;flex-wrap:wrap;padding:6px 8px 8px 30px;}
+.plitem.picking .plpick{display:flex;}
+.plitem.picking{background:#fbf8f1;}
+.plchip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px 3px 5px;
+  border-radius:100px;border:1px solid var(--map-line,#e0d7bf);background:#fff;
+  font-family:inherit;font-size:10px;font-weight:600;color:#5a5648;cursor:pointer;transition:.14s;}
+.plchip:hover{border-color:#8f8773;}
+.plchip.on{background:#5c6068;border-color:#464a51;color:#fff;}
 .plrow.dragging{opacity:.4;}
 .plcat.over{background:linear-gradient(180deg,#d9f0b8,#c9e7a2);
   outline:2px dashed #7fae3f;outline-offset:-2px;}

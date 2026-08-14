@@ -373,7 +373,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     }
     const canAny = places.some(p => !p.builtin && ((user && p.created_by === user.id) || isAdmin));
     let html = '<div class="pltitle">등록된 장소 ' + total + '곳'
-             + (canAny ? '<em>끌어서 분류 옮기기</em>' : '') + '</div><div class="plbody">';
+             + (canAny ? '<em>표시를 눌러 분류 바꾸기</em>' : '') + '</div><div class="plbody">';
     for (const [k, v] of CATS) {
       const rows = places.map((p, i) => ({ p, i })).filter(x => x.p.category === k);
       if (!rows.length) continue;
@@ -383,10 +383,17 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       html += rows.map(({ p, i }) => {
         const mine = !p.builtin && user && p.created_by === user.id;
         const can = mine || (isAdmin && !p.builtin);
-        return `<div class="plrow${can ? " movable" : ""}" data-i="${i}"${can ? ' draggable="true"' : ""}>
-          <span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>
-          <button class="plname" data-i="${i}" title="${esc(p.name)}">${esc(p.name)}</button>
-          ${can ? `<button class="pldel" data-i="${i}" title="이 장소 지우기">✕</button>` : ""}
+        const dot = `<span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"} c-${k}"><i></i></span>`;
+        return `<div class="plitem">
+          <div class="plrow" data-i="${i}">
+            ${can ? `<button class="plmark" data-i="${i}" title="분류 바꾸기">${dot}</button>` : dot}
+            <button class="plname" data-i="${i}" title="${esc(p.name)}">${esc(p.name)}</button>
+            ${can ? `<button class="pldel" data-i="${i}" title="이 장소 지우기">✕</button>` : ""}
+          </div>
+          ${can ? `<div class="plpick" data-i="${i}">` + CATS.map(([ck, cv]) =>
+            `<button class="plchip c-${ck}${ck === k ? " on" : ""}" data-i="${i}" data-c="${ck}">` +
+            `<span class="lydot ${(CAT_INFO[ck] || {}).shape || "dot"} c-${ck}"><i></i></span>${cv}</button>`
+          ).join("") + `</div>` : ""}
         </div>`;
       }).join("");
     }
@@ -406,9 +413,35 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       map.setView([p.lat, p.lng], 16);
       open(+b.dataset.i);
     }));
-    // 줄을 끌어다 분류 머리줄에 놓으면 그 분류로 옮겨집니다
+    // 앞의 표시를 누르면 분류 고르는 칸이 바로 열립니다
+    box.querySelectorAll(".plmark").forEach(b => b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const wrap = b.closest(".plitem");
+      const open = wrap.classList.contains("picking");
+      box.querySelectorAll(".plitem").forEach(x => x.classList.remove("picking"));
+      if (!open) wrap.classList.add("picking");
+    }));
+    box.querySelectorAll(".plchip").forEach(b => b.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const p = places[+b.dataset.i];
+      const to = b.dataset.c;
+      if (!p || p.category === to) { b.closest(".plitem").classList.remove("picking"); return; }
+      b.disabled = true;
+      const { error } = await sb.from("map_places").update({ category: to }).eq("id", p.id);
+      b.disabled = false;
+      if (error) { alert("옮기기 실패: " + error.message); return; }
+      p.category = to;
+      if (!shown.has(to)) {
+        shown.add(to);
+        const c = boxes.querySelector(`input[data-c="${to}"]`);
+        if (c) { c.checked = true; c.closest(".ly").classList.remove("off"); }
+      }
+      draw();
+    }));
+
+    // 줄을 끌어다 분류 머리줄에 놓아도 됩니다
     let dragI = null;
-    box.querySelectorAll(".plrow.movable").forEach(row => {
+    box.querySelectorAll(".plrow[data-i]").forEach(row => {
       row.addEventListener("dragstart", (e) => {
         dragI = +row.dataset.i;
         row.classList.add("dragging");
