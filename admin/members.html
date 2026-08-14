@@ -552,14 +552,9 @@ async function start() {
       } catch (e) {}
       msg.className = "msg err";
       msg.textContent = "보내기 실패: " + detail;
-      alert("보내기 실패
-
-" + detail +
-            "
-
-· RESEND_API_KEY / MAIL_FROM 을 Edge Functions → Secrets 에 넣으셨는지" +
-            "
-· Resend 에서 u-tokyo.kr 도메인이 인증(Verified) 되었는지 확인해주세요.");
+      alert("보내기 실패\n\n" + detail + 
+            "\n\n· RESEND_API_KEY / MAIL_FROM 을 Edge Functions → Secrets 에 넣으셨는지" +
+            "\n· Resend 에서 u-tokyo.kr 도메인이 인증(Verified) 되었는지 확인해주세요.");
       return;
     }
     const okCount = data?.sent || 0;
