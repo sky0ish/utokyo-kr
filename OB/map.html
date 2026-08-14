@@ -9,30 +9,35 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=38">
+<link rel="stylesheet" href="/common/map.css?v=39">
 <style>
   :root{ --map-accent:#8a6d2b; --map-line:#e6dfcb; --map-soft:#fdf1d3; --map-tip:#faf7ef; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
-  /* 배너 — 노을 하늘 + 도쿄 스카이라인 */
-  .banner{position:relative;background:linear-gradient(180deg,#33265c 0%,#6d3f6b 26%,#b45a6b 48%,#e5875a 68%,#f8c479 84%,#fde3b4 100%);overflow:hidden;padding-bottom:0;}
-  .banner::before{content:"";position:absolute;left:63%;bottom:66px;width:150px;height:150px;
+  /* 배너 — 자연스러운 노을 하늘 + 도쿄 스카이라인 */
+  .banner{position:relative;background:linear-gradient(180deg,#1e2a44 0%,#2f3c5c 14%,#4a4a6b 28%,#6d5a74 41%,#96707c 53%,#bc8a7e 65%,#d9a889 76%,#eec6a1 87%,#f7ddc0 95%,#fbeada 100%);overflow:hidden;padding-bottom:0;}
+  /* 지는 해 — 은은하게 */
+  .banner::before{content:"";position:absolute;left:64%;bottom:74px;width:190px;height:190px;
     transform:translateX(-50%);border-radius:50%;z-index:1;
-    background:radial-gradient(circle,#fff0c2 0%,#fff0c2 40%,rgba(255,200,120,.55) 56%,transparent 72%);}
+    background:radial-gradient(circle,rgba(255,245,222,.95) 0%,rgba(255,206,150,.42) 34%,transparent 68%);}
+  /* 지평선 부근 옅은 안개 */
+  .banner::after{content:"";position:absolute;left:0;right:0;bottom:78px;height:64px;z-index:1;
+    background:linear-gradient(180deg,transparent 0%,rgba(255,214,170,.20) 55%,transparent 100%);}
   .banner .binner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
     padding:26px 24px 0;}
   .banner .en{font-family:Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.14em;
-    color:#ffe0ad;display:block;margin-bottom:3px;text-shadow:0 1px 8px rgba(0,0,0,.4);}
+    color:#f2d3ae;display:block;margin-bottom:3px;text-shadow:0 1px 10px rgba(0,0,0,.45);}
   .banner h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;
-    color:#fff8ec;text-shadow:0 2px 14px rgba(0,0,0,.5);margin:0;}
+    color:#fdf4e6;text-shadow:0 2px 16px rgba(0,0,0,.5);margin:0;}
   /* 스카이라인 — 좌우 가득 */
   .ssky{position:relative;z-index:2;display:block;width:100%;height:132px;
-    margin-top:-26px;color:#1b1726;}
+    margin-top:-26px;color:#1a1826;}
   .skyword{position:relative;z-index:3;text-align:center;padding:8px 0 14px;
     font-family:Georgia,serif;font-size:22px;font-weight:700;letter-spacing:.34em;
-    color:#1b1726;background:#1b172600;}
+    color:#1a1826;}
   @media (max-width:680px){
-    .banner::before{left:60%;bottom:52px;width:104px;height:104px;}
+    .banner::before{left:62%;bottom:58px;width:130px;height:130px;}
+    .banner::after{bottom:60px;height:44px;}
     .banner .binner{padding:20px 16px 0;}
     .banner h1{font-size:21px;}
     .ssky{height:92px;margin-top:-16px;}
@@ -157,7 +162,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=38";
+import { initMap } from "/common/map.js?v=39";
 applyNav("OB", "캠퍼스 지도 | 재한 도쿄대학 총동문회");
 initMap("OB");
 </script>
