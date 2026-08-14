@@ -71,13 +71,20 @@
   .hero p.lead{font-weight:300;font-size:16.5px;max-width:560px;color:rgba(255,255,255,.9);word-break:keep-all;}
   .hero svg.deco{position:absolute;right:-20px;bottom:-10px;height:95%;z-index:1;opacity:.5;}
 
-  /* ── 아카몬 사진 (학생회 구간 머리) ── */
+  /* ── 아카몬 사진 (구간 머리) ── */
   .akamon{position:relative;line-height:0;margin:0 0 30px;border-radius:12px;overflow:hidden;
     box-shadow:0 3px 10px rgba(30,60,40,.14), 0 14px 34px rgba(30,60,40,.16);}
   .akamon img{width:100%;height:auto;display:block;}
-  .akamon .cap{position:absolute;left:0;right:0;bottom:0;line-height:1.5;
-    padding:30px 22px 12px;font-size:12px;letter-spacing:.24em;color:rgba(255,255,255,.88);
-    background:linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0));text-align:right;}
+  /* 위아래 가장자리를 부드럽게 — 사진 경계의 가로줄이 보이지 않게 */
+  .akamon::before,.akamon::after{content:"";position:absolute;left:0;right:0;height:26px;
+    pointer-events:none;z-index:1;}
+  .akamon::before{top:0;background:linear-gradient(to bottom,
+    var(--akamon-bg,#eef5ef) 0%, rgba(238,245,239,.55) 45%, rgba(238,245,239,0) 100%);}
+  .akamon::after{bottom:0;background:linear-gradient(to top,
+    var(--akamon-bg,#eef5ef) 0%, rgba(238,245,239,.55) 45%, rgba(238,245,239,0) 100%);}
+  .akamon .cap{position:absolute;left:0;right:0;bottom:0;line-height:1.5;z-index:2;
+    padding:34px 22px 12px;font-size:12px;letter-spacing:.24em;color:rgba(255,255,255,.9);
+    background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));text-align:right;}
   @media (max-width:700px){ .akamon .cap{font-size:10.5px;letter-spacing:.14em;} }
 
   /* ── 로그인 안내 ── */
@@ -498,7 +505,7 @@
   <div class="container">
     <div class="sec-head"><div class="t"><span class="en">Student Council</span><h2>학생회</h2></div></div>
     <div class="akamon">
-      <img src="../images/yb_akamon.jpg" alt="도쿄대학 아카몬(赤門) — Korean Student Association at the University of Tokyo">
+      <img src="../images/akamon_wide.jpg" alt="도쿄대학 아카몬(赤門) — Korean Student Association at the University of Tokyo">
       <div class="cap">赤門 · 도쿄대학 한국인학생회</div>
     </div>
     <div class="council">
