@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=54">
+<link rel="stylesheet" href="/common/map.css?v=55">
 <style>
   :root{ --map-accent:#8a6d2b; --map-line:#e6dfcb; --map-soft:#fdf1d3; --map-tip:#faf7ef; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -59,7 +59,7 @@
 <script>
   /* 옛 화면이 캐시에 남아 새 기능이 안 보이는 것을 막는다 */
   (function () {
-    var HERE = 54;
+    var HERE = 55;
     fetch("/common/version.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (v) {

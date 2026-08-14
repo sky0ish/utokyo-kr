@@ -94,23 +94,18 @@ const CUISINE = {
   tonkatsu:"돈카츠", coffee_shop:"커피", burger:"버거", pizza:"피자", thai:"태국식", indian:"인도식",
 };
 
-/** 주소 후보에서 「이곳의 특징」에 넣을 짧은 설명을 만든다 */
+/** 장소 종류를 한 단어로 (주소는 따로 있으니 동네 이름은 넣지 않는다) */
 function kindOf(h) {
-  const bits = [];
   const t = (h.type || "").toLowerCase();
   const c = (h.class || "").toLowerCase();
-  if (KIND[t]) bits.push(KIND[t]);
-  else if (KIND[c]) bits.push(KIND[c]);
+  if (KIND[t]) return KIND[t];
+  if (KIND[c]) return KIND[c];
   const ex = h.extratags || {};
-  (ex.cuisine || "").split(";").forEach(x => {
+  for (const x of (ex.cuisine || "").split(";")) {
     const k = CUISINE[x.trim().toLowerCase()];
-    if (k && !bits.includes(k)) bits.push(k);
-  });
-  if (ex["brand"]) bits.push(ex["brand"]);
-  const addr = h.address || {};
-  const town = addr.suburb || addr.neighbourhood || addr.city_district || addr.town || addr.city;
-  if (town && bits.length) bits.push(town);
-  return bits.slice(0, 3).join(" · ");
+    if (k) return k;
+  }
+  return "";
 }
 
 /** 위키백과에서 「무엇을 하는 곳인지」 한 문장을 찾아온다 */
