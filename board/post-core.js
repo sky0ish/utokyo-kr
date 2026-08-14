@@ -26,7 +26,40 @@ export async function initPost(ORG) {
     el.append(st, my, out);
   }
 
-  function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    // ── 밴드·페이스북에 공유 ──
+  function setupShare(p) {
+    const box = document.getElementById("share");
+    if (!box || !p) return;
+    const url = location.origin + HOME + "/post.html?id=" + p.id;
+    const plain = String(p.content || "")
+      .replace(/<[^>]*>/g, " ").replace(/\s{2,}/g, " ").trim().slice(0, 300);
+    const body = `${p.title}
+
+${plain}${plain.length >= 300 ? "…" : ""}
+
+${url}`;
+    const msg = document.getElementById("shMsg");
+
+    document.getElementById("shBand").addEventListener("click", () => {
+      window.open("https://band.us/plugin/share?body=" + encodeURIComponent(body)
+                  + "&route=" + encodeURIComponent(url),
+                  "bandShare", "width=500,height=640");
+    });
+    document.getElementById("shFb").addEventListener("click", () => {
+      // 페이스북은 본문을 미리 채울 수 없어, 주소를 함께 복사해 드립니다
+      navigator.clipboard && navigator.clipboard.writeText(body).catch(() => {});
+      msg.textContent = "글 내용을 복사했습니다. 페이스북 창에서 붙여넣기(Ctrl+V) 하세요.";
+      window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url),
+                  "fbShare", "width=600,height=640");
+    });
+    document.getElementById("shCopy").addEventListener("click", () => {
+      navigator.clipboard.writeText(url).then(
+        () => { msg.textContent = "주소를 복사했습니다."; },
+        () => { msg.textContent = "복사하지 못했습니다: " + url; });
+    });
+  }
+
+function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   const { data: p, error } = await sb.from("posts").select("*").eq("id", id).single();
   if (p && typeof p.images === "string") { try { p.images = JSON.parse(p.images); } catch (e) { p.images = null; } }
@@ -53,11 +86,12 @@ export async function initPost(ORG) {
         p.source === "band" ? '<div class="src">※ 네이버 밴드에서 옮겨온 글입니다.</div>' :
         p.source === "legacy" ? '<div class="src">※ (구)홈페이지 게시판에서 옮겨온 글입니다.</div>' : ""}
     `;
+    setupShare(p);
     const meProfile = user ? await myProfile() : null;
     const canEdit = !!(user && (p.author_id === user.id || (meProfile && meProfile.is_admin)));
     if (canEdit) {
       document.getElementById("actions").style.display = "flex";
-      document.getElementById("editBtn").addEventListener("click", () => location.href = "write.html?edit=" + p.id);
+      document.getElementById("editBtn").addEventListener("click", () => location.href = HOME + "/write.html?edit=" + p.id);
       document.getElementById("delBtn").addEventListener("click", async () => {
         if (!confirm("이 글을 삭제할까요?")) return;
         const { error: e } = await sb.from("posts").delete().eq("id", p.id);

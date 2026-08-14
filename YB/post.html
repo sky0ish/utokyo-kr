@@ -7,6 +7,19 @@
 <title>게시글 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/board/board.css">
+<style>
+  .pshare{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:18px 0 6px;
+    padding:13px 18px;background:#fff;border:1px solid #e6dfcb;border-radius:11px;}
+  body.yb .pshare{border-color:#cfe3d4;}
+  .pshare .stx{font-size:13px;color:#8b8474;margin-right:2px;}
+  .pshare .btn.sh{padding:9px 18px;border-radius:8px;font-size:13.5px;font-weight:600;
+    cursor:pointer;font-family:inherit;border:1px solid transparent;color:#fff;transition:.16s;}
+  .pshare .btn.sh:hover{filter:brightness(1.08);transform:translateY(-1px);}
+  .pshare .btn.band{background:#22b573;border-color:#1c9c62;}
+  .pshare .btn.fb{background:#1877f2;border-color:#1465ce;}
+  .pshare .btn.copy{background:#fff;border-color:#ddd6c4;color:#5a5648;}
+  .pshare .smsg{font-size:12.5px;color:#2f7a45;}
+</style>
 </head>
 <body class="yb">
 
@@ -41,6 +54,14 @@
   <div class="post" id="postBox">
     <div class="empty">불러오는 중…</div>
   </div>
+  <div class="pshare" id="share">
+    <span class="stx">이 글을 다른 곳에도 알리시려면</span>
+    <button class="btn sh band" id="shBand">밴드에 공유</button>
+    <button class="btn sh fb" id="shFb">페이스북에 공유</button>
+    <button class="btn sh copy" id="shCopy">주소 복사</button>
+    <span class="smsg" id="shMsg"></span>
+  </div>
+
   <div class="pactions" id="actions" style="display:none;">
     <button class="btn line" id="editBtn">수정</button>
     <button class="btn line" id="delBtn">삭제</button>
@@ -61,7 +82,7 @@
 </div>
 
 <script type="module">
-import { initPost } from "/board/post-core.js?v=2";
+import { initPost } from "/board/post-core.js?v=3";
 initPost("YB");
 </script>
 
