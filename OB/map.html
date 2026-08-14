@@ -9,28 +9,22 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=31">
+<link rel="stylesheet" href="/common/map.css?v=32">
 <style>
   :root{ --map-accent:#8a6d2b; --map-line:#e6dfcb; --map-soft:#fdf1d3; --map-tip:#faf7ef; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
-  /* 배너 — 원래 풍경 사진을 살리고, 아래에 도쿄 스카이라인 한 줄 */
-  .banner{position:relative;overflow:hidden;
-    background:linear-gradient(rgba(11,18,32,.42),rgba(11,18,32,.28)),url('/images/gold_avenue.jpg') center 42%/cover;}
-  .banner .binner{position:relative;z-index:3;
-    display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
-    padding:38px 24px 66px;}
-  /* 스카이라인이 앉을 옅은 바닥 */
-  .banner::after{content:"";position:absolute;left:0;right:0;bottom:0;height:96px;z-index:1;
-    background:linear-gradient(180deg,rgba(246,244,238,0) 0%,rgba(246,244,238,.72) 42%,rgba(246,244,238,.94) 100%);}
-  .banner .skyword{font-family:Georgia,serif;font-size:24px;font-weight:700;letter-spacing:.30em;
-    color:#4a4f57;white-space:nowrap;padding-bottom:2px;}
-  .skyline{position:absolute;left:0;right:0;bottom:0;width:100%;height:74px;
-    display:block;color:#4a4f57;opacity:.92;pointer-events:none;z-index:2;}
+  /* 사진 아래 — 왼쪽 스카이라인 · 오른쪽 끝까지 한 줄 · TOKYO */
+  .skystrip{background:#fff;border-bottom:1px solid #ece5d6;}
+  .ssinner{max-width:1180px;margin:0 auto;padding:16px 24px 0;
+    display:flex;align-items:flex-end;gap:16px;color:#33373e;}
+  .ssky{flex:none;height:58px;width:auto;display:block;}
+  .ssline{flex:1;height:3px;background:currentColor;margin-bottom:0;border-radius:2px;}
+  .ssword{flex:none;font-family:Georgia,serif;font-size:22px;font-weight:700;
+    letter-spacing:.30em;line-height:1;padding-bottom:2px;}
   @media (max-width:680px){
-    .banner .binner{padding:26px 18px 50px;}
-    .banner .skyword{font-size:17px;letter-spacing:.24em;}
-    .skyline{height:54px;} .banner::after{height:72px;}
+    .ssinner{padding:12px 16px 0;gap:10px;}
+    .ssky{height:40px;} .ssword{font-size:15px;letter-spacing:.22em;} .ssline{height:2px;}
   }
   .mapnote{margin:26px 0 22px;font-size:14.5px;color:#5c563f;line-height:1.85;word-break:keep-all;}
   .mapnote b{color:#8a6d2b;font-weight:600;}
@@ -59,62 +53,45 @@
 
 <div class="banner">
   <div class="binner">
-    <div>
-      <span class="en">Campus Map</span>
-      <h1>도쿄 지도</h1>
-    </div>
-    <span class="skyword">T O K Y O</span>
+    <span class="en">Campus Map</span>
+    <h1>도쿄 지도</h1>
   </div>
-  <svg class="skyline" viewBox="0 0 1600 150" preserveAspectRatio="none" aria-hidden="true">
-    <g fill="currentColor">
-      <!-- 왼쪽 저층 -->
-      <rect x="0"   y="106" width="46" height="44"/>
-      <rect x="52"  y="92"  width="30" height="58"/>
-      <rect x="88"  y="112" width="54" height="38"/>
-      <rect x="148" y="80"  width="34" height="70"/>
-      <rect x="188" y="98"  width="26" height="52"/>
-      <rect x="220" y="66"  width="40" height="84"/>
-      <rect x="266" y="104" width="60" height="46"/>
-      <!-- 도쿄타워 -->
-      <path d="M360 150 L374 66 L378 66 L392 150 Z"/>
-      <path d="M369 60 h14 v6 h-14 z"/>
-      <rect x="374" y="34" width="4" height="26"/>
-      <rect x="362" y="96" width="28" height="5"/>
-      <rect x="357" y="120" width="38" height="5"/>
-      <!-- 가운데 빌딩군 -->
-      <rect x="410" y="88"  width="34" height="62"/>
-      <rect x="450" y="70"  width="28" height="80"/>
-      <rect x="484" y="102" width="46" height="48"/>
-      <rect x="536" y="58"  width="32" height="92"/>
-      <rect x="574" y="86"  width="24" height="64"/>
-      <rect x="604" y="110" width="56" height="40"/>
-      <rect x="666" y="76"  width="30" height="74"/>
-      <rect x="702" y="94"  width="40" height="56"/>
-      <!-- 스카이트리 -->
-      <path d="M790 150 L800 40 L806 40 L816 150 Z"/>
-      <ellipse cx="803" cy="52" rx="16" ry="7"/>
-      <ellipse cx="803" cy="28" rx="11" ry="5"/>
-      <rect x="801" y="0" width="4" height="28"/>
-      <!-- 오른쪽 빌딩군 -->
-      <rect x="836" y="98"  width="36" height="52"/>
-      <rect x="878" y="72"  width="26" height="78"/>
-      <rect x="910" y="106" width="52" height="44"/>
-      <rect x="968" y="84"  width="30" height="66"/>
-      <rect x="1004" y="62" width="36" height="88"/>
-      <rect x="1046" y="100" width="44" height="50"/>
-      <rect x="1096" y="78" width="28" height="72"/>
-      <rect x="1130" y="112" width="58" height="38"/>
-      <rect x="1194" y="90" width="32" height="60"/>
-      <rect x="1232" y="68" width="26" height="82"/>
-      <rect x="1264" y="104" width="48" height="46"/>
-      <rect x="1318" y="82" width="34" height="68"/>
-      <rect x="1358" y="110" width="62" height="40"/>
-      <rect x="1426" y="94"  width="28" height="56"/>
-      <rect x="1460" y="74"  width="34" height="76"/>
-      <rect x="1500" y="108" width="50" height="42"/>
-      <rect x="1556" y="88"  width="44" height="62"/>
-    </g>
-  </svg>
+</div>
+
+<div class="skystrip">
+  <div class="ssinner">
+      <svg class="ssky" viewBox="0 0 560 120" aria-hidden="true">
+        <g fill="currentColor">
+          <rect x="0"   y="86" width="30" height="34"/>
+          <rect x="36"  y="70" width="22" height="50"/>
+          <rect x="64"  y="94" width="38" height="26"/>
+          <rect x="108" y="58" width="26" height="62"/>
+          <rect x="140" y="80" width="20" height="40"/>
+          <!-- 도쿄타워 -->
+          <path d="M182 120 L194 48 L198 48 L210 120 Z"/>
+          <path d="M190 42 h12 v6 h-12 z"/>
+          <rect x="194" y="20" width="4" height="22"/>
+          <rect x="184" y="74" width="24" height="4"/>
+          <rect x="180" y="96" width="32" height="4"/>
+          <rect x="222" y="76" width="26" height="44"/>
+          <rect x="254" y="60" width="22" height="60"/>
+          <rect x="282" y="90" width="34" height="30"/>
+          <rect x="322" y="72" width="24" height="48"/>
+          <!-- 스카이트리 -->
+          <path d="M368 120 L377 26 L382 26 L391 120 Z"/>
+          <ellipse cx="379.5" cy="38" rx="13" ry="6"/>
+          <ellipse cx="379.5" cy="18" rx="9" ry="4"/>
+          <rect x="377.5" y="0" width="4" height="18"/>
+          <rect x="402" y="84" width="28" height="36"/>
+          <rect x="436" y="64" width="22" height="56"/>
+          <rect x="464" y="92" width="40" height="28"/>
+          <rect x="510" y="76" width="24" height="44"/>
+          <rect x="540" y="98" width="20" height="22"/>
+        </g>
+      </svg>
+      <span class="ssline"></span>
+      <span class="ssword">T O K Y O</span>
+  </div>
 </div>
 
 <div class="wrap">
@@ -129,7 +106,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=31";
+import { initMap } from "/common/map.js?v=32";
 applyNav("OB", "캠퍼스 지도 | 재한 도쿄대학 총동문회");
 initMap("OB");
 </script>
