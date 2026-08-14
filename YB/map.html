@@ -9,29 +9,34 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=40">
+<link rel="stylesheet" href="/common/map.css?v=41">
 <style>
   :root{ --map-accent:#1e5230; --map-line:#cfe3d4; --map-soft:#e4f3e7; --map-tip:#f7fbf7; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
-  /* 배너 — 자연스러운 노을 하늘 + 도쿄 스카이라인 */
-  .banner{position:relative;background:linear-gradient(180deg,#14263c 0%,#22415a 15%,#33606c 30%,#4d7a74 43%,#7b8f79 55%,#a89a80 67%,#cbaa8b 78%,#e5c8a4 88%,#f3dfc2 96%,#faeeda 100%);overflow:hidden;padding-bottom:0;}
-  /* 지는 해 — 은은하게 */
-  .banner::before{content:"";position:absolute;left:64%;bottom:74px;width:190px;height:190px;
-    transform:translateX(-50%);border-radius:50%;z-index:1;
-    background:radial-gradient(circle,rgba(255,246,226,.92) 0%,rgba(250,208,156,.38) 34%,transparent 68%);}
-  /* 지평선 부근 옅은 안개 */
-  .banner::after{content:"";position:absolute;left:0;right:0;bottom:78px;height:64px;z-index:1;
-    background:linear-gradient(180deg,transparent 0%,rgba(230,222,190,.18) 55%,transparent 100%);}
+  /* 배너 — 노을 하늘 (푸른 하늘에 분홍 구름결, 지평선 가까이 주황빛) */
+  .banner{position:relative;overflow:hidden;padding-bottom:0;
+    background:
+      radial-gradient(58%% 11px at 28%% 30%%, rgba(232,178,150,.50), transparent 72%%),
+      radial-gradient(42%% 8px  at 55%% 24%%, rgba(220,170,150,.42), transparent 72%%),
+      radial-gradient(48%% 9px  at 74%% 36%%, rgba(236,190,160,.45), transparent 72%%),
+      radial-gradient(38%% 7px  at 18%% 44%%, rgba(228,196,172,.42), transparent 72%%),
+      radial-gradient(52%% 10px at 62%% 47%%, rgba(232,184,150,.40), transparent 72%%),
+      radial-gradient(34%% 6px  at 40%% 55%%, rgba(234,202,176,.38), transparent 74%%),
+      linear-gradient(180deg,#0d2440 0%%,#14395c 15%%,#1f5a76 30%%,#316f88 44%%,#5d8f9c 56%%,#93a396 66%%,#c2a68c 76%%,#e0aa78 85%%,#f2ca97 93%%,#fae4bf 100%%);}
+  /* 지평선 가까이 지는 해 */
+  .banner::before{content:"";position:absolute;left:66%;bottom:52px;width:210px;height:120px;
+    transform:translateX(-50%);z-index:1;
+    background:radial-gradient(ellipse at center,rgba(255,242,212,.92) 0%,rgba(248,196,132,.38) 32%,transparent 70%);}
   .banner .binner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
     padding:26px 24px 0;}
   .banner .en{font-family:Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.14em;
-    color:#d9ecdc;display:block;margin-bottom:3px;text-shadow:0 1px 10px rgba(0,0,0,.45);}
+    color:#d7ecdd;display:block;margin-bottom:3px;text-shadow:0 1px 10px rgba(0,0,0,.5);}
   .banner h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;
-    color:#f7fcf8;text-shadow:0 2px 16px rgba(0,0,0,.5);margin:0;}
+    color:#f7fcf8;text-shadow:0 2px 16px rgba(0,0,0,.55);margin:0;}
   /* 아래줄 : 왼쪽 스카이라인 — 선 — 오른쪽 TOKYO */
   .skyrow{position:relative;z-index:3;max-width:1180px;margin:0 auto;
-    padding:0 24px 16px;display:flex;align-items:flex-end;gap:16px;color:#101f18;
+    padding:0 24px 16px;display:flex;align-items:flex-end;gap:16px;color:#0b1a18;
     margin-top:-8px;}
   .ssky{flex:none;height:70px;width:auto;display:block;
     filter:drop-shadow(0 -1px 2px rgba(0,0,0,.22));}
@@ -121,7 +126,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=40";
+import { initMap } from "/common/map.js?v=41";
 applyNav("YB", "캠퍼스 지도 | 도쿄대학 한국인학생회");
 initMap("YB");
 </script>
