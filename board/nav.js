@@ -6,6 +6,7 @@
 
 const NAV = {
   OB: `
+      <a href="/OB/map.html">MAP</a>
       <div class="dd">
         <a href="/OB/index.html#greeting">동문회 소개</a>
         <div class="dd-menu">
@@ -46,10 +47,10 @@ const NAV = {
           <a href="/OB/gallery.html?cat=etc">기타</a>
         </div>
       </div>
-      <a href="/OB/map.html">MAP</a>
       <a href="/OB/index.html#sponsor">후원</a>`,
 
   YB: `
+      <a href="/YB/map.html">MAP</a>
       <div class="dd">
         <a href="/YB/index.html#school">학교안내</a>
         <div class="dd-menu">
@@ -87,7 +88,6 @@ const NAV = {
           <a href="/YB/gallery.html?cat=general">일반 사진 및 동영상</a>
         </div>
       </div>
-      <a href="/YB/map.html">MAP</a>
       <a href="/YB/index.html#sponsor">후원</a>`,
 };
 

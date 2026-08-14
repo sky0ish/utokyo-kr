@@ -54,15 +54,15 @@ export const CAMPUS = [
 
 /** 바탕지도 — 열쇠(API key) 없이 쓸 수 있는 것들 */
 export const BASEMAPS = [
+  { k: "osm", n: "기본", sub: "OpenStreetMap",
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' },
   { k: "voyager", n: "부드러운 컬러", sub: "CARTO Voyager",
     url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
     att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
   { k: "positron", n: "밝은 회색", sub: "CARTO Positron",
     url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
-  { k: "osm", n: "기본", sub: "OpenStreetMap",
-    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' },
   { k: "dark", n: "어두운", sub: "CARTO Dark",
     url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
     att: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
@@ -183,9 +183,9 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   }
   const baseSel = document.getElementById("lyBase");
   baseSel.innerHTML = BASEMAPS.map(b => `<option value="${b.k}">${b.n}</option>`).join("");
-  let saved = "voyager";
-  try { saved = localStorage.getItem("utk-basemap") || "voyager"; } catch (e) {}
-  baseSel.value = BASEMAPS.some(b => b.k === saved) ? saved : "voyager";
+  let saved = "osm";
+  try { saved = localStorage.getItem("utk-basemap") || "osm"; } catch (e) {}
+  baseSel.value = BASEMAPS.some(b => b.k === saved) ? saved : "osm";
   baseSel.addEventListener("change", () => setBase(baseSel.value));
   setBase(baseSel.value);
 
