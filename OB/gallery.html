@@ -47,11 +47,6 @@
   body.admin .alb .edit{display:block;}
   .alb .edit:hover{background:#c9a961;color:#2b2410;}
 
-  .alb .share{display:none;position:absolute;top:8px;right:74px;z-index:3;
-    background:rgba(47,122,69,.82);color:#fff;border:none;border-radius:7px;
-    padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;}
-  body.admin .alb .share{display:block;}
-  .alb .share:hover{background:#2f7a45;}
 
   /* 운영진 : 앨범 통째로 옮기기 */
   .alb .apick{display:none;position:absolute;top:9px;left:9px;z-index:4;
@@ -311,8 +306,7 @@ function render() {
        data-key="${a.key}" draggable="false">
       <span class="sq">
         <input type="checkbox" class="apick" title="이 앨범 선택">
-        <button class="share" title="공유자(올린 사람) 이름 적기">👤 공유자</button>
-        <button class="edit" title="앨범 이름 고치기">✎ 이름</button>
+        <button class="edit" title="사진첩 이름 고치기">✎ 사진이름</button>
         ${a.ownerAdmin
           ? '<span class="mine">관리자</span>'
           : (a.ownerName ? `<span class="mine">공유자(${esc(a.ownerName)})</span>`
@@ -449,114 +443,6 @@ function enableMerge(list) {
     location.href = "gallery.html?cat=" + newCat;
   });
 
-  // 공유자(올린 사람) 이름 적기
-  document.querySelectorAll(".alb .share").forEach(b => b.addEventListener("click", async (e) => {
-    e.preventDefault(); e.stopPropagation();
-    const el = b.closest(".alb");
-    const alb = find(el.dataset.key);
-    if (!alb) return;
-    const now = alb.ownerAdmin ? "관리자" : (alb.ownerName || "");
-    const t = prompt([
-      "이 사진첩을 올린 분의 이름을 적어주세요.",
-      "· 운영진이 올린 것이면  관리자  라고 적으세요.",
-      "· 비워 두면 표시가 사라집니다.",
-    ].join("\n"), now);
-    if (t === null) return;
-    const name = t.trim();
-    const admin = (name === "관리자" || name === "운영진");
-    b.disabled = true;
-    const { error } = await sb.from("gallery_albums").upsert({
-      album_key: alb.key, org: "OB",
-      owner_name: admin ? "" : name, owner_admin: admin,
-      updated_by: adminId, updated_at: new Date().toISOString(),
-    }, { onConflict: "album_key" });
-    b.disabled = false;
-    if (error) {
-      alert("공유자 저장 실패: " + error.message +
-            " — board/gallery_owner_name.sql 을 실행하셨는지 확인해주세요.");
-      return;
-    }
-    alb.ownerName = admin ? "" : name;
-    alb.ownerAdmin = admin;
-    const sq = el.querySelector(".sq");
-    const old = sq.querySelector(".mine");
-    if (old) old.remove();
-    if (admin || name) {
-      const sp = document.createElement("span");
-      sp.className = "mine";
-      sp.textContent = admin ? "관리자" : `공유자(${name})`;
-      sq.insertBefore(sp, sq.firstChild);
-    }
-  }));
-
-  document.querySelectorAll(".alb .edit").forEach(b => b.addEventListener("click", async (e) => {
-    e.preventDefault(); e.stopPropagation();
-    const el = b.closest(".alb");
-    const alb = find(el.dataset.key);
-    if (!alb) return;
-    const t = prompt("앨범 이름을 입력해주세요.", alb.title);
-    if (t === null) return;
-    const title = t.trim();
-    if (!title) { alert("이름이 비어 있습니다."); return; }
-    b.disabled = true;
-    const { error } = await sb.from("gallery_albums").upsert({
-      album_key: alb.key, title, org: "OB",
-      updated_by: adminId, updated_at: new Date().toISOString(),
-    }, { onConflict: "album_key" });
-    b.disabled = false;
-    if (error) {
-      alert("이름 저장 실패: " + error.message +
-            " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
-      return;
-    }
-    alb.title = title;
-    el.querySelector(".cp b").textContent = title;
-  }));
-
-  let from = null;
-  document.querySelectorAll(".alb").forEach(el => {
-    el.draggable = true;
-    el.addEventListener("dragstart", (e) => {
-      from = el.dataset.key; el.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", from);
-    });
-    el.addEventListener("dragend", () => el.classList.remove("dragging"));
-    el.addEventListener("dragover", (e) => {
-      if (!from || from === el.dataset.key) return;
-      e.preventDefault(); el.classList.add("dropzone");
-    });
-    el.addEventListener("dragleave", () => el.classList.remove("dropzone"));
-    el.addEventListener("drop", async (e) => {
-      e.preventDefault(); e.stopPropagation();
-      el.classList.remove("dropzone");
-      const src = find(from), dst = find(el.dataset.key);
-      from = null;
-      if (!src || !dst || src.key === dst.key) return;
-      if (!confirm(`「${src.title}」의 사진 ${src.photos.length}장을\n「${dst.title}」 앨범으로 합칠까요?`)) return;
-
-      const statics = src.photos.filter(p => p.kind !== "db");
-      const dbs = src.photos.filter(p => p.kind === "db");
-      const now = new Date().toISOString();
-      let err = null;
-      if (statics.length) {
-        const r = await sb.from("gallery_overrides").upsert(
-          statics.map(p => ({ photo_key: p.key, album_key: dst.key, updated_by: adminId, updated_at: now })),
-          { onConflict: "photo_key" });
-        err = r.error;
-      }
-      if (!err && dbs.length) {
-        const r = await sb.from("gallery_photos").update({ album_key: dst.key }).in("id", dbs.map(p => p.id));
-        err = r.error;
-      }
-      if (err) {
-        alert("합치기 실패: " + err.message +
-              " — board/gallery_setup.sql 을 다시 실행하셨는지 확인해주세요.");
-        return;
-      }
-      location.reload();
-    });
-  });
 }
 
 document.querySelectorAll("#gtabs a").forEach(a => a.addEventListener("click", (e) => {
