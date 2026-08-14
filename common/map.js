@@ -205,7 +205,10 @@ const SHELL = `
   <div class="pmodal" id="pmodal">
     <div class="pbox">
       <button class="px" id="pClose">✕</button>
-      <div class="pcat" id="pCat"></div>
+      <div class="pcatrow">
+        <span class="pcat" id="pCat"></span>
+        <select class="pcatsel" id="pCatSel" style="display:none;" title="분류 바꾸기"></select>
+      </div>
       <h3 id="pName"></h3>
       <div class="paddr" id="pAddr"></div>
       <div class="pjp" id="pJp"></div>
@@ -444,6 +447,30 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       : p.owner_admin ? `<b>관리자</b>${when ? " · " + when : ""} 가 올린 장소입니다`
       : p.owner_name ? `<b>공유자(${esc(p.owner_name)})</b>${when ? " · " + when : ""} 가 올린 장소입니다`
       : (when ? when + " 에 올라온 장소입니다" : "");
+    // 분류 바꾸기 — 바꾸면 지도 표시도 그 분류의 기호로 바뀝니다
+    const sel = document.getElementById("pCatSel");
+    const canCat = !p.builtin && ((user && p.created_by === user.id) || isAdmin);
+    sel.style.display = canCat ? "" : "none";
+    if (canCat) {
+      sel.innerHTML = CATS.map(([k, v]) =>
+        `<option value="${k}"${k === p.category ? " selected" : ""}>${v}</option>`).join("");
+      sel.onchange = async () => {
+        const to = sel.value;
+        if (to === p.category) return;
+        sel.disabled = true;
+        const { error } = await sb.from("map_places").update({ category: to }).eq("id", p.id);
+        sel.disabled = false;
+        if (error) { alert("분류 바꾸기 실패: " + error.message); sel.value = p.category; return; }
+        p.category = to;
+        if (!shown.has(to)) {                       // 꺼둔 분류로 옮겼으면 켜 준다
+          shown.add(to);
+          const c = boxes.querySelector(`input[data-c="${to}"]`);
+          if (c) { c.checked = true; c.closest(".ly").classList.remove("off"); }
+        }
+        close();
+        draw();
+      };
+    }
     const mv = document.getElementById("pMove");
     const canEdit = !p.builtin && ((user && p.created_by === user.id) || isAdmin);
     mv.style.display = canEdit ? "" : "none";

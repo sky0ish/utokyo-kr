@@ -285,6 +285,10 @@
 .pbox .px{position:absolute;top:14px;right:16px;border:0;background:transparent;
   font-size:20px;color:#a8a291;cursor:pointer;line-height:1;font-family:inherit;}
 .pbox .px:hover{color:#2f2a1d;}
+.pcatrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.pcatsel{padding:5px 10px;border-radius:100px;border:1px solid var(--map-line,#ddd6c4);
+  background:#fff;font-family:inherit;font-size:12px;color:#5a5648;cursor:pointer;}
+.pcatsel:focus{outline:0;border-color:var(--map-accent,#c9a24b);}
 .pcat{display:inline-block;padding:4px 13px;border-radius:100px;font-size:12px;font-weight:600;
   background:var(--map-soft,#fdf1d3);color:var(--map-accent,#4a3c14);}
 .pbox h3{font-family:'Noto Serif KR',serif;font-size:25px;font-weight:600;color:#2b2a24;
