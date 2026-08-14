@@ -9,27 +9,28 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=30">
+<link rel="stylesheet" href="/common/map.css?v=31">
 <style>
   :root{ --map-accent:#8a6d2b; --map-line:#e6dfcb; --map-soft:#fdf1d3; --map-tip:#faf7ef; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
-  /* 도쿄 스카이라인 머리띠 */
-  .skyband{position:relative;background:linear-gradient(180deg,#fbf8f0 0%,#f3ecdb 100%);color:#c9a961;overflow:hidden;
-    border-bottom:2px solid #e0d7bf;}
-  .skyinner{position:relative;z-index:2;max-width:1180px;margin:0 auto;
-    padding:30px 24px 74px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;}
-  .skytx .en{font-family:Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.14em;
-    color:#a98a3f;display:block;margin-bottom:3px;}
-  .skytx h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;color:#3a3527;margin:0;}
-  .skyword{font-family:Georgia,serif;font-size:26px;font-weight:700;letter-spacing:.30em;
-    color:#3a3527;opacity:.92;white-space:nowrap;padding-bottom:2px;}
-  .skyline{position:absolute;left:0;right:0;bottom:0;width:100%;height:96px;
-    display:block;opacity:.95;pointer-events:none;}
+  /* 배너 — 원래 풍경 사진을 살리고, 아래에 도쿄 스카이라인 한 줄 */
+  .banner{position:relative;overflow:hidden;
+    background:linear-gradient(rgba(11,18,32,.42),rgba(11,18,32,.28)),url('/images/gold_avenue.jpg') center 42%/cover;}
+  .banner .binner{position:relative;z-index:3;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+    padding:38px 24px 66px;}
+  /* 스카이라인이 앉을 옅은 바닥 */
+  .banner::after{content:"";position:absolute;left:0;right:0;bottom:0;height:96px;z-index:1;
+    background:linear-gradient(180deg,rgba(246,244,238,0) 0%,rgba(246,244,238,.72) 42%,rgba(246,244,238,.94) 100%);}
+  .banner .skyword{font-family:Georgia,serif;font-size:24px;font-weight:700;letter-spacing:.30em;
+    color:#4a4f57;white-space:nowrap;padding-bottom:2px;}
+  .skyline{position:absolute;left:0;right:0;bottom:0;width:100%;height:74px;
+    display:block;color:#4a4f57;opacity:.92;pointer-events:none;z-index:2;}
   @media (max-width:680px){
-    .skyinner{padding:22px 18px 56px;}
-    .skytx h1{font-size:21px;} .skyword{font-size:18px;letter-spacing:.24em;}
-    .skyline{height:70px;}
+    .banner .binner{padding:26px 18px 50px;}
+    .banner .skyword{font-size:17px;letter-spacing:.24em;}
+    .skyline{height:54px;} .banner::after{height:72px;}
   }
   .mapnote{margin:26px 0 22px;font-size:14.5px;color:#5c563f;line-height:1.85;word-break:keep-all;}
   .mapnote b{color:#8a6d2b;font-weight:600;}
@@ -56,9 +57,9 @@
   </div>
 </header>
 
-<div class="skyband">
-  <div class="skyinner">
-    <div class="skytx">
+<div class="banner">
+  <div class="binner">
+    <div>
       <span class="en">Campus Map</span>
       <h1>도쿄 지도</h1>
     </div>
@@ -128,7 +129,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=30";
+import { initMap } from "/common/map.js?v=31";
 applyNav("OB", "캠퍼스 지도 | 재한 도쿄대학 총동문회");
 initMap("OB");
 </script>
