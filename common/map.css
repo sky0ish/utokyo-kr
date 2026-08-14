@@ -37,9 +37,10 @@
 .maprow.tall{height:auto;}
 .maprow.tall .mapbox{height:clamp(360px,52vh,560px);}
 .maprow.tall .plbody{max-height:none;}
-.mapside{flex:none;width:216px;height:100%;padding:12px 12px 12px 0;background:#fff;
-  display:flex;flex-direction:column;gap:10px;min-height:0;}
-.layers{flex:none;width:100%;display:flex;flex-direction:column;gap:1px;padding:10px 11px;
+/* 곁상자 : 왼쪽 = 레이어·바탕지도, 오른쪽 = 등록된 장소 */
+.mapside{flex:none;width:352px;height:100%;padding:12px 12px 12px 0;background:#fff;
+  display:flex;flex-direction:row;align-items:stretch;gap:10px;min-height:0;}
+.layers{flex:none;width:152px;align-self:flex-start;display:flex;flex-direction:column;gap:1px;padding:10px 11px;
   border-radius:10px;background:#fff;border:1px solid var(--map-line,#e6dfcb);
   box-shadow:0 1px 3px rgba(20,24,34,.07);}
 .lytitle{font-size:9.5px;font-weight:700;letter-spacing:.03em;color:#a8a291;margin-bottom:3px;
@@ -78,7 +79,7 @@
   background:#fff;font-family:inherit;font-size:10.5px;color:#2f2a1d;cursor:pointer;width:100%;}
 .lysel:focus{outline:0;border-color:#4a4438;}
 /* 등록된 장소 목록 */
-.plist{flex:1;min-height:0;display:flex;flex-direction:column;
+.plist{flex:1;min-width:0;height:100%;min-height:0;display:flex;flex-direction:column;
   border:1px solid var(--map-line,#e6dfcb);border-radius:10px;background:#fff;
   box-shadow:0 1px 3px rgba(20,24,34,.07);overflow:hidden;}
 .pltitle{flex:none;padding:8px 11px;font-size:9.5px;font-weight:700;letter-spacing:.03em;
@@ -100,9 +101,15 @@
   font-family:inherit;font-size:10px;font-weight:600;color:#8b8474;padding:7px 0;}
 .plmore:hover{background:#f4efe2;color:#4a3c14;}
 .plempty{padding:16px 12px;font-size:11px;color:#b5afa0;line-height:1.7;}
+@media (max-width:980px){
+  .mapside{width:264px;}
+  .layers{width:120px;}
+}
 @media (max-width:760px){
   .maprow{flex-direction:column;height:auto;}
   .mapbox{height:clamp(320px,46vh,460px);}
+  .mapside{width:auto;flex-direction:column;}
+  .layers{width:100%;align-self:auto;}
   .plist{max-height:200px;}
   .mapside{width:auto;padding:10px 12px 12px;}
   .layers{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;}
