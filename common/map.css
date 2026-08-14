@@ -38,9 +38,9 @@
 .maprow.tall .mapbox{height:clamp(360px,52vh,560px);}
 .maprow.tall .plbody{max-height:none;}
 /* 곁상자 : 왼쪽 = 레이어·바탕지도, 오른쪽 = 등록된 장소 */
-.mapside{flex:none;width:352px;height:100%;padding:12px 12px 12px 0;background:#fff;
+.mapside{flex:none;width:352px;height:100%;padding:10px 10px 10px 0;background:#fff;
   display:flex;flex-direction:row;align-items:stretch;gap:10px;min-height:0;}
-.layers{flex:none;width:152px;align-self:flex-start;display:flex;flex-direction:column;gap:1px;padding:10px 11px;
+.layers{flex:none;width:152px;align-self:stretch;display:flex;flex-direction:column;gap:1px;padding:10px 11px;
   border-radius:10px;background:#fff;border:1px solid var(--map-line,#e6dfcb);
   box-shadow:0 1px 3px rgba(20,24,34,.07);}
 .lytitle{font-size:9.5px;font-weight:700;letter-spacing:.03em;color:#a8a291;margin-bottom:3px;
@@ -74,8 +74,8 @@
 .lyall{margin-top:5px;padding:4px 5px;border-radius:5px;border:1px solid #e5ddc9;
   background:#fff;font-family:inherit;font-size:9.5px;color:#a09a86;cursor:pointer;width:100%;}
 .lyall:hover{background:#f7f4ec;}
-.lybase{margin-top:9px;}
-.lysel{margin-top:1px;padding:4px 5px;border-radius:5px;border:1px solid #8f8773;
+.lylayer{margin-top:11px;}
+.lysel{margin-top:1px;margin-bottom:2px;padding:4px 5px;border-radius:5px;border:1px solid #8f8773;
   background:#fff;font-family:inherit;font-size:10.5px;color:#2f2a1d;cursor:pointer;width:100%;}
 .lysel:focus{outline:0;border-color:#4a4438;}
 /* 등록된 장소 목록 */
