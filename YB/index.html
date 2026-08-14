@@ -89,9 +89,14 @@
   .akamon::before,.akamon::after{content:"";position:absolute;left:0;right:0;height:26px;
     pointer-events:none;z-index:1;}
   .akamon::before{top:0;background:linear-gradient(to bottom,
-    var(--akamon-bg,#eef5ef) 0%, rgba(238,245,239,.55) 45%, rgba(238,245,239,0) 100%);}
+    var(--akamon-bg,#fff) 0%, rgba(255,255,255,.5) 45%, rgba(255,255,255,0) 100%);}
   .akamon::after{bottom:0;background:linear-gradient(to top,
-    var(--akamon-bg,#eef5ef) 0%, rgba(238,245,239,.55) 45%, rgba(238,245,239,0) 100%);}
+    var(--akamon-bg,#fff) 0%, rgba(255,255,255,.5) 45%, rgba(255,255,255,0) 100%);}
+  /* 연초록 바탕 구간(학생회)에서는 그 색으로 */
+  .block.tint .akamon::before{background:linear-gradient(to bottom,
+    #eef5ef 0%, rgba(238,245,239,.55) 45%, rgba(238,245,239,0) 100%);}
+  .block.tint .akamon::after{background:linear-gradient(to top,
+    #eef5ef 0%, rgba(238,245,239,.55) 45%, rgba(238,245,239,0) 100%);}
   .akamon .cap{position:absolute;left:0;right:0;bottom:0;line-height:1.5;z-index:2;
     padding:34px 22px 12px;font-size:12px;letter-spacing:.24em;color:rgba(255,255,255,.9);
     background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));text-align:right;}
@@ -430,6 +435,10 @@
 <section class="block" id="school">
   <div class="container">
     <div class="sec-head"><div class="t"><span class="en">Campus Guide</span><h2>학교안내</h2></div></div>
+    <div class="akamon">
+      <img src="../images/akamon_wide.jpg" alt="도쿄대학 아카몬(赤門)">
+      <div class="cap">赤門 · 도쿄대학 혼고 캠퍼스</div>
+    </div>
     <div class="school-grid">
       <a class="scard" href="https://www.u-tokyo.ac.jp/" target="_blank" rel="noopener">
         <span class="no">01</span><h3>학교 소개</h3>
@@ -541,8 +550,8 @@
   <div class="container">
     <div class="sec-head"><div class="t"><span class="en">Student Council</span><h2>학생회</h2></div></div>
     <div class="akamon">
-      <img src="../images/akamon_wide.jpg" alt="도쿄대학 아카몬(赤門) — Korean Student Association at the University of Tokyo">
-      <div class="cap">赤門 · 도쿄대학 한국인학생회</div>
+      <img src="../images/yb_avenue.jpg" alt="도쿄대학 혼고 캠퍼스 은행나무길">
+      <div class="cap">도쿄대학 한국인학생회 · 東京大学韓国人学生会</div>
     </div>
     <div class="council">
       <div class="cbox">
