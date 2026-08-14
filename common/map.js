@@ -20,9 +20,9 @@ export const CAT_INFO = {
     desc: "동문·재학생이 추천하는 <b>도쿄의 맛집</b>입니다. 표시를 누르면 주소와 그곳의 특징, 얽힌 추억이 열립니다." },
   cafe:   { shape: "star", mark: "노란 별",
     desc: "공부하기 좋은 곳, 이야기 나누기 좋은 곳 — <b>도쿄의 까페</b>를 모았습니다." },
-  memory: { shape: "dot",  mark: "보라 동그라미",
+  memory: { shape: "dot",  mark: "분홍 동그라미",
     desc: "유학 시절 자주 찾던 곳, 잊지 못할 일이 있었던 곳 — <b>추억의 장소</b>입니다." },
-  arch:   { shape: "dot",  mark: "짙은 초록 동그라미",
+  arch:   { shape: "dot",  mark: "주황 동그라미",
     desc: "<b>유명 건축가가 지은 멋진 장소</b>를 찾아가 보세요. 설계자와 특징을 함께 적어주시면 좋습니다." },
 };
 
