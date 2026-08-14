@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=47">
+<link rel="stylesheet" href="/common/map.css?v=48">
 <style>
   :root{ --map-accent:#1e5230; --map-line:#cfe3d4; --map-soft:#e4f3e7; --map-tip:#f7fbf7; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -17,13 +17,13 @@
   /* 배너 — 노을 하늘 (푸른 하늘에 분홍 구름결, 지평선 가까이 주황빛) */
   .banner{position:relative;overflow:hidden;padding-bottom:0;
     background:
-      radial-gradient(58%% 11px at 28%% 30%%, rgba(232,178,150,.50), transparent 72%%),
-      radial-gradient(42%% 8px  at 55%% 24%%, rgba(220,170,150,.42), transparent 72%%),
-      radial-gradient(48%% 9px  at 74%% 36%%, rgba(236,190,160,.45), transparent 72%%),
-      radial-gradient(38%% 7px  at 18%% 44%%, rgba(228,196,172,.42), transparent 72%%),
-      radial-gradient(52%% 10px at 62%% 47%%, rgba(232,184,150,.40), transparent 72%%),
-      radial-gradient(34%% 6px  at 40%% 55%%, rgba(234,202,176,.38), transparent 74%%),
-      linear-gradient(180deg,#0d2440 0%%,#14395c 15%%,#1f5a76 30%%,#316f88 44%%,#5d8f9c 56%%,#93a396 66%%,#c2a68c 76%%,#e0aa78 85%%,#f2ca97 93%%,#fae4bf 100%%);}
+      radial-gradient(58% 11px at 28% 30%, rgba(232,178,150,.50), transparent 72%),
+      radial-gradient(42% 8px  at 55% 24%, rgba(220,170,150,.42), transparent 72%),
+      radial-gradient(48% 9px  at 74% 36%, rgba(236,190,160,.45), transparent 72%),
+      radial-gradient(38% 7px  at 18% 44%, rgba(228,196,172,.42), transparent 72%),
+      radial-gradient(52% 10px at 62% 47%, rgba(232,184,150,.40), transparent 72%),
+      radial-gradient(34% 6px  at 40% 55%, rgba(234,202,176,.38), transparent 74%),
+      linear-gradient(180deg,#0d2440 0%,#14395c 15%,#1f5a76 30%,#316f88 44%,#5d8f9c 56%,#93a396 66%,#c2a68c 76%,#e0aa78 85%,#f2ca97 93%,#fae4bf 100%);}
   /* 지평선 가까이 지는 해 */
   .banner::before{content:"";position:absolute;left:66%;bottom:52px;width:210px;height:120px;
     transform:translateX(-50%);z-index:1;
@@ -128,7 +128,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=47";
+import { initMap } from "/common/map.js?v=48";
 applyNav("YB", "캠퍼스 지도 | 도쿄대학 한국인학생회");
 initMap("YB");
 </script>
