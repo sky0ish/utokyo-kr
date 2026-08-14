@@ -73,6 +73,10 @@
   .bulk #selCnt{font-size:13px;color:#5c563f;font-weight:500;margin-right:4px;}
   th input[type=checkbox],td input[type=checkbox]{width:16px;height:16px;cursor:pointer;margin:0;}
   @media (max-width:760px){ table{font-size:12.5px;} th,td{padding:7px 6px;} }
+  .rnote{margin-top:4px;font-size:11px;color:#8b8474;line-height:1.5;word-break:keep-all;}
+  .rnote a{color:#2f6ea8;}
+  td.acts{white-space:nowrap;}
+  td.acts .btn{margin:1px 0;}
 </style>
 </head>
 <body>
@@ -192,7 +196,7 @@ async function start() {
 
   async function load() {
     // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
-    const COLS = "id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at";
+    const COLS = "id,email,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade";
     let { data, error } = await sb.from("profiles")
       .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
     if (error && /welcome_sent_at/.test(error.message || "")) {
@@ -221,6 +225,13 @@ async function start() {
     f === "unsent" ? !r.welcome_sent_at :
     r.member_type === f);
 
+  const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
+  function gradeChip(r) {
+    const g = r.is_admin ? "admin" : (r.grade || "guest");
+    const [t, c] = GRADE[g] || GRADE.guest;
+    return `<span class="chip ${c}">${t}</span>`;
+  }
+
   function render() {
     document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.f === filter));
     const list = pick(filter);
@@ -239,7 +250,7 @@ async function start() {
     }
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
-      "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>상태</th><th>안내메일</th><th></th></tr></thead><tbody>" +
+      "<th>이름</th><th>이메일</th><th>구분</th><th>전공 · 연도</th><th>가입일</th><th>등급</th><th>상태</th><th></th></tr></thead><tbody>" +
       list.map(r => `<tr data-id="${r.id}">
         <td><input type="checkbox" class="chk"></td>
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
@@ -247,12 +258,46 @@ async function start() {
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
+        <td class="gcell">${gradeChip(r)}</td>
         <td>${r.approved ? '<span class="chip ok">승인</span>' : '<span class="chip wait">대기</span>'}</td>
-        <td>${r.welcome_sent_at
-              ? `<span class="chip ok">보냄</span><br><small style="color:#a09a86;font-size:11px;">${r.welcome_sent_at.slice(0,10)}</small>`
-              : '<span class="chip wait">미발송</span>'}</td>
-        <td><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button></td>
+        <td class="acts"><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button>
+            <button class="btn sm chk2">회원여부 확인</button></td>
       </tr>`).join("") + "</tbody>";
+
+    // ── 동문 명단에서 회원 여부 확인 ──
+    t.querySelectorAll(".chk2").forEach(b => b.addEventListener("click", async () => {
+      const tr = b.closest("tr");
+      const r = rows.find(x => x.id === tr.dataset.id);
+      if (!r || !r.name) { alert("이름이 없는 회원입니다."); return; }
+      b.disabled = true; b.textContent = "확인 중…";
+      const { data, error } = await sb.rpc("roster_check", { q: r.name });
+      b.disabled = false; b.textContent = "회원여부 확인";
+      if (error) {
+        alert("확인 실패: " + error.message +
+              " — board/roster_import.sql 을 실행하셨는지 확인해주세요.");
+        return;
+      }
+      const hits = data || [];
+      const cell = tr.querySelector(".gcell");
+      if (!hits.length) {
+        cell.innerHTML = gradeChip({ grade: "guest" }) +
+          '<div class="rnote">동문 명단에 없음</div>';
+        await setGrade(r, "guest");
+        return;
+      }
+      const h = hits[0];
+      cell.innerHTML = gradeChip({ grade: "member" }) +
+        `<div class="rnote">${esc(h.department || "")} ${esc(h.degree_year || "")}<br>` +
+        `${esc(h.belong || "")}${h.email ? `<br><a href="mailto:${esc(h.email)}">${esc(h.email)}</a>` : ""}` +
+        (hits.length > 1 ? `<br>동명이인 ${hits.length}명` : "") + "</div>";
+      await setGrade(r, "member");
+    }));
+
+    async function setGrade(r, g) {
+      if (r.is_admin || r.grade === g) return;
+      const { error } = await sb.from("profiles").update({ grade: g }).eq("id", r.id);
+      if (!error) r.grade = g;
+    }
 
     t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
       const id = b.closest("tr").dataset.id;
