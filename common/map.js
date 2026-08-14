@@ -12,6 +12,20 @@ export const CATS = [
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 
+/** 분류별 지도 표시 모양과 안내 문구 */
+export const CAT_INFO = {
+  utokyo: { shape: "dot",  mark: "파란 동그라미",
+    desc: "도쿄대학 <b>혼고 · 고마바 · 가시와</b> 세 캠퍼스입니다. 주소와 가는 길, 가까운 역을 확인하실 수 있습니다." },
+  food:   { shape: "star", mark: "빨간 별",
+    desc: "동문·재학생이 추천하는 <b>도쿄의 맛집</b>입니다. 표시를 누르면 주소와 그곳의 특징, 얽힌 추억이 열립니다." },
+  cafe:   { shape: "star", mark: "노란 별",
+    desc: "공부하기 좋은 곳, 이야기 나누기 좋은 곳 — <b>도쿄의 까페</b>를 모았습니다." },
+  memory: { shape: "dot",  mark: "보라 동그라미",
+    desc: "유학 시절 자주 찾던 곳, 잊지 못할 일이 있었던 곳 — <b>추억의 장소</b>입니다." },
+  arch:   { shape: "dot",  mark: "짙은 초록 동그라미",
+    desc: "<b>유명 건축가가 지은 멋진 장소</b>를 찾아가 보세요. 설계자와 특징을 함께 적어주시면 좋습니다." },
+};
+
 /** 도쿄대학 분류에 기본으로 들어 있는 세 캠퍼스 */
 export const CAMPUS = [
   { k: "hongo", name: "혼고 캠퍼스 (本郷)", tag: "본부",
@@ -43,6 +57,7 @@ const esc = s => String(s == null ? "" : s)
 
 const SHELL = `
   <div class="mtabs" id="mtabs"></div>
+  <div class="catdesc" id="catDesc"></div>
   <div class="mapwrap">
     <div class="mapbox"><div id="cmap"></div></div>
     <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소.
@@ -143,6 +158,11 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       history.replaceState(null, "", "?cat=" + cur);
       tabHtml(); draw();
     }));
+    const info = CAT_INFO[cur] || {};
+    document.getElementById("catDesc").innerHTML =
+      `<span class="cdmark c-${cur} ${info.shape || "dot"}"><i></i></span>` +
+      `<span class="cdtx"><b class="cdname">${CAT_NAME[cur]}</b> — ${info.desc || ""}` +
+      `<em>지도 위 ${info.mark || ""} 표시를 누르면 자세한 내용이 열립니다.</em></span>`;
     const sel = document.getElementById("apCat");
     sel.innerHTML = CATS.map(([k, v]) =>
       `<option value="${k}"${k === cur ? " selected" : ""}>${v}</option>`).join("");
@@ -177,11 +197,13 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         pts.push([p.lat, p.lng]);
         L.marker([p.lat, p.lng], {
           icon: L.divIcon({ className: "", iconSize: [0, 0],
-            html: `<div class="cmark" data-i="${i}"><i></i><b>${esc(p.name.split(" (")[0])}</b></div>` }),
+            html: `<div class="cmark c-${p.category} ${(CAT_INFO[p.category] || {}).shape || "dot"}" data-i="${i}">`
+                + `<i></i><b>${esc(p.name.split(" (")[0])}</b></div>` }),
         }).addTo(layer).on("click", () => open(i));
       });
-      if (pts.length === 1) map.setView(pts[0], 16);
-      else if (pts.length) map.fitBounds(pts, { padding: [50, 50], maxZoom: 15 });
+      if (!pts.length) map.setView([35.6895, 139.7], 12);          // 장소가 아직 없으면 도쿄 전경
+      else if (pts.length === 1) map.setView(pts[0], 16);
+      else map.fitBounds(pts, { padding: [50, 50], maxZoom: 15 });
       setTimeout(() => map.invalidateSize(), 100);
     });
   }

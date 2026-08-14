@@ -10,6 +10,16 @@
 .mtabs a.on{background:var(--map-soft,#fdf1d3);border-color:var(--map-accent,#c9a24b);
   color:var(--map-accent,#4a3c14);}
 
+/* 분류 설명 */
+.catdesc{display:flex;align-items:flex-start;gap:13px;margin:0 0 16px;padding:14px 18px;
+  background:#fff;border:1px solid var(--map-line,#e6dfcb);border-radius:11px;}
+.cdmark{flex:none;display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;margin-top:2px;}
+.cdtx{font-size:14.5px;color:#4a463a;line-height:1.75;word-break:keep-all;}
+.cdtx b{font-weight:600;color:#2f2a1d;}
+.cdname{font-size:15.5px;color:var(--map-accent,#4a3c14) !important;}
+.cdtx em{display:block;margin-top:4px;font-style:normal;font-size:12.5px;color:#a09a86;}
+
 /* 지도 */
 .mapwrap{background:#fff;border:1px solid var(--map-line,#e6dfcb);border-radius:12px;
   overflow:hidden;box-shadow:0 2px 8px rgba(60,50,20,.07);}
@@ -17,11 +27,22 @@
 #cmap{width:100%;height:100%;}
 #cmap .leaflet-container{font-family:inherit;}
 .cmark{display:flex;flex-direction:column;align-items:center;line-height:1.2;cursor:pointer;}
-.cmark i{width:16px;height:16px;border-radius:50%;background:var(--map-accent,#c9a24b);
-  border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:.15s;}
-.cmark b{margin-top:4px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,.95);
+/* 표시 모양 — 동그라미 · 별 */
+.cmark i,.cdmark i{display:block;width:16px;height:16px;border-radius:50%;
+  background:var(--map-accent,#c9a24b);border:3px solid #fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.35);transition:.15s;}
+.cmark.star i,.cdmark.star i{width:26px;height:26px;border:none;border-radius:0;
+  box-shadow:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+/* 분류별 색 */
+.cmark.c-utokyo i,.cdmark.c-utokyo i{background:#2a5fa8;}
+.cmark.c-food   i,.cdmark.c-food   i{background:#d63a2f;}
+.cmark.c-cafe   i,.cdmark.c-cafe   i{background:#e8b53a;}
+.cmark.c-memory i,.cdmark.c-memory i{background:#7a4fa3;}
+.cmark.c-arch   i,.cdmark.c-arch   i{background:#1f5136;}
+.cmark b{margin-top:3px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,.95);
   border:1px solid var(--map-line,#e6dfcb);font-size:11.5px;font-weight:600;
-  color:var(--map-accent,#4a3c14);white-space:nowrap;}
+  color:#2f2a1d;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.18);}
 .cmark:hover i{transform:scale(1.25);}
 .maptip{padding:11px 22px;font-size:12px;color:#a8a291;background:var(--map-tip,#faf7ef);
   border-top:1px solid var(--map-line,#eee7d6);}
