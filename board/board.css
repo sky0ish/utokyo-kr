@@ -97,6 +97,13 @@ body.yb .mpills .fb:hover{border-color:#bfe8c2;color:#bfe8c2;}
 body.yb .topbar{background:#132c1c;}
 body.yb .topbar a:hover{color:#bfe8c2;}
 body.yb .banner{background:linear-gradient(rgba(12,32,18,.72),rgba(12,32,18,.62)),url('/images/green_avenue.jpg') center 58%/cover;}
+/* 갤러리 화면은 벚꽃 야경 */
+body.yb.gal .banner{background:
+  linear-gradient(rgba(30,12,44,.52),rgba(20,10,34,.66)),
+  url('/images/yb_gallery_sakura.jpg') center 50%/cover;}
+body.yb.gal .banner .en{color:#f6c9e8;}
+body.yb.gal .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.7);}
+
 /* MAP 화면은 도쿄 야경 */
 body.yb.mapbg .banner{background:
   linear-gradient(rgba(8,20,38,.58),rgba(8,22,30,.70)),
