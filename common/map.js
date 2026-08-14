@@ -56,10 +56,16 @@ const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 const SHELL = `
-  <div class="mtabs" id="mtabs"></div>
   <div class="catdesc" id="catDesc"></div>
   <div class="mapwrap">
-    <div class="mapbox"><div id="cmap"></div></div>
+    <div class="mapbox">
+      <div id="cmap"></div>
+      <div class="layers" id="mlayers">
+        <span class="lytitle">지도에 보이기</span>
+        <span class="lyboxes" id="lyBoxes"></span>
+        <button type="button" class="lyall" id="lyAll">전체 켜기 / 끄기</button>
+      </div>
+    </div>
     <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소.
       지도 위 <b>표시를 누르면</b> 그 장소 안내가 크게 열립니다.</div>
   </div>
@@ -130,7 +136,6 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   let cur = new URLSearchParams(location.search).get("cat");
   if (!CAT_NAME[cur]) cur = "utokyo";
 
-  const tabs = document.getElementById("mtabs");
   const map = L.map("cmap", { scrollWheelZoom: true, zoomControl: true })
                .setView([35.6895, 139.7], 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -145,18 +150,31 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   const isAdmin = !!(me && me.is_admin);
   document.getElementById("addplace").classList.toggle("on", canAdd);
 
-  let places = [];        // 지금 분류의 장소들
+  let places = [];                          // 지도에 그려진 장소들
+  const shown = new Set(CATS.map(([k]) => k));   // 지도에 보이는 분류 (처음엔 모두)
   let layer = L.layerGroup().addTo(map);
 
+  // ── 레이어 체크박스 ──
+  const boxes = document.getElementById("lyBoxes");
+  boxes.innerHTML = CATS.map(([k, v]) =>
+    `<label class="ly c-${k}"><input type="checkbox" data-c="${k}" checked>` +
+    `<span class="lydot ${(CAT_INFO[k] || {}).shape || "dot"}"><i></i></span>${v}</label>`).join("");
+  boxes.querySelectorAll("input").forEach(c => c.addEventListener("change", () => {
+    c.checked ? shown.add(c.dataset.c) : shown.delete(c.dataset.c);
+    c.closest(".ly").classList.toggle("off", !c.checked);
+    draw();
+  }));
+  document.getElementById("lyAll").addEventListener("click", () => {
+    const on = shown.size < CATS.length;                 // 하나라도 꺼져 있으면 전체 켜기
+    boxes.querySelectorAll("input").forEach(c => {
+      c.checked = on;
+      c.closest(".ly").classList.toggle("off", !on);
+      on ? shown.add(c.dataset.c) : shown.delete(c.dataset.c);
+    });
+    draw();
+  });
+
   function tabHtml() {
-    tabs.innerHTML = CATS.map(([k, v]) =>
-      `<a href="?cat=${k}" data-c="${k}" class="c-${k}${k === cur ? " on" : ""}">${v}</a>`).join("");
-    tabs.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
-      e.preventDefault();
-      cur = a.dataset.c;
-      history.replaceState(null, "", "?cat=" + cur);
-      tabHtml(); draw();
-    }));
     const info = CAT_INFO[cur] || {};
     document.getElementById("catDesc").innerHTML =
       `<span class="cdmark c-${cur} ${info.shape || "dot"}"><i></i></span>` +
@@ -175,17 +193,20 @@ export async function initMap(org = "OB", mountId = "mapapp") {
   }
 
   async function load() {
-    const base = cur === "utokyo"
-      ? CAMPUS.map((c, i) => ({ id: "campus-" + c.k, builtin: true, category: "utokyo",
+    const list = [...shown];
+    const base = shown.has("utokyo")
+      ? CAMPUS.map(c => ({ id: "campus-" + c.k, builtin: true, category: "utokyo",
           name: c.name, address: c.address, jp: c.jp, note: "", ways: c.ways,
           lat: c.lat, lng: c.lng }))
       : [];
     let rows = [];
-    try {
-      const r = await sb.from("map_places").select("*").eq("category", cur)
-                        .order("created_at", { ascending: false });
-      rows = r.data || [];
-    } catch (e) { rows = []; }
+    if (list.length) {
+      try {
+        const r = await sb.from("map_places").select("*").in("category", list)
+                          .order("created_at", { ascending: false });
+        rows = r.data || [];
+      } catch (e) { rows = []; }
+    }
     places = base.concat(rows);
   }
 
@@ -351,6 +372,11 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     document.getElementById("apImgMsg").innerHTML =
       "여기에 <b>붙여넣기(Ctrl+V)</b> 하거나, 사진을 <b>끌어다 놓으세요</b>. 눌러서 고르셔도 됩니다.";
     msg.textContent = `「${name}」 을 지도에 올렸습니다.`;
+    if (!shown.has(cur)) {                       // 꺼둔 분류에 올렸으면 켜서 보여준다
+      shown.add(cur);
+      const c = boxes.querySelector(`input[data-c="${cur}"]`);
+      if (c) { c.checked = true; c.closest(".ly").classList.remove("off"); }
+    }
     draw();
   });
 
