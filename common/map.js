@@ -488,6 +488,18 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       const hit = await one(q);
       if (hit) return hit;
     }
+    // 그래도 없으면 자동완성 검색으로 한 번 더
+    try {
+      const u = "https://photon.komoot.io/api/?limit=1&lang=en&lat=35.68&lon=139.76"
+              + "&location_bias_scale=0.6&q=" + encodeURIComponent(base);
+      const j = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
+      const ft = (j.features || [])[0];
+      if (ft) {
+        const c = ft.geometry.coordinates;
+        return { lat: c[1], lon: c[0], display_name: base, extratags: {},
+                 class: ft.properties.osm_key, type: ft.properties.osm_value, address: {} };
+      }
+    } catch (e) {}
     return null;
   }
 
@@ -620,6 +632,32 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       return out.filter(x => x.ja || (x.lat && x.lon));
     }
 
+    /** Photon — 일부만 쳐도 찾아주는 자동완성 검색 */
+    async function photon(q) {
+      try {
+        const u = "https://photon.komoot.io/api/?limit=8&lang=en"
+                + "&lat=35.68&lon=139.76&location_bias_scale=0.6"
+                + "&q=" + encodeURIComponent(q);
+        const j = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
+        return (j.features || []).map(ft => {
+          const p = ft.properties || {};
+          const c = (ft.geometry && ft.geometry.coordinates) || [];
+          const line = [p.housenumber, p.street, p.district, p.city, p.state, p.country]
+                         .filter(Boolean).join(", ");
+          return {
+            lat: c[1], lon: c[0],
+            name: p.name || p.street || "",
+            display_name: [p.name, line].filter(Boolean).join(", "),
+            class: p.osm_key, type: p.osm_value,
+            address: { suburb: p.district, city: p.city },
+            namedetails: { name: p.name },
+            extratags: {},
+            _photon: true,
+          };
+        }).filter(x => x.lat && x.lon && x.display_name);
+      } catch (e) { return []; }
+    }
+
     async function nomi(q) {
       const u = "https://nominatim.openstreetmap.org/search?format=json&limit=6"
               + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
@@ -633,7 +671,8 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       lastQ = q;
       sug.innerHTML = '<div class="apsmsg">주소를 찾는 중…</div>';
       sug.classList.add("on");
-      let list = await nomi(q);
+      let list = await photon(q);            // 일부만 쳐도 찾아주는 검색
+      if (!list.length) list = await nomi(q);  // 그래도 없으면 정밀 검색
       // 한글로 적으셨는데 못 찾으면 위키백과로 일본어 이름을 찾아 다시 검색합니다
       if ((!list || !list.length) && /[가-힣]/.test(q)) {
         sug.innerHTML = '<div class="apsmsg">한국어 이름으로 다시 찾는 중…</div>';
@@ -677,9 +716,18 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         picked = { lat: parseFloat(h.lat), lon: parseFloat(h.lon) };
         // 「이곳의 특징」을 채워드립니다 (고치셔도 됩니다)
         const noteEl = document.getElementById("apNote");
-        const kind = kindOf(h);
+        let kind = kindOf(h);
         const already = noteEl.value.trim();
-        const tags = h.extratags || {};
+        let tags = h.extratags || {};
+        if (h._photon) {                      // 자세한 정보를 한 번 더 확인
+          try {
+            const ru = "https://nominatim.openstreetmap.org/reverse?format=json&zoom=18"
+                     + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
+                     + `&lat=${h.lat}&lon=${h.lon}`;
+            const rv = await fetch(ru, { headers: { Accept: "application/json" } }).then(r => r.json());
+            if (rv && !rv.error) { tags = rv.extratags || {}; kind = kindOf(rv) || kind; }
+          } catch (e) {}
+        }
         const osmDesc = tags["description:ko"] || tags["description"] || "";
         if (!already) noteEl.value = osmDesc || kind;      // 우선 종류만이라도 넣어두고
         hide();
