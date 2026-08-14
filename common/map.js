@@ -744,6 +744,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     draw();
   });
 
+  window.addEventListener("resize", () => setTimeout(() => map.invalidateSize(), 120));
   tabHtml();
   draw();
 }
