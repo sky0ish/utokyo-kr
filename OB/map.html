@@ -9,32 +9,47 @@
 <link rel="stylesheet" href="/board/board.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/common/map.css?v=36">
+<link rel="stylesheet" href="/common/map.css?v=37">
 <style>
   :root{ --map-accent:#8a6d2b; --map-line:#e6dfcb; --map-soft:#fdf1d3; --map-tip:#faf7ef; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
-  /* 배너 — 사진 대신 도쿄 스카이라인을 바탕에 */
-  .banner{position:relative;background:linear-gradient(180deg,#fbf9f3 0%,#f2ecdd 100%);color:#33373e;
-    border-bottom:1px solid #ece5d6;overflow:hidden;}
-  .banner .binner{position:relative;z-index:2;max-width:1180px;margin:0 auto;
-    padding:26px 24px 0;}
+  /* 배너 — 노을 지는 도쿄 스카이라인 */
+  .banner{position:relative;background:linear-gradient(180deg,#2b2350 0%,#5b3a63 32%,#a8536a 58%,#e08356 78%,#f6b56a 100%);color:#241f33;
+    border-bottom:1px solid #3a2f4a;overflow:hidden;}
+  /* 지는 해 */
+  .banner::before{content:"";position:absolute;left:72%;bottom:34px;width:132px;height:132px;
+    transform:translateX(-50%);border-radius:50%;z-index:1;
+    background:radial-gradient(circle,#ffd98a 0%,#ffd98a 42%,rgba(255,196,110,.55) 58%,transparent 72%);
+    filter:blur(.4px);}
+  /* 옅은 구름결 */
+  .banner::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,0) 55%,rgba(255,255,255,.10) 70%,rgba(255,255,255,0) 78%),
+      linear-gradient(180deg,rgba(255,255,255,0) 62%,rgba(255,255,255,.07) 68%,rgba(255,255,255,0) 73%);}
+  .banner .binner{position:relative;z-index:3;max-width:1180px;margin:0 auto;
+    padding:30px 24px 0;}
   .banner .en{font-family:Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.14em;
-    color:#a98a3f;display:block;margin-bottom:3px;}
+    color:#ffd9a0;display:block;margin-bottom:3px;text-shadow:0 1px 8px rgba(0,0,0,.35);}
   .banner h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;
-    color:#2f333a;text-shadow:none;margin:0;}
+    color:#fff7ea;text-shadow:0 2px 14px rgba(0,0,0,.45);margin:0;}
   /* 아래쪽 : 왼쪽 스카이라인 — 선 — 오른쪽 TOKYO */
-  .skyrow{position:relative;z-index:2;max-width:1180px;margin:0 auto;
-    padding:0 24px;display:flex;align-items:flex-end;gap:16px;color:#33373e;margin-top:-14px;}
-  .ssky{flex:none;height:62px;width:auto;display:block;}
-  .ssline{flex:1;height:3px;background:currentColor;border-radius:2px;}
+  .skyrow{position:relative;z-index:3;max-width:1180px;margin:0 auto;
+    padding:0 24px;display:flex;align-items:flex-end;gap:16px;
+    color:#241f33;margin-top:-10px;}
+  .ssky{flex:none;height:66px;width:auto;display:block;
+    filter:drop-shadow(0 -1px 2px rgba(0,0,0,.25));}
+  .ssline{flex:1;height:3px;background:currentColor;border-radius:2px;
+    box-shadow:0 -1px 2px rgba(0,0,0,.2);}
   .ssword{flex:none;font-family:Georgia,serif;font-size:22px;font-weight:700;
-    letter-spacing:.30em;line-height:1;padding-bottom:2px;}
+    letter-spacing:.30em;line-height:1;padding-bottom:2px;
+    text-shadow:0 1px 6px rgba(255,255,255,.25);}
   @media (max-width:680px){
-    .banner .binner{padding:20px 16px 0;}
+    .banner::before{left:70%;bottom:26px;width:92px;height:92px;}
+    .banner .binner{padding:22px 16px 0;}
     .banner h1{font-size:21px;}
-    .skyrow{padding:0 16px;gap:10px;margin-top:-8px;}
-    .ssky{height:42px;} .ssword{font-size:15px;letter-spacing:.22em;} .ssline{height:2px;}
+    .skyrow{padding:0 16px;gap:10px;margin-top:-6px;}
+    .ssky{height:44px;} .ssword{font-size:15px;letter-spacing:.22em;} .ssline{height:2px;}
   }
   .mapnote{margin:26px 0 22px;font-size:14.5px;color:#5c563f;line-height:1.85;word-break:keep-all;}
   .mapnote b{color:#8a6d2b;font-weight:600;}
@@ -113,7 +128,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
 import { applyNav } from "/board/nav.js?v=3";
-import { initMap } from "/common/map.js?v=36";
+import { initMap } from "/common/map.js?v=37";
 applyNav("OB", "캠퍼스 지도 | 재한 도쿄대학 총동문회");
 initMap("OB");
 </script>
