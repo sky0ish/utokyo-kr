@@ -74,6 +74,45 @@ export const BASEMAPS = [
     sd: false, att: 'Tiles &copy; Esri' },
 ];
 
+/** OpenStreetMap 이 알려주는 장소 종류를 우리말 한 마디로 */
+const KIND = {
+  cafe:"카페", coffee_shop:"카페", restaurant:"음식점", fast_food:"간이음식점", bar:"바",
+  pub:"펍", bakery:"빵집", confectionery:"과자점", ice_cream:"아이스크림", food_court:"푸드코트",
+  museum:"박물관", gallery:"미술관", artwork:"예술작품", theatre:"극장", cinema:"영화관",
+  library:"도서관", university:"대학", college:"단과대", school:"학교", research_institute:"연구소",
+  park:"공원", garden:"정원", viewpoint:"전망대", attraction:"명소", memorial:"기념물",
+  monument:"기념비", castle:"성", ruins:"유적", temple:"절", shrine:"신사", place_of_worship:"사찰·교회",
+  station:"역", subway:"지하철역", bus_stop:"버스정류장", hotel:"호텔", hostel:"게스트하우스",
+  department_store:"백화점", supermarket:"마트", convenience:"편의점", books:"서점",
+  clothes:"옷가게", bank:"은행", hospital:"병원", pharmacy:"약국", sports_centre:"체육관",
+  stadium:"경기장", zoo:"동물원", aquarium:"수족관", bridge:"다리", tower:"타워",
+  apartments:"아파트", house:"주택", commercial:"상업건물", public:"공공건물",
+};
+const CUISINE = {
+  ramen:"라멘", sushi:"스시", japanese:"일식", korean:"한식", chinese:"중식", italian:"이탈리안",
+  french:"프렌치", curry:"카레", udon:"우동", soba:"소바", yakiniku:"야키니쿠", izakaya:"이자카야",
+  tonkatsu:"돈카츠", coffee_shop:"커피", burger:"버거", pizza:"피자", thai:"태국식", indian:"인도식",
+};
+
+/** 주소 후보에서 「이곳의 특징」에 넣을 짧은 설명을 만든다 */
+function kindOf(h) {
+  const bits = [];
+  const t = (h.type || "").toLowerCase();
+  const c = (h.class || "").toLowerCase();
+  if (KIND[t]) bits.push(KIND[t]);
+  else if (KIND[c]) bits.push(KIND[c]);
+  const ex = h.extratags || {};
+  (ex.cuisine || "").split(";").forEach(x => {
+    const k = CUISINE[x.trim().toLowerCase()];
+    if (k && !bits.includes(k)) bits.push(k);
+  });
+  if (ex["brand"]) bits.push(ex["brand"]);
+  const addr = h.address || {};
+  const town = addr.suburb || addr.neighbourhood || addr.city_district || addr.town || addr.city;
+  if (town && bits.length) bits.push(town);
+  return bits.slice(0, 3).join(" · ");
+}
+
 const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -108,11 +147,12 @@ const SHELL = `
       <input type="text" id="apAddr" maxlength="160" placeholder="주소 * (예: 東京都文京区本郷5-25-16)">
     </div>
     <div class="apfields">
-      <input type="text" id="apNote" maxlength="200" placeholder="이곳의 특징 (예: 창가에서 아카몬이 보입니다)">
+      <input type="text" id="apNote" maxlength="200"
+             placeholder="이곳의 특징 — 주소를 고르면 자동으로 채워집니다 (고치셔도 됩니다)">
     </div>
     <div class="apfields">
       <textarea id="apMemo" maxlength="600" rows="2"
-        placeholder="이곳에 얽힌 추억 (선택) — 언제, 누구와, 무엇을 하셨는지 편하게 적어주세요.&#10;예: 첫사랑을 만난 장소, 아르바이트하던 곳, 논문 쓰며 밤새우던 자리, 유학 첫날 밥 먹은 집"></textarea>
+        placeholder="예: 첫사랑을 만난 장소 / 아르바이트하던 곳 / 논문 쓰며 밤새우던 자리 / 유학 첫날 밥 먹은 집  (안 적으셔도 됩니다)"></textarea>
     </div>
     <div class="apfields">
       <label class="apdrop" id="apDrop">
@@ -342,7 +382,8 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       let list = [];
       try {
         const u = "https://nominatim.openstreetmap.org/search?format=json&limit=6"
-                + "&addressdetails=1&accept-language=ko" + TOKYO + "&q=" + encodeURIComponent(q);
+                + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
+                + TOKYO + "&q=" + encodeURIComponent(q);
         list = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
       } catch (e) { list = []; }
       if (!list || !list.length) {
@@ -358,8 +399,14 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         const h = list[+b.dataset.i];
         addrEl.value = h.display_name;
         picked = { lat: parseFloat(h.lat), lon: parseFloat(h.lon) };
+        // 장소 종류를 찾아 「이곳의 특징」에 미리 넣어드립니다 (고치셔도 됩니다)
+        const noteEl = document.getElementById("apNote");
+        const kind = kindOf(h);
+        if (kind && !noteEl.value.trim()) noteEl.value = kind;
         hide();
-        msgSafe("주소를 넣었습니다. 특징과 추억도 적어주시면 좋습니다.");
+        msgSafe(kind
+          ? `주소와 특징(${kind})을 넣었습니다. 추억은 원하실 때만 적으시면 됩니다.`
+          : "주소를 넣었습니다. 추억은 원하실 때만 적으시면 됩니다.");
       }));
     }
     const msgSafe = (t) => { const m = document.getElementById("apMsg"); if (m) m.textContent = t; };
