@@ -45,6 +45,16 @@
     padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;}
   body.admin .alb .edit{display:block;}
   .alb .edit:hover{background:linear-gradient(#ffdc80,#f2ba43);color:#4a3608;}
+  .alb .del{display:none;position:absolute;top:8px;right:8px;z-index:6;
+    width:26px;height:26px;border:none;border-radius:50%;cursor:pointer;font-family:inherit;
+    background:rgba(150,40,34,.86);color:#fff;font-size:14px;line-height:1;font-weight:700;}
+  body.admin .alb .del{display:block;}
+  .alb .del:hover{background:#b3453b;}
+  body.admin .alb .edit{right:40px;}
+  .movebar .rmbtn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:inherit;border:1px solid #a33f36;background:#b3453b;color:#fff;transition:.2s;}
+  .movebar .rmbtn:hover{background:#c4544a;}
+  .movebar .rmbtn:disabled{opacity:.5;cursor:default;}
   .movebar{display:none;align-items:center;gap:11px;flex-wrap:wrap;margin:0 0 16px;
     padding:11px 16px;background:#fff;border:1px solid #cfe3d4;border-radius:9px;
     font-size:13px;color:#4a5a4f;}
@@ -205,6 +215,7 @@
     <b>선택한 앨범 <span id="mvCnt">0</span>개</b><span>를</span>
     <select id="mvCat"></select><span>분류로</span>
     <button class="mvbtn" id="mvGo">선택한 앨범 옮기기</button>
+    <button class="rmbtn" id="mvRm">선택한 앨범 지우기</button>
     <span class="note">앨범 안의 사진이 모두 함께 옮겨집니다.</span>
   </div>
   <div class="ggrid" id="ggrid"></div>
@@ -293,6 +304,7 @@ function render() {
       <span class="sq">
         <span class="apick" role="checkbox" aria-checked="false" title="이 앨범 고르기"></span>
         <button class="edit" title="사진첩 이름 고치기">✎ 사진이름</button>
+        <button class="del" title="이 앨범 지우기">✕</button>
         ${a.ownerAdmin
           ? '<span class="mine">관리자</span>'
           : (a.ownerName ? `<span class="mine">공유자(${esc(a.ownerName)})</span>`
@@ -352,6 +364,46 @@ function enableAdmin(list) {
     c.setAttribute("aria-checked", isOn(c) ? "true" : "false");
     count();
   }));
+  // 앨범 지우기 (사진까지 함께)
+  async function killAlbums(list2) {
+    const shots = list2.reduce((n, a) => n + a.photos.length, 0);
+    const paths = list2.flatMap(a => a.photos.map(p => p.storage_path).filter(Boolean));
+    if (paths.length) { try { await sb.storage.from("gallery").remove(paths); } catch (e) {} }
+    const ids = list2.flatMap(a => a.photos.filter(p => p.kind === "db").map(p => p.id));
+    if (ids.length) {
+      const r = await sb.from("gallery_photos").delete().in("id", ids);
+      if (r.error) return "사진 삭제 실패: " + r.error.message;
+    }
+    const r2 = await sb.from("gallery_albums").delete().in("album_key", list2.map(a => a.key));
+    if (r2.error) return "앨범 삭제 실패: " + r2.error.message;
+    return null;
+  }
+  document.querySelectorAll(".alb .del").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const a = find(btn.closest(".alb").dataset.key);
+      if (!a) return;
+      if (!confirm(`「${a.title}」 앨범과 그 안의 사진 ${a.photos.length}장을 지울까요?
+되돌릴 수 없습니다.`)) return;
+      btn.disabled = true; btn.textContent = "…";
+      const err = await killAlbums([a]);
+      if (err) { alert(err); btn.disabled = false; btn.textContent = "✕"; return; }
+      location.reload();
+    });
+  });
+  const rmBtn = document.getElementById("mvRm");
+  if (rmBtn) rmBtn.onclick = async () => {
+    const chosen = picks.filter(isOn).map(c => find(c.closest(".alb").dataset.key)).filter(Boolean);
+    if (!chosen.length) { alert("지울 앨범을 먼저 골라주세요."); return; }
+    const shots = chosen.reduce((n, a) => n + a.photos.length, 0);
+    if (!confirm(`앨범 ${chosen.length}개(사진 ${shots}장)를 지울까요?
+되돌릴 수 없습니다.`)) return;
+    rmBtn.disabled = true; rmBtn.textContent = "지우는 중…";
+    const err = await killAlbums(chosen);
+    rmBtn.disabled = false; rmBtn.textContent = "선택한 앨범 지우기";
+    if (err) { alert(err); return; }
+    location.reload();
+  };
   bar.classList.add("on");
   go.onclick = async () => {
     const chosen = picks.filter(isOn)
