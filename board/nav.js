@@ -85,6 +85,12 @@ const NAV = {
         <div class="dd-menu">
           <a href="/YB/gallery.html?cat=event2026">행사 사진 및 동영상 (2026~)</a>
           <a href="/YB/gallery.html?cat=daily2026">일상생활 (2026~)</a>
+          <a href="/YB/gallery.html?cat=assembly">총회</a>
+          <a href="/YB/gallery.html?cat=club">소모임</a>
+          <a href="/YB/gallery.html?cat=jobs">인재채용</a>
+          <a href="/YB/gallery.html?cat=parttime">아르바이트</a>
+          <a href="/YB/gallery.html?cat=daily">일상</a>
+          <a href="/YB/gallery.html?cat=etc">기타</a>
           <a href="/YB/gallery.html?cat=event">예전사진 (~2025)</a>
         </div>
       </div>

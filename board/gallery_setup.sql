@@ -73,7 +73,8 @@ alter table public.gallery_photos add constraint gallery_photos_category_check
     -- 총동문회(OB)
     'assembly','club','faculty','forum','old','daily','etc',
     -- 학생회(YB)
-    'event','event2026','daily2026'
+    'event','event2026','daily2026',
+    'jobs','parttime'
   ));
 
 -- 이전 버전에서 만든 표가 있으면 내용을 옮기고 정리

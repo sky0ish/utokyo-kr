@@ -15,6 +15,7 @@ alter table public.gallery_photos add constraint gallery_photos_category_check
     'assembly','club','faculty','forum','old','daily','etc',
     -- 학생회(YB)
     'event','event2026','daily2026',
+    'jobs','parttime',
     -- 지난 이름 (정리 중에 잠시 남아 있을 수 있음)
     'event2015','general'
   ));
@@ -35,7 +36,8 @@ alter table public.gallery_photos drop constraint if exists gallery_photos_categ
 alter table public.gallery_photos add constraint gallery_photos_category_check
   check (category in (
     'assembly','club','faculty','forum','old','daily','etc',
-    'event','event2026','daily2026'
+    'event','event2026','daily2026',
+    'jobs','parttime'
   ));
 
 -- 확인용
