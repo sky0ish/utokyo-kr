@@ -134,8 +134,10 @@ export async function initBoard(ORG) {
   });
 
   const PAGE = 100;
+  const PAGED = ORG === "YB";   // 학생회 게시판은 「더 보기」 대신 쪽번호로 넘긴다
   let loaded = [];          // 지금까지 불러온 글
   let total = 0;            // 전체 건수
+  let pageNo = 1;           // 지금 보고 있는 쪽
   const listEl = document.getElementById("list");
   const moreBox = document.getElementById("moreBox");
   const moreBtn = document.getElementById("moreBtn");
@@ -143,7 +145,7 @@ export async function initBoard(ORG) {
 
   moreBtn.addEventListener("click", () => load(true));
 
-  async function load(append = false) {
+  async function load(append = false, keepTotal = false) {
     if (memberOnlyBlocked) {   // 비로그인 상태에서 회원 전용 게시판 요청
       listEl.innerHTML = `<div class="empty"><b>${memberOnlyBlocked}</b> 게시판은 회원 전용입니다.<br><br>` +
         '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
@@ -155,8 +157,9 @@ export async function initBoard(ORG) {
     if (!append) { loaded = []; listEl.innerHTML = '<div class="empty">불러오는 중…</div>'; moreBox.style.display = "none"; }
     else { moreBtn.disabled = true; moreBtn.textContent = "불러오는 중…"; }
 
-    // 전체 건수 (첫 로드 때만)
-    if (!append) {
+    // 전체 건수 (첫 로드 때만 · 쪽만 넘길 때는 그대로 둔다)
+    if (!append && !keepTotal) {
+      pageNo = 1;
       let cq = onlyMyOrg(sb.from("posts").select("id", { count: "exact", head: true }));
       if (cat) cq = cq.eq("category", cat);
       cq = applySearch(cq);
@@ -166,7 +169,7 @@ export async function initBoard(ORG) {
 
     // 알림으로 고정된 글은 늘 맨 위에 (검색 중에는 빼고 결과만 보여준다)
     let pins = [];
-    if (!append && !kw) {
+    if (!append && !kw && (!PAGED || pageNo === 1)) {
       let pq = onlyMyOrg(sb.from("posts")
         .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned")
         .eq("pinned", true))
@@ -179,7 +182,8 @@ export async function initBoard(ORG) {
     let q = onlyMyOrg(sb.from("posts")
       .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned"))
       .order("created_at", { ascending: false })
-      .range(loaded.length, loaded.length + PAGE - 1);
+      .range(PAGED ? (pageNo - 1) * PAGE : loaded.length,
+             (PAGED ? (pageNo - 1) * PAGE : loaded.length) + PAGE - 1);
     if (cat) q = q.eq("category", cat);
     q = applySearch(q);
     const { data, error } = await q;
@@ -196,20 +200,61 @@ export async function initBoard(ORG) {
       drawStat([]); return;
     }
 
-    loaded = loaded.concat(data || []);
+    loaded = PAGED ? (data || []) : loaded.concat(data || []);
     drawStat(loaded);
     const pinIds = new Set(pins.map(p => p.id));
     render(pins.concat(loaded.filter(p => !pinIds.has(p.id))));
 
-    if (loaded.length < total) {
+    if (PAGED) { drawPager(); }
+    else if (loaded.length < total) {
       moreBox.style.display = "block";
+      moreBtn.style.display = "inline-block";
       countInfo.textContent = `${loaded.length} / ${total}건`;
     } else {
       moreBox.style.display = total > PAGE ? "block" : "none";
       moreBtn.style.display = "none";
       countInfo.textContent = `전체 ${total}건을 모두 불러왔습니다.`;
     }
-    if (loaded.length < total) moreBtn.style.display = "inline-block";
+  }
+
+  /** 쪽번호 줄 그리기 (학생회 게시판) */
+  function drawPager() {
+    moreBtn.style.display = "none";
+    const pages = Math.max(1, Math.ceil(total / PAGE));
+    let box = document.getElementById("pager");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "pager"; box.className = "pager";
+      moreBox.insertBefore(box, countInfo);
+    }
+    if (pages <= 1) {
+      box.innerHTML = "";
+      moreBox.style.display = total ? "block" : "none";
+      countInfo.textContent = total ? `전체 ${total}건` : "";
+      return;
+    }
+    const WIN = 10;
+    let a = Math.max(1, pageNo - Math.floor(WIN / 2));
+    let b = Math.min(pages, a + WIN - 1);
+    a = Math.max(1, b - WIN + 1);
+    const link = (n, t, off) =>
+      `<a href="#" data-p="${n}" class="${off ? "off" : ""}">${t}</a>`;
+    let h = link(1, "« 처음", pageNo === 1) + link(Math.max(1, pageNo - 1), "‹ 이전", pageNo === 1);
+    for (let i = a; i <= b; i++) h += `<a href="#" data-p="${i}" class="${i === pageNo ? "on" : ""}">${i}</a>`;
+    h += link(Math.min(pages, pageNo + 1), "다음 ›", pageNo === pages) +
+         link(pages, "끝 »", pageNo === pages);
+    box.innerHTML = h;
+    box.querySelectorAll("a").forEach(el => el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const n = Number(el.dataset.p);
+      if (!n || n === pageNo) return;
+      pageNo = n;
+      load(false, true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }));
+    moreBox.style.display = "block";
+    const from = (pageNo - 1) * PAGE + 1, to = Math.min(pageNo * PAGE, total);
+    countInfo.textContent = `${from}–${to} / 전체 ${total}건 · ${pageNo} / ${pages} 쪽`;
   }
 
   function render(data) {

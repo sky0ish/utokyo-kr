@@ -233,3 +233,16 @@ body.yb .post .ptitle,
 body.yb .cmt-title{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;}
 body.yb .sec-head .t h2,
 body.yb .ahead h1{color:#454b53;}
+
+/* 학생회 게시판 쪽번호 */
+body.yb .pager{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:6px 0 14px;}
+body.yb .pager a{min-width:36px;padding:8px 11px;border-radius:8px;border:1px solid #cfe3d4;
+  background:#fff;color:#3e5344;font-size:13.5px;font-weight:500;text-align:center;
+  text-decoration:none;transition:.15s;}
+body.yb .pager a:hover{border-color:#7fc48a;color:#1e5230;transform:translateY(-1px);}
+body.yb .pager a.on{background:#1e5230;border-color:#1e5230;color:#fff;font-weight:700;}
+body.yb .pager a.on:hover{color:#bfe8c2;transform:none;}
+body.yb .pager a.off{opacity:.38;pointer-events:none;}
+@media (max-width:680px){
+  body.yb .pager a{min-width:32px;padding:7px 9px;font-size:12.5px;}
+}
