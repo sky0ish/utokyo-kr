@@ -4,13 +4,13 @@
 import { sb } from "../auth/auth.js";
 
 export const CATS = [
+  ["event",     "예전사진 (~2025)"],
   ["event2026", "행사 사진 및 동영상 (2026~)"],
-  ["event",     "행사 사진 및 동영상 (~2025)"],
-  ["general",   "일반 사진 및 동영상"],
+  ["daily2026", "일상생활 (2026~)"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 const ALBUM_NAME = {
-  event2026: "{y}년 행사", event: "{y}년 행사", general: "{y}년 사진",
+  event: "{y}년 사진", event2026: "{y}년 행사", daily2026: "{y}년 일상",
 };
 
 const iso = (d) => (d || "").replace(/\./g, "-").slice(0, 10);
@@ -20,10 +20,17 @@ export async function loadGallery() {
   let photos = [], custom = [], albumInfo = {}, ok = true;
 
   try {
-    const [ph, al] = await Promise.all([
-      sb.from("gallery_photos").select("*").eq("org", "YB"),
-      sb.from("gallery_albums").select("*").eq("org", "YB"),
-    ]);
+    // 사진이 많아지면 한 번에 다 오지 않으므로 나눠서 받는다 (한 번에 1000장까지)
+    const all = async (table) => {
+      const out = [];
+      for (let from = 0; ; from += 1000) {
+        const r = await sb.from(table).select("*").eq("org", "YB").range(from, from + 999);
+        if (r.error) return { data: out, error: r.error };
+        out.push(...(r.data || []));
+        if ((r.data || []).length < 1000) return { data: out, error: null };
+      }
+    };
+    const [ph, al] = await Promise.all([all("gallery_photos"), all("gallery_albums")]);
     (ph.data || []).forEach(r => photos.push({
       key: `db:${r.id}`, kind: "db", id: r.id, cat: r.category,
       date: iso(r.taken_at), cap: r.caption || "", sort: r.sort || 0,
@@ -42,7 +49,7 @@ export async function loadGallery() {
   const map = new Map();
   for (const a of custom) {
     map.set(a.album_key, {
-      key: a.album_key, cat: a.category || "general",
+      key: a.album_key, cat: a.category || "event",
       year: (iso(a.event_date) || "").slice(0, 4) || "",
       title: a.title || "사진첩", custom: true, owner: a.created_by,
       ownerName: a.owner_name || "", ownerAdmin: !!a.owner_admin, coverKey: a.cover_key || "",
