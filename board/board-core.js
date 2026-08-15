@@ -2,7 +2,7 @@ import { sb, currentUser, myProfile } from "/auth/auth.js";
 // ─── 게시판 목록 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
-import { applyNav } from "/board/nav.js?v=2";
+import { applyNav } from "/board/nav.js?v=3";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -12,10 +12,13 @@ export async function initBoard(ORG) {
   const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
                    forum:"단과대포럼", seminar:"세미나",
                    jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
-  const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
+  const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
+                   mentoring:"멘토멘티" };
   const TABS_OB = ["free","promo","condolence","notice"];   // 소모임·멘토멘티는 참여마당에서 접근
-  const TABS_YB = ["notice","free","qna","jobs","parttime","market"];
+  const TABS_YB = ["notice","free","qna","jobs","parttime","market","mentoring"];
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
+  // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
+  const SHARED = ["mentoring"];
   const TABS = ORG === "YB" ? TABS_YB : TABS_OB;
 
   applyNav(ORG, ORG === "YB" ? "게시판 | 도쿄대학 한국인학생회"
@@ -32,6 +35,7 @@ export async function initBoard(ORG) {
     facebook: '<span class="src-tag fb">페이스북</span>',
     legacy: '<span class="src-tag legacy">(구)게시판</span>'
   };
+  const onlyMyOrg = (q) => SHARED.includes(cat) ? q : q.eq("org", ORG);
   const params = new URLSearchParams(location.search);
   const org = ORG;
   let cat = params.get("cat") || "";
@@ -153,7 +157,7 @@ export async function initBoard(ORG) {
 
     // 전체 건수 (첫 로드 때만)
     if (!append) {
-      let cq = sb.from("posts").select("id", { count: "exact", head: true }).eq("org", ORG);
+      let cq = onlyMyOrg(sb.from("posts").select("id", { count: "exact", head: true }));
       if (cat) cq = cq.eq("category", cat);
       cq = applySearch(cq);
       const { count } = await cq;
@@ -163,18 +167,17 @@ export async function initBoard(ORG) {
     // 알림으로 고정된 글은 늘 맨 위에 (검색 중에는 빼고 결과만 보여준다)
     let pins = [];
     if (!append && !kw) {
-      let pq = sb.from("posts")
+      let pq = onlyMyOrg(sb.from("posts")
         .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned")
-        .eq("org", ORG).eq("pinned", true)
+        .eq("pinned", true))
         .order("pinned_at", { ascending: false });
       if (cat) pq = pq.eq("category", cat);
       const pr = await pq;
       pins = pr.data || [];          // 표에 pinned 칸이 없으면 조용히 넘어간다
     }
 
-    let q = sb.from("posts")
-      .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned")
-      .eq("org", ORG)
+    let q = onlyMyOrg(sb.from("posts")
+      .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned"))
       .order("created_at", { ascending: false })
       .range(loaded.length, loaded.length + PAGE - 1);
     if (cat) q = q.eq("category", cat);

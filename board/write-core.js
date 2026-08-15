@@ -1,7 +1,7 @@
 // ─── 게시판 글쓰기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile } from "/auth/auth.js";
-import { applyNav } from "/board/nav.js?v=2";
+import { applyNav } from "/board/nav.js?v=3";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -50,7 +50,8 @@ export async function initWrite(ORG) {
 
     // 게시판 분류 · 말머리 선택 (조직별)
     const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항" };
-    const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
+    const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
+                      mentoring:"멘토멘티" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
@@ -69,7 +70,8 @@ export async function initWrite(ORG) {
       qna: ["입학", "비자·체류", "생활", "학업", "기타"],
       jobs: ["신입", "경력", "인턴", "설명회"],
       parttime: ["단기", "장기", "과외", "번역·통역"],
-      market: ["삽니다", "팝니다", "나눔", "구합니다"]
+      market: ["삽니다", "팝니다", "나눔", "구합니다"],
+      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"]
     };
     const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
 
