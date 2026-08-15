@@ -53,19 +53,19 @@ const NAV = {
       <div class="dd">
         <a href="/YB/index.html#school">학교안내</a>
         <div class="dd-menu">
-          <a href="/YB/index.html#school">학교 소개</a>
+          <a href="/YB/index.html#intro">학교 소개</a>
           <a href="/YB/index.html#access">오시는 길</a>
-          <a href="/YB/index.html#school">캠퍼스 안내</a>
-          <a href="/YB/index.html#school">FAQ</a>
+          <a href="/YB/index.html#access">캠퍼스 안내</a>
+          <a href="/YB/index.html#faq">FAQ</a>
         </div>
       </div>
       <div class="dd">
         <a href="/YB/index.html#council">학생회</a>
         <div class="dd-menu">
-          <a href="/YB/index.html#council">인사말</a>
-          <a href="/YB/index.html#council">임원진</a>
-          <a href="/YB/index.html#council">활동 이력</a>
-          <a href="/YB/index.html#council">회칙</a>
+          <a href="/YB/index.html#greeting">인사말</a>
+          <a href="/YB/index.html#officers">임원진</a>
+          <a href="/YB/index.html#history">활동 이력</a>
+          <a href="/YB/index.html#rules">회칙</a>
         </div>
       </div>
       <div class="dd">
