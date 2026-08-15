@@ -31,8 +31,13 @@
 
   /* 운영진 : 앨범 고르기 · 이름 고치기 · 분류 옮기기 */
   .alb{position:relative;}
-  .alb .apick{display:none;position:absolute;top:9px;left:9px;z-index:4;
-    width:19px;height:19px;cursor:pointer;}
+  .alb .apick{display:none;position:absolute;top:9px;left:9px;z-index:5;
+    width:24px;height:24px;border-radius:6px;cursor:pointer;
+    background:#fff;border:2px solid #9db9a5;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .alb .apick:hover{border-color:#1e5230;}
+  .alb .apick.on{background:#1e5230;border-color:#1e5230;}
+  .alb .apick.on::after{content:"✓";position:absolute;inset:0;color:#fff;
+    font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;}
   body.admin .alb .apick{display:block;}
   .alb.apicked{outline:3px solid #4f9d5d;outline-offset:2px;}
   .alb .edit{display:none;position:absolute;top:8px;right:8px;z-index:3;
@@ -287,7 +292,7 @@ function render() {
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
        data-key="${a.key}">
       <span class="sq">
-        <input type="checkbox" class="apick" title="이 앨범 고르기">
+        <span class="apick" role="checkbox" aria-checked="false" title="이 앨범 고르기"></span>
         <button class="edit" title="사진첩 이름 고치기">✎ 사진이름</button>
         ${a.ownerAdmin
           ? '<span class="mine">관리자</span>'
@@ -337,17 +342,20 @@ function enableAdmin(list) {
   sel.innerHTML = CATS.map(([k, v]) =>
     `<option value="${k}"${k === cur ? " selected" : ""}>${v}</option>`).join("");
   const picks = [...document.querySelectorAll(".alb .apick")];
+  const isOn = c => c.classList.contains("on");
   const count = () => {
-    document.getElementById("mvCnt").textContent = picks.filter(c => c.checked).length;
-    picks.forEach(c => c.closest(".alb").classList.toggle("apicked", c.checked));
+    document.getElementById("mvCnt").textContent = picks.filter(isOn).length;
+    picks.forEach(c => c.closest(".alb").classList.toggle("apicked", isOn(c)));
   };
   picks.forEach(c => c.addEventListener("click", (e) => {
     e.preventDefault(); e.stopPropagation();      // 앨범이 열리지 않도록
-    c.checked = !c.checked; count();
+    c.classList.toggle("on");
+    c.setAttribute("aria-checked", isOn(c) ? "true" : "false");
+    count();
   }));
   bar.classList.add("on");
   go.onclick = async () => {
-    const chosen = picks.filter(c => c.checked)
+    const chosen = picks.filter(isOn)
       .map(c => find(c.closest(".alb").dataset.key)).filter(Boolean);
     if (!chosen.length) { alert("옮길 앨범을 먼저 골라주세요."); return; }
     const to = sel.value;
