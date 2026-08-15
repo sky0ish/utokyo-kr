@@ -157,11 +157,11 @@
 </div>
 
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=5";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=6";
 import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
-  const cat = q.get("cat") || "event";
+  const cat = q.get("cat") || "assembly";
   const id  = q.get("id");
   const { byCat } = await loadGallery();
   const list = byCat[cat] || [];

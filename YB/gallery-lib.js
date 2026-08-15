@@ -4,20 +4,16 @@
 import { sb } from "../auth/auth.js";
 
 export const CATS = [
-  ["event2026", "행사 사진 및 동영상 (2026~)"],
-  ["daily2026", "일상생활 (2026~)"],
-  ["assembly",  "총회"],
+  ["assembly",  "총회 및 행사"],
   ["club",      "소모임"],
   ["jobs",      "인재채용"],
   ["parttime",  "아르바이트"],
   ["daily",     "일상"],
   ["etc",       "기타"],
-  ["event",     "예전사진 (~2025)"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 const ALBUM_NAME = {
-  event: "{y}년 사진", event2026: "{y}년 행사", daily2026: "{y}년 일상",
-  assembly: "{y}년 총회", club: "{y}년 소모임", jobs: "{y}년 인재채용",
+  assembly: "{y}년 총회·행사", club: "{y}년 소모임", jobs: "{y}년 인재채용",
   parttime: "{y}년 아르바이트", daily: "{y}년 일상", etc: "{y}년 기타",
 };
 

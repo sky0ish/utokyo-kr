@@ -132,15 +132,12 @@
       <div class="dd">
         <a href="gallery.html">갤러리</a>
         <div class="dd-menu">
-          <a href="gallery.html?cat=event2026">행사 사진 및 동영상 (2026~)</a>
-          <a href="gallery.html?cat=daily2026">일상생활 (2026~)</a>
-          <a href="gallery.html?cat=assembly">총회</a>
+          <a href="gallery.html?cat=assembly">총회 및 행사</a>
           <a href="gallery.html?cat=club">소모임</a>
           <a href="gallery.html?cat=jobs">인재채용</a>
           <a href="gallery.html?cat=parttime">아르바이트</a>
           <a href="gallery.html?cat=daily">일상</a>
           <a href="gallery.html?cat=etc">기타</a>
-          <a href="gallery.html?cat=event">예전사진 (~2025)</a>
         </div>
       </div>
       <a href="map.html">MAP</a>
@@ -200,10 +197,10 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=5";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=6";
 
-let cur = new URLSearchParams(location.search).get("cat") || "event";
-if (!CATS.some(c => c[0] === cur)) cur = "event";
+let cur = new URLSearchParams(location.search).get("cat") || "assembly";
+if (!CATS.some(c => c[0] === cur)) cur = "assembly";
 
 const G = await loadGallery();
 let byCat = G.byCat;
