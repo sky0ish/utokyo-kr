@@ -50,7 +50,7 @@
 <script>
   /* 옛 화면이 캐시에 남아 새 기능이 안 보이는 것을 막는다 */
   (function () {
-    var HERE = 66;
+    var HERE = 67;
     fetch("/common/version.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (v) {

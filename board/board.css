@@ -107,12 +107,12 @@ body.yb.gal .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.7);}
 /* MAP 화면은 도쿄 야경 — 양쪽 홈페이지 공통 */
 body.mapbg .banner{background:
   linear-gradient(rgba(10,16,30,.58),rgba(12,18,32,.70)),
-  url('/images/yb_gallery_bg.jpg') center 55%/cover;}
+  url('/images/yb_map_night.jpg') center top/cover;}
 body.mapbg .banner .en{color:#e8c876;}
 body.mapbg .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
 body.yb.mapbg .banner{background:
   linear-gradient(rgba(8,20,38,.58),rgba(8,22,30,.70)),
-  url('/images/yb_gallery_bg.jpg') center 55%/cover;}
+  url('/images/yb_map_night.jpg') center top/cover;}
 body.yb.mapbg .banner .en{color:#8fd6ff;}
 body.yb.mapbg .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
 body.yb .banner .en{color:#bfe8c2;}
