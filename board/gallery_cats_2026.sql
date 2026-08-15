@@ -30,15 +30,16 @@ update public.gallery_photos set category = 'etc'
 update public.gallery_albums set category = 'etc'
  where org = 'YB' and category = 'general';
 
-update public.gallery_overrides set category = 'event'
- where category in ('event2015','event2026');
-update public.gallery_overrides set category = 'daily' where category = 'daily2026';
-update public.gallery_overrides set category = 'etc'   where category = 'general';
-
+-- 아르바이트 갈래는 없앴습니다 → 인재채용으로
 update public.gallery_photos set category = 'jobs'
  where org = 'YB' and category = 'parttime';
 update public.gallery_albums set category = 'jobs'
  where org = 'YB' and category = 'parttime';
+
+update public.gallery_overrides set category = 'event'
+ where category in ('event2015','event2026');
+update public.gallery_overrides set category = 'daily' where category = 'daily2026';
+update public.gallery_overrides set category = 'etc'   where category = 'general';
 
 -- 3) 지난 이름을 이제 막음
 alter table public.gallery_photos drop constraint if exists gallery_photos_category_check;
