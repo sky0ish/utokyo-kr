@@ -83,9 +83,9 @@ const NAV = {
       <div class="dd">
         <a href="/YB/gallery.html">갤러리</a>
         <div class="dd-menu">
-          <a href="/YB/gallery.html?cat=event">예전사진 (~2025)</a>
           <a href="/YB/gallery.html?cat=event2026">행사 사진 및 동영상 (2026~)</a>
           <a href="/YB/gallery.html?cat=daily2026">일상생활 (2026~)</a>
+          <a href="/YB/gallery.html?cat=event">예전사진 (~2025)</a>
         </div>
       </div>
       <a href="/YB/map.html">MAP</a>

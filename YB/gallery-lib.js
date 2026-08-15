@@ -4,9 +4,9 @@
 import { sb } from "../auth/auth.js";
 
 export const CATS = [
-  ["event",     "예전사진 (~2025)"],
   ["event2026", "행사 사진 및 동영상 (2026~)"],
   ["daily2026", "일상생활 (2026~)"],
+  ["event",     "예전사진 (~2025)"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 const ALBUM_NAME = {
