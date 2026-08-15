@@ -4,13 +4,13 @@
 import { sb } from "../auth/auth.js";
 
 export const CATS = [
-  ["event2015", "행사 사진 및 동영상 (2015~)"],
-  ["event",     "행사 사진 및 동영상"],
+  ["event2026", "행사 사진 및 동영상 (2026~)"],
+  ["event",     "행사 사진 및 동영상 (~2025)"],
   ["general",   "일반 사진 및 동영상"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 const ALBUM_NAME = {
-  event2015: "{y}년 행사", event: "{y}년 행사", general: "{y}년 사진",
+  event2026: "{y}년 행사", event: "{y}년 행사", general: "{y}년 사진",
 };
 
 const iso = (d) => (d || "").replace(/\./g, "-").slice(0, 10);
