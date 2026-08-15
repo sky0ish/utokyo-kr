@@ -29,6 +29,31 @@
 
   .banner.galban{position:relative;overflow:hidden;}
 
+  /* 운영진 : 앨범 고르기 · 이름 고치기 · 분류 옮기기 */
+  .alb{position:relative;}
+  .alb .apick{display:none;position:absolute;top:9px;left:9px;z-index:4;
+    width:19px;height:19px;cursor:pointer;}
+  body.admin .alb .apick{display:block;}
+  .alb.apicked{outline:3px solid #4f9d5d;outline-offset:2px;}
+  .alb .edit{display:none;position:absolute;top:8px;right:8px;z-index:3;
+    background:rgba(18,32,24,.75);color:#fff;border:none;border-radius:7px;
+    padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;}
+  body.admin .alb .edit{display:block;}
+  .alb .edit:hover{background:linear-gradient(#ffdc80,#f2ba43);color:#4a3608;}
+  .movebar{display:none;align-items:center;gap:11px;flex-wrap:wrap;margin:0 0 16px;
+    padding:11px 16px;background:#fff;border:1px solid #cfe3d4;border-radius:9px;
+    font-size:13px;color:#4a5a4f;}
+  .movebar.on{display:flex;}
+  .movebar b{color:#1e5230;}
+  .movebar select{padding:8px 12px;border:1px solid #cfe3d4;border-radius:7px;
+    font-family:inherit;font-size:13.5px;background:#fbfefb;color:#25322a;}
+  .movebar .mvbtn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;
+    font-family:inherit;border:1px solid #d8a12c;background:linear-gradient(#ffdc80,#f2ba43);
+    color:#4a3608;transition:.2s;}
+  .movebar .mvbtn:hover{background:linear-gradient(#ffe497,#f6c559);}
+  .movebar .mvbtn:disabled{opacity:.5;cursor:default;}
+  .movebar .note{color:#98a89d;font-size:12px;}
+
   /* 키워드 검색 */
   .srch{display:flex;gap:9px;align-items:center;margin:26px 0 4px;flex-wrap:wrap;}
   .srch .box{flex:1;min-width:230px;display:flex;align-items:center;background:#fff;
@@ -173,6 +198,12 @@
     <div class="gcount" id="gcount" style="margin:0;"></div>
     <button class="newalb" id="newAlb">＋ 사진첩 만들기</button>
   </div>
+  <div class="movebar" id="movebar">
+    <b>선택한 앨범 <span id="mvCnt">0</span>개</b><span>를</span>
+    <select id="mvCat"></select><span>분류로</span>
+    <button class="mvbtn" id="mvGo">선택한 앨범 옮기기</button>
+    <span class="note">앨범 안의 사진이 모두 함께 옮겨집니다.</span>
+  </div>
   <div class="ggrid" id="ggrid"></div>
 </div>
 
@@ -254,7 +285,8 @@ function render() {
     return;
   }
   grid.innerHTML = list.map(a => `
-    <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener">
+    <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
+       data-key="${a.key}">
       <span class="sq">
         ${a.ownerAdmin
           ? '<span class="mine">관리자</span>'
@@ -266,6 +298,79 @@ function render() {
       </span>
       <span class="cp"><b>${esc(a.title)}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
     </a>`).join("");
+  if (isAdmin) enableAdmin(list);
+}
+
+// ─── 운영진 : 앨범 이름 고치기 · 앨범 통째로 분류 옮기기 ───
+let isAdmin = false, adminId = null;
+function enableAdmin(list) {
+  const find = k => list.find(a => a.key === k);
+
+  // 사진첩 이름 고치기
+  document.querySelectorAll(".alb .edit").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const card = btn.closest(".alb");
+      const a = find(card.dataset.key);
+      if (!a) return;
+      const name = prompt("사진첩 이름을 적어주세요.", a.title);
+      if (name === null) return;
+      const t = name.trim();
+      if (!t) { alert("이름을 비워둘 수 없습니다."); return; }
+      btn.disabled = true; btn.textContent = "저장 중…";
+      const r = await sb.from("gallery_albums").upsert({
+        album_key: a.key, title: t, category: a.cat, org: "YB",
+        updated_by: adminId, updated_at: new Date().toISOString(),
+      }, { onConflict: "album_key" });
+      btn.disabled = false; btn.textContent = "✎ 사진이름";
+      if (r.error) { alert("이름 저장 실패: " + r.error.message); return; }
+      a.title = t;
+      card.querySelector(".cp b").textContent = t;
+    });
+  });
+
+  // 고른 앨범을 다른 분류로 옮기기
+  const bar = document.getElementById("movebar");
+  const sel = document.getElementById("mvCat");
+  const go  = document.getElementById("mvGo");
+  sel.innerHTML = CATS.map(([k, v]) =>
+    `<option value="${k}"${k === cur ? " selected" : ""}>${v}</option>`).join("");
+  const picks = [...document.querySelectorAll(".alb .apick")];
+  const count = () => {
+    document.getElementById("mvCnt").textContent = picks.filter(c => c.checked).length;
+    picks.forEach(c => c.closest(".alb").classList.toggle("apicked", c.checked));
+  };
+  picks.forEach(c => c.addEventListener("click", (e) => {
+    e.preventDefault(); e.stopPropagation();      // 앨범이 열리지 않도록
+    c.checked = !c.checked; count();
+  }));
+  bar.classList.add("on");
+  go.onclick = async () => {
+    const chosen = picks.filter(c => c.checked)
+      .map(c => find(c.closest(".alb").dataset.key)).filter(Boolean);
+    if (!chosen.length) { alert("옮길 앨범을 먼저 골라주세요."); return; }
+    const to = sel.value;
+    const shots = chosen.reduce((n, a) => n + a.photos.length, 0);
+    if (!confirm(`앨범 ${chosen.length}개(사진 ${shots}장)를 「${CAT_NAME[to]}」 분류로 옮길까요?`)) return;
+    go.disabled = true; go.textContent = "옮기는 중…";
+    const now = new Date().toISOString();
+    let err = null;
+    for (const a of chosen) {
+      const r1 = await sb.from("gallery_albums").upsert({
+        album_key: a.key, category: to, org: "YB", updated_by: adminId, updated_at: now,
+      }, { onConflict: "album_key" });
+      if (r1.error) { err = r1.error; break; }
+      const dbs = a.photos.filter(p => p.kind === "db");
+      if (dbs.length) {
+        const r2 = await sb.from("gallery_photos").update({ category: to }).in("id", dbs.map(p => p.id));
+        if (r2.error) { err = r2.error; break; }
+      }
+    }
+    go.disabled = false; go.textContent = "선택한 앨범 옮기기";
+    if (err) { alert("옮기기 실패: " + err.message +
+      " — board/gallery_setup.sql 과 gallery_cats_2026.sql 을 실행하셨는지 확인해주세요."); return; }
+    location.href = "gallery.html?cat=" + to;
+  };
 }
 
 document.querySelectorAll("#gtabs a").forEach(a => a.addEventListener("click", (e) => {
@@ -282,6 +387,11 @@ try {
   if (user) {
     const p = await myProfile();
     if (p && (p.approved || p.is_admin)) setupNewAlbum(user, p);
+    if (p && p.is_admin) {                     // 운영진에게만 관리 단추
+      isAdmin = true; adminId = user.id;
+      document.body.classList.add("admin");
+      render();                                // 관리 단추가 보이게 다시 그린다
+    }
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
     const st = document.createElement("span");
