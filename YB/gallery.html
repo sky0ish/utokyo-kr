@@ -132,7 +132,9 @@
       <div class="dd">
         <a href="gallery.html">갤러리</a>
         <div class="dd-menu">
-          <a href="gallery.html?cat=assembly">총회 및 행사</a>
+          <a href="gallery.html?cat=all">전체</a>
+          <a href="gallery.html?cat=assembly">총회</a>
+          <a href="gallery.html?cat=event">행사</a>
           <a href="gallery.html?cat=club">소모임</a>
           <a href="gallery.html?cat=jobs">인재채용</a>
           <a href="gallery.html?cat=parttime">아르바이트</a>
@@ -197,16 +199,17 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=6";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=7";
 
-let cur = new URLSearchParams(location.search).get("cat") || "assembly";
-if (!CATS.some(c => c[0] === cur)) cur = "assembly";
+let cur = new URLSearchParams(location.search).get("cat") || "all";
+if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
 
 const G = await loadGallery();
 let byCat = G.byCat;
+byCat.all = G.albums;          // 「전체」 — 모든 사진첩을 한 자리에
 const ALL = G.albums;
 
-document.getElementById("gtabs").innerHTML = CATS.map(([k, v]) =>
+document.getElementById("gtabs").innerHTML = [["all","전체"]].concat(CATS).map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
 
 
@@ -243,7 +246,7 @@ function render() {
   const shots = list.reduce((s, a) => s + a.photos.length, 0);
   document.getElementById("gcount").textContent = kw
     ? `‘${kw}’ 검색 · 모든 분류에서 앨범 ${list.length}개 · 사진 ${shots}장`
-    : `${CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
+    : `${cur === "all" ? "전체" : CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
   const grid = document.getElementById("ggrid");
   if (!list.length) {
     grid.innerHTML = '<div class="gempty">아직 올라온 사진이 없습니다.<br>' +

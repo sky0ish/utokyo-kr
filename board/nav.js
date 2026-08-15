@@ -83,7 +83,9 @@ const NAV = {
       <div class="dd">
         <a href="/YB/gallery.html">갤러리</a>
         <div class="dd-menu">
-          <a href="/YB/gallery.html?cat=assembly">총회 및 행사</a>
+          <a href="/YB/gallery.html?cat=all">전체</a>
+          <a href="/YB/gallery.html?cat=assembly">총회</a>
+          <a href="/YB/gallery.html?cat=event">행사</a>
           <a href="/YB/gallery.html?cat=club">소모임</a>
           <a href="/YB/gallery.html?cat=jobs">인재채용</a>
           <a href="/YB/gallery.html?cat=parttime">아르바이트</a>

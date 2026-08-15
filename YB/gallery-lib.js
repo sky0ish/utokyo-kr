@@ -4,7 +4,8 @@
 import { sb } from "../auth/auth.js";
 
 export const CATS = [
-  ["assembly",  "총회 및 행사"],
+  ["assembly",  "총회"],
+  ["event",     "행사"],
   ["club",      "소모임"],
   ["jobs",      "인재채용"],
   ["parttime",  "아르바이트"],
@@ -13,8 +14,8 @@ export const CATS = [
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 const ALBUM_NAME = {
-  assembly: "{y}년 총회·행사", club: "{y}년 소모임", jobs: "{y}년 인재채용",
-  parttime: "{y}년 아르바이트", daily: "{y}년 일상", etc: "{y}년 기타",
+  assembly: "{y}년 총회", event: "{y}년 행사", club: "{y}년 소모임",
+  jobs: "{y}년 인재채용", parttime: "{y}년 아르바이트", daily: "{y}년 일상", etc: "{y}년 기타",
 };
 
 const iso = (d) => (d || "").replace(/\./g, "-").slice(0, 10);
