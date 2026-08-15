@@ -1,6 +1,6 @@
 -- ═══════════════════════════════════════════════════════════
 -- 학생회 갤러리 갈래 정리 — 연도 구분을 없애고 기능별로
---     총회 · 행사 · 소모임 · 인재채용 · 일상 · 기타
+--     총회 · 행사·소모임 · 인재채용 · 일상 · 기타
 -- 실행: Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 --   ※ 여러 번 실행해도 안전합니다. 가장 먼저 실행하세요.
 -- ═══════════════════════════════════════════════════════════
@@ -40,6 +40,12 @@ update public.gallery_overrides set category = 'event'
  where category in ('event2015','event2026');
 update public.gallery_overrides set category = 'daily' where category = 'daily2026';
 update public.gallery_overrides set category = 'etc'   where category = 'general';
+
+-- 소모임은 행사와 합쳤습니다 → 행사·소모임
+update public.gallery_photos set category = 'event'
+ where org = 'YB' and category = 'club';
+update public.gallery_albums set category = 'event'
+ where org = 'YB' and category = 'club';
 
 -- 3) 지난 이름을 이제 막음
 alter table public.gallery_photos drop constraint if exists gallery_photos_category_check;
