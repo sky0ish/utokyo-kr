@@ -137,22 +137,6 @@
   @media (max-width:820px){ .dash-grid{grid-template-columns:1fr;} }
 
   /* ── 인사말 ── */
-  /* ── 아카몬 사진 (구간 머리) ── */
-  .akamon{position:relative;line-height:0;margin:0 0 42px;border-radius:12px;overflow:hidden;
-    box-shadow:0 3px 10px rgba(60,50,20,.14), 0 14px 34px rgba(60,50,20,.16);}
-  .akamon img{width:100%;height:auto;display:block;}
-  /* 위아래 가장자리를 부드럽게 — 사진 경계의 가로줄이 보이지 않게 */
-  .akamon::before,.akamon::after{content:"";position:absolute;left:0;right:0;height:26px;
-    pointer-events:none;z-index:1;}
-  .akamon::before{top:0;background:linear-gradient(to bottom,
-    var(--ivory) 0%, rgba(246,243,236,.55) 45%, rgba(246,243,236,0) 100%);}
-  .akamon::after{bottom:0;background:linear-gradient(to top,
-    var(--ivory) 0%, rgba(246,243,236,.55) 45%, rgba(246,243,236,0) 100%);}
-  .akamon .cap{position:absolute;left:0;right:0;bottom:0;line-height:1.5;z-index:2;
-    padding:34px 22px 12px;font-size:12px;letter-spacing:.24em;color:rgba(255,255,255,.9);
-    background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));text-align:right;}
-  @media (max-width:700px){ .akamon .cap{font-size:10.5px;letter-spacing:.14em;} }
-
   .greeting{background:var(--ivory);padding:96px 0;}
   .greeting .inner{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:start;}
   .portrait{position:relative;}
@@ -603,12 +587,6 @@
 </section>
 
 <section class="greeting" id="greeting">
-  <div class="container">
-    <div class="akamon">
-      <img src="../images/akamon_wide.jpg" alt="도쿄대학 아카몬(赤門) — 재한 도쿄대학 총동문회">
-      <div class="cap">赤門 · 재한 도쿄대학 총동문회</div>
-    </div>
-  </div>
   <div class="container inner">
     <figure class="portrait">
       <a class="frame" href="https://cls.snu.ac.kr/snu__professor/%EC%96%91%EC%9D%BC%EB%AA%A8-2/" target="_blank" rel="noopener" title="양일모 회장 프로필 보기">
