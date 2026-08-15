@@ -9,18 +9,12 @@
 alter table public.gallery_photos drop constraint if exists gallery_photos_category_check;
 alter table public.gallery_photos add constraint gallery_photos_category_check
   check (category in (
-    -- 총동문회(OB)
     'assembly','club','faculty','forum','old','daily','etc',
-    -- 학생회(YB)
     'event','jobs','parttime',
-    -- 지난 이름 (정리 중에 잠시 남아 있을 수 있음)
     'event2015','event2026','daily2026','general'
   ));
 
 -- 2) 지난 이름을 새 갈래로 옮김
---    행사 사진 및 동영상 (2015~ / 2026~) → 행사
---    일상생활 (2026~)                    → 일상
---    일반 사진                            → 기타
 update public.gallery_photos set category = 'event'
  where org = 'YB' and category in ('event2015','event2026');
 update public.gallery_albums set category = 'event'
