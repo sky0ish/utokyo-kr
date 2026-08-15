@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta name="robots" content="noindex">
+<title>페이스북 글 모으기 | 도쿄대학 한국인학생회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --green:#1e5230; --leaf:#7fc48a; --line:#dfe9e1; --ink:#243029; --gold:#f2ba43; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#f4f8f5;color:var(--ink);font-family:'Noto Sans KR',sans-serif;
+    padding:40px 20px 100px;line-height:1.75;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:24px;color:var(--green);font-weight:700;margin-bottom:6px;}
+  .lead{font-size:15px;color:#5a6a5f;margin-bottom:30px;word-break:keep-all;}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 28px;
+    margin-bottom:20px;box-shadow:0 2px 10px rgba(30,60,40,.06);}
+  .step{display:flex;gap:16px;margin-bottom:24px;}
+  .step:last-child{margin-bottom:0;}
+  .num{flex:none;width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;}
+  .step h3{font-size:16.5px;color:var(--green);margin-bottom:4px;font-weight:600;}
+  .step p{font-size:14.5px;color:#5a6a5f;word-break:keep-all;}
+  .step b{color:var(--green);}
+  kbd{display:inline-block;padding:2px 8px;border:1px solid #cfd9d2;border-bottom-width:2px;
+    border-radius:5px;background:#f7faf8;font-size:13px;font-family:inherit;color:#3e5344;}
+
+  .grab{display:inline-block;margin:6px 0 4px;padding:15px 34px;border-radius:10px;
+    background:linear-gradient(#ffdc80,var(--gold));border:1px solid #d8a12c;color:#4a3608;
+    font-size:17px;font-weight:700;text-decoration:none;cursor:grab;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75), 0 3px 8px rgba(150,105,20,.3);}
+  .grab:hover{transform:translateY(-2px);}
+  .hint{font-size:13px;color:#98a89d;margin-top:8px;}
+
+  .alt{background:#eef5ef;border:1px solid #cfe3d4;border-radius:11px;padding:18px 20px;}
+  .alt h4{font-size:14.5px;color:var(--green);margin-bottom:8px;}
+  .alt p{font-size:13.5px;color:#5a6a5f;}
+  textarea{width:100%;height:88px;margin-top:10px;padding:11px 13px;border:1px solid #cfe3d4;
+    border-radius:8px;font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:#3e5344;
+    background:#fff;resize:vertical;}
+  .copy{margin-top:9px;padding:9px 18px;border-radius:7px;border:1px solid #a9cfb4;cursor:pointer;
+    background:linear-gradient(#f3faf4,#e3f1e7);color:var(--green);font-family:inherit;
+    font-size:13.5px;font-weight:600;}
+  .done{background:#fff8e6;border:1px solid #f0d79a;border-radius:11px;padding:18px 20px;
+    font-size:14.5px;color:#6b5520;}
+  .done b{color:#4a3608;}
+  a.back{display:inline-block;margin-top:24px;font-size:14px;color:var(--green);
+    border-bottom:1px solid #cfe3d4;padding-bottom:2px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>페이스북 글 모으기</h1>
+  <p class="lead">
+    학생회 페이스북(<b>facebook.com/tokyoksa</b>)의 글과 사진을 한 번에 모아
+    파일로 저장하는 도구입니다. 아래 순서대로 하시면 됩니다.
+  </p>
+
+  <div class="card">
+    <div class="step">
+      <div class="num">1</div>
+      <div>
+        <h3>즐겨찾기 줄을 켜 주세요</h3>
+        <p><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> 를 누르면 주소창 아래에 즐겨찾기 줄이 나타납니다.
+           이미 보이면 넘어가세요.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">2</div>
+      <div>
+        <h3>아래 노란 단추를 즐겨찾기 줄로 <b>끌어다 놓으세요</b></h3>
+        <p>누르지 마시고, <b>마우스로 잡아 끌어서</b> 즐겨찾기 줄에 떨어뜨리시면 됩니다.</p>
+        <a class="grab" id="bm" href="#">📥 페이스북 글 모으기</a>
+        <p class="hint">끌어 놓으면 즐겨찾기 줄에 「📥 페이스북 글 모으기」 가 생깁니다.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <h3>페이스북을 열고 그 단추를 누르세요</h3>
+        <p><b>facebook.com/tokyoksa</b> 를 연 다음, 즐겨찾기 줄의 「📥 페이스북 글 모으기」 를 누르세요.
+           화면 오른쪽 위에 진행 상황이 뜨면서 <b>자동으로 끝까지 내려갑니다.</b>
+           끝날 때까지 그 창을 그대로 두세요 (2~5분).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">4</div>
+      <div>
+        <h3>다 되면 파일이 저장됩니다</h3>
+        <p>다운로드 폴더에 <b>tokyoksa_facebook.json</b> 이 저장되고 「다 모았습니다」 창이 뜹니다.
+           그러면 저에게 <b>“다 모았어”</b> 라고만 알려 주세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alt">
+    <h4>끌어다 놓기가 잘 안 되면 — 이 방법도 있습니다</h4>
+    <p>페이스북 화면에서 <kbd>F12</kbd> 를 눌러 오른쪽에 창이 열리면 <b>Console</b> 칸을 고르고,
+       아래 글을 <b>복사해서 붙여넣고</b> <kbd>Enter</kbd> 를 누르세요.
+       “허용하려면 allow pasting 을 입력하세요” 라고 나오면 그 칸에
+       <b>allow pasting</b> 이라고 치고 <kbd>Enter</kbd> 한 뒤 다시 붙여넣으시면 됩니다.</p>
+    <textarea id="code" readonly></textarea>
+    <button class="copy" id="cp">글 복사하기</button>
+  </div>
+
+  <p style="margin-top:22px;"></p>
+  <div class="done">
+    <b>무엇을 모으나요?</b> 글 내용 · 올린 날짜 · 글 주소 · 사진 주소를 모읍니다.
+    비밀번호나 개인 정보는 건드리지 않고, 그 창 안에서만 동작하며 다른 곳으로 보내지 않습니다.
+    저장된 파일은 회장님 컴퓨터 다운로드 폴더에만 남습니다.
+  </div>
+
+  <a class="back" href="/YB/index.html">← 학생회 홈으로</a>
+</div>
+
+<script>
+const SRC = `(async()=>{
+ if(window.__ksaRun){alert("이미 모으는 중입니다.");return;} window.__ksaRun=1;
+ const s=(m)=>new Promise(r=>setTimeout(r,m));
+ const box=document.createElement("div");
+ box.style.cssText="position:fixed;top:14px;right:14px;z-index:2147483647;background:#1e5230;color:#fff;padding:13px 18px;border-radius:10px;font:600 14px/1.5 sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35)";
+ box.textContent="글 모으는 중…"; document.body.appendChild(box);
+ let last=0,same=0,n=0;
+ for(let i=0;i<600&&same<8;i++){
+   window.scrollTo(0,document.documentElement.scrollHeight);
+   await s(1100);
+   const h=document.documentElement.scrollHeight;
+   if(h===last){same++;}else{same=0;last=h;}
+   n=document.querySelectorAll('div[role="article"]').length;
+   box.textContent="글 모으는 중… "+n+"개 (계속 내려가는 중)";
+ }
+ box.textContent="긴 글 펼치는 중…";
+ for(const b of document.querySelectorAll('div[role="button"],span[role="button"]')){
+   try{ if(/더 보기|더보기|See more/.test(b.textContent||"")) b.click(); }catch(e){}
+ }
+ await s(2500);
+ const arts=[...document.querySelectorAll('div[role="article"]')];
+ const seen=new Set(), out=[];
+ for(const a of arts){
+   const txt=(a.innerText||"").trim();
+   if(!txt||txt.length<8) continue;
+   const link=[...a.querySelectorAll('a[href]')].map(x=>x.href)
+     .find(h=>/\\/posts\\/|story_fbid|\\/photos\\/|\\/videos\\//.test(h))||"";
+   const key=link||txt.slice(0,120);
+   if(seen.has(key)) continue; seen.add(key);
+   const imgs=[...new Set([...a.querySelectorAll("img")].map(i=>i.src)
+     .filter(u=>/scontent|fbcdn/.test(u)&&!/\\/s32x32\\/|\\/p32x32\\/|emoji/.test(u)))];
+   out.push({text:txt.slice(0,6000),link:link,imgs:imgs});
+ }
+ const blob=new Blob([JSON.stringify(out,null,1)],{type:"application/json"});
+ const d=document.createElement("a"); d.href=URL.createObjectURL(blob);
+ d.download="tokyoksa_facebook.json"; document.body.appendChild(d); d.click();
+ box.style.background="#b8860b";
+ box.textContent="다 모았습니다 — 글 "+out.length+"개";
+ alert("다 모았습니다.\\n\\n글 "+out.length+"개 · 사진 "+out.reduce((x,y)=>x+y.imgs.length,0)+"장\\n다운로드 폴더에 tokyoksa_facebook.json 이 저장되었습니다.");
+ window.__ksaRun=0;
+})();`;
+document.getElementById("bm").href = "javascript:" + encodeURIComponent(SRC);
+document.getElementById("code").value = SRC;
+document.getElementById("cp").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(SRC); document.getElementById("cp").textContent = "복사했습니다 ✓"; }
+  catch (e) { document.getElementById("code").select(); document.execCommand("copy");
+              document.getElementById("cp").textContent = "복사했습니다 ✓"; }
+});
+</script>
+</body>
+</html>
