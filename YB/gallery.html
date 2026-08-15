@@ -27,7 +27,10 @@
   .newalb:hover{transform:translateY(-2px);background:linear-gradient(#ffe497,#f6c559);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 5px 12px rgba(150,105,20,.34);}
 
+  /* 갤러리 머리 — 배경 사진이 위아래로 넉넉히 보이도록 */
   .banner.galban{position:relative;overflow:hidden;}
+  .banner.galban .binner{padding-top:82px;padding-bottom:78px;}
+  @media (max-width:760px){ .banner.galban .binner{padding-top:52px;padding-bottom:48px;} }
 
   /* 운영진 : 앨범 고르기 · 이름 고치기 · 분류 옮기기 */
   .alb{position:relative;}
