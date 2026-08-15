@@ -162,7 +162,6 @@
           <a href="gallery.html?cat=event">행사</a>
           <a href="gallery.html?cat=club">소모임</a>
           <a href="gallery.html?cat=jobs">인재채용</a>
-          <a href="gallery.html?cat=parttime">아르바이트</a>
           <a href="gallery.html?cat=daily">일상</a>
           <a href="gallery.html?cat=etc">기타</a>
         </div>
@@ -230,7 +229,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=7";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=8";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";

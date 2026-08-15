@@ -8,14 +8,13 @@ export const CATS = [
   ["event",     "행사"],
   ["club",      "소모임"],
   ["jobs",      "인재채용"],
-  ["parttime",  "아르바이트"],
   ["daily",     "일상"],
   ["etc",       "기타"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
 const ALBUM_NAME = {
   assembly: "{y}년 총회", event: "{y}년 행사", club: "{y}년 소모임",
-  jobs: "{y}년 인재채용", parttime: "{y}년 아르바이트", daily: "{y}년 일상", etc: "{y}년 기타",
+  jobs: "{y}년 인재채용", daily: "{y}년 일상", etc: "{y}년 기타",
 };
 
 const iso = (d) => (d || "").replace(/\./g, "-").slice(0, 10);
