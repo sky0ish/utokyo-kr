@@ -287,6 +287,8 @@ function render() {
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
        data-key="${a.key}">
       <span class="sq">
+        <input type="checkbox" class="apick" title="이 앨범 고르기">
+        <button class="edit" title="사진첩 이름 고치기">✎ 사진이름</button>
         ${a.ownerAdmin
           ? '<span class="mine">관리자</span>'
           : (a.ownerName ? `<span class="mine">공유자(${esc(a.ownerName)})</span>`
