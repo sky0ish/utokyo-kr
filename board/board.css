@@ -99,9 +99,10 @@ body.yb .topbar a:hover{color:#bfe8c2;}
 body.yb .banner{background:linear-gradient(rgba(14,26,16,.58),rgba(12,24,14,.62)),url('/images/yb_board_arch.jpg?v=1') center 10%/cover;}
 /* 갤러리 화면은 벚꽃 야경 */
 body.yb.gal .banner{background:
-  linear-gradient(rgba(30,12,44,.52),rgba(20,10,34,.66)),
-  url('/images/yb_gallery_sakura.jpg') center 50%/cover;}
-body.yb.gal .banner .en{color:#f6c9e8;}
+  linear-gradient(100deg, rgba(9,26,42,.74) 0%, rgba(9,26,42,.46) 36%,
+                          rgba(9,26,42,.14) 66%, rgba(9,26,42,.06) 100%),
+  url('/images/yb_gallery_sky.jpg?v=1') center 42%/cover;}
+body.yb.gal .banner .en{color:#cfe6f7;}
 body.yb.gal .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.7);}
 
 /* MAP 화면은 도쿄 야경 — 양쪽 홈페이지 공통 */
