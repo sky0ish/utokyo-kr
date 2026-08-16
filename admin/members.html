@@ -87,11 +87,11 @@
   .gsel:focus{outline:0;border-color:#c9a24b;}
   .btn.sm.done{background:#eeeae0;border-color:#ddd6c4;color:#a09a86;font-weight:400;}
   .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
-  .cardhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .cardhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .cardhead h2{margin:0;}
   /* 오른쪽 위 : 총동문회(OB) · 학생회(YB) 가르기 */
   .orgseg{display:inline-flex;border:1px solid #d9cfae;border-radius:10px;overflow:hidden;
-    background:#fffdf6;margin-right:12px;}
+    background:#fffdf6;}
   .orgseg a{padding:9px 18px;font-size:13.5px;font-weight:600;color:#6b6350;cursor:pointer;
     border-right:1px solid #eae2c9;transition:.15s;white-space:nowrap;}
   .orgseg a:last-child{border-right:none;}
@@ -99,7 +99,7 @@
   .orgseg a.on{background:#c9a961;color:#2b2410;}
   .orgseg a.on.yb{background:#1e5230;color:#fff;}
   @media (max-width:760px){ .orgseg{margin:8px 0;} .orgseg a{padding:8px 12px;font-size:12.5px;} }
-  .csvbtns{display:flex;gap:7px;flex-wrap:wrap;}
+  .csvbtns{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap;}
   .btn.csvtop{padding:8px 16px;font-size:13px;background:#fff;border:1px solid #ddcb9e;color:#4a3c14;
     border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;}
   .btn.csvtop:hover{background:#fdf6e6;}
@@ -113,6 +113,7 @@
     <div class="sub">가입 승인 · 안내 메일 발송 (운영진 전용)</div>
     <div class="links">
       <a href="../OB/index.html">총동문회 홈</a>
+      <a href="../YB/index.html">학생회 홈</a>
       <a href="gallery.html">갤러리 관리</a>
       <a href="index.html">게시글 수집 관리</a>
     </div>
@@ -127,7 +128,6 @@
     <!-- 회원 목록 -->
     <div class="card">
       <div class="cardhead">
-        <h2>회원 목록</h2>
         <span class="orgseg" id="orgseg"></span>
         <span class="csvbtns">
           <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV</button>
