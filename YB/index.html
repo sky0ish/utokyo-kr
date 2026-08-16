@@ -36,13 +36,14 @@
 
   /* ── 유틸바 ── */
   .utilbar{background:#132c1c;color:rgba(255,255,255,.72);font-size:12px;
-    position:sticky;top:0;z-index:110;}
+    position:sticky;top:0;z-index:110;box-shadow:0 1px 0 #132c1c;}
   .utilbar .container{display:flex;justify-content:space-between;padding-top:8px;padding-bottom:8px;}
   .utilbar a:hover{color:var(--leaf-bright);}
   .utilbar .links{display:flex;gap:18px;}
 
   /* ── 헤더 ── */
-  header.site{position:sticky;top:34px;z-index:100;background:rgba(30,82,48,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:0;}
+  header.site{position:sticky;top:34px;z-index:100;background:rgba(30,82,48,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:0;
+    box-shadow:0 1px 0 rgba(30,82,48,1);}
   header.site .container{display:flex;align-items:center;justify-content:space-between;height:80px;}
   .logo{display:flex;align-items:center;gap:13px;}
   .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--leaf);display:flex;align-items:center;justify-content:center;}
@@ -88,8 +89,8 @@
   .block.hasbanner{padding-top:0;}
   /* 상단 메뉴가 덮지 않도록 이동 여유 */
   section[id],.cbox[id],.scard[id],.mapwrap[id]{scroll-margin-top:120px;}
-  .secbanner{position:relative;line-height:0;margin:0 0 34px;overflow:hidden;
-    box-shadow:0 -1px 0 rgba(30,82,48,1);}
+  .secbanner{position:relative;line-height:0;margin:-1px 0 34px;overflow:hidden;
+    background:#1e5230;box-shadow:0 -1px 0 rgba(30,82,48,1);}
   .secbanner img{width:100%;height:clamp(240px,34vw,430px);object-fit:cover;object-position:center 42%;display:block;}
   #council .secbanner img{height:clamp(230px,30vw,420px);object-position:center 22%;}
   .secbanner::after{content:"";position:absolute;inset:0;pointer-events:none;
