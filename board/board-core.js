@@ -118,7 +118,6 @@ export async function initBoard(ORG) {
     document.getElementById("catTabs").appendChild(ln);
     ln.innerHTML =
       `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b> ` +
-      `지금은 ${PUBLIC_CATS.map(c => CAT[c]).join(" · ")} 게시판만 보실 수 있습니다.` +
       '<a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
     // 회원 전용 탭과 「전체」 탭 숨기기
     document.querySelectorAll("#catTabs a[data-cat]").forEach(a => {
