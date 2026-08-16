@@ -76,12 +76,12 @@ export async function initBoard(ORG) {
   });
   showSearchState();
 
-  document.querySelectorAll("#catTabs a").forEach(a => {
+  document.querySelectorAll("#catTabs a[data-cat]").forEach(a => {
     a.addEventListener("click", (e) => {
       e.preventDefault();
       cat = a.dataset.cat || "";
       if (typeof memberOnlyBlocked !== "undefined") memberOnlyBlocked = null;
-      document.querySelectorAll("#catTabs a").forEach(x => x.classList.remove("on"));
+      document.querySelectorAll("#catTabs a[data-cat]").forEach(x => x.classList.remove("on"));
       a.classList.add("on");
       load();
     });
@@ -121,7 +121,7 @@ export async function initBoard(ORG) {
       `지금은 ${PUBLIC_CATS.map(c => CAT[c]).join(" · ")} 게시판만 보실 수 있습니다.` +
       '<a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
     // 회원 전용 탭과 「전체」 탭 숨기기
-    document.querySelectorAll("#catTabs a").forEach(a => {
+    document.querySelectorAll("#catTabs a[data-cat]").forEach(a => {
       const c = a.dataset.cat || "";
       if (!c || !PUBLIC_CATS.includes(c)) a.style.display = "none";
     });

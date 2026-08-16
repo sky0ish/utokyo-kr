@@ -324,7 +324,7 @@ const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 function render() {
-  document.querySelectorAll("#gtabs a").forEach(a => a.classList.toggle("on", !kw && a.dataset.c === cur));
+  document.querySelectorAll("#gtabs a[data-c]").forEach(a => a.classList.toggle("on", !kw && a.dataset.c === cur));
   if (lockedNow) {                                       // 회원 전용 분류
     document.getElementById("gcount").textContent = "";
     document.getElementById("ggrid").innerHTML =
@@ -489,9 +489,11 @@ function enableMerge(list) {
 
 }
 
-document.querySelectorAll("#gtabs a").forEach(a => a.addEventListener("click", (e) => {
+document.querySelectorAll("#gtabs a[data-c]").forEach(a => a.addEventListener("click", (e) => {
   e.preventDefault();
   cur = a.dataset.c;
+  kw = "";                       // 갈래를 누르면 검색은 풀린다
+  showSearchState();
   history.replaceState(null, "", "?cat=" + cur);
   render();
 }));
