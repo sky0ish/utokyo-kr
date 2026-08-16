@@ -93,6 +93,25 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
       document.getElementById("actions").style.display = "flex";
       // 운영진 : 이 글을 목록 맨 위 「알림」 으로 고정
       if (meProfile && meProfile.is_admin) {
+        // 운영진 : 이 글을 다른 게시판으로 옮기기
+        const mv = document.createElement("select");
+        mv.className = "btn";
+        mv.title = "다른 게시판으로 옮기기";
+        mv.innerHTML = '<option value="">↔ 게시판 옮기기…</option>' +
+          Object.entries(CAT).map(([k, v]) =>
+            `<option value="${k}"${k === p.category ? " selected" : ""}>${v}</option>`).join("");
+        mv.addEventListener("change", async () => {
+          const to = mv.value;
+          if (!to || to === p.category) return;
+          if (!confirm(`이 글을 「${CAT[to]}」 게시판으로 옮길까요?`)) { mv.value = p.category; return; }
+          mv.disabled = true;
+          const { error } = await sb.from("posts").update({ category: to }).eq("id", p.id);
+          mv.disabled = false;
+          if (error) { alert("옮기지 못했습니다: " + error.message); mv.value = p.category; return; }
+          location.href = "post.html?id=" + p.id;
+        });
+        document.getElementById("actions").appendChild(mv);
+
         const pin = document.createElement("button");
         pin.className = "btn pin" + (p.pinned ? " on" : "");
         pin.textContent = p.pinned ? "알림 고정 해제" : "알림으로 고정";
