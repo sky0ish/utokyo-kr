@@ -97,10 +97,12 @@ export async function initBoard(ORG) {
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
     const st = document.createElement("span");
-    st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+    st.textContent = (p && p.name) ? `[${p.name}님 로그인중]` : "[로그인중]";
+    st.style.color = "#7fc48a"; st.style.fontWeight = "700";
     const my = document.createElement("a");
     my.href = "/auth/mypage.html";
-    my.textContent = (p && p.name) ? p.name + "님" : "내 정보";
+    my.textContent = "내 정보";
+    my.title = "내 정보 보기 · 고치기";
     const out = document.createElement("a");
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });

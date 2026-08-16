@@ -44,8 +44,24 @@
 <script type="module">
 import { sb, showMsg, currentUser } from "./auth.js";
 
-// 이미 로그인 상태면 마이페이지로
-currentUser().then(u => { if (u) location.href = "mypage.html"; });
+// 로그인 뒤에 돌아갈 곳 — ?next= 가 있으면 그곳, 없으면 보던 화면, 그것도 없으면 통합 홈
+function backTo() {
+  const q = new URLSearchParams(location.search).get("next");
+  const pick = (u) => {
+    if (!u) return null;
+    try {
+      const t = new URL(u, location.origin);
+      if (t.origin !== location.origin) return null;      // 우리 홈페이지 안에서만
+      if (/\/auth\/(login|signup)\.html/.test(t.pathname)) return null;
+      return t.pathname + t.search + t.hash;
+    } catch (e) { return null; }
+  };
+  return pick(q) || pick(document.referrer) || "/index.html";
+}
+const NEXT = backTo();
+
+// 이미 로그인 상태면 굳이 로그인 화면을 보여주지 않는다
+currentUser().then(u => { if (u) location.href = NEXT; });
 
 const form = document.getElementById("loginForm");
 const btn = document.getElementById("btn");
@@ -69,7 +85,7 @@ form.addEventListener("submit", async (e) => {
       : "로그인 실패: " + error.message;
     showMsg(msg, m);
   } else {
-    location.href = "mypage.html";
+    location.href = NEXT;      // 내 정보는 위 메뉴의 [내 정보] 에서 언제든 고칠 수 있습니다
   }
 });
 </script>
