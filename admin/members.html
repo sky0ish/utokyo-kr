@@ -12,7 +12,12 @@
   a{text-decoration:none;color:inherit;}
   .head{background:#101d33;color:#fff;padding:20px 0;}
   .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
-  .head h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;}
+  @font-face{
+    font-family:"Vitro Core";
+    src:url("../fonts/VitroCore.woff2") format("woff2");
+    font-weight:400 900; font-style:normal; font-display:swap;
+  }
+  .head h1{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;font-size:24px;font-weight:600;}
   .head .sub{margin-top:5px;font-size:12.5px;color:rgba(255,255,255,.55);}
   .head .links{margin-top:12px;display:flex;gap:14px;font-size:13px;flex-wrap:wrap;}
   .head .links a{color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.25);}
