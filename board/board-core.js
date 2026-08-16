@@ -89,7 +89,7 @@ export async function initBoard(ORG) {
   (document.querySelector('#catTabs a[data-cat="' + cat + '"]') || document.querySelector('#catTabs a[data-cat=""]')).classList.add("on");
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
-  const PUBLIC_CATS = ORG === "YB" ? ["notice", "jobs", "parttime"] : ["notice"];
+  const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다
   let memberOnlyBlocked = null;
   const user = await currentUser();
   if (user) {
