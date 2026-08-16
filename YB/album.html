@@ -162,6 +162,19 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
+  // 총회를 뺀 나머지는 회원만
+  {
+    let ok = false;
+    try { const u = await currentUser(); const me = u ? await myProfile() : null;
+          ok = !!(me && (me.approved || me.is_admin)); } catch (e) {}
+    if (!ok && cat !== "assembly") {
+      document.getElementById("agrid").innerHTML =
+        '<div class="aempty" style="grid-column:1/-1;">이 사진첩은 회원만 보실 수 있습니다.<br><br>' +
+        '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
+        '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+      throw new Error("member only");
+    }
+  }
   const id  = q.get("id");
   const { byCat } = await loadGallery();
   const list = byCat[cat] || [];

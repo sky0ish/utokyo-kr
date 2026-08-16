@@ -271,13 +271,18 @@ if (!isMember) {
   const n = document.getElementById("memnote");
   n.className = "memnote on"; n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
     ' <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
-  if (cur === "all") cur = CATS[0][0];        // 비회원은 「전체」 대신 첫 갈래부터
+  if (cur === "all") cur = "assembly";        // 비회원은 「전체」 대신 총회부터
 }
+// 총회를 뺀 나머지는 회원만
+const MEMBER_ONLY = CATS.map(([k]) => k).filter(k => k !== "assembly");
+const locked = (c) => !isMember && MEMBER_ONLY.includes(c);
+const OPEN = CATS.filter(([k]) => !locked(k));
+const lockedNow = locked(cur);
 let byCat = G.byCat;
 byCat.all = G.albums;          // 「전체」 — 모든 사진첩을 한 자리에
-const ALL = G.albums;
+const ALL = G.albums.filter(a => !locked(a.cat));
 
-document.getElementById("gtabs").innerHTML = (isMember ? [["all","전체"]].concat(CATS) : CATS).map(([k, v]) =>
+document.getElementById("gtabs").innerHTML = (isMember ? [["all","전체"]].concat(CATS) : OPEN).map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
 
 
@@ -310,6 +315,14 @@ const esc = s => String(s == null ? "" : s)
 
 function render() {
   document.querySelectorAll("#gtabs a").forEach(a => a.classList.toggle("on", !kw && a.dataset.c === cur));
+  if (lockedNow) {                                       // 회원 전용 갈래
+    document.getElementById("gcount").textContent = "";
+    document.getElementById("ggrid").innerHTML =
+      '<div class="gempty" style="grid-column:1/-1;"><b>' + (CAT_NAME[cur] || "") + '</b> 사진첩은 회원만 보실 수 있습니다.<br><br>' +
+      '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
+      '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+    return;
+  }
   const list = kw ? matched() : (byCat[cur] || []);      // 검색 중에는 모든 분류에서 찾는다
   const shots = list.reduce((s, a) => s + a.photos.length, 0);
   document.getElementById("gcount").textContent = kw
