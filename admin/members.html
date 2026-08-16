@@ -224,7 +224,7 @@ async function start() {
   // 어느 홈페이지에서 들어왔는지 — 그 쪽 회원을 위에 보여준다
   let HOME = (new URLSearchParams(location.search).get("org") || "").toUpperCase();
   if (HOME !== "OB" && HOME !== "YB") HOME = "";
-  const HOME_NAME = { OB: "재한 도쿄대학 총동문회", YB: "도쿄대학 한국인학생회" };
+  const HOME_NAME = { OB: "재한 도쿄대학 총동문회(OB)", YB: "도쿄대학 한국인학생회(YB)" };
   const other = (o) => (o === "OB" ? "YB" : "OB");
 
   async function load() {
@@ -257,7 +257,7 @@ async function start() {
     const order = HOME === "YB" ? ["YB", "OB"] : ["OB", "YB"];
     document.getElementById("orgseg").innerHTML =
       order.map(o => `<a data-o="${o}"${o === "YB" ? ' class="yb"' : ""}>${HOME_NAME[o]}</a>`).join("") +
-      '<a data-o="all">전체 회원</a>';
+      '<a data-o="all">도쿄대학 한국인 총동문회(전체)</a>';
     orgF = HOME || "all";                       // 처음에는 들어온 쪽 명단부터
   }
   const homeFirst = (a, b) => {                 // 들어온 홈페이지 쪽을 위로
@@ -321,7 +321,7 @@ async function start() {
     document.getElementById("listMsg").textContent =
       (() => {
         const inOrg = rows.filter(byOrg);
-        const who = orgF === "OB" ? "재한 도쿄대학 총동문회" : orgF === "YB" ? "도쿄대학 한국인학생회" : "전체";
+        const who = orgF === "OB" ? "재한 도쿄대학 총동문회(OB)" : orgF === "YB" ? "도쿄대학 한국인학생회(YB)" : "도쿄대학 한국인 총동문회(전체)";
         const ob = rows.filter(r => r.member_type === "OB").length;
         const yb = rows.filter(r => r.member_type === "YB").length;
         return `${who} ${inOrg.length}명 · 승인 ${inOrg.filter(r=>r.approved).length}명 · ` +
