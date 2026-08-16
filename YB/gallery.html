@@ -19,6 +19,11 @@
   .gtabs a.on{color:#1e5230;background:linear-gradient(#e4f3e7,#cfe7d6);border-color:#a9cfb4;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(30,82,48,.2);transform:translateY(1px);}
   .gcount{font-size:13px;color:#98a89d;margin:14px 0 20px;}
+  .memnote{margin:14px 0 4px;padding:14px 18px;border-radius:10px;font-size:14px;background:#eef5ef;border:1px solid #cfe3d4;color:#3e5344;
+    line-height:1.6;display:none;}
+  .memnote.on{display:block;}
+  .memnote b{display:block;margin-bottom:4px;}
+  .memnote a{font-weight:600;border-bottom:1px solid currentColor;}
   .gbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:14px 0 20px;}
   .newalb{display:none;padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;
     font-family:inherit;border:1px solid #d8a12c;background:linear-gradient(#ffdc80,#f2ba43);color:#4a3608;
@@ -212,6 +217,7 @@
     <button class="clr" id="qClr">✕ 검색 해제</button>
   </div>
   <div class="gtabs" id="gtabs"></div>
+  <div class="memnote" id="memnote"></div>
   <div class="gbar">
     <div class="gcount" id="gcount" style="margin:0;"></div>
     <button class="newalb" id="newAlb">＋ 사진첩 만들기</button>
@@ -255,11 +261,23 @@ let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
 
 const G = await loadGallery();
+let isMember = false;
+try {
+  const u0 = await currentUser();
+  const p0 = u0 ? await myProfile() : null;
+  isMember = !!(p0 && (p0.approved || p0.is_admin));
+} catch (e) {}
+if (!isMember) {
+  const n = document.getElementById("memnote");
+  n.className = "memnote on"; n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
+    ' <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
+  if (cur === "all") cur = CATS[0][0];        // 비회원은 「전체」 대신 첫 갈래부터
+}
 let byCat = G.byCat;
 byCat.all = G.albums;          // 「전체」 — 모든 사진첩을 한 자리에
 const ALL = G.albums;
 
-document.getElementById("gtabs").innerHTML = [["all","전체"]].concat(CATS).map(([k, v]) =>
+document.getElementById("gtabs").innerHTML = (isMember ? [["all","전체"]].concat(CATS) : CATS).map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
 
 

@@ -115,14 +115,15 @@ export async function initBoard(ORG) {
   } else {
     document.getElementById("loginNotice").style.display = "block";
     document.getElementById("loginNotice").innerHTML =
-      `<b>${PUBLIC_CATS.map(c => CAT[c]).join(" · ")}</b> 게시판은 누구나 보실 수 있습니다. ` +
-      `그 밖의 게시판은 로그인 후 이용해주세요. ` +
+      `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b><br>` +
+      `지금은 <b>${PUBLIC_CATS.map(c => CAT[c]).join(" · ")}</b> 게시판만 보실 수 있습니다. ` +
       '<a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
-    // 회원 전용 탭 숨기기
+    // 회원 전용 탭과 「전체」 탭 숨기기
     document.querySelectorAll("#catTabs a").forEach(a => {
       const c = a.dataset.cat || "";
-      if (c && !PUBLIC_CATS.includes(c)) a.style.display = "none";
+      if (!c || !PUBLIC_CATS.includes(c)) a.style.display = "none";
     });
+    if (!cat) cat = PUBLIC_CATS[0];            // 비회원은 「전체」 대신 공개 게시판부터
     if (cat && !PUBLIC_CATS.includes(cat)) {   // 회원 전용 게시판으로 바로 들어온 경우
       memberOnlyBlocked = CAT[cat] || cat;
     }
