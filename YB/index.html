@@ -90,7 +90,9 @@
   .block.hasbanner{padding-top:0;background:#1e5230;}
   .block.hasbanner > .container{background:transparent;}
   /* 상단 메뉴가 덮지 않도록 이동 여유 */
-  section[id],.cbox[id],.scard[id],.mapwrap[id]{scroll-margin-top:120px;}
+  /* 메뉴로 이동할 때 멈추는 위치 — 위 줄(34px)+메뉴(80px)=114px 보다 살짝 위로 잡아
+     사진이 메뉴 밑으로 들어가게 한다. 그래야 틈으로 흰 바탕이 보이지 않는다. */
+  section[id],.cbox[id],.scard[id],.mapwrap[id]{scroll-margin-top:110px;}
   .secbanner{position:relative;line-height:0;margin:-1px 0 0;overflow:hidden;
     background:#1e5230;box-shadow:0 -2px 0 rgba(30,82,48,1);}
   .secbanner + .container{padding-top:34px;}
