@@ -173,6 +173,20 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
+  // 회원만 볼 수 있는 분류
+  {
+    const MEMBER_ONLY = ["club", "faculty", "forum", "old", "daily", "etc"];
+    let ok = false;
+    try { const u = await currentUser(); const me = u ? await myProfile() : null;
+          ok = !!(me && (me.approved || me.is_admin)); } catch (e) {}
+    if (!ok && MEMBER_ONLY.includes(cat)) {
+      document.getElementById("agrid").innerHTML =
+        '<div class="aempty" style="grid-column:1/-1;">이 사진첩은 동문회 회원만 보실 수 있습니다.<br><br>' +
+        '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
+        '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+      throw new Error("member only");
+    }
+  }
   const id  = q.get("id");
   const { byCat } = await loadGallery();
   const list = byCat[cat] || [];

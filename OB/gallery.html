@@ -256,12 +256,24 @@ import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=18";
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (!CATS.some(c => c[0] === cur)) cur = "assembly";
 
+// ── 회원만 볼 수 있는 분류 ──
+const MEMBER_ONLY = ["club", "faculty", "forum", "old", "daily", "etc"];
+let isMember = false;
+try {
+  const u0 = await currentUser();
+  const p0 = u0 ? await myProfile() : null;
+  isMember = !!(p0 && (p0.approved || p0.is_admin));
+} catch (e) {}
+const locked = (c) => !isMember && MEMBER_ONLY.includes(c);
+const OPEN = CATS.filter(([k]) => !locked(k));
+const lockedNow = locked(cur);
+
 const { byCat, albums: allAlbums } = await loadGallery();
 
-document.getElementById("gtabs").innerHTML = CATS.map(([k, v]) =>
+document.getElementById("gtabs").innerHTML = OPEN.map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
 
-const ALL = allAlbums;
+const ALL = allAlbums.filter(a => !locked(a.cat));
 // ── 키워드 검색 (앨범 이름 · 날짜 · 사진 설명) ──
 let kw = (new URLSearchParams(location.search).get("q") || "").trim();
 const hay = a => [a.title, a.date, (a.date || "").replace(/-/g, "."),
@@ -291,6 +303,14 @@ const esc = s => String(s == null ? "" : s)
 
 function render() {
   document.querySelectorAll("#gtabs a").forEach(a => a.classList.toggle("on", !kw && a.dataset.c === cur));
+  if (lockedNow) {                                       // 회원 전용 분류
+    document.getElementById("gcount").textContent = "";
+    document.getElementById("ggrid").innerHTML =
+      '<div class="gempty" style="grid-column:1/-1;"><b>' + (CAT_NAME[cur] || "") + '</b> 사진첩은 동문회 회원만 보실 수 있습니다.<br><br>' +
+      '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
+      '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+    return;
+  }
   const list = kw ? matched() : (byCat[cur] || []);      // 검색 중에는 모든 분류에서 찾는다
   const shots = list.reduce((s, a) => s + a.photos.length, 0);
   document.getElementById("gcount").textContent = kw
