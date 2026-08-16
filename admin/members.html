@@ -123,11 +123,7 @@
     <div class="card">
       <div class="cardhead">
         <h2>회원 목록</h2>
-        <span class="orgseg" id="orgseg">
-          <a data-o="all" class="on">전체 회원</a>
-          <a data-o="OB">재한 도쿄대학 총동문회</a>
-          <a data-o="YB" class="yb">도쿄대학 한국인학생회</a>
-        </span>
+        <span class="orgseg" id="orgseg"></span>
         <span class="csvbtns">
           <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV</button>
           <button class="btn csvtop" id="csvGuest">⤓ 준회원만 CSV</button>
@@ -256,6 +252,14 @@ async function start() {
   }
 
   const byOrg = (r) => orgF === "all" ? true : (r.member_type || "") === orgF;
+  // 소속 단추 — 들어온 홈페이지 쪽이 앞에
+  {
+    const order = HOME === "YB" ? ["YB", "OB"] : ["OB", "YB"];
+    document.getElementById("orgseg").innerHTML =
+      order.map(o => `<a data-o="${o}"${o === "YB" ? ' class="yb"' : ""}>${HOME_NAME[o]}</a>`).join("") +
+      '<a data-o="all">전체 회원</a>';
+    orgF = HOME || "all";                       // 처음에는 들어온 쪽 명단부터
+  }
   const homeFirst = (a, b) => {                 // 들어온 홈페이지 쪽을 위로
     if (!HOME) return 0;
     const ra = (a.member_type === HOME) ? 0 : 1, rb = (b.member_type === HOME) ? 0 : 1;
@@ -308,22 +312,10 @@ async function start() {
   }
 
   function render() {
-    if (HOME) {                                   // 들어온 홈페이지를 안내
-    const seg = document.getElementById("orgseg");
-    if (seg) seg.insertAdjacentHTML("beforebegin",
-      '<span style="margin-right:12px;font-size:13px;color:#8a8676;">' +
-      HOME_NAME[HOME] + ' 쪽에서 들어오셨습니다 — 이 명단이 먼저 나옵니다.</span>');
-  }
-  document.querySelectorAll("#orgseg a").forEach(a =>
+    document.querySelectorAll("#orgseg a").forEach(a =>
     a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
   document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.f === filter));
-    if (HOME) {                                   // 들어온 홈페이지를 안내
-    const seg = document.getElementById("orgseg");
-    if (seg) seg.insertAdjacentHTML("beforebegin",
-      '<span style="margin-right:12px;font-size:13px;color:#8a8676;">' +
-      HOME_NAME[HOME] + ' 쪽에서 들어오셨습니다 — 이 명단이 먼저 나옵니다.</span>');
-  }
-  document.querySelectorAll("#orgseg a").forEach(a => a.classList.toggle("on", a.dataset.o === orgF));
+    document.querySelectorAll("#orgseg a").forEach(a => a.classList.toggle("on", a.dataset.o === orgF));
     const list = pick(filter).slice().sort(homeFirst);
     document.getElementById("listMsg").className = "msg";
     document.getElementById("listMsg").textContent =
@@ -487,12 +479,6 @@ async function start() {
   document.getElementById("okWait").addEventListener("click", () =>
     bulk(rows.filter(r => !r.approved).map(r => r.id), true));
 
-  if (HOME) {                                   // 들어온 홈페이지를 안내
-    const seg = document.getElementById("orgseg");
-    if (seg) seg.insertAdjacentHTML("beforebegin",
-      '<span style="margin-right:12px;font-size:13px;color:#8a8676;">' +
-      HOME_NAME[HOME] + ' 쪽에서 들어오셨습니다 — 이 명단이 먼저 나옵니다.</span>');
-  }
   document.querySelectorAll("#orgseg a").forEach(a =>
     a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
   document.querySelectorAll("#tabs a").forEach(a =>
