@@ -225,6 +225,11 @@ function esc(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;","
 
 async function start() {
   let rows = [], filter = "all", orgF = "all";
+  // 어느 홈페이지에서 들어왔는지 — 그 쪽 회원을 위에 보여준다
+  let HOME = (new URLSearchParams(location.search).get("org") || "").toUpperCase();
+  if (HOME !== "OB" && HOME !== "YB") HOME = "";
+  const HOME_NAME = { OB: "재한 도쿄대학 총동문회", YB: "도쿄대학 한국인학생회" };
+  const other = (o) => (o === "OB" ? "YB" : "OB");
 
   async function load() {
     // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
@@ -251,6 +256,11 @@ async function start() {
   }
 
   const byOrg = (r) => orgF === "all" ? true : (r.member_type || "") === orgF;
+  const homeFirst = (a, b) => {                 // 들어온 홈페이지 쪽을 위로
+    if (!HOME) return 0;
+    const ra = (a.member_type === HOME) ? 0 : 1, rb = (b.member_type === HOME) ? 0 : 1;
+    return ra - rb;
+  };
   const pick = (f) => rows.filter(r => byOrg(r) && (
     f === "all" ? true :
     f === "wait" ? !r.approved :
@@ -298,11 +308,23 @@ async function start() {
   }
 
   function render() {
-    document.querySelectorAll("#orgseg a").forEach(a =>
+    if (HOME) {                                   // 들어온 홈페이지를 안내
+    const seg = document.getElementById("orgseg");
+    if (seg) seg.insertAdjacentHTML("beforebegin",
+      '<span style="margin-right:12px;font-size:13px;color:#8a8676;">' +
+      HOME_NAME[HOME] + ' 쪽에서 들어오셨습니다 — 이 명단이 먼저 나옵니다.</span>');
+  }
+  document.querySelectorAll("#orgseg a").forEach(a =>
     a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
   document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.f === filter));
-    document.querySelectorAll("#orgseg a").forEach(a => a.classList.toggle("on", a.dataset.o === orgF));
-    const list = pick(filter);
+    if (HOME) {                                   // 들어온 홈페이지를 안내
+    const seg = document.getElementById("orgseg");
+    if (seg) seg.insertAdjacentHTML("beforebegin",
+      '<span style="margin-right:12px;font-size:13px;color:#8a8676;">' +
+      HOME_NAME[HOME] + ' 쪽에서 들어오셨습니다 — 이 명단이 먼저 나옵니다.</span>');
+  }
+  document.querySelectorAll("#orgseg a").forEach(a => a.classList.toggle("on", a.dataset.o === orgF));
+    const list = pick(filter).slice().sort(homeFirst);
     document.getElementById("listMsg").className = "msg";
     document.getElementById("listMsg").textContent =
       (() => {
@@ -465,6 +487,12 @@ async function start() {
   document.getElementById("okWait").addEventListener("click", () =>
     bulk(rows.filter(r => !r.approved).map(r => r.id), true));
 
+  if (HOME) {                                   // 들어온 홈페이지를 안내
+    const seg = document.getElementById("orgseg");
+    if (seg) seg.insertAdjacentHTML("beforebegin",
+      '<span style="margin-right:12px;font-size:13px;color:#8a8676;">' +
+      HOME_NAME[HOME] + ' 쪽에서 들어오셨습니다 — 이 명단이 먼저 나옵니다.</span>');
+  }
   document.querySelectorAll("#orgseg a").forEach(a =>
     a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
   document.querySelectorAll("#tabs a").forEach(a =>

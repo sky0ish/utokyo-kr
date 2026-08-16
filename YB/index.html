@@ -762,6 +762,24 @@ try {
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
     el.append(st, my, out);
+    if (p && p.is_admin) {                       // 운영진 관리 메뉴
+      const mk = (href, text) => {
+        const a = document.createElement("a");
+        a.href = href; a.textContent = text;
+        a.style.color = "#ffdc80"; a.style.fontWeight = "600";
+        return a;
+      };
+      const appr = mk("../admin/members.html?org=YB", "⚙ 회원 승인");
+      el.append(appr, mk("../admin/gallery.html?org=YB", "⚙ 갤러리 관리"));
+      sb.from("profiles").select("id", { count: "exact", head: true }).eq("approved", false)
+        .then(({ count }) => {
+          if (count) {
+            appr.textContent = `⚙ 회원 승인 ${count}명 대기`;
+            appr.style.background = "#b3453b"; appr.style.color = "#fff";
+            appr.style.padding = "2px 9px"; appr.style.borderRadius = "100px";
+          }
+        });
+    }
     const ln = document.getElementById("loginNotice");
     if (ln) ln.remove();
   }

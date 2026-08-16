@@ -1039,8 +1039,8 @@ try {
         a.style.color = "#e8c876"; a.style.fontWeight = "600";
         return a;
       };
-      const appr = mk("../admin/members.html", "⚙ 회원 승인");
-      el.append(appr, mk("../admin/gallery.html", "⚙ 갤러리 관리"));
+      const appr = mk("../admin/members.html?org=OB", "⚙ 회원 승인");
+      el.append(appr, mk("../admin/gallery.html?org=OB", "⚙ 갤러리 관리"));
       // 승인 대기 인원을 버튼에 표시
       sb.from("profiles").select("id", { count: "exact", head: true }).eq("approved", false)
         .then(({ count }) => {
