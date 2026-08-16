@@ -20,11 +20,14 @@
   .gtabs a.on{color:#4a3c14;background:linear-gradient(#fdf1d3,#f0dfb2);border-color:#d3bd85;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(90,70,20,.2);transform:translateY(1px);}
   .gcount{font-size:13px;color:#a8a291;margin:14px 0 20px;}
-  /* 비회원 안내 — 검색창 위에 작게 */
-  .memnote{display:none;margin:0 0 10px;font-size:12.5px;line-height:1.6;color:#8a8676;}
-  .memnote.on{display:block;}
+  /* 비회원 안내 — 갈래 단추 옆에 나란히 */
+  .memnote{display:none;align-items:center;gap:6px;flex-wrap:wrap;
+    margin-left:10px;padding:9px 15px;border-radius:9px;font-size:12.5px;line-height:1.5;
+    background:#fff8e6;border:1px solid #f0d79a;color:#6b5520;}
+  .memnote.on{display:inline-flex;}
   .memnote b{font-weight:600;}
-  .memnote a{font-weight:600;border-bottom:1px solid currentColor;margin-left:2px;}
+  .memnote a{font-weight:600;border-bottom:1px solid currentColor;}
+  @media (max-width:760px){ .memnote{margin:8px 0 0;} }
   .gbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:14px 0 20px;}
   .newalb{display:none;padding:10px 20px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
     font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;
@@ -91,7 +94,7 @@
   .modal .msg.err{color:#b3453b;} .modal .msg.ok{color:#2f7a45;}
 
   /* 키워드 검색 */
-  .srch{display:flex;gap:9px;align-items:center;margin:26px 0 4px;flex-wrap:wrap;}
+  .srch{display:flex;gap:9px;align-items:center;margin:30px 0 20px;flex-wrap:wrap;}
   .srch .box{flex:1;min-width:230px;display:flex;align-items:center;background:#fff;
     border:1px solid #e0d7bf;border-radius:100px;padding:2px 6px 2px 20px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(90,70,20,.12);transition:.18s;}
@@ -200,7 +203,6 @@
 </div>
 
 <div class="gwrap">
-  <div class="memnote" id="memnote"></div>
   <div class="srch">
     <div class="box">
       <input type="search" id="q" placeholder="행사명 · 전공 · 날짜로 검색  (예: 총회, 등산, 응용화학, 2019)"
@@ -210,6 +212,7 @@
     <button class="clr" id="qClr">✕ 검색 해제</button>
   </div>
   <div class="gtabs" id="gtabs"></div>
+  <span class="memnote" id="memnote"></span>
   <div class="gbar">
     <div class="gcount" id="gcount" style="margin:0;"></div>
     <button class="newalb" id="newAlb">＋ 사진첩 만들기</button>
@@ -275,7 +278,8 @@ const OPEN = CATS.filter(([k]) => !locked(k));
 const lockedNow = locked(cur);
 if (!isMember) {
   const n = document.getElementById("memnote");
-  n.className = "memnote on"; n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
+  n.className = "memnote on";
+  document.getElementById("gtabs").appendChild(n); n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
     ' <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
 }
 

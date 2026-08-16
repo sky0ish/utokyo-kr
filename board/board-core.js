@@ -113,8 +113,10 @@ export async function initBoard(ORG) {
       el.append(mk("/admin/members.html", "⚙ 회원 승인"), mk("/admin/gallery.html", "⚙ 갤러리 관리"));
     }
   } else {
-    document.getElementById("loginNotice").style.display = "block";
-    document.getElementById("loginNotice").innerHTML =
+    const ln = document.getElementById("loginNotice");
+    ln.className = "on";
+    document.getElementById("catTabs").appendChild(ln);
+    ln.innerHTML =
       `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b> ` +
       `지금은 ${PUBLIC_CATS.map(c => CAT[c]).join(" · ")} 게시판만 보실 수 있습니다.` +
       '<a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
