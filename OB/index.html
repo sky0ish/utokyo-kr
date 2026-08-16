@@ -33,13 +33,15 @@
   .container{max-width:1140px;margin:0 auto;padding:0 24px;}
 
   /* ── 유틸바 ── */
-  .utilbar{background:#0b1526;color:rgba(255,255,255,.7);font-size:12px;}
+  .utilbar{background:#0b1526;color:rgba(255,255,255,.7);font-size:12px;
+    position:sticky;top:0;z-index:110;}
   .utilbar .container{display:flex;justify-content:space-between;padding-top:8px;padding-bottom:8px;}
   .utilbar a:hover{color:var(--gold-bright);}
   .utilbar .links{display:flex;gap:18px;}
 
   /* ── 헤더 ── */
-  header.site{position:sticky;top:0;z-index:100;background:rgba(16,29,51,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+  section[id],div[id]{scroll-margin-top:120px;}
+  header.site{position:sticky;top:34px;z-index:100;background:rgba(16,29,51,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
   header.site .container{display:flex;align-items:center;justify-content:space-between;height:80px;}
   .logo{display:flex;align-items:center;gap:13px;}
   .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}

@@ -35,13 +35,14 @@
   .container{max-width:1140px;margin:0 auto;padding:0 24px;}
 
   /* ── 유틸바 ── */
-  .utilbar{background:#132c1c;color:rgba(255,255,255,.72);font-size:12px;}
+  .utilbar{background:#132c1c;color:rgba(255,255,255,.72);font-size:12px;
+    position:sticky;top:0;z-index:110;}
   .utilbar .container{display:flex;justify-content:space-between;padding-top:8px;padding-bottom:8px;}
   .utilbar a:hover{color:var(--leaf-bright);}
   .utilbar .links{display:flex;gap:18px;}
 
   /* ── 헤더 ── */
-  header.site{position:sticky;top:0;z-index:100;background:rgba(30,82,48,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:0;}
+  header.site{position:sticky;top:34px;z-index:100;background:rgba(30,82,48,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:0;}
   header.site .container{display:flex;align-items:center;justify-content:space-between;height:80px;}
   .logo{display:flex;align-items:center;gap:13px;}
   .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--leaf);display:flex;align-items:center;justify-content:center;}
@@ -86,7 +87,7 @@
   /* ── 구간 머리 사진 위에 제목 얹기 ── */
   .block.hasbanner{padding-top:0;}
   /* 상단 메뉴가 덮지 않도록 이동 여유 */
-  section[id],.cbox[id],.scard[id],.mapwrap[id]{scroll-margin-top:84px;}
+  section[id],.cbox[id],.scard[id],.mapwrap[id]{scroll-margin-top:120px;}
   .secbanner{position:relative;line-height:0;margin:0 0 34px;overflow:hidden;
     box-shadow:0 -1px 0 rgba(30,82,48,1);}
   .secbanner img{width:100%;height:clamp(240px,34vw,430px);object-fit:cover;object-position:center 42%;display:block;}
