@@ -282,7 +282,7 @@ const lockedNow = locked(cur);
 if (!isMember) {
   const n = document.getElementById("memnote");
   n.className = "memnote on";
-  document.getElementById("gtabs").appendChild(n); n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
+  n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
     ' <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
 }
 
@@ -290,8 +290,10 @@ const { byCat, albums: allAlbums } = await loadGallery();
 
 document.getElementById("gtabs").innerHTML = OPEN.map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
-if (!isMember) document.getElementById("gtabs")
-  .appendChild(document.getElementById("memnote"));   // 안내는 갈래 단추 뒤에
+if (!isMember) {                                     // 안내는 갈래 단추 뒤에
+  const mn = document.getElementById("memnote");
+  if (mn) document.getElementById("gtabs").appendChild(mn);
+}
 
 const ALL = allAlbums.filter(a => !locked(a.cat));
 // ── 키워드 검색 (앨범 이름 · 날짜 · 사진 설명) ──
