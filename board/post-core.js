@@ -1,7 +1,7 @@
 // ─── 게시판 글보기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile } from "/auth/auth.js";
-import { applyNav } from "/board/nav.js?v=4";
+import { applyNav } from "/board/nav.js?v=5";
 
 export async function initPost(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
