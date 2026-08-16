@@ -86,11 +86,16 @@
   .hero svg.deco{position:absolute;right:-20px;bottom:-10px;height:95%;z-index:1;opacity:.5;}
 
   /* ── 구간 머리 사진 위에 제목 얹기 ── */
-  .block.hasbanner{padding-top:0;}
+  /* 사진 띠가 있는 구간은 바탕을 초록으로 — 1픽셀 틈이 생겨도 흰 줄이 보이지 않게 */
+  .block.hasbanner{padding-top:0;background:#1e5230;}
+  .block.hasbanner > .container{background:transparent;}
   /* 상단 메뉴가 덮지 않도록 이동 여유 */
   section[id],.cbox[id],.scard[id],.mapwrap[id]{scroll-margin-top:120px;}
-  .secbanner{position:relative;line-height:0;margin:-1px 0 34px;overflow:hidden;
-    background:#1e5230;box-shadow:0 -1px 0 rgba(30,82,48,1);}
+  .secbanner{position:relative;line-height:0;margin:-1px 0 0;overflow:hidden;
+    background:#1e5230;box-shadow:0 -2px 0 rgba(30,82,48,1);}
+  .secbanner + .container{padding-top:34px;}
+  .block.hasbanner{padding-bottom:0;}
+  .block.hasbanner > .container:last-child{background:var(--paper,#f7fbf7);padding-bottom:84px;}
   .secbanner img{width:100%;height:clamp(240px,34vw,430px);object-fit:cover;object-position:center 42%;display:block;}
   #council .secbanner img{height:clamp(230px,30vw,420px);object-position:center 22%;}
   .secbanner::after{content:"";position:absolute;inset:0;pointer-events:none;
