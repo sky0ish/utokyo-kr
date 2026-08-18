@@ -25,7 +25,7 @@
   <p class="desc" id="who">메일의 링크로 들어오셨습니다. 새 비밀번호를 정해주세요.</p>
 
   <form id="pwForm">
-    <label>새 비밀번호 <small style="color:#9a947f;font-weight:400;">(6자 이상)</small></label>
+    <label>새 비밀번호 <small style="color:#9a947f;font-weight:400;">(6자 이상 · 쓰시던 것과 같아도 됩니다)</small></label>
     <input type="password" id="pw1" required minlength="6" autocomplete="new-password">
     <label>새 비밀번호 다시 한 번</label>
     <input type="password" id="pw2" required minlength="6" autocomplete="new-password">
@@ -57,8 +57,13 @@ $("pwForm").addEventListener("submit", async (e) => {
   btn.disabled = true;
   const { error } = await sb.auth.updateUser({ password: $("pw1").value });
   btn.disabled = false;
-  if (error) { showMsg(msg, "바꾸지 못했습니다: " + error.message); return; }
-  showMsg(msg, "비밀번호를 바꿨습니다. 잠시 후 홈으로 이동합니다.", true);
+  // 예전과 같은 비밀번호를 넣으셔도 그대로 쓰실 수 있게 넘어간다
+  const same = error && (error.code === "same_password"
+    || /different from the old password|same.*password/i.test(error.message || ""));
+  if (error && !same) { showMsg(msg, "바꾸지 못했습니다: " + error.message); return; }
+  showMsg(msg, same
+    ? "예전에 쓰시던 비밀번호 그대로 두었습니다. 그대로 로그인하실 수 있습니다."
+    : "비밀번호를 바꿨습니다. 잠시 후 홈으로 이동합니다.", true);
   setTimeout(() => location.href = "/index.html", 1800);
 });
 </script>
