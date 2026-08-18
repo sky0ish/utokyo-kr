@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<title>로그인 | 도쿄대학 한국인 총동문회</title>
+<title>비밀번호 새로 정하기 | 도쿄대학 한국인 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -21,75 +21,46 @@
     <span class="name">도쿄대학 한국인 총동문회<small>한국인학생회 · 재한 도쿄대학 총동문회</small></span>
   </div>
 
-  <h1>로그인</h1>
-  <p class="desc">회원 전용 콘텐츠는 로그인 후 이용하실 수 있습니다.</p>
+  <h1>비밀번호 새로 정하기</h1>
+  <p class="desc" id="who">메일의 링크로 들어오셨습니다. 새 비밀번호를 정해주세요.</p>
 
-  <form id="loginForm">
-    <label>이메일</label>
-    <input type="email" id="email" required placeholder="you@example.com">
-    <label>비밀번호</label>
-    <input type="password" id="password" required>
-    <label style="display:flex;align-items:center;gap:8px;margin:14px 0 4px;font-weight:400;cursor:pointer;">
-      <input type="checkbox" id="keep" checked style="width:auto;margin:0;">
-      <span>로그인 상태 유지 <small style="color:#9a947f;">(이 브라우저에서 계속 로그인된 상태로 두기)</small></span>
-    </label>
-    <button class="primary" id="btn" type="submit">로그인</button>
+  <form id="pwForm">
+    <label>새 비밀번호 <small style="color:#9a947f;font-weight:400;">(6자 이상)</small></label>
+    <input type="password" id="pw1" required minlength="6" autocomplete="new-password">
+    <label>새 비밀번호 다시 한 번</label>
+    <input type="password" id="pw2" required minlength="6" autocomplete="new-password">
+    <button class="primary" id="btn" type="submit">비밀번호 바꾸기</button>
     <div class="msg" id="msg"></div>
   </form>
 
-  <div class="foot"><a href="find.html">아이디 · 비밀번호 찾기</a></div>
-  <div class="foot">아직 회원이 아니신가요? <a href="signup.html">회원가입</a></div>
+  <div class="foot"><a href="login.html">로그인 화면으로</a></div>
   <div class="back" style="text-align:center;"><a href="../index.html">← 통합 홈으로</a></div>
 </div>
 
 <script type="module">
 import { sb, showMsg, currentUser } from "./auth.js";
+const $ = (id) => document.getElementById(id);
 
-// 로그인 뒤에 돌아갈 곳 — ?next= 가 있으면 그곳, 없으면 보던 화면, 그것도 없으면 통합 홈
-function backTo() {
-  const q = new URLSearchParams(location.search).get("next");
-  const pick = (u) => {
-    if (!u) return null;
-    try {
-      const t = new URL(u, location.origin);
-      if (t.origin !== location.origin) return null;      // 우리 홈페이지 안에서만
-      if (/\/auth\/(login|signup)\.html/.test(t.pathname)) return null;
-      return t.pathname + t.search + t.hash;
-    } catch (e) { return null; }
-  };
-  return pick(q) || pick(document.referrer) || "/index.html";
+// 메일 링크를 눌러 들어오면 잠시 로그인된 상태가 됩니다
+const u = await currentUser();
+if (!u) {
+  $("who").textContent = "메일에 있는 링크로 들어오셔야 비밀번호를 바꾸실 수 있습니다.";
+  $("pwForm").style.display = "none";
+} else {
+  $("who").textContent = (u.email || "") + " 의 새 비밀번호를 정해주세요.";
 }
-const NEXT = backTo();
 
-// 이미 로그인 상태면 굳이 로그인 화면을 보여주지 않는다
-currentUser().then(u => { if (u) location.href = NEXT; });
-
-const form = document.getElementById("loginForm");
-const btn = document.getElementById("btn");
-const msg = document.getElementById("msg");
-
-form.addEventListener("submit", async (e) => {
+$("pwForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  const msg = $("msg"), btn = $("btn");
+  if ($("pw1").value !== $("pw2").value) { showMsg(msg, "두 번 넣으신 비밀번호가 서로 다릅니다."); return; }
   btn.disabled = true;
-  // 체크 해제 시에는 창을 닫으면 로그아웃되도록 표시해 둔다
-  try { localStorage.setItem("utokyo-keep", document.getElementById("keep").checked ? "1" : "0"); } catch (e) {}
-  const { error } = await sb.auth.signInWithPassword({
-    email: document.getElementById("email").value.trim(),
-    password: document.getElementById("password").value,
-  });
+  const { error } = await sb.auth.updateUser({ password: $("pw1").value });
   btn.disabled = false;
-  if (error) {
-    const m = error.message.includes("Invalid login")
-      ? "이메일 또는 비밀번호가 올바르지 않습니다."
-      : error.message.includes("Email not confirmed")
-      ? "이메일 인증이 아직 완료되지 않았습니다. 받은편지함의 인증 메일을 확인해주세요."
-      : "로그인 실패: " + error.message;
-    showMsg(msg, m);
-  } else {
-    location.href = NEXT;      // 내 정보는 위 메뉴의 [내 정보] 에서 언제든 고칠 수 있습니다
-  }
+  if (error) { showMsg(msg, "바꾸지 못했습니다: " + error.message); return; }
+  showMsg(msg, "비밀번호를 바꿨습니다. 잠시 후 홈으로 이동합니다.", true);
+  setTimeout(() => location.href = "/index.html", 1800);
 });
 </script>
-
 </body>
 </html>
