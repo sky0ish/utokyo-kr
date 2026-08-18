@@ -498,11 +498,13 @@ async function start() {
   function targets() {
     return targetRows().map(r => (r.email || "").trim()).filter(Boolean);
   }
-  function refreshEmails() {
+  function refreshEmails(keepMsg) {
     const list = targets();
     document.getElementById("emails").value = list.join(", ");
-    document.getElementById("mailMsg").className = "msg";
-    document.getElementById("mailMsg").textContent = `받는 사람 ${list.length}명`;
+    if (!keepMsg) {                       // 보내기 결과 문구는 지우지 않는다
+      document.getElementById("mailMsg").className = "msg";
+      document.getElementById("mailMsg").textContent = `받는 사람 ${list.length}명`;
+    }
     drawChips();
   }
   document.getElementById("target").addEventListener("change", () => {
@@ -563,14 +565,19 @@ async function start() {
 
   // ── 지금 보내기 (Supabase Edge Function → Resend) ──
   document.getElementById("sendBtn").addEventListener("click", async () => {
+   const msgEl = document.getElementById("mailMsg");
+   try {
     const btn = document.getElementById("sendBtn");
-    const msg = document.getElementById("mailMsg");
+    const msg = msgEl;
     const list = targets();
     const subject = document.getElementById("subj").value.trim();
     const text = document.getElementById("body").value;
     if (!list.length) { msg.className = "msg err"; msg.textContent = "받는 사람이 없습니다."; return; }
     if (!subject || !text.trim()) { msg.className = "msg err"; msg.textContent = "제목과 내용을 입력해주세요."; return; }
-    if (!confirm(`${list.length}명에게 메일을 보낼까요?\n\n제목: ${subject}`)) return;
+    if (!confirm(`${list.length}명에게 메일을 보낼까요?\n\n제목: ${subject}`)) {
+      msg.className = "msg err"; msg.textContent = "보내기를 취소했습니다.";
+      return;
+    }
 
     btn.disabled = true;
     msg.className = "msg"; msg.textContent = `보내는 중… (${list.length}명)`;
@@ -607,7 +614,12 @@ async function start() {
     msg.className = "msg " + (data?.ok ? "ok" : "err");
     msg.textContent = `${okCount}명에게 보냈습니다.` +
       (data?.failed?.length ? ` (일부 실패: ${data.failed[0].reason})` : " 보낸 분들은 다음부터 대상에서 빠집니다.");
-    refreshEmails();
+    refreshEmails(true);
+   } catch (e) {
+    document.getElementById("sendBtn").disabled = false;
+    msgEl.className = "msg err";
+    msgEl.textContent = "보내기 도중 문제가 생겼습니다: " + (e && e.message ? e.message : String(e));
+   }
   });
 
   // ── 직접 보낸 경우 수동으로 기록 ──
@@ -619,7 +631,7 @@ async function start() {
     await markSent(list);
     msg.className = "msg ok";
     msg.textContent = `${list.length}명을 보낸 것으로 기록했습니다.`;
-    refreshEmails();
+    refreshEmails(true);
   });
 
   document.getElementById("copyBtn").addEventListener("click", async () => {
