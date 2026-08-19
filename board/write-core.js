@@ -1,7 +1,7 @@
 // ─── 게시판 글쓰기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile } from "/auth/auth.js";
-import { applyNav } from "/board/nav.js?v=5";
+import { applyNav } from "/board/nav.js?v=8";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -108,6 +108,66 @@ export async function initWrite(ORG) {
     const preCat = new URLSearchParams(location.search).get("cat");
     setCat(CATS[preCat] ? preCat : Object.keys(CATS)[0]);
 
+    // ── 파일 첨부 ──
+    let files = [];                              // 이미 올라간 것 {name,path,size,type}
+    let picked = [];                             // 이번에 새로 고른 것 (File)
+    const fdrop = document.getElementById("fdrop");
+    const fInput = document.getElementById("files");
+    const flist = document.getElementById("flist");
+    const sizeText = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + "MB"
+                          : n >= 1024 ? Math.round(n / 1024) + "KB" : n + "B";
+
+    function drawFiles() {
+      if (!flist) return;
+      const rows = files.map((f, i) =>
+        `<div class="fitem"><span class="fn">${f.name}</span>` +
+        `<span class="fs">${sizeText(f.size || 0)}</span>` +
+        `<button type="button" class="fx" data-k="old" data-i="${i}" title="빼기">✕</button></div>`)
+        .concat(picked.map((f, i) =>
+        `<div class="fitem"><span class="fn">${f.name}</span>` +
+        `<span class="fs">${sizeText(f.size)}</span>` +
+        `<button type="button" class="fx" data-k="new" data-i="${i}" title="빼기">✕</button></div>`));
+      flist.innerHTML = rows.join("");
+      flist.querySelectorAll(".fx").forEach(b => b.addEventListener("click", () => {
+        const i = +b.dataset.i;
+        if (b.dataset.k === "old") files.splice(i, 1); else picked.splice(i, 1);
+        drawFiles();
+      }));
+    }
+    function addFiles(list) {
+      for (const f of list) {
+        if (f.size > 26214400) { alert(`${f.name} 은 25MB 가 넘어 넣을 수 없습니다.`); continue; }
+        if (!picked.some(x => x.name === f.name && x.size === f.size)) picked.push(f);
+      }
+      drawFiles();
+    }
+    if (fdrop) {
+      fdrop.addEventListener("click", () => fInput.click());
+      fdrop.addEventListener("dragover", e => { e.preventDefault(); fdrop.classList.add("on"); });
+      fdrop.addEventListener("dragleave", () => fdrop.classList.remove("on"));
+      fdrop.addEventListener("drop", e => {
+        e.preventDefault(); fdrop.classList.remove("on");
+        addFiles(e.dataTransfer.files);
+      });
+      fInput.addEventListener("change", () => { addFiles(fInput.files); fInput.value = ""; });
+    }
+
+    /** 고른 파일을 올리고 첨부 목록을 돌려준다 */
+    async function uploadPicked(msg) {
+      const out = files.slice();
+      for (let i = 0; i < picked.length; i++) {
+        const f = picked[i];
+        if (msg) msg.textContent = `파일 올리는 중… (${i + 1}/${picked.length}) ${f.name}`;
+        const safe = f.name.replace(/[^\w.\-가-힣]/g, "_");
+        const path = `${org}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safe}`;
+        const up = await sb.storage.from("board").upload(path, f, { cacheControl: "3600" });
+        if (up.error) throw new Error(`${f.name} — ${up.error.message}`);
+        out.push({ name: f.name, path, size: f.size, type: f.type || "" });
+      }
+      picked = [];
+      return out;
+    }
+
     // 수정 모드
     if (editId) {
       document.getElementById("pageTitle").textContent = "글 수정";
@@ -119,6 +179,10 @@ export async function initWrite(ORG) {
         setCat(p.category);
         if (m && (TAGS[p.category] || []).includes(m[1].trim())) { headTag = m[1].trim(); renderTags(); }
         document.getElementById("content").value = p.content;
+        let fs = p.files;
+        if (typeof fs === "string") { try { fs = JSON.parse(fs); } catch (e) { fs = null; } }
+        files = Array.isArray(fs) ? fs : [];
+        drawFiles();
       }
     }
 
@@ -133,6 +197,18 @@ export async function initWrite(ORG) {
         return;
       }
       btn.disabled = true;
+      msg.className = "msg";
+      let attached;
+      try {
+        attached = await uploadPicked(msg);
+      } catch (err) {
+        btn.disabled = false;
+        msg.className = "msg err";
+        msg.textContent = "파일을 올리지 못했습니다: " + err.message +
+          " — board/post_files.sql 을 실행하셨는지 확인해주세요.";
+        return;
+      }
+      msg.textContent = "";
       const rawTitle = document.getElementById("title").value.trim();
       const row = {
         title: (headTag ? `[${headTag}] ` : "") + rawTitle,
@@ -140,6 +216,7 @@ export async function initWrite(ORG) {
         category: category,
         visibility: PUBLIC_CATS.includes(category) ? "public" : "members",
         content: document.getElementById("content").value,
+        files: attached.length ? attached : null,
       };
       let res;
       if (editId) {

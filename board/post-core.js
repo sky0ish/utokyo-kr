@@ -1,7 +1,23 @@
 // ─── 게시판 글보기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile } from "/auth/auth.js";
-import { applyNav } from "/board/nav.js?v=5";
+import { applyNav } from "/board/nav.js?v=8";
+
+/** 붙어 있는 파일 목록 */
+function fileBox(list) {
+  if (!Array.isArray(list) || !list.length) return "";
+  const size = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + "MB"
+                    : n >= 1024 ? Math.round(n / 1024) + "KB" : (n || 0) + "B";
+  const esc = (t) => String(t == null ? "" : t)
+    .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const rows = list.map(f => {
+    const { data } = sb.storage.from("board").getPublicUrl(f.path);
+    return `<a class="pfile" href="${data.publicUrl}" download="${esc(f.name)}" target="_blank" rel="noopener">` +
+           `<span class="pfi">📎</span><span class="pfn">${esc(f.name)}</span>` +
+           `<span class="pfs">${size(f.size)}</span></a>`;
+  }).join("");
+  return `<div class="pfiles"><div class="pft">첨부파일 ${list.length}개</div>${rows}</div>`;
+}
 
 export async function initPost(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -63,6 +79,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
 
   const { data: p, error } = await sb.from("posts").select("*").eq("id", id).single();
   if (p && typeof p.images === "string") { try { p.images = JSON.parse(p.images); } catch (e) { p.images = null; } }
+  if (p && typeof p.files === "string") { try { p.files = JSON.parse(p.files); } catch (e) { p.files = null; } }
   // 학생회 글이면 화면을 학생회 것으로 (초록 화면에 총동문회 메뉴가 남지 않도록)
   applyNav(ORG, ORG === "YB" ? "게시글 | 도쿄대학 한국인학생회"
                                : "게시글 | 재한 도쿄대학 총동문회");
@@ -81,6 +98,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
       ${(p.images && p.images.length)
           ? `<div class="pgal">${p.images.map(s => `<a href="${s}" target="_blank"><img src="${s}" alt=""></a>`).join("")}</div>`
           : (p.image_url ? `<div class="pgal"><a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt=""></a></div>` : "")}
+      ${fileBox(p.files)}
       ${p.source_url ? `<div class="src"><a href="${p.source_url}" target="_blank" rel="noopener">원문 보기 →</a></div>` : ""}
       ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' :
         p.source === "band" ? '<div class="src">※ 네이버 밴드에서 옮겨온 글입니다.</div>' :
