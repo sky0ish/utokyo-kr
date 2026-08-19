@@ -288,6 +288,7 @@ const lockedNow = locked(cur);
 let byCat = G.byCat;
 byCat.all = G.albums;          // 「전체」 — 모든 사진첩을 한 자리에
 const ALL = G.albums.filter(a => !locked(a.cat));
+const inCat = (k) => k === "all" ? ALL : (byCat[k] || []);
 
 document.getElementById("gtabs").innerHTML = (isMember ? [["all","전체"]].concat(CATS) : OPEN).map(([k, v]) =>
   `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
@@ -334,7 +335,7 @@ function render() {
       '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
     return;
   }
-  const list = kw ? matched() : (byCat[cur] || []);      // 검색 중에는 모든 분류에서 찾는다
+  const list = kw ? matched() : inCat(cur);              // 검색 중에는 모든 분류에서 찾는다
   const shots = list.reduce((s, a) => s + a.photos.length, 0);
   document.getElementById("gcount").textContent = kw
     ? `‘${kw}’ 검색 · 모든 분류에서 앨범 ${list.length}개 · 사진 ${shots}장`

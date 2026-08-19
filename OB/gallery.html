@@ -266,7 +266,7 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
 import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=18";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
-if (!CATS.some(c => c[0] === cur)) cur = "assembly";
+if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";
 
 // ── 회원만 볼 수 있는 분류 ──
 const MEMBER_ONLY = ["club", "faculty", "forum", "old", "daily", "etc"];
@@ -278,6 +278,7 @@ try {
 } catch (e) {}
 const locked = (c) => !isMember && MEMBER_ONLY.includes(c);
 const OPEN = CATS.filter(([k]) => !locked(k));
+if (!isMember && cur === "all") cur = "assembly";   // 비회원은 「전체」 대신 총회부터
 const lockedNow = locked(cur);
 if (!isMember) {
   const n = document.getElementById("memnote");
@@ -287,15 +288,17 @@ if (!isMember) {
 }
 
 const { byCat, albums: allAlbums } = await loadGallery();
+const ALL = allAlbums.filter(a => !locked(a.cat));
+const inCat = (k) => k === "all" ? ALL : (byCat[k] || []);
 
-document.getElementById("gtabs").innerHTML = OPEN.map(([k, v]) =>
-  `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${(byCat[k]||[]).length}</span></a>`).join("");
+document.getElementById("gtabs").innerHTML =
+  (isMember ? [["all", "전체"]].concat(CATS) : OPEN).map(([k, v]) =>
+  `<a href="?cat=${k}" data-c="${k}">${v} <span style="opacity:.5;font-size:12px;">${inCat(k).length}</span></a>`).join("");
 if (!isMember) {                                     // 안내는 갈래 단추 뒤에
   const mn = document.getElementById("memnote");
   if (mn) document.getElementById("gtabs").appendChild(mn);
 }
 
-const ALL = allAlbums.filter(a => !locked(a.cat));
 // ── 키워드 검색 (앨범 이름 · 날짜 · 사진 설명) ──
 let kw = (new URLSearchParams(location.search).get("q") || "").trim();
 const hay = a => [a.title, a.date, (a.date || "").replace(/-/g, "."),
@@ -333,11 +336,11 @@ function render() {
       '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
     return;
   }
-  const list = kw ? matched() : (byCat[cur] || []);      // 검색 중에는 모든 분류에서 찾는다
+  const list = kw ? matched() : inCat(cur);              // 검색 중에는 모든 분류에서 찾는다
   const shots = list.reduce((s, a) => s + a.photos.length, 0);
   document.getElementById("gcount").textContent = kw
     ? `‘${kw}’ 검색 · 모든 분류에서 앨범 ${list.length}개 · 사진 ${shots}장`
-    : `${CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
+    : `${cur === "all" ? "전체" : CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
   const grid = document.getElementById("ggrid");
   if (!list.length) {
     grid.innerHTML = kw
