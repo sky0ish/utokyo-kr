@@ -412,6 +412,29 @@
     .timeline::before{left:79px;}
     .trow .yr{width:60px;font-size:18px;}
   }
+
+  /* ── 이사진 명단 ── */
+  .roster-sec{background:#fbfaf6;}
+  .roster-sec .rnote{font-size:14px;color:#7a7566;margin:-8px 0 26px;word-break:keep-all;}
+  .rgrp{margin-top:26px;}
+  .rgrp:first-of-type{margin-top:0;}
+  .rh{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;color:#101d33;
+    padding-bottom:9px;border-bottom:2px solid #101d33;display:flex;align-items:baseline;gap:9px;}
+  .rh .ren{font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#c9a24b;letter-spacing:.06em;}
+  .rh .rcnt{margin-left:auto;font-family:'Noto Sans KR',sans-serif;font-size:12.5px;
+    font-weight:400;color:#a8a291;}
+  .rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:10px;margin-top:14px;}
+  .rp{background:#fff;border:1px solid #ece5d4;border-radius:5px;padding:13px 15px;transition:.15s;}
+  .rp:hover{border-color:#c9a24b;box-shadow:0 3px 12px rgba(160,120,30,.09);}
+  .rn{font-size:16px;font-weight:600;color:#101d33;display:flex;align-items:baseline;
+    gap:8px;flex-wrap:wrap;}
+  .rn .rr{font-size:11.5px;font-weight:600;color:#8a6d2b;background:#f6efdc;
+    padding:2px 8px;border-radius:100px;}
+  .rp p{margin:0;}
+  .rb{font-size:13px;color:#5c5748;margin-top:5px!important;word-break:keep-all;line-height:1.5;}
+  .rm{font-size:12px;color:#a8a291;margin-top:3px!important;}
+  .rd{font-size:12px;color:#3f6a3a;margin-top:4px!important;}
+  @media (max-width:640px){ .rlist{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -449,6 +472,7 @@
         <div class="dd-menu">
           <a href="#greeting">인사말</a>
           <a href="#org">조직도</a>
+          <a href="#roster">이사진 명단</a>
           <a href="#history">연혁</a>
           <a href="rules.html">정관</a>
         </div>
@@ -682,6 +706,421 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 이사진 명단 -->
+<section class="block roster-sec" id="roster">
+  <div class="container">
+    <div class="sec-head">
+      <div class="t"><span class="en">Members of the Board</span><h2>2026 이사진 명단</h2></div>
+    </div>
+    <p class="rnote">회장단 · 고문 · 부회장단 · 이사진 <b>72명</b>입니다.
+      연락처는 개인정보 보호를 위해 싣지 않습니다 — 필요하시면 운영진에게 문의해주세요.</p>
+      <div class="rgrp">
+        <h3 class="rh">회장단<span class="ren">President</span><span class="rcnt">4명</span></h3>
+      </div>
+      <div class="rlist">
+        <div class="rp">
+          <div class="rn">양일모<span class="rr">회장</span></div>
+          <p class="rb">서울대학교 자유전공학부 교수</p>
+          <p class="rm">문학부 동아시아 사상문화 · 1997</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이영순<span class="rr">명예회장 · 고문</span></div>
+          <p class="rb">서울대학교 수의과대학 명예교수</p>
+          <p class="rm">농학부 수의학 · 박1978</p>
+          <p class="rd">초대 회장</p>
+        </div>
+        <div class="rp">
+          <div class="rn">박종근<span class="rr">명예회장 · 고문</span></div>
+          <p class="rb">서울대학교 공과대학 명예교수 · 전전기위원회 위원장</p>
+          <p class="rm">공학부 전기공학 · 박1982, 석1979</p>
+          <p class="rd">2대 회장</p>
+        </div>
+        <div class="rp">
+          <div class="rn">정세영<span class="rr">명예회장 · 고문</span></div>
+          <p class="rb">경희대학교 약학대학 교수</p>
+          <p class="rm">약학부 · 박1987</p>
+          <p class="rd">3대 회장</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <h3 class="rh">고문<span class="ren">Advisors</span><span class="rcnt">15명</span></h3>
+      </div>
+      <div class="rlist">
+        <div class="rp">
+          <div class="rn">강창일<span class="rr">고문</span></div>
+          <p class="rb">前 주일 한국대사</p>
+          <p class="rm">인문사회학 · 석1985, 박1987</p>
+        </div>
+        <div class="rp">
+          <div class="rn">권택진<span class="rr">고문</span></div>
+          <p class="rb">성균관대학교 건축학과 명예교수</p>
+          <p class="rm">공학부 건축학 · 박1976</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김덕규<span class="rr">고문</span></div>
+          <p class="rb">경북대학교 명예교수 · 대구과학관 관장</p>
+          <p class="rm">공학부 전기공학 · 박1989</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김윤신<span class="rr">고문</span></div>
+          <p class="rb">한양대학교 의과대학 교수</p>
+          <p class="rm">의학부 보건학 · 박1978</p>
+        </div>
+        <div class="rp">
+          <div class="rn">박민용<span class="rr">고문</span></div>
+          <p class="rb">협성대학교 명예총장</p>
+          <p class="rm">공학부 전자공학 · 박1982</p>
+        </div>
+        <div class="rp">
+          <div class="rn">설용건<span class="rr">고문</span></div>
+          <p class="rb">연세대학교 화공생명공학과 교수</p>
+          <p class="rm">공학부 화학공학 · 박1986</p>
+        </div>
+        <div class="rp">
+          <div class="rn">소선섭<span class="rr">고문</span></div>
+          <p class="rb">공주대학교 자연대 명예교수</p>
+          <p class="rm">이학부 지구물리학과 · 석1980, 박1983</p>
+        </div>
+        <div class="rp">
+          <div class="rn">심창구<span class="rr">고문</span></div>
+          <p class="rb">서울대학교 약학대학 명예교수</p>
+          <p class="rm">약학부 약품제제학 · 박1982, 석1979</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이광형<span class="rr">고문</span></div>
+          <p class="rb">숭실대학교 정보통신전자공학 명예교수</p>
+          <p class="rm">공학부 전기공학</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이은방<span class="rr">고문</span></div>
+          <p class="rb">서울대학교 약학대학 명예교수</p>
+          <p class="rm">약학부 약품작용학 · 박1972</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이전제<span class="rr">고문</span></div>
+          <p class="rb">서울대학교 농업생명과학대학 명예교수</p>
+          <p class="rm">농학부 임산학 · 박1986</p>
+        </div>
+        <div class="rp">
+          <div class="rn">지상욱<span class="rr">고문</span></div>
+          <p class="rb">前 국회의원</p>
+          <p class="rm">공학부 건축학 · 박1997</p>
+        </div>
+        <div class="rp">
+          <div class="rn">표명영<span class="rr">고문</span></div>
+          <p class="rb">일본 메이카이(明海)대학 교수</p>
+          <p class="rm">공학부 사회기반공학 · 박1996</p>
+        </div>
+        <div class="rp">
+          <div class="rn">홍정국<span class="rr">고문</span></div>
+          <p class="rb">재일한국과학기술자협회 회장</p>
+        </div>
+        <div class="rp">
+          <div class="rn">森和博<span class="rr">특별고문</span></div>
+          <p class="rb">도쿄대학 본부 국제전략과</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <h3 class="rh">부회장단<span class="ren">Vice Presidents</span><span class="rcnt">34명</span></h3>
+      </div>
+      <div class="rlist">
+        <div class="rp">
+          <div class="rn">이동근<span class="rr">수석부회장</span></div>
+          <p class="rb">서울대학교 농업생명과학대학 교수</p>
+          <p class="rm">농학부 · 박1993</p>
+          <p class="rd">회장 보좌 · 임무 대행</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김태수<span class="rr">재무부회장</span></div>
+          <p class="rb">한양대학교 에리카 건축공학과 교수</p>
+          <p class="rm">공학부 건축학 · 박2006</p>
+          <p class="rd">재무 · 예산 · 정관</p>
+        </div>
+        <div class="rp">
+          <div class="rn">남지현<span class="rr">운영부회장</span></div>
+          <p class="rb">경기연구원 도시주택연구실 연구위원</p>
+          <p class="rm">공학부 도시공학 · 박2012</p>
+          <p class="rd">사업운영 · 홈페이지</p>
+        </div>
+        <div class="rp">
+          <div class="rn">송민동<span class="rr">부회장 · 지역회장</span></div>
+          <p class="rb">건국대학교 생명과학부 교수</p>
+          <p class="rm">농학부 농예화학 · 1988</p>
+        </div>
+        <div class="rp">
+          <div class="rn">정윤하<span class="rr">부회장 · 지역회장</span></div>
+          <p class="rb">포항공과대학교 전기전자공학과 교수</p>
+          <p class="rm">공학부 전자공학 · 박1987</p>
+        </div>
+        <div class="rp">
+          <div class="rn">강종구<span class="rr">부회장</span></div>
+          <p class="rb">충북대학교 교수 · 대한수의학회 이사장</p>
+          <p class="rm">농학부 수의학 · 박1990</p>
+        </div>
+        <div class="rp">
+          <div class="rn">권병일<span class="rr">부회장</span></div>
+          <p class="rb">한양대학교 전자시스템공학과 교수</p>
+          <p class="rm">공학부 전기공학 · 박1989</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김용권<span class="rr">부회장</span></div>
+          <p class="rb">서울대학교 전기정보공학부 교수</p>
+          <p class="rm">공학부 전기공학 · 박1990</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김윤기<span class="rr">부회장</span></div>
+          <p class="rb">㈜포모컴 대표이사</p>
+          <p class="rm">공학부 전자공학 · 석1990, 박1993</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김종원<span class="rr">부회장</span></div>
+          <p class="rb">특허법인 다인 이사</p>
+          <p class="rm">공학부 기계공학 · 석1995, 박2000</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김찬동<span class="rr">부회장</span></div>
+          <p class="rb">충남대학교 사회과학대학 교수</p>
+          <p class="rm">정치학 · 석1999, 박2004</p>
+          <p class="rd">등산 동호회</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김찬훈<span class="rr">부회장</span></div>
+          <p class="rb">나라아이넷 주식회사 대표이사</p>
+          <p class="rm">총합문화연구과 · 박2014</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김해곤<span class="rr">부회장</span></div>
+          <p class="rb">코레일 천안시설사업소 소장</p>
+          <p class="rm">법학부 · 석2003</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김형두<span class="rr">부회장</span></div>
+          <p class="rb">서울고등법원 부장판사</p>
+          <p class="rm">법학부 · 객원연구원</p>
+        </div>
+        <div class="rp">
+          <div class="rn">남기정<span class="rr">부회장</span></div>
+          <p class="rb">서울대학교 일본연구소 교수</p>
+          <p class="rm">총합문화연구과 · 석1997, 박2000</p>
+        </div>
+        <div class="rp">
+          <div class="rn">민동준<span class="rr">부회장</span></div>
+          <p class="rb">연세대학교 행정대외부총장</p>
+          <p class="rm">공학부 금속공학 · 박1988</p>
+        </div>
+        <div class="rp">
+          <div class="rn">박형환<span class="rr">부회장</span></div>
+          <p class="rb">㈜라파스 부사장</p>
+          <p class="rm">약학부 생약학 · 박1994</p>
+        </div>
+        <div class="rp">
+          <div class="rn">소순창<span class="rr">부회장</span></div>
+          <p class="rb">건국대학교 미래지식교육원장 · 교수</p>
+          <p class="rm">국제사회과학 · 1998</p>
+        </div>
+        <div class="rp">
+          <div class="rn">손동화<span class="rr">부회장</span></div>
+          <p class="rb">강릉원주대학교 식품가공유통학과 초빙교수</p>
+          <p class="rm">농학부 농예화학과 · 박1990</p>
+        </div>
+        <div class="rp">
+          <div class="rn">양일모<span class="rr">부회장</span></div>
+          <p class="rb">서울대학교 자유전공학부 교수</p>
+          <p class="rm">문학부 동아시아 사상문화 · 1997</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이관영<span class="rr">부회장</span></div>
+          <p class="rb">고려대학교 화공생명공학과 교수</p>
+          <p class="rm">공학부 합성화학 · 박1990</p>
+        </div>
+        <div class="rp">
+          <div class="rn">윤명오<span class="rr">부회장</span></div>
+          <p class="rb">서울시립대학교 건축공학 교수</p>
+          <p class="rm">공학부 건축학 · 박1989</p>
+          <p class="rd">골프 동호회</p>
+        </div>
+        <div class="rp">
+          <div class="rn">윤화영<span class="rr">부회장</span></div>
+          <p class="rb">서울대학교 수의과대학 교수</p>
+          <p class="rm">농학부 수의학 · 박1996</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이용문<span class="rr">부회장</span></div>
+          <p class="rb">충북대학교 약학대학 교수</p>
+          <p class="rm">약학부 약품분석화학 · 박1989</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이용택<span class="rr">부회장</span></div>
+          <p class="rb">경희대학교 공과대학 교수</p>
+          <p class="rm">공학부 합성화학 · 박1988</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이충상<span class="rr">부회장</span></div>
+          <p class="rb">경북대학교 법학전문대학원 교수</p>
+          <p class="rm">법학부 · 1995 객원연구원</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이한승<span class="rr">부회장</span></div>
+          <p class="rb">한양대학교 건축학부 교수</p>
+          <p class="rm">공학부 건축학 · 박1997</p>
+        </div>
+        <div class="rp">
+          <div class="rn">장준호<span class="rr">부회장</span></div>
+          <p class="rb">안양대학교 교수</p>
+          <p class="rm">공학부 도시공학 · 석1990, 박1993</p>
+        </div>
+        <div class="rp">
+          <div class="rn">전영환<span class="rr">부회장</span></div>
+          <p class="rb">홍익대학교 전자전기공학부 교수</p>
+          <p class="rm">공학부 전기공학 · 박1997</p>
+        </div>
+        <div class="rp">
+          <div class="rn">전창후<span class="rr">부회장</span></div>
+          <p class="rb">서울대학교 학생처장</p>
+          <p class="rm">농학부 농업공학 · 박1994</p>
+        </div>
+        <div class="rp">
+          <div class="rn">최기성<span class="rr">부회장</span></div>
+          <p class="rb">창원대학교 국제정치학과 교수</p>
+          <p class="rm">정치철학 · 박2005</p>
+        </div>
+        <div class="rp">
+          <div class="rn">최승철<span class="rr">부회장</span></div>
+          <p class="rb">아주대학교 재료공학부 교수</p>
+          <p class="rm">공학부 공업화학 · 박1986</p>
+        </div>
+        <div class="rp">
+          <div class="rn">한진수<span class="rr">부회장</span></div>
+          <p class="rb">건국대학교 수의과대학 교수</p>
+          <p class="rm">농학부 수의학 · 박1992</p>
+        </div>
+        <div class="rp">
+          <div class="rn">齊藤歩<span class="rr">부회장</span></div>
+          <p class="rb">서울대학교 인문대학 교수</p>
+          <p class="rm">인문학 · 박</p>
+        </div>
+      </div>
+      <div class="rgrp">
+        <h3 class="rh">이사진<span class="ren">Directors</span><span class="rcnt">19명</span></h3>
+      </div>
+      <div class="rlist">
+        <div class="rp">
+          <div class="rn">김소영<span class="rr">총무이사</span></div>
+          <p class="rb">디노보넥스트 대표</p>
+          <p class="rm">농학부 응용생명공학전공 · 석2007, 박2012</p>
+          <p class="rd">이사진 총괄 · 회비 · 총회</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이우진<span class="rr">운영이사</span></div>
+          <p class="rb">삼성물산 건설부문 층간소음연구소</p>
+          <p class="rm">공학부 건축학전공 · 박2009</p>
+        </div>
+        <div class="rp">
+          <div class="rn">윤혜영<span class="rr">HR이사</span></div>
+          <p class="rb">인천연구원</p>
+          <p class="rm">공학부 도시공학전공 도시계획 · 박2013</p>
+          <p class="rd">주소록 · 자연계</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김용철<span class="rr">이사</span></div>
+          <p class="rb">도쿄공예대학</p>
+          <p class="rm">공학부 건축학전공 건축구조계 · 박</p>
+          <p class="rd">주소록 · 인문계</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이소라<span class="rr">이사</span></div>
+          <p class="rb">한국환경연구원</p>
+          <p class="rm">공학부 도시공학 · 박2009</p>
+          <p class="rd">세종지부</p>
+        </div>
+        <div class="rp">
+          <div class="rn">손지영<span class="rr">이사</span></div>
+          <p class="rb">한국치산기술협회 실장</p>
+          <p class="rm">농학부 삼림과학 · 박2014</p>
+          <p class="rd">세종지부 지원</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김은진<span class="rr">현지이사</span></div>
+          <p class="rb">도쿄대학 종합연구박물관 학술전문직</p>
+          <p class="rm">공학부 건축학전공 · 박2007</p>
+          <p class="rd">일본 현지</p>
+        </div>
+        <div class="rp">
+          <div class="rn">목승원<span class="rr">당연직이사</span></div>
+          <p class="rb">도쿄대학 박사과정</p>
+          <p class="rm">신영역창성과학연구과 첨단에너지공학 · 박사과정</p>
+          <p class="rd">일본 현지</p>
+        </div>
+        <div class="rp">
+          <div class="rn">박규태<span class="rr">이사</span></div>
+          <p class="rb">前 한양대학교 일본학과 교수</p>
+          <p class="rm">문학부 종교학과 · 박1996</p>
+          <p class="rd">포럼 · 학술</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김영근<span class="rr">포럼이사</span></div>
+          <p class="rb">고려대학교 글로벌일본연구원 교수</p>
+          <p class="rm">총합문화연구과 · 박2007</p>
+          <p class="rd">포럼 · 학술</p>
+        </div>
+        <div class="rp">
+          <div class="rn">안국진<span class="rr">포럼이사</span></div>
+          <p class="rb">수원시정연구원</p>
+          <p class="rm">공학부 건축학전공 · 박2007</p>
+          <p class="rd">포럼 · 등산 동호회</p>
+        </div>
+        <div class="rp">
+          <div class="rn">송진화<span class="rr">이사</span></div>
+          <p class="rb">신한라이프케어 전략마케팅 팀장</p>
+          <p class="rm">공학부 도시공학 · 박2008</p>
+          <p class="rd">멘토멘티</p>
+        </div>
+        <div class="rp">
+          <div class="rn">송완범<span class="rr">이사</span></div>
+          <p class="rb">고려대학교 글로벌일본연구원 교수</p>
+          <p class="rm">인문사회학부 일본사학 · 박2004, 석1999</p>
+          <p class="rd">국제 · 홍보</p>
+        </div>
+        <div class="rp">
+          <div class="rn">조관자<span class="rr">이사</span></div>
+          <p class="rb">서울대학교 일본연구소</p>
+          <p class="rm">총합문화연구과 · 석1997, 박2004</p>
+          <p class="rd">국제 · 홍보</p>
+        </div>
+        <div class="rp">
+          <div class="rn">한명석<span class="rr">홍보이사</span></div>
+          <p class="rb">현대건설</p>
+          <p class="rm">공학부 사회기반학전공 · 석</p>
+          <p class="rd">국제 · 홍보</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김동민<span class="rr">사업이사</span></div>
+          <p class="rb">JLK 대표</p>
+          <p class="rm">신영역창성과학연구과 첨단에너지공학 · 박2012</p>
+          <p class="rd">산업계 교류</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이행석<span class="rr">동호회이사</span></div>
+          <p class="rb">축산환경관리원</p>
+          <p class="rm">농학부 · 박2002</p>
+          <p class="rd">골프 동호회</p>
+        </div>
+        <div class="rp">
+          <div class="rn">이시훈<span class="rr">총회이사</span></div>
+          <p class="rb">가천대학교 의과대학 내과학교실</p>
+          <p class="rm">의학부 정형외과 · 객2005</p>
+          <p class="rd">총회</p>
+        </div>
+        <div class="rp">
+          <div class="rn">김보람<span class="rr">총회이사</span></div>
+          <p class="rb">서경대학교 공공인재학부</p>
+          <p class="rm">교육학연구과 · 박</p>
+          <p class="rd">총회</p>
+        </div>
+      </div>
   </div>
 </section>
 

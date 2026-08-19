@@ -112,7 +112,7 @@ export async function initBoard(ORG) {
         a.href = href; a.textContent = text; a.style.color = "#e8c876"; a.style.fontWeight = "600"; return a; };
       el.append(mk("/admin/members.html?org=" + ORG, "⚙ 회원 승인"),
                 mk("/admin/gallery.html?org=" + ORG, "⚙ 갤러리 관리"));
-      if (ORG === "OB") el.append(mk("/admin/index.html", "⚙ 글 가져오기"));
+      el.append(mk("/admin/index.html", "⚙ 글 가져오기"));
     }
   } else {
     const ln = document.getElementById("loginNotice");
