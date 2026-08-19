@@ -143,13 +143,36 @@ export async function initWrite(ORG) {
     }
     if (fdrop) {
       fdrop.addEventListener("click", () => fInput.click());
-      fdrop.addEventListener("dragover", e => { e.preventDefault(); fdrop.classList.add("on"); });
-      fdrop.addEventListener("dragleave", () => fdrop.classList.remove("on"));
-      fdrop.addEventListener("drop", e => {
-        e.preventDefault(); fdrop.classList.remove("on");
-        addFiles(e.dataTransfer.files);
-      });
       fInput.addEventListener("change", () => { addFiles(fInput.files); fInput.value = ""; });
+
+      // 파일을 끌어오면 화면 어디에 놓아도 첨부되게 한다.
+      // (창 전체에서 기본 동작을 막지 않으면, 조금만 빗나가도 브라우저가 그 파일을 열어버립니다)
+      const hasFile = (e) => {
+        const t = e.dataTransfer && e.dataTransfer.types;
+        return t && (Array.from(t).includes("Files"));
+      };
+      let over = 0;
+      window.addEventListener("dragenter", (e) => {
+        if (!hasFile(e)) return;
+        e.preventDefault();
+        if (++over === 1) fdrop.classList.add("on");
+      });
+      window.addEventListener("dragover", (e) => {
+        if (!hasFile(e)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      });
+      window.addEventListener("dragleave", (e) => {
+        if (!hasFile(e)) return;
+        if (--over <= 0) { over = 0; fdrop.classList.remove("on"); }
+      });
+      window.addEventListener("drop", (e) => {
+        if (!hasFile(e)) return;
+        e.preventDefault();
+        over = 0; fdrop.classList.remove("on");
+        addFiles(e.dataTransfer.files);
+        fdrop.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
     }
 
     /** 고른 파일을 올리고 첨부 목록을 돌려준다 */
