@@ -137,5 +137,46 @@ export function applyNav(org, title) {
   }
 }
 
+/** 상단 얇은 줄의 로그인 자리를 지금 상태에 맞게 그린다.
+ *  게시판·갤러리는 저마다 그리고 있고, 지도 화면처럼 그렇지 않은 곳에서 씁니다. */
+export async function applyAuthLinks(org) {
+  const el = document.getElementById("authLinks");
+  if (!el) return;
+  const { sb, currentUser, myProfile } = await import("/auth/auth.js");
+  let user = null, p = null;
+  try {
+    user = await currentUser();
+    p = user ? await myProfile() : null;
+  } catch (e) { return; }                 // 실패하면 원래 있던 로그인 링크를 그대로 둔다
+  if (!user) return;
+
+  el.innerHTML = "";
+  const st = document.createElement("span");
+  st.textContent = (p && p.name) ? `[${p.name}님 로그인중]` : "[로그인중]";
+  st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+  const my = document.createElement("a");
+  my.href = "/auth/mypage.html";
+  my.textContent = "내 정보";
+  my.title = "내 정보 보기 · 고치기";
+  const out = document.createElement("a");
+  out.href = "#"; out.textContent = "로그아웃";
+  out.addEventListener("click", async (e) => {
+    e.preventDefault(); await sb.auth.signOut(); location.reload();
+  });
+  el.append(st, my, out);
+
+  if (p && p.is_admin) {
+    const mk = (href, text) => {
+      const a = document.createElement("a");
+      a.href = href; a.textContent = text;
+      a.style.color = "#e8c876"; a.style.fontWeight = "600";
+      return a;
+    };
+    el.append(mk("/admin/members.html?org=" + org, "⚙ 회원 승인"),
+              mk("/admin/gallery.html?org=" + org, "⚙ 갤러리 관리"),
+              mk("/admin/index.html", "⚙ 글 가져오기"));
+  }
+}
+
 /** 예전 이름 (학생회 전용) — 남아 있는 호출을 위해 */
 export const applyYB = (title) => applyNav("YB", title);
