@@ -163,6 +163,8 @@
       <label>보낼 대상</label>
       <select id="target">
         <option value="unsent">아직 안 보낸 회원 (권장)</option>
+        <option value="unsent-OB">아직 안 보낸 회원 — 총동문회(OB)</option>
+        <option value="unsent-YB">아직 안 보낸 회원 — 학생회(YB)</option>
         <option value="all">전체 회원</option>
         <option value="approved">승인된 회원</option>
         <option value="wait">승인 대기 회원</option>
@@ -285,6 +287,8 @@ async function start() {
     f === "wait" ? !r.approved :
     f === "approved" ? r.approved :
     f === "unsent" ? !r.welcome_sent_at :
+    f === "unsent-OB" ? (!r.welcome_sent_at && r.member_type === "OB") :
+    f === "unsent-YB" ? (!r.welcome_sent_at && r.member_type === "YB") :
     r.member_type === f));
 
   // 전체 자동 확인 — 가입자 이름을 동문 명단과 한꺼번에 대조
