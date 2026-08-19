@@ -30,8 +30,8 @@ const NAV = {
           <a href="/OB/index.html#news">동문회 총회</a>
           <a href="/OB/board.html?cat=club">소모임</a>
           <a href="/OB/board.html?cat=mentoring">멘토멘티</a>
-          <a href="/OB/board.html?cat=forum">단과대포럼</a>
-          <a href="/OB/board.html?cat=seminar">세미나</a>
+          <a href="/OB/board.html?cat=notice&amp;q=%EB%8B%A8%EA%B3%BC%EB%8C%80%ED%8F%AC%EB%9F%BC">단과대포럼</a>
+          <a href="/OB/board.html?cat=notice&amp;q=%EC%84%B8%EB%AF%B8%EB%82%98">세미나</a>
         </div>
       </div>
       <div class="dd">
