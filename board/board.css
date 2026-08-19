@@ -84,6 +84,7 @@ a{text-decoration:none;color:inherit;}
 .chip.condolence{background:#ececec;color:#666;}
 .chip.club{background:#e4eef5;color:#2e6a8f;}
 .chip.faculty{background:#efe9db;color:#7a6428;}
+.chip.forum,.chip.seminar{background:#eae6f3;color:#584a86;}
 .chip.mentoring{background:#e6ede4;color:#3f6a3a;}
 .chip.promo{background:#f5e9e2;color:#9a5a2b;}
 .chip.qna{background:#e7eef7;color:#2f4b8f;}
