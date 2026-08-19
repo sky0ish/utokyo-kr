@@ -573,9 +573,70 @@ export async function initMap(org = "OB", mountId = "mapapp") {
     modal.classList.add("on");
   }
 
-  /** 일본 주소는 표기가 제각각이라, 여러 형태로 바꿔가며 찾아본다 */
+  /** 일본 주소는 표기가 제각각이라, 여러 형태로 바꿔가며 찾아본다.
+   *  구글 지도에서 복사한 주소는 이런 모양입니다 —
+   *    일본 〒103-0022 Tokyo, Chuo City, Nihonbashimuromachi, 1 Chome−11−15 ＵＮＯビル
+   *  나라 이름·우편번호·건물 이름이 섞여 있고 전각 글자와 특수한 붙임표(−)까지 들어 있어,
+   *  그대로 넘기면 못 찾습니다. 아래에서 하나씩 걷어내며 찾아봅니다. */
+  const normAddr = (raw) => String(raw || "")
+    .normalize("NFKC")                              // ＵＮＯ → UNO, １ → 1
+    .replace(/[\u2010-\u2015\u2212\uFF0D\u30FC]/g, "-")   // −–—ー－ → -
+    .replace(/^\s*(일본|日本|Japan)\s*[,、]?\s*/i, "")     // 앞머리 나라 이름
+    .replace(/\s*,\s*(일본|日本|Japan)\s*$/i, "")          // 뒤에 붙은 나라 이름
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // 〒103-0022 → 1030022
+  const zipOf = (t) => {
+    const m = t.match(/〒?\s*(\d{3})-?\s*(\d{4})/);
+    return m ? m[1] + m[2] : "";
+  };
+  const dropZip = (t) => t.replace(/〒?\s*\d{3}-?\s*\d{4}/g, " ").replace(/\s+/g, " ").trim();
+
+  // 「1 Chome-11-15」 「1丁目11-15」 → 「1-11-15」
+  const banchi = (t) => {
+    let m = t.match(/(\d+)\s*(?:Chome|丁目)\s*-?\s*(\d+)\s*(?:-\s*(\d+))?/i);
+    if (m) return m[3] ? `${m[1]}-${m[2]}-${m[3]}` : `${m[1]}-${m[2]}`;
+    m = t.match(/(\d+(?:-\d+){1,2})\s*$/);
+    return m ? m[1] : "";
+  };
+
+  // 건물 이름·층수를 떼어낸다 (OSM 에는 거의 없습니다)
+  const dropBldg = (t) => t
+    .replace(/\s*\d+\s*[FＦ]\b.*$/i, "")
+    .replace(/\s*[^\s,]*(ビル|ﾋﾞﾙ|Building|Bldg\.?|Tower|Heights|Mansion)\s*$/i, "")
+    .replace(/\s*,\s*$/, "")
+    .trim();
+
+  /** 우편번호로 일본어 주소를 알아낸다 (zipcloud · 무료) */
+  async function byZip(zip) {
+    try {
+      const j = await fetch("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + zip)
+        .then(r => r.json());
+      const r = (j.results || [])[0];
+      if (!r) return "";
+      return (r.address1 || "") + (r.address2 || "") + (r.address3 || "");
+    } catch (e) { return ""; }
+  }
+
+  /** 일본 국토지리원 주소검색 — 번지까지 정확히 찾아줍니다 (일본어 주소일 때) */
+  async function gsi(q) {
+    if (!q || q.length < 4) return null;
+    try {
+      const j = await fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="
+                            + encodeURIComponent(q)).then(r => r.json());
+      const f = (j || [])[0];
+      if (!f || !f.geometry) return null;
+      const c = f.geometry.coordinates;
+      return { lat: c[1], lon: c[0],
+               display_name: (f.properties && f.properties.title) || q,
+               extratags: {}, class: "", type: "", address: {} };
+    } catch (e) { return null; }
+  }
+
   async function geocode(raw) {
     const one = async (q, extra = "") => {
+      if (!q || q.length < 3) return null;
       try {
         const u = "https://nominatim.openstreetmap.org/search?format=json&limit=1"
                 + "&addressdetails=1&extratags=1&namedetails=1&accept-language=ko"
@@ -584,43 +645,76 @@ export async function initMap(org = "OB", mountId = "mapapp") {
         return (j && j[0]) || null;
       } catch (e) { return null; }
     };
-    const base = String(raw || "").trim();
-    if (!base) return null;
-    const tries = [];
-    tries.push(base);
-    const nospace = base.replace(/\s+/g, "");
-    if (nospace !== base) tries.push(nospace);
-    // 우편번호(〒123-4567)는 빼고
-    const nozip = nospace.replace(/〒?\d{3}-?\d{4}/g, "");
-    if (nozip && nozip !== nospace) tries.push(nozip);
-    // 번지(6-51-11)를 뒤에서부터 하나씩 덜어내며
-    let cut = nozip || nospace;
-    for (let i = 0; i < 3; i++) {
-      const m = cut.match(/^(.*?)[-−ー]\d+$/);
-      if (!m) break;
-      cut = m[1];
-      if (cut.length > 4) tries.push(cut);
-    }
-    // 번지를 통째로 떼고 동네 이름까지만
-    const town = (nozip || nospace).replace(/[0-9０-９]+([-−ー][0-9０-９]+)*.*$/, "");
-    if (town.length > 4) tries.push(town);
 
-    for (const q of [...new Set(tries)]) {
+    const base = normAddr(raw);
+    if (!base) return null;
+
+    const zip = zipOf(base);
+    const noZip = dropZip(base);
+    const noBldg = dropBldg(noZip);
+    const num = banchi(noZip);
+    const hasLatin = /[A-Za-z]/.test(noBldg);
+
+    const tries = [base, noZip, noBldg];
+
+    // 우편번호가 있으면 일본어 주소로 바꿔서 (가장 잘 맞습니다)
+    let ja = "";
+    if (zip) {
+      ja = await byZip(zip);
+      if (ja) {
+        if (num) tries.push(ja + num);
+        tries.push(ja);
+      }
+    }
+
+    // ── 일본어 주소가 손에 들어왔으면 국토지리원에서 먼저 찾는다 (번지까지 나옵니다) ──
+    const jaTries = [];
+    if (ja && num) jaTries.push(ja + num);
+    if (ja) jaTries.push(ja);
+    if (!hasLatin) jaTries.unshift(noBldg);          // 처음부터 일본어로 적어주신 경우
+    for (const q of [...new Set(jaTries.filter(Boolean))]) {
+      const hit = await gsi(q);
+      if (hit) return hit;
+    }
+
+    // 일본어 주소는 띄어쓰기를 없앤 쪽이 잘 맞습니다 (영문 주소는 반대라 건드리지 않습니다)
+    if (!hasLatin) {
+      const nospace = noBldg.replace(/\s+/g, "");
+      if (nospace !== noBldg) tries.push(nospace);
+    }
+
+    // 번지를 뒤에서부터 하나씩 덜어내며
+    let cut = noBldg;
+    for (let i = 0; i < 3; i++) {
+      const m = cut.match(/^(.*?)[\s,]*-?\s*\d+\s*$/);
+      if (!m || m[1].length < 5) break;
+      cut = m[1].replace(/[\s,]+$/, "");
+      tries.push(cut);
+    }
+
+    // 동네 이름까지만
+    const town = noBldg.replace(/[,\s]*\d+.*$/, "").trim();
+    if (town.length > 3) tries.push(town);
+
+    for (const q of [...new Set(tries.filter(Boolean))]) {
       const hit = await one(q);
       if (hit) return hit;
     }
+
     // 그래도 없으면 자동완성 검색으로 한 번 더
-    try {
-      const u = "https://photon.komoot.io/api/?limit=1&lang=en&lat=35.68&lon=139.76"
-              + "&location_bias_scale=0.6&q=" + encodeURIComponent(base);
-      const j = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
-      const ft = (j.features || [])[0];
-      if (ft) {
-        const c = ft.geometry.coordinates;
-        return { lat: c[1], lon: c[0], display_name: base, extratags: {},
-                 class: ft.properties.osm_key, type: ft.properties.osm_value, address: {} };
-      }
-    } catch (e) {}
+    for (const q of [...new Set([noBldg, base].filter(Boolean))]) {
+      try {
+        const u = "https://photon.komoot.io/api/?limit=1&lang=en&lat=35.68&lon=139.76"
+                + "&location_bias_scale=0.6&q=" + encodeURIComponent(q);
+        const j = await fetch(u, { headers: { Accept: "application/json" } }).then(r => r.json());
+        const ft = (j.features || [])[0];
+        if (ft) {
+          const c = ft.geometry.coordinates;
+          return { lat: c[1], lon: c[0], display_name: base, extratags: {},
+                   class: ft.properties.osm_key, type: ft.properties.osm_value, address: {} };
+        }
+      } catch (e) {}
+    }
     return null;
   }
 
