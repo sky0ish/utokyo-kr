@@ -75,7 +75,7 @@ a{text-decoration:none;color:inherit;}
 .list .row{display:flex;align-items:center;gap:14px;padding:9px 18px;border-bottom:1px solid #f0ece1;transition:.15s;line-height:1.35;}
 .list .row:hover{background:#faf8f2;}
 .list .row:last-child{border-bottom:none;}
-.chip{flex:none;font-size:16.5px;font-weight:700;padding:4px 14px;border-radius:100px;letter-spacing:.04em;}
+.chip{flex:none;font-size:13.5px;font-weight:700;padding:3px 12px;border-radius:100px;letter-spacing:.04em;}
 .chip.notice{background:#ede4cf;color:#8a6d2b;}
 .chip.free{background:#e7ecf3;color:#33507e;}
 .chip.news{background:#e8f0e6;color:#3f6a3a;}
@@ -133,17 +133,17 @@ body.yb .list .row .t a:hover{color:#1e5230;}
 .chip.org-YB{background:#e2f0e5;color:#1e5230;}
 .chip.org-OB{background:#fdf1dc;color:#a06a10;}
 .chip.org-ALL{background:#eee;color:#555;}
-.row .t{flex:1;font-size:21.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.row .t .lock{font-size:16px;color:#b0a98f;margin-left:6px;}
-.src-tag{flex:none;display:inline-block;margin-left:0;font-size:15.5px;font-weight:600;padding:2px 7px;border-radius:3px;vertical-align:middle;}
+.row .t{flex:1;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.row .t .lock{font-size:13.5px;color:#b0a98f;margin-left:6px;}
+.src-tag{flex:none;display:inline-block;margin-left:0;font-size:13px;font-weight:600;padding:2px 7px;border-radius:3px;vertical-align:middle;}
 .src-tag.band{background:#e5f5e8;color:#1e7d3c;}
 .src-tag.fb{background:#e7ecf7;color:#2f4b8f;}
 .src-tag.legacy{background:#efece3;color:#7a6a3c;}
-.row .meta{flex:none;font-size:18px;color:#a8a291;display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:250px;}
+.row .meta{flex:none;font-size:15px;color:#a8a291;display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:220px;}
 .row .meta .mrow{display:flex;align-items:center;gap:7px;justify-content:flex-end;}
-.row .meta .who{color:#6f6a5c;font-size:18.5px;white-space:nowrap;}
-.row .meta .chip{flex:none;font-size:15.5px;padding:3px 11px;margin:0;}
-.row .meta .dt{font-size:17px;color:#b0a98f;}
+.row .meta .who{color:#6f6a5c;font-size:15.5px;white-space:nowrap;}
+.row .meta .chip{flex:none;font-size:13px;padding:2px 9px;margin:0;}
+.row .meta .dt{font-size:14px;color:#b0a98f;}
 .empty{padding:60px 20px;text-align:center;color:#9a947f;font-size:14px;}
 .notice-box{margin-top:16px;padding:14px 16px;border-radius:4px;background:#f2eee2;color:#6f6a5c;font-size:13px;line-height:1.7;}
 .notice-box a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
