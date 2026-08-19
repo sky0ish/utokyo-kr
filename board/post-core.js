@@ -11,7 +11,8 @@ function fileBox(list) {
   const esc = (t) => String(t == null ? "" : t)
     .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const rows = list.map(f => {
-    const { data } = sb.storage.from("board").getPublicUrl(f.path);
+    // 저장된 이름은 영문·숫자뿐이라, 내려받을 때 원래 이름으로 돌려준다
+    const { data } = sb.storage.from("board").getPublicUrl(f.path, { download: f.name });
     return `<a class="pfile" href="${data.publicUrl}" download="${esc(f.name)}" target="_blank" rel="noopener">` +
            `<span class="pfi">📎</span><span class="pfn">${esc(f.name)}</span>` +
            `<span class="pfs">${size(f.size)}</span></a>`;

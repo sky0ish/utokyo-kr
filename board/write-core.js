@@ -181,8 +181,10 @@ export async function initWrite(ORG) {
       for (let i = 0; i < picked.length; i++) {
         const f = picked[i];
         if (msg) msg.textContent = `파일 올리는 중… (${i + 1}/${picked.length}) ${f.name}`;
-        const safe = f.name.replace(/[^\w.\-가-힣]/g, "_");
-        const path = `${org}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safe}`;
+        // 저장공간은 파일 이름에 영문·숫자만 받습니다. 한글 이름은 여기서만 바꾸고,
+        // 화면에 보이는 이름(f.name)은 원래 그대로 남겨둡니다.
+        const ext = (f.name.match(/\.([A-Za-z0-9]{1,8})$/) || [, "dat"])[1].toLowerCase();
+        const path = `${org}/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
         const up = await sb.storage.from("board").upload(path, f, { cacheControl: "3600" });
         if (up.error) throw new Error(`${f.name} — ${up.error.message}`);
         out.push({ name: f.name, path, size: f.size, type: f.type || "" });
