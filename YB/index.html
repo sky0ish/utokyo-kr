@@ -249,6 +249,9 @@
   .otab .rost{font-size:13.5px;color:#2a6b40;font-weight:600;white-space:nowrap;
     border-bottom:1px solid #a9cfb4;padding-bottom:1px;}
   .otab .rost:hover{color:var(--green);border-bottom-color:var(--green);}
+  .cnote.memo{background:#fff8e6;border-color:#f0d79a;color:#6b5520;}
+  .cnote.memo b{color:#8a6d2b;}
+  .cnote.memo a{color:#8a6d2b;border-bottom-color:#d8cba8;}
   .clubs{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
   .clubs span{font-size:13.5px;color:#33403a;background:#f8fbf8;border:1px solid #e0ece3;
     border-radius:100px;padding:5px 13px;}
@@ -699,6 +702,11 @@
             </tbody>
           </table>
         </div>
+        <div class="cnote memo" id="rostMsg" style="display:none;">
+          <b>회원 전용 정보입니다. 로그인해주세요.</b><br>
+          역대 임원진 명단은 회원께만 공개됩니다.
+          <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>
+        </div>
         <div class="cnote">「임원진 명단」을 누르시면 그 해의 전체 임원 명단이 열립니다.
           2005년 제33기부터 남아 있으며, 2003년 회장(신영훈)은 제36기 자료의 졸업생 고문 기록으로 확인됩니다.
           <b>기존 홈페이지의 회원 전용 게시판</b>으로 연결되므로, 그곳에 로그인하신 상태여야 보입니다.
@@ -893,6 +901,21 @@ try {
     if (ln) ln.remove();
   }
 } catch (e) {}
+
+// 역대 임원진 명단 — 로그아웃 상태에서는 기존 홈페이지 오류 화면 대신 안내를 보여준다
+try {
+  const me = await currentUser();
+  if (!me) {
+    const memo = document.getElementById("rostMsg");
+    document.querySelectorAll('#past a.rost[target="_blank"], #past .cnote a[target="_blank"]')
+      .forEach(a => a.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!memo) return;
+        memo.style.display = "block";
+        memo.scrollIntoView({ behavior: "smooth", block: "center" });
+      }));
+  }
+} catch (e) { /* 확인에 실패하면 원래대로 링크를 그대로 둔다 */ }
 </script>
 
 </body>
