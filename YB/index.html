@@ -252,6 +252,33 @@
   .cnote.memo{background:#fff8e6;border-color:#f0d79a;color:#6b5520;}
   .cnote.memo b{color:#8a6d2b;}
   .cnote.memo a{color:#8a6d2b;border-bottom-color:#d8cba8;}
+  .subhd{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;color:#454b53;font-size:17px;
+    font-weight:600;margin:26px 0 0;padding-top:20px;border-top:1px solid var(--line);}
+  .bbs{margin-top:12px;border-top:2px solid #cfe0d3;}
+  .bbs-head,.bbs-row{display:grid;grid-template-columns:56px 1fr 150px 96px;align-items:center;gap:10px;}
+  .bbs-head{padding:10px 12px;background:#f4f9f5;font-size:12.5px;color:#5c6f62;font-weight:600;
+    border-bottom:1px solid #dbe8de;}
+  .bbs-item{border-bottom:1px solid #eef4ef;}
+  .bbs-row{padding:12px;font-size:14.5px;color:#26312a;transition:.15s;}
+  .bbs-row:hover{background:#f8fbf8;}
+  .bbs-item.on .bbs-row{background:#f4f9f5;}
+  .bbs .c-no{color:#a3b0a7;font-size:13px;text-align:center;}
+  .bbs .c-ti{font-weight:500;color:#1f2a23;word-break:keep-all;}
+  .bbs .c-ti em{font-style:normal;color:var(--green);font-size:13px;margin-left:9px;font-weight:600;}
+  .bbs .c-au{color:#7d8a80;font-size:13px;}
+  .bbs .c-dt{color:#a3b0a7;font-size:13px;text-align:right;}
+  .bbs-item.on .c-ti{color:var(--green);}
+  .bbs-body{padding:4px 12px 20px;}
+  .bbs-empty{padding:22px 12px;color:#a3b0a7;font-size:14px;}
+  .rtext{white-space:pre-wrap;font-size:14.5px;line-height:1.8;color:#33403a;padding:6px 2px;}
+  .pgal.rimg{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:12px;}
+  .pgal.rimg img{width:100%;border:1px solid var(--line);border-radius:4px;display:block;}
+  @media (max-width:680px){
+    .bbs-head{display:none;}
+    .bbs-row{grid-template-columns:1fr;gap:4px;padding:14px 10px;}
+    .bbs .c-no{display:none;}
+    .bbs .c-au,.bbs .c-dt{font-size:12.5px;text-align:left;}
+  }
   .clubs{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
   .clubs span{font-size:13.5px;color:#33403a;background:#f8fbf8;border:1px solid #e0ece3;
     border-radius:100px;padding:5px 13px;}
@@ -674,30 +701,30 @@
         <h3>역대 회장 및 임원진</h3>
         <div class="tscroll">
           <table class="otab" style="min-width:460px;">
-            <thead><tr><th>연도</th><th>기수</th><th>회장</th><th>임원진</th></tr></thead>
+            <thead><tr><th>연도</th><th>기수</th><th>회장</th><th>명단</th></tr></thead>
             <tbody>
-            <tr class="now"><td class="yr">2026</td><td class="rl">제54기</td><td>이지원 <span class="yr">— 현 회장</span></td><td><a class="rost" href="#officers">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2025</td><td class="rl">제53기</td><td>박래현</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=55" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
+            <tr class="now"><td class="yr">2026</td><td class="rl">제54기</td><td>이지원 <span class="yr">— 현 회장</span></td><td><a class="rost" href="#officers">명단보기</a></td></tr>
+            <tr><td class="yr">2025</td><td class="rl">제53기</td><td>박래현</td><td><a class="rost" href="#roster-55" data-roster="55">명단보기</a></td></tr>
             <tr><td class="yr">2024</td><td class="rl">제52기</td><td><span class="yr">자료 없음</span></td><td></td></tr>
-            <tr><td class="yr">2023</td><td class="rl">제51기</td><td>박치언</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=54" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2022</td><td class="rl">제50기</td><td>박치언</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=53" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2021</td><td class="rl">제49기</td><td>노시훈</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=52" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2020</td><td class="rl">제48기</td><td>김정균</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=51" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2019</td><td class="rl">제47기</td><td>조병욱</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=50" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2018</td><td class="rl">제46기</td><td>서승주</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=49" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2017</td><td class="rl">제45기</td><td>노정환</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=48" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2016</td><td class="rl">제44기</td><td>김태환</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=47" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2015</td><td class="rl">제43기</td><td>김태환</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=46" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2014</td><td class="rl">제42기</td><td>전성호</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=45" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2013</td><td class="rl">제41기</td><td>변익주</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=44" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2012</td><td class="rl">제40기</td><td>이원균</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=43" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2011</td><td class="rl">제39기</td><td>김우경</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=42" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2010</td><td class="rl">제38기</td><td>김대영</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=40" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2009</td><td class="rl">제37기</td><td>이학섭</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=37" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2008</td><td class="rl">제36기</td><td>김강민</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=36" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2007</td><td class="rl">제35기</td><td>김웅현</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=35" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2006</td><td class="rl">제34기</td><td>김시환</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=34" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
-            <tr><td class="yr">2005</td><td class="rl">제33기</td><td>김태수</td><td><a class="rost" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04&amp;wr_id=33" target="_blank" rel="noopener">임원진 명단 →</a></td></tr>
+            <tr><td class="yr">2023</td><td class="rl">제51기</td><td>박치언</td><td><a class="rost" href="#roster-54" data-roster="54">명단보기</a></td></tr>
+            <tr><td class="yr">2022</td><td class="rl">제50기</td><td>박치언</td><td><a class="rost" href="#roster-53" data-roster="53">명단보기</a></td></tr>
+            <tr><td class="yr">2021</td><td class="rl">제49기</td><td>노시훈</td><td><a class="rost" href="#roster-52" data-roster="52">명단보기</a></td></tr>
+            <tr><td class="yr">2020</td><td class="rl">제48기</td><td>김정균</td><td><a class="rost" href="#roster-51" data-roster="51">명단보기</a></td></tr>
+            <tr><td class="yr">2019</td><td class="rl">제47기</td><td>조병욱</td><td><a class="rost" href="#roster-50" data-roster="50">명단보기</a></td></tr>
+            <tr><td class="yr">2018</td><td class="rl">제46기</td><td>서승주</td><td><a class="rost" href="#roster-49" data-roster="49">명단보기</a></td></tr>
+            <tr><td class="yr">2017</td><td class="rl">제45기</td><td>노정환</td><td><a class="rost" href="#roster-48" data-roster="48">명단보기</a></td></tr>
+            <tr><td class="yr">2016</td><td class="rl">제44기</td><td>김태환</td><td><a class="rost" href="#roster-47" data-roster="47">명단보기</a></td></tr>
+            <tr><td class="yr">2015</td><td class="rl">제43기</td><td>김태환</td><td><a class="rost" href="#roster-46" data-roster="46">명단보기</a></td></tr>
+            <tr><td class="yr">2014</td><td class="rl">제42기</td><td>전성호</td><td><a class="rost" href="#roster-45" data-roster="45">명단보기</a></td></tr>
+            <tr><td class="yr">2013</td><td class="rl">제41기</td><td>변익주</td><td><a class="rost" href="#roster-44" data-roster="44">명단보기</a></td></tr>
+            <tr><td class="yr">2012</td><td class="rl">제40기</td><td>이원균</td><td><a class="rost" href="#roster-43" data-roster="43">명단보기</a></td></tr>
+            <tr><td class="yr">2011</td><td class="rl">제39기</td><td>김우경</td><td><a class="rost" href="#roster-42" data-roster="42">명단보기</a></td></tr>
+            <tr><td class="yr">2010</td><td class="rl">제38기</td><td>김대영</td><td><a class="rost" href="#roster-40" data-roster="40">명단보기</a></td></tr>
+            <tr><td class="yr">2009</td><td class="rl">제37기</td><td>이학섭</td><td><a class="rost" href="#roster-37" data-roster="37">명단보기</a></td></tr>
+            <tr><td class="yr">2008</td><td class="rl">제36기</td><td>김강민</td><td><a class="rost" href="#roster-36" data-roster="36">명단보기</a></td></tr>
+            <tr><td class="yr">2007</td><td class="rl">제35기</td><td>김웅현</td><td><a class="rost" href="#roster-35" data-roster="35">명단보기</a></td></tr>
+            <tr><td class="yr">2006</td><td class="rl">제34기</td><td>김시환</td><td><a class="rost" href="#roster-34" data-roster="34">명단보기</a></td></tr>
+            <tr><td class="yr">2005</td><td class="rl">제33기</td><td>김태수</td><td><a class="rost" href="#roster-33" data-roster="33">명단보기</a></td></tr>
             <tr><td class="yr">2003</td><td class="rl">—</td><td>신영훈</td><td></td></tr>
             </tbody>
           </table>
@@ -707,10 +734,12 @@
           역대 임원진 명단은 회원께만 공개됩니다.
           <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>
         </div>
-        <div class="cnote">「임원진 명단」을 누르시면 그 해의 전체 임원 명단이 열립니다.
-          2005년 제33기부터 남아 있으며, 2003년 회장(신영훈)은 제36기 자료의 졸업생 고문 기록으로 확인됩니다.
-          <b>기존 홈페이지의 회원 전용 게시판</b>으로 연결되므로, 그곳에 로그인하신 상태여야 보입니다.
-          <a href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_04" target="_blank" rel="noopener">역대 임원진 게시판 전체 보기 →</a></div>
+        <div class="cnote">「명단보기」를 누르시면 아래 자료에서 그 해의 전체 임원 명단이 열립니다.
+          2005년 제33기부터 남아 있으며, 2003년 회장(신영훈)은 제36기 자료의 졸업생 고문 기록으로 확인됩니다.</div>
+
+        <h4 class="subhd">역대 임원진 자료</h4>
+        <div class="bbs" id="rosterList"><div class="bbs-empty">불러오는 중…</div></div>
+        <div class="cnote">기존 홈페이지 「역대 임원진」 게시판의 자료를 옮겨온 것입니다. 명단은 회원께만 보여드립니다.</div>
       </div>
 
       <div class="cbox" id="history">
@@ -902,20 +931,11 @@ try {
   }
 } catch (e) {}
 
-// 역대 임원진 명단 — 로그아웃 상태에서는 기존 홈페이지 오류 화면 대신 안내를 보여준다
+// 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const me = await currentUser();
-  if (!me) {
-    const memo = document.getElementById("rostMsg");
-    document.querySelectorAll('#past a.rost[target="_blank"], #past .cnote a[target="_blank"]')
-      .forEach(a => a.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (!memo) return;
-        memo.style.display = "block";
-        memo.scrollIntoView({ behavior: "smooth", block: "center" });
-      }));
-  }
-} catch (e) { /* 확인에 실패하면 원래대로 링크를 그대로 둔다 */ }
+  const { initCouncil } = await import("/YB/council.js?v=1");
+  await initCouncil();
+} catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 </body>
