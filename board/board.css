@@ -155,11 +155,11 @@ body.yb .list .row .t a:hover{color:#1e5230;}
 .post .body{font-size:19.5px;line-height:1.65;color:#3a4050;white-space:pre-wrap;word-break:keep-all;}
 .post .src{margin-top:26px;font-size:15.5px;color:#b0a98f;}
 .post .src a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
-.post .pgal{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.post .pgal{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:12px;}
 .post .pgal img{width:100%;border-radius:3px;border:1px solid #eee9dd;display:block;transition:.2s;}
 .post .pgal a:hover img{box-shadow:0 8px 22px rgba(0,0,0,.18);transform:translateY(-2px);}
 .post .pgal:has(a:only-child) {grid-template-columns:1fr;}
-.post .pgal:has(a:only-child) img{max-width:640px;}
+.post .pgal:has(a:only-child) img{max-width:768px;}
 .row .thumb{flex:none;width:52px;height:38px;object-fit:cover;border-radius:3px;border:1px solid #eee9dd;}
 .pactions{margin-top:22px;display:flex;gap:10px;}
 /* 파일 첨부 칸 (글쓰기) */
