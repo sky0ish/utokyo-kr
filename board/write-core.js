@@ -173,6 +173,28 @@ export async function initWrite(ORG) {
         addFiles(e.dataTransfer.files);
         fdrop.scrollIntoView({ behavior: "smooth", block: "center" });
       });
+
+      // 화면을 캡처해서 붙여넣기(Ctrl+V) 해도 사진으로 첨부되게 한다.
+      // 캡처한 그림은 이름이 없어서, 붙여넣은 날짜·시각으로 이름을 지어줍니다.
+      window.addEventListener("paste", (e) => {
+        const dt = e.clipboardData;
+        if (!dt) return;
+        const shots = Array.from(dt.files || [])
+          .filter(f => f.type && f.type.indexOf("image/") === 0);
+        if (!shots.length) return;
+        e.preventDefault();
+        const d = new Date();
+        const two = (n) => String(n).padStart(2, "0");
+        const stamp = `${d.getFullYear()}${two(d.getMonth() + 1)}${two(d.getDate())}-` +
+                      `${two(d.getHours())}${two(d.getMinutes())}${two(d.getSeconds())}`;
+        addFiles(shots.map((f, i) => {
+          const ext = (f.type.split("/")[1] || "png").replace(/[^a-z0-9]/gi, "") || "png";
+          const named = `캡처-${stamp}${shots.length > 1 ? "-" + (i + 1) : ""}.${ext}`;
+          try { return new File([f], named, { type: f.type }); }
+          catch (err) { return f; }          // 옛 브라우저에서는 원래 이름 그대로
+        }));
+        fdrop.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
     }
 
     /** 고른 파일을 올리고 첨부 목록을 돌려준다 */

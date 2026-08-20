@@ -26,10 +26,22 @@ export async function initBoard(ORG) {
   // 분류 탭 다시 그리기
   {
     const cur = new URLSearchParams(location.search).get("cat") || "";
-    const tabs = (cur && !TABS.includes(cur) && CAT[cur]) ? TABS.concat([cur]) : TABS;   // 참여마당 등에서 들어온 분류도 탭에 표시
+    const tabs = (cur && !TABS.includes(cur) && CAT[cur]) ? [cur].concat(TABS) : TABS;   // 참여마당 등에서 들어온 분류는 맨 앞에 놓아 바로 눈에 띄게
     document.getElementById("catTabs").innerHTML =
       '<a href="#" data-cat="">전체</a>' + tabs.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
   }
+  // ── 큰 제목 : 지금 보고 있는 게시판 이름으로 (참여마당에서 들어와도 「소모임 게시판」임이 한눈에) ──
+  const bannerH1 = document.querySelector(".banner h1");
+  const baseTitle = ORG === "YB" ? " | 도쿄대학 한국인학생회" : " | 재한 도쿄대학 총동문회";
+  const boardName = (c) => {
+    const n = CAT[c] || "";
+    return !n ? "게시판" : (/게시판$/.test(n) ? n : n + " 게시판");
+  };
+  function setBoardTitle(c) {
+    if (bannerH1) bannerH1.textContent = boardName(c);
+    document.title = boardName(c) + baseTitle;
+  }
+
   const SRC = {
     band: '<span class="src-tag band">네이버밴드</span>',
     facebook: '<span class="src-tag fb">페이스북</span>',
@@ -80,6 +92,7 @@ export async function initBoard(ORG) {
     a.addEventListener("click", (e) => {
       e.preventDefault();
       cat = a.dataset.cat || "";
+      setBoardTitle(cat);
       if (typeof memberOnlyBlocked !== "undefined") memberOnlyBlocked = null;
       document.querySelectorAll("#catTabs a[data-cat]").forEach(x => x.classList.remove("on"));
       a.classList.add("on");
@@ -87,6 +100,8 @@ export async function initBoard(ORG) {
     });
   });
   (document.querySelector('#catTabs a[data-cat="' + cat + '"]') || document.querySelector('#catTabs a[data-cat=""]')).classList.add("on");
+
+  setBoardTitle(cat);   // 주소로 들어온 분류 기준 (비회원 안내로 바뀌기 전의 값)
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
   const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다

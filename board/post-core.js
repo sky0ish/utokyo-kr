@@ -3,13 +3,37 @@
 import { sb, currentUser, myProfile } from "/auth/auth.js";
 import { applyNav } from "/board/nav.js?v=8";
 
+/** 글자를 화면에 안전하게 넣기 위한 다듬기 */
+function esc(t) {
+  return String(t == null ? "" : t)
+    .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/** 붙인 파일이 사진인지 (열어보지 않아도 이름·종류로 알 수 있습니다) */
+function isImageFile(f) {
+  if (!f) return false;
+  if (typeof f.type === "string" && f.type.indexOf("image/") === 0) return true;
+  return /\.(jpe?g|png|gif|webp|bmp|avif|heic|heif)$/i.test(f.name || f.path || "");
+}
+
+/** 붙인 사진은 내려받지 않아도 글 밑에서 바로 보이게 한다 */
+function attachedImages(list) {
+  if (!Array.isArray(list)) return "";
+  const imgs = list.filter(isImageFile);
+  if (!imgs.length) return "";
+  const cells = imgs.map(f => {
+    const { data } = sb.storage.from("board").getPublicUrl(f.path);
+    return `<a href="${data.publicUrl}" target="_blank" rel="noopener">` +
+           `<img src="${data.publicUrl}" alt="${esc(f.name)}" loading="lazy"></a>`;
+  }).join("");
+  return `<div class="pgal">${cells}</div>`;
+}
+
 /** 붙어 있는 파일 목록 */
 function fileBox(list) {
   if (!Array.isArray(list) || !list.length) return "";
   const size = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + "MB"
                     : n >= 1024 ? Math.round(n / 1024) + "KB" : (n || 0) + "B";
-  const esc = (t) => String(t == null ? "" : t)
-    .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const rows = list.map(f => {
     // 저장된 이름은 영문·숫자뿐이라, 내려받을 때 원래 이름으로 돌려준다
     const { data } = sb.storage.from("board").getPublicUrl(f.path, { download: f.name });
@@ -99,6 +123,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
       ${(p.images && p.images.length)
           ? `<div class="pgal">${p.images.map(s => `<a href="${s}" target="_blank"><img src="${s}" alt=""></a>`).join("")}</div>`
           : (p.image_url ? `<div class="pgal"><a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt=""></a></div>` : "")}
+      ${attachedImages(p.files)}
       ${fileBox(p.files)}
       ${p.source_url ? `<div class="src"><a href="${p.source_url}" target="_blank" rel="noopener">원문 보기 →</a></div>` : ""}
       ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' :
