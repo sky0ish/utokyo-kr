@@ -179,6 +179,19 @@ body.yb .list .row .t a:hover{color:#1e5230;}
   body.yb .fdrop:hover,body.yb .fdrop.on{border-color:#4f9d5d;background:#f6fbf7;}
 
 /* 첨부파일 */
+/* 붙인 PDF 를 글 밑에서 바로 넘겨보기 */
+.post .ppdf{margin-top:22px;border:1px solid #eee9dd;border-radius:4px;overflow:hidden;background:#fbfaf7;}
+.post .ppdf-t{display:flex;align-items:center;gap:9px;padding:11px 15px;background:#f7f5ef;
+  border-bottom:1px solid #eee9dd;font-size:14.5px;font-weight:600;color:#22283a;word-break:break-all;}
+.post .ppdf-t span{flex:none;}
+.post .ppdf-t a{margin-left:auto;flex:none;font-size:13px;font-weight:600;color:#8a6d2b;
+  border-bottom:1px solid #d8cba8;white-space:nowrap;}
+.post .ppdf-pages{padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.post .ppdf-pg{width:100%;max-width:900px;height:auto;display:block;border:1px solid #e8e3d6;
+  border-radius:3px;box-shadow:0 2px 10px rgba(60,50,20,.08);background:#fff;}
+.post .ppdf-msg{padding:16px 6px;font-size:14px;color:#8a8574;text-align:center;line-height:1.8;}
+.post .ppdf-msg a{color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;}
+body.yb .post .ppdf-t a,body.yb .post .ppdf-msg a{color:#2a6b40;border-bottom-color:#a9cfb4;}
 .pfiles{margin-top:26px;padding-top:18px;border-top:1px solid #eee9dd;}
 .pfiles .pft{font-size:13px;font-weight:600;color:#8a8574;margin-bottom:9px;}
 .pfile{display:flex;align-items:center;gap:10px;padding:11px 14px;margin-bottom:6px;

@@ -29,6 +29,106 @@ function attachedImages(list) {
   return `<div class="pgal">${cells}</div>`;
 }
 
+/** 붙인 파일이 PDF 문서인지 */
+function isPdfFile(f) {
+  if (!f) return false;
+  if (typeof f.type === "string" && f.type.indexOf("application/pdf") === 0) return true;
+  return /\.pdf$/i.test(f.name || f.path || "");
+}
+
+/** 붙인 PDF 도 사진처럼 글 밑에서 바로 넘겨볼 수 있게 자리를 만든다.
+ *  (실제 그림으로 바꾸는 일은 아래 showPdfs 에서 합니다) */
+function attachedPdfs(list) {
+  if (!Array.isArray(list)) return "";
+  const pdfs = list.filter(isPdfFile);
+  if (!pdfs.length) return "";
+  return pdfs.map(f => {
+    const { data } = sb.storage.from("board").getPublicUrl(f.path);
+    return `<div class="ppdf" data-pdf="${esc(data.publicUrl)}">` +
+           `<div class="ppdf-t"><span>📄</span>${esc(f.name)}` +
+           `<a href="${esc(data.publicUrl)}" target="_blank" rel="noopener">새 창에서 보기 →</a></div>` +
+           `<div class="ppdf-pages"><div class="ppdf-msg">문서를 여는 중…</div></div></div>`;
+  }).join("");
+}
+
+/** 자리에 놓인 PDF 를 한 쪽씩 그림으로 그려 넣는다 */
+export async function showPdfs() {
+  const boxes = Array.prototype.slice.call(document.querySelectorAll(".ppdf"));
+  if (!boxes.length) return;
+  const MAX_PAGES = 30;              // 아주 긴 문서는 앞쪽까지만
+  const V = "4.7.76";
+
+  const asLink = (b, why) => {
+    const url = b.dataset.pdf;
+    b.querySelector(".ppdf-pages").innerHTML =
+      `<div class="ppdf-msg">${why}<br><a href="${url}" target="_blank" rel="noopener">문서 열어보기 →</a></div>`;
+  };
+
+  // 브라우저는 화면에 보이지 않는 탭에서 그리기를 멈춥니다.
+  // 그래서 「보이게 됐을 때」 · 「그 자리까지 내려왔을 때」를 기다렸다가 그립니다.
+  const whenVisible = () => document.visibilityState === "visible" ? Promise.resolve()
+    : new Promise(done => {
+        const h = () => {
+          if (document.visibilityState !== "visible") return;
+          document.removeEventListener("visibilitychange", h);
+          done();
+        };
+        document.addEventListener("visibilitychange", h);
+      });
+  const whenInView = (el) => new Promise(done => {
+    if (typeof IntersectionObserver !== "function") return done();
+    const io = new IntersectionObserver(es => {
+      if (!es.some(e => e.isIntersecting)) return;
+      io.disconnect(); done();
+    }, { rootMargin: "600px" });
+    io.observe(el);
+  });
+
+  let pdfjs;
+  try {
+    pdfjs = await import(`https://cdn.jsdelivr.net/npm/pdfjs-dist@${V}/build/pdf.min.mjs`);
+    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${V}/build/pdf.worker.min.mjs`;
+  } catch (e) {
+    boxes.forEach(b => asLink(b, "문서 보기 도구를 불러오지 못했습니다."));
+    return;
+  }
+
+  for (const b of boxes) {
+    const holder = b.querySelector(".ppdf-pages");
+    try {
+      await whenInView(b);
+      await whenVisible();
+      const doc = await pdfjs.getDocument({ url: b.dataset.pdf }).promise;
+      const total = doc.numPages;
+      const n = Math.min(total, MAX_PAGES);
+      holder.innerHTML = "";
+      const wide = Math.min(holder.clientWidth || 820, 900);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      for (let i = 1; i <= n; i++) {
+        await whenVisible();
+        const page = await doc.getPage(i);
+        const base = page.getViewport({ scale: 1 });
+        const vp = page.getViewport({ scale: (wide / base.width) * dpr });
+        const cv = document.createElement("canvas");
+        cv.width = Math.floor(vp.width);
+        cv.height = Math.floor(vp.height);
+        cv.className = "ppdf-pg";
+        await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+        holder.appendChild(cv);
+      }
+      if (total > n) {
+        const more = document.createElement("div");
+        more.className = "ppdf-msg";
+        more.innerHTML = `모두 ${total}쪽 가운데 ${n}쪽까지 보여드립니다. ` +
+          `<a href="${b.dataset.pdf}" target="_blank" rel="noopener">나머지 보기 →</a>`;
+        holder.appendChild(more);
+      }
+    } catch (e) {
+      asLink(b, "문서를 그림으로 바꾸지 못했습니다.");
+    }
+  }
+}
+
 /** 붙어 있는 파일 목록 */
 function fileBox(list) {
   if (!Array.isArray(list) || !list.length) return "";
@@ -124,12 +224,14 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
           ? `<div class="pgal">${p.images.map(s => `<a href="${s}" target="_blank"><img src="${s}" alt=""></a>`).join("")}</div>`
           : (p.image_url ? `<div class="pgal"><a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt=""></a></div>` : "")}
       ${attachedImages(p.files)}
+      ${attachedPdfs(p.files)}
       ${fileBox(p.files)}
       ${p.source_url ? `<div class="src"><a href="${p.source_url}" target="_blank" rel="noopener">원문 보기 →</a></div>` : ""}
       ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' :
         p.source === "band" ? '<div class="src">※ 네이버 밴드에서 옮겨온 글입니다.</div>' :
         p.source === "legacy" ? '<div class="src">※ (구)홈페이지 게시판에서 옮겨온 글입니다.</div>' : ""}
     `;
+    showPdfs();                       // PDF 는 시간이 걸리므로 글을 먼저 보여주고 이어서 그린다
     setupShare(p);
     const meProfile = user ? await myProfile() : null;
     const canEdit = !!(user && (p.author_id === user.id || (meProfile && meProfile.is_admin)));
