@@ -187,8 +187,12 @@ body.yb .list .row .t a:hover{color:#1e5230;}
 .post .ppdf-t a{margin-left:auto;flex:none;font-size:13px;font-weight:600;color:#8a6d2b;
   border-bottom:1px solid #d8cba8;white-space:nowrap;}
 .post .ppdf-pages{padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.post .ppdf-lnk{display:block;width:100%;max-width:900px;cursor:zoom-in;transition:.18s;}
+.post .ppdf-lnk:hover{transform:translateY(-2px);}
+.post .ppdf-lnk:hover .ppdf-pg{box-shadow:0 10px 26px rgba(60,50,20,.2);border-color:#c9a24b;}
+body.yb .post .ppdf-lnk:hover .ppdf-pg{border-color:#4f9d5d;}
 .post .ppdf-pg{width:100%;max-width:900px;height:auto;display:block;border:1px solid #e8e3d6;
-  border-radius:3px;box-shadow:0 2px 10px rgba(60,50,20,.08);background:#fff;}
+  border-radius:3px;box-shadow:0 2px 10px rgba(60,50,20,.08);background:#fff;transition:.18s;}
 .post .ppdf-msg{padding:16px 6px;font-size:14px;color:#8a8574;text-align:center;line-height:1.8;}
 .post .ppdf-msg a{color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;}
 body.yb .post .ppdf-t a,body.yb .post .ppdf-msg a{color:#2a6b40;border-bottom-color:#a9cfb4;}

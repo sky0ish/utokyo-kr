@@ -114,7 +114,15 @@ export async function showPdfs() {
         cv.height = Math.floor(vp.height);
         cv.className = "ppdf-pg";
         await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
-        holder.appendChild(cv);
+        // 쪽을 누르면 원본 PDF 가 새 창에서 그 쪽부터 열립니다 (거기서 확대해 보실 수 있습니다)
+        const lnk = document.createElement("a");
+        lnk.className = "ppdf-lnk";
+        lnk.href = b.dataset.pdf + "#page=" + i;
+        lnk.target = "_blank";
+        lnk.rel = "noopener";
+        lnk.title = `${i}쪽 — 눌러서 원본 크게 보기`;
+        lnk.appendChild(cv);
+        holder.appendChild(lnk);
       }
       if (total > n) {
         const more = document.createElement("div");
