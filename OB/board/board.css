@@ -91,46 +91,13 @@ a{text-decoration:none;color:inherit;}
 .chip.parttime{background:#eef3e8;color:#5a7a33;}
 
 /* ═══ 학생회(YB) 초록 테마 ═══ */
-body.yb .mhead{background:#1e5230;}
-body.yb .mhead nav > a:hover,body.yb .mhead nav .dd > a:hover{color:#bfe8c2;border-bottom-color:#7fc48a;}
-body.yb .mhead .dd-menu a:hover{color:#1e5230;border-color:#7fc48a;}
-body.yb .mpills .band{background:#7fc48a;color:#14301c;}
-body.yb .mpills .band:hover{background:#a5dcae;}
-body.yb .mpills .fb:hover{border-color:#bfe8c2;color:#bfe8c2;}
-body.yb .topbar{background:#132c1c;}
-body.yb .topbar a:hover{color:#bfe8c2;}
-body.yb .banner{background:linear-gradient(rgba(14,26,16,.56),rgba(12,24,14,.60)),url('/images/yb_board_arch_wide.jpg?v=1') center 38%/cover;}
 /* 갤러리 화면은 벚꽃 야경 */
-body.yb.gal .banner{background:
-  linear-gradient(100deg, rgba(9,26,42,.74) 0%, rgba(9,26,42,.46) 36%,
-                          rgba(9,26,42,.14) 66%, rgba(9,26,42,.06) 100%),
-  url('/images/yb_gallery_sky.jpg?v=1') center 42%/cover;}
-body.yb.gal .banner .en{color:#cfe6f7;}
-body.yb.gal .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.7);}
-
 /* MAP 화면은 도쿄 야경 — 양쪽 홈페이지 공통 */
 body.mapbg .banner{background:
   linear-gradient(rgba(10,16,30,.58),rgba(12,18,32,.70)),
   url('/images/yb_map_night.jpg?v=2') center top/cover;}
 body.mapbg .banner .en{color:#e8c876;}
 body.mapbg .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
-body.yb.mapbg .banner{background:
-  linear-gradient(rgba(8,20,38,.58),rgba(8,22,30,.70)),
-  url('/images/yb_map_night.jpg?v=2') center top/cover;}
-body.yb.mapbg .banner .en{color:#8fd6ff;}
-body.yb.mapbg .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
-body.yb .banner .en{color:#bfe8c2;}
-body.yb .tabs a.on{background:#1e5230;border-color:#1e5230;box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 3px 5px rgba(30,82,48,.28), 0 8px 18px rgba(30,82,48,.3);}
-body.yb .tabs a.on:hover{color:#bfe8c2;border-color:#1e5230;}
-body.yb .tabs a:hover{border-color:#4f9d5d;color:#1e5230;}
-body.yb .btn.dark{background:#1e5230;}
-body.yb .btn.dark:hover{background:#2a6b40;}
-body.yb .btn.line:hover{border-color:#4f9d5d;color:#1e5230;}
-body.yb .pickrow a.on{background:#1e5230;border-color:#1e5230;}
-body.yb .pickrow a:hover{border-color:#4f9d5d;color:#1e5230;}
-body.yb .cmt-title{border-bottom-color:#1e5230;}
-body.yb .cmt-title span{color:#4f9d5d;}
-body.yb .list .row .t a:hover{color:#1e5230;}
 .chip.org-YB{background:#e2f0e5;color:#1e5230;}
 .chip.org-OB{background:#fdf1dc;color:#a06a10;}
 .chip.org-ALL{background:#eee;color:#555;}
@@ -190,12 +157,10 @@ body.yb .list .row .t a:hover{color:#1e5230;}
 .post .ppdf-lnk{display:block;width:100%;max-width:900px;cursor:zoom-in;transition:.18s;}
 .post .ppdf-lnk:hover{transform:translateY(-2px);}
 .post .ppdf-lnk:hover .ppdf-pg{box-shadow:0 10px 26px rgba(60,50,20,.2);border-color:#c9a24b;}
-body.yb .post .ppdf-lnk:hover .ppdf-pg{border-color:#4f9d5d;}
 .post .ppdf-pg{width:100%;max-width:900px;height:auto;display:block;border:1px solid #e8e3d6;
   border-radius:3px;box-shadow:0 2px 10px rgba(60,50,20,.08);background:#fff;transition:.18s;}
 .post .ppdf-msg{padding:16px 6px;font-size:14px;color:#8a8574;text-align:center;line-height:1.8;}
 .post .ppdf-msg a{color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;}
-body.yb .post .ppdf-t a,body.yb .post .ppdf-msg a{color:#2a6b40;border-bottom-color:#a9cfb4;}
 .pfiles{margin-top:26px;padding-top:18px;border-top:1px solid #eee9dd;}
 .pfiles .pft{font-size:13px;font-weight:600;color:#8a8574;margin-bottom:9px;}
 .pfile{display:flex;align-items:center;gap:10px;padding:11px 14px;margin-bottom:6px;
@@ -204,8 +169,6 @@ body.yb .post .ppdf-t a,body.yb .post .ppdf-msg a{color:#2a6b40;border-bottom-co
 .pfile .pfi{flex:none;font-size:15px;}
 .pfile .pfn{flex:1;font-size:15px;color:#22283a;word-break:break-all;}
 .pfile .pfs{flex:none;font-size:13px;color:#a8a291;}
-body.yb .pfile:hover{border-color:#4f9d5d;background:#f6fbf7;}
-
 /* 댓글 */
 .cmt-wrap{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:26px 30px 30px;margin-top:18px;}
 .cmt-title{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;padding-bottom:14px;border-bottom:2px solid #101d33;margin-bottom:6px;}
@@ -253,44 +216,23 @@ textarea{min-height:280px;resize:vertical;line-height:1.8;}
 .msg.ok{background:#e8f0e6;color:#3f6a3a;display:block;}
 @media (max-width:640px){ .row3{grid-template-columns:1fr;} .row .meta{display:none;} .post{padding:24px 18px;} }
 
-
 /* ─── 알림(고정) 글 ─────────────────────────────────────── */
 .row.pinned{background:linear-gradient(90deg,#fffdf6,#fff 60%);}
 .row.pinned .t{font-weight:600;color:#2b2a24;}
 .row.pinned:hover{background:linear-gradient(90deg,#fdf7e6,#fffdf6 60%);}
 .chip.notice-pin{background:#5a6068;border-color:#4e545c;color:#fff;font-weight:700;
   letter-spacing:.02em;box-shadow:0 1px 2px rgba(40,45,52,.22);}
-body.yb .row.pinned{background:linear-gradient(90deg,#f6fbf7,#fff 60%);}
-body.yb .row.pinned:hover{background:linear-gradient(90deg,#eaf5ec,#f8fcf9 60%);}
-body.yb .chip.notice-pin{background:#5a6068;border-color:#4e545c;
-  box-shadow:0 1px 2px rgba(40,45,52,.22);}
-
 /* 글 화면 : 알림 고정 버튼 */
 .pactions .btn.pin{border-color:#c9a24b;background:linear-gradient(#fdf6e6,#f5e8c8);color:#7a5c10;font-weight:600;}
 .pactions .btn.pin.on{background:#5a6068;border-color:#4e545c;color:#fff;}
-body.yb .pactions .btn.pin{border-color:#a9cfb4;background:linear-gradient(#f3faf4,#e3f1e7);color:#1e5230;}
-body.yb .pactions .btn.pin.on{background:#5a6068;border-color:#4e545c;color:#fff;}
-
-
 /* ─── 학생회(YB) 화면의 큰 제목은 비트로 코어체 ───────────── */
 body.yb .banner h1,
 body.yb .ahead h1,
 body.yb .sec-head .t h2,
 body.yb .maphead h3,
 body.yb .post .ptitle,
-body.yb .cmt-title{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;}
 body.yb .sec-head .t h2,
-body.yb .ahead h1{color:#454b53;}
-
 /* 학생회 게시판 쪽번호 */
-body.yb .pager{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:6px 0 14px;}
-body.yb .pager a{min-width:36px;padding:8px 11px;border-radius:8px;border:1px solid #cfe3d4;
-  background:#fff;color:#3e5344;font-size:13.5px;font-weight:500;text-align:center;
-  text-decoration:none;transition:.15s;}
-body.yb .pager a:hover{border-color:#7fc48a;color:#1e5230;transform:translateY(-1px);}
-body.yb .pager a.on{background:#1e5230;border-color:#1e5230;color:#fff;font-weight:700;}
-body.yb .pager a.on:hover{color:#bfe8c2;transform:none;}
-body.yb .pager a.off{opacity:.38;pointer-events:none;}
 @media (max-width:680px){
   body.yb .pager a{min-width:32px;padding:7px 9px;font-size:12.5px;}
 }

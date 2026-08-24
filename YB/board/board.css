@@ -100,12 +100,12 @@ body.yb .mpills .band:hover{background:#a5dcae;}
 body.yb .mpills .fb:hover{border-color:#bfe8c2;color:#bfe8c2;}
 body.yb .topbar{background:#132c1c;}
 body.yb .topbar a:hover{color:#bfe8c2;}
-body.yb .banner{background:linear-gradient(rgba(14,26,16,.56),rgba(12,24,14,.60)),url('/images/yb_board_arch_wide.jpg?v=1') center 38%/cover;}
+body.yb .banner{background:linear-gradient(rgba(14,26,16,.56),rgba(12,24,14,.60)),url('/images/YB/yb_board_arch_wide.jpg?v=1') center 38%/cover;}
 /* 갤러리 화면은 벚꽃 야경 */
 body.yb.gal .banner{background:
   linear-gradient(100deg, rgba(9,26,42,.74) 0%, rgba(9,26,42,.46) 36%,
                           rgba(9,26,42,.14) 66%, rgba(9,26,42,.06) 100%),
-  url('/images/yb_gallery_sky.jpg?v=1') center 42%/cover;}
+  url('/images/YB/yb_gallery_sky.jpg?v=1') center 42%/cover;}
 body.yb.gal .banner .en{color:#cfe6f7;}
 body.yb.gal .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.7);}
 
