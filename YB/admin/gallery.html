@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>갤러리 관리 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f7f5ef;color:#2f2a1d;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;}
+  .head{background:#101d33;color:#fff;padding:20px 0;}
+  .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .head h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;}
+  .head .sub{margin-top:5px;font-size:12.5px;color:rgba(255,255,255,.55);}
+  .head .links{margin-top:12px;display:flex;gap:14px;font-size:13px;flex-wrap:wrap;}
+  .head .links a{color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.25);}
+  .head .links a:hover{color:#e8c876;border-color:#e8c876;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px;}
+  .card{background:#fff;border:1px solid #e6dfcb;border-radius:12px;padding:24px;margin-bottom:22px;
+    box-shadow:0 2px 8px rgba(60,50,20,.06);}
+  .card h2{font-family:'Noto Serif KR',serif;font-size:18px;margin-bottom:6px;}
+  .card .hint{font-size:12.5px;color:#9a947f;margin-bottom:16px;line-height:1.6;}
+  label{display:block;font-size:12.5px;font-weight:500;color:#5c563f;margin:14px 0 6px;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
+  .row{display:grid;grid-template-columns:200px 190px 1fr;gap:14px;}
+  .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(90,70,20,.16);transition:.2s;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn:disabled{opacity:.5;cursor:default;transform:none;}
+  .btn.dark{background:#22283a;border-color:#22283a;color:#fff;}
+  .btn.sm{padding:7px 14px;font-size:12.5px;}
+  .msg{margin-top:12px;font-size:13px;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .tabs a{padding:8px 16px;border-radius:8px;font-size:13.5px;color:#5c563f;background:#fff;
+    border:1px solid #e0d7bf;cursor:pointer;}
+  .tabs a.on{background:linear-gradient(#fdf1d3,#f0dfb2);border-color:#d3bd85;color:#4a3c14;font-weight:500;}
+
+  .alb{border:1px solid #ece5d4;border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .alb .ah{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#faf7ef;
+    border-bottom:1px solid #ece5d4;flex-wrap:wrap;}
+  .alb .ah input{flex:1;min-width:220px;padding:8px 11px;font-size:14px;font-weight:500;}
+  .alb .ah .cnt{font-size:12px;color:#a09a86;white-space:nowrap;}
+  .alb .ab{padding:14px;}
+
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
+  .it{position:relative;border-radius:8px;overflow:hidden;background:#eceae2;border:1px solid #e5e0d0;cursor:grab;}
+  .it.drag{opacity:.4;} .it.over{outline:2px solid #c9a961;outline-offset:1px;}
+  .it .sq{width:100%;aspect-ratio:1/1;overflow:hidden;}
+  .it img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+  .it .m{padding:6px 7px;font-size:10px;color:#7d7768;line-height:1.4;}
+  .it .m b{display:block;color:#3d4453;font-weight:500;font-size:10.5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .it .acts{position:absolute;top:5px;right:5px;display:flex;gap:4px;}
+  .it .acts button{border:none;border-radius:6px;padding:3px 7px;font-size:10.5px;cursor:pointer;
+    font-family:inherit;color:#fff;background:rgba(20,24,34,.72);}
+  .it .acts .del{background:rgba(180,60,50,.9);}
+  .it .tag{position:absolute;top:5px;left:5px;background:rgba(20,24,34,.6);color:#fff;
+    border-radius:100px;padding:2px 7px;font-size:9.5px;}
+  .empty{padding:44px 0;text-align:center;color:#a8a291;font-size:14px;}
+
+  .modal{position:fixed;inset:0;background:rgba(10,14,22,.6);display:none;z-index:800;
+    align-items:center;justify-content:center;padding:24px;}
+  .modal.on{display:flex;}
+  .modal .box{background:#fff;border-radius:12px;padding:24px;max-width:460px;width:100%;}
+  .modal h3{font-family:'Noto Serif KR',serif;font-size:17px;margin-bottom:4px;}
+  .modal .foot{margin-top:20px;display:flex;gap:8px;justify-content:flex-end;}
+  @media (max-width:980px){ .grid{grid-template-columns:repeat(4,1fr);} .row{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="inner">
+    <h1>갤러리 관리</h1>
+    <div class="sub">사진 추가 · 삭제 · 앨범 제목과 배치 수정 (운영진 전용)</div>
+    <div class="links">
+      <a href="/OB/gallery.html">갤러리 보기</a>
+      <a href="/OB/index.html">총동문회 홈</a>
+      <a href="members.html">회원 관리</a>
+      <a href="index.html">게시글 수집 관리</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+    <!-- 사진 추가 -->
+    <div class="card">
+      <h2>사진 추가</h2>
+      <div class="hint">촬영일의 <b>연도</b>로 앨범이 자동으로 묶입니다. 여러 장을 한 번에 올릴 수 있습니다.</div>
+      <div class="row">
+        <div>
+          <label>분류 *</label>
+          <select id="fCat"></select>
+        </div>
+        <div>
+          <label>촬영일 *</label>
+          <input type="date" id="fDate">
+        </div>
+        <div>
+          <label>설명 (확대 시 사진 아래에 표시)</label>
+          <input type="text" id="fCap" maxlength="80" placeholder="예: 2026년도 정기총회 단체사진">
+        </div>
+      </div>
+      <label>사진 파일 * <span style="font-weight:300;color:#9a947f;">(JPG · PNG)</span></label>
+      <input type="file" id="fFiles" accept="image/*" multiple>
+      <div style="margin-top:18px;"><button class="btn dark" id="upBtn">업로드</button></div>
+      <div class="msg" id="upMsg"></div>
+    </div>
+
+    <!-- 앨범 · 사진 관리 -->
+    <div class="card">
+      <h2>앨범 · 사진 관리</h2>
+      <div class="hint">
+        앨범 제목은 칸에 바로 입력하고 <b>제목 저장</b>을 누르면 됩니다.<br>
+        사진은 <b>끌어다 놓으면 순서가 바뀌고</b>, 놓는 즉시 저장됩니다.
+        기본 제공 사진은 <b>숨김</b>으로 감출 수 있고(되돌리기 가능), 직접 올린 사진은 <b>삭제</b>됩니다.
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="msg" id="listMsg"></div>
+      <div id="albums"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 사진 수정 -->
+<div class="modal" id="edit">
+  <div class="box">
+    <h3>사진 수정</h3>
+    <div class="hint" id="eKey" style="font-size:11.5px;color:#a09a86;margin-bottom:10px;"></div>
+    <label>설명</label>
+    <input type="text" id="eCap" maxlength="120">
+    <label>분류</label>
+    <select id="eCat"></select>
+    <label>촬영일 <span style="font-weight:300;color:#9a947f;">(연도를 바꾸면 다른 앨범으로 옮겨집니다)</span></label>
+    <input type="date" id="eDate">
+    <div class="foot">
+      <button class="btn" id="eCancel">취소</button>
+      <button class="btn dark" id="eSave">저장</button>
+    </div>
+    <div class="msg" id="eMsg"></div>
+  </div>
+</div>
+<script type="module">
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
+import { CATS, CAT_NAME, loadGallery } from "/YB/gallery-lib.js?v=19";
+
+const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+document.getElementById("fCat").innerHTML = optHtml;
+document.getElementById("eCat").innerHTML = optHtml;
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+const gate = document.getElementById("gate");
+if (!me || !me.is_admin) {
+  gate.innerHTML = '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="/YB/auth/login.html">로그인</a></div>';
+} else {
+  gate.style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  document.getElementById("fDate").value = new Date().toISOString().slice(0, 10);
+  start();
+}
+
+function esc(s) { return (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+async function start() {
+  let cur = "assembly", byCat = {};
+
+  document.getElementById("tabs").innerHTML = CATS.map(([k, v]) => `<a data-c="${k}">${v}</a>`).join("");
+  document.querySelectorAll("#tabs a").forEach(a =>
+    a.addEventListener("click", () => { cur = a.dataset.c; render(); }));
+
+  async function reload() { ({ byCat } = await loadGallery()); render(); }
+
+  /** 사진 수정 내역 저장 (기본 사진 = overrides / 올린 사진 = gallery_photos) */
+  async function savePhoto(p, patch) {
+    if (p.kind === "db") {
+      return sb.from("gallery_photos").update(patch).eq("id", p.id);
+    }
+    const row = { photo_key: p.key, updated_by: user.id, updated_at: new Date().toISOString(), ...patch };
+    return sb.from("gallery_overrides").upsert(row, { onConflict: "photo_key" });
+  }
+
+  function render() {
+    document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.c === cur));
+    const list = byCat[cur] || [];
+    document.getElementById("listMsg").textContent =
+      `${CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${list.reduce((s, a) => s + a.photos.length, 0)}장`;
+    const box = document.getElementById("albums");
+    if (!list.length) { box.innerHTML = '<div class="empty">사진이 없습니다.</div>'; return; }
+
+    box.innerHTML = list.map(a => `
+      <div class="alb" data-k="${a.key}">
+        <div class="ah">
+          <input class="ttl" value="${esc(a.title)}">
+          <button class="btn sm save">제목 저장</button>
+          <span class="cnt">사진 ${a.photos.length}장</span>
+        </div>
+        <div class="ab">
+          <div class="grid">
+            ${a.photos.map((p, i) => `
+              <div class="it" draggable="true" data-i="${i}" title="${esc(p.cap)}">
+                <span class="tag">${p.kind === "db" ? "추가" : "기본"}</span>
+                <span class="acts">
+                  <button class="ed">수정</button>
+                  <button class="del">${p.kind === "db" ? "삭제" : "숨김"}</button>
+                </span>
+                <div class="sq"><img src="${p.thumb}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div>
+                <div class="m"><b>${esc(p.cap) || "&nbsp;"}</b>${(p.date || "").replace(/-/g, ".")}</div>
+              </div>`).join("")}
+          </div>
+        </div>
+      </div>`).join("");
+
+    box.querySelectorAll(".alb").forEach(el => {
+      const album = list.find(a => a.key === el.dataset.k);
+
+      // 제목 저장
+      el.querySelector(".save").addEventListener("click", async (e) => {
+        const b = e.currentTarget; b.disabled = true;
+        const title = el.querySelector(".ttl").value.trim() || album.title;
+        const { error } = await sb.from("gallery_albums").upsert(
+          { album_key: album.key, title, updated_by: user.id, updated_at: new Date().toISOString() },
+          { onConflict: "album_key" });
+        b.disabled = false;
+        b.textContent = error ? "저장 실패" : "저장됨 ✓";
+        if (!error) setTimeout(() => { b.textContent = "제목 저장"; }, 1500);
+        else alert("제목 저장 실패: " + error.message);
+      });
+
+      // 삭제 · 숨김
+      el.querySelectorAll(".del").forEach(b => b.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const p = album.photos[+b.closest(".it").dataset.i];
+        b.disabled = true;
+        if (p.kind === "db") {
+          if (!confirm("이 사진을 삭제할까요? 되돌릴 수 없습니다.")) { b.disabled = false; return; }
+          if (p.storage_path) await sb.storage.from("gallery").remove([p.storage_path]);
+          const { error } = await sb.from("gallery_photos").delete().eq("id", p.id);
+          if (error) { alert("삭제 실패: " + error.message); b.disabled = false; return; }
+        } else {
+          const { error } = await savePhoto(p, { hidden: true });
+          if (error) { alert("숨김 실패: " + error.message); b.disabled = false; return; }
+        }
+        await reload();
+      }));
+
+      // 수정
+      el.querySelectorAll(".ed").forEach(b => b.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEdit(album.photos[+b.closest(".it").dataset.i]);
+      }));
+
+      // 끌어서 순서 바꾸기
+      let from = null;
+      el.querySelectorAll(".it").forEach(it => {
+        it.addEventListener("dragstart", () => { from = +it.dataset.i; it.classList.add("drag"); });
+        it.addEventListener("dragend", () => it.classList.remove("drag"));
+        it.addEventListener("dragover", (e) => { e.preventDefault(); it.classList.add("over"); });
+        it.addEventListener("dragleave", () => it.classList.remove("over"));
+        it.addEventListener("drop", async (e) => {
+          e.preventDefault(); it.classList.remove("over");
+          const to = +it.dataset.i;
+          if (from === null || from === to) return;
+          const arr = album.photos.slice();
+          arr.splice(to, 0, arr.splice(from, 1)[0]);
+          const res = await Promise.all(arr.map((p, i) => savePhoto(p, { sort: i })));
+          const bad = res.find(r => r && r.error);
+          if (bad) alert("순서 저장 실패: " + bad.error.message);
+          await reload();
+        });
+      });
+    });
+  }
+
+  // ── 사진 수정 모달 ──
+  const modal = document.getElementById("edit");
+  let editing = null;
+  function openEdit(p) {
+    editing = p;
+    document.getElementById("eKey").textContent =
+      (p.kind === "db" ? "직접 올린 사진" : "기본 제공 사진") + " · " + p.key;
+    document.getElementById("eCap").value = p.cap || "";
+    document.getElementById("eCat").value = p.cat;
+    document.getElementById("eDate").value = (p.date || "").slice(0, 10);
+    document.getElementById("eMsg").textContent = "";
+    modal.classList.add("on");
+  }
+  document.getElementById("eCancel").addEventListener("click", () => modal.classList.remove("on"));
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("on"); });
+  document.getElementById("eSave").addEventListener("click", async () => {
+    const b = document.getElementById("eSave"); b.disabled = true;
+    const patch = {
+      caption: document.getElementById("eCap").value.trim() || null,
+      category: document.getElementById("eCat").value,
+      taken_at: document.getElementById("eDate").value || null,
+    };
+    const { error } = await savePhoto(editing, patch);
+    b.disabled = false;
+    if (error) {
+      const m = document.getElementById("eMsg"); m.className = "msg err"; m.textContent = "저장 실패: " + error.message;
+      return;
+    }
+    modal.classList.remove("on");
+    cur = patch.category;
+    await reload();
+  });
+
+  // ── 업로드 ──
+  document.getElementById("upBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("upBtn");
+    const msg = document.getElementById("upMsg");
+    const files = [...document.getElementById("fFiles").files];
+    const cat = document.getElementById("fCat").value;
+    const date = document.getElementById("fDate").value;
+    const cap = document.getElementById("fCap").value.trim();
+    if (!files.length) { msg.className = "msg err"; msg.textContent = "사진 파일을 선택해주세요."; return; }
+    if (!date) { msg.className = "msg err"; msg.textContent = "촬영일을 입력해주세요."; return; }
+
+    btn.disabled = true;
+    let ok = 0, fail = 0, lastErr = "";
+    for (const [n, f] of files.entries()) {
+      msg.className = "msg"; msg.textContent = `업로드 중… (${n + 1}/${files.length})`;
+      const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+      const path = `${cat}/${date}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+      const up = await sb.storage.from("gallery").upload(path, f, { cacheControl: "3600" });
+      if (up.error) { fail++; lastErr = up.error.message; continue; }
+      const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
+      const ins = await sb.from("gallery_photos").insert({
+        category: cat, taken_at: date, caption: cap || null, org: "YB",
+        image_url: pub.publicUrl, storage_path: path, sort: n, created_by: user.id,
+      });
+      if (ins.error) { fail++; lastErr = ins.error.message; } else ok++;
+    }
+    btn.disabled = false;
+    document.getElementById("fFiles").value = "";
+    msg.className = "msg " + (fail ? "err" : "ok");
+    msg.textContent = `업로드 완료 — 성공 ${ok}장` + (fail ? ` · 실패 ${fail}장 (${lastErr})` : "");
+    cur = cat;
+    await reload();
+  });
+
+  reload();
+}
+</script>
+
+</body>
+</html>

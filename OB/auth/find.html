@@ -66,7 +66,7 @@
   </div>
 
   <div class="foot">비밀번호가 기억나셨나요? <a href="login.html">로그인</a></div>
-  <div class="back" style="text-align:center;"><a href="../index.html">← 통합 홈으로</a></div>
+  <div class="back" style="text-align:center;"><a href="/index.html">← 통합 홈으로</a></div>
 </div>
 
 <script type="module">
@@ -131,7 +131,7 @@ $("reset").addEventListener("click", async (e) => {
   const btn = $("reset"), msg = $("msg");
   btn.disabled = true; btn.textContent = "보내는 중…";
   const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: location.origin + "/auth/reset.html",
+    redirectTo: location.origin + "/OB/auth/reset.html",
   });
   btn.disabled = false; btn.textContent = "메일로 링크 받기";
   if (error) { showMsg(msg, "메일을 보내지 못했습니다: " + error.message); return; }

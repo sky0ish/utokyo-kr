@@ -2,7 +2,7 @@
 // 위쪽에는 역대 회장 목록, 아래쪽에는 기존 홈페이지처럼 게시판 모양의
 // 역대 임원진 자료 목록을 놓습니다. 명단은 회원께만 보여드립니다.
 import { ROSTERS } from "/YB/council-data.js?v=1";
-import { currentUser } from "/auth/auth.js";
+import { currentUser } from "/YB/auth/auth.js";
 
 const esc = (t) => String(t == null ? "" : t)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));

@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>캠퍼스 지도 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/lib/board.css?v=52">
+<link rel="stylesheet" href="/OB/lib/board.css?v=53">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="/OB/lib/map.css?v=38">
+<link rel="stylesheet" href="/OB/lib/map.css?v=39">
 <style>
   :root{ --map-accent:#8a6d2b; --map-line:#e6dfcb; --map-soft:#fdf1d3; --map-tip:#faf7ef; }
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -79,7 +79,7 @@
       <a href="https://alumni.tokyoksa.com/" target="_blank" rel="noopener">총동문회 홈페이지(기존)</a>
 
     </div>
-    <div class="links" id="authLinks"><a href="/auth/login.html">로그인</a><a href="/auth/signup.html">회원가입</a><a href="/auth/find.html">아이디·비번 찾기</a></div>
+    <div class="links" id="authLinks"><a href="/OB/auth/login.html">로그인</a><a href="/OB/auth/signup.html">회원가입</a><a href="/OB/auth/find.html">아이디·비번 찾기</a></div>
   </div>
 </div>
 
@@ -113,8 +113,8 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
-import { applyNav, applyAuthLinks } from "/OB/lib/nav.js?v=8";
-import { initMap } from "/OB/lib/map.js?v=38";
+import { applyNav, applyAuthLinks } from "/OB/lib/nav.js?v=9";
+import { initMap } from "/OB/lib/map.js?v=39";
 applyNav("OB", "캠퍼스 지도 | 재한 도쿄대학 총동문회");
 initMap("OB");
 applyAuthLinks("OB");            // 로그인 상태를 상단에 그대로 보여준다

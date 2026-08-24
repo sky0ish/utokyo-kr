@@ -1,7 +1,7 @@
 // ─── 학생회 갤러리 공용 모듈 ──────────────────────────────────
 // 분류 구성은 도쿄대학 한국인 학생회 홈페이지(tokyoksa.com) 갤러리 메뉴를 따랐고,
 // 앨범·업로드 방식은 재한 도쿄대학 총동문회 갤러리와 동일합니다.
-import { sb } from "../auth/auth.js";
+import { sb } from "/YB/auth/auth.js";
 
 export const CATS = [
   ["assembly",  "총회"],

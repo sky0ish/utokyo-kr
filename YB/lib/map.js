@@ -1,7 +1,7 @@
 // ─── MAP — 도쿄대학 · 도쿄맛집 · 도쿄까페 · 추억핫플 · 건축물 ────
 // 화면 파일은 OB/map.html · YB/map.html 로 따로 두고,
 // 지도 내용은 이 파일 하나를 함께 씁니다. 양쪽에 같은 장소가 보입니다.
-import { sb, currentUser, myProfile } from "/auth/auth.js";
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 
 export const CATS = [
   ["utokyo", "도쿄대학"],

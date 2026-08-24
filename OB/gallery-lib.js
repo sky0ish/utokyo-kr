@@ -1,7 +1,7 @@
 // ─── 갤러리 공용 모듈 ──────────────────────────────────────
 // 기본 제공 사진(gallery-data.js) + 관리자가 올린 사진/수정 내역(Supabase)을 합쳐
 // 연도별 앨범 목록을 만든다. gallery / album / admin 페이지가 함께 사용한다.
-import { sb } from "../auth/auth.js";
+import { sb } from "/OB/auth/auth.js";
 
 export const CATS = [
   ["assembly", "총회"],

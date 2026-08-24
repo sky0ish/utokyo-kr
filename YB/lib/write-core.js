@@ -1,6 +1,6 @@
 // ─── 게시판 글쓰기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
-import { sb, currentUser, myProfile } from "/auth/auth.js";
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 import { applyNav } from "/YB/lib/nav.js?v=10";
 
 export async function initWrite(ORG) {
@@ -13,7 +13,7 @@ export async function initWrite(ORG) {
   const preOrg = new URLSearchParams(location.search).get("org");
 
   const user = await currentUser();
-  if (!user) { location.href = "/auth/login.html"; }
+  if (!user) { location.href = "/YB/auth/login.html"; }
   const profile = await myProfile();
 
   // 상단바: 로그인 상태 + 로그아웃
@@ -23,7 +23,7 @@ export async function initWrite(ORG) {
     const st = document.createElement("span");
     st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
     const my = document.createElement("a");
-    my.href = "/auth/mypage.html";
+    my.href = "/YB/auth/mypage.html";
     my.textContent = (profile && profile.name) ? profile.name + "님" : "내 정보";
     const out = document.createElement("a");
     out.href = "#"; out.textContent = "로그아웃";

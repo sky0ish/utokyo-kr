@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/lib/board.css?v=52">
+<link rel="stylesheet" href="/OB/lib/board.css?v=53">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -134,13 +134,13 @@
 <div class="topbar">
   <div class="inner">
     <div class="links">
-      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="/index.html">⌂ 통합 홈</a>
       <a href="https://www.u-tokyo.ac.jp/en/about/plog_2026_0506.html" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
-      <a href="../YB/index.html">한국인학생회</a>
+      <a href="/YB/index.html">한국인학생회</a>
       <a href="https://alumni.tokyoksa.com/" target="_blank" rel="noopener">총동문회 홈페이지(기존)</a>
 
     </div>
-    <div class="links" id="authLinks"><a href="../auth/login.html">로그인</a><a href="../auth/signup.html">회원가입</a><a href="../auth/find.html">아이디·비번 찾기</a></div>
+    <div class="links" id="authLinks"><a href="/OB/auth/login.html">로그인</a><a href="/OB/auth/signup.html">회원가입</a><a href="/OB/auth/find.html">아이디·비번 찾기</a></div>
   </div>
 </div>
 
@@ -260,10 +260,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=18"></script>
+<script src="gallery-data.js?v=19"></script>
 <script type="module">
-import { sb, currentUser, myProfile } from "../auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=18";
+import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=19";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";
@@ -284,7 +284,7 @@ if (!isMember) {
   const n = document.getElementById("memnote");
   n.className = "memnote on";
   n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
-    ' <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
+    ' <a href="/OB/auth/login.html">로그인</a> · <a href="/OB/auth/signup.html">회원가입</a>';
 }
 
 const { byCat, albums: allAlbums } = await loadGallery();
@@ -332,8 +332,8 @@ function render() {
     document.getElementById("gcount").textContent = "";
     document.getElementById("ggrid").innerHTML =
       '<div class="gempty" style="grid-column:1/-1;"><b>' + (CAT_NAME[cur] || "") + '</b> 사진첩은 동문회 회원만 보실 수 있습니다.<br><br>' +
-      '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
-      '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+      '<a class="btn dark" href="/OB/auth/login.html">로그인</a> ' +
+      '<a class="btn line" href="/OB/auth/signup.html">회원가입</a></div>';
     return;
   }
   const list = kw ? matched() : inCat(cur);              // 검색 중에는 모든 분류에서 찾는다
@@ -519,11 +519,11 @@ try {
         .addEventListener("click", () => autoMerge(allAlbums));
       render();                                // 끌어놓기 기능을 붙여 다시 그림
       const ad = document.createElement("a");
-      ad.href = "../admin/gallery.html";
+      ad.href = "/OB/admin/gallery.html";
       ad.textContent = "⚙ 갤러리 관리";
       ad.style.color = "#e8c876";
       const mb = document.createElement("a");
-      mb.href = "../admin/members.html";
+      mb.href = "/OB/admin/members.html";
       mb.textContent = "⚙ 회원 관리";
       mb.style.color = "#e8c876";
       document.querySelector(".topbar .links").append(ad, mb);
@@ -533,7 +533,7 @@ try {
     const st = document.createElement("span");
     st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
     const my = document.createElement("a");
-    my.href = "../auth/mypage.html";
+    my.href = "/OB/auth/mypage.html";
     my.textContent = (p && p.name) ? p.name + "님" : "내 정보";
     const out = document.createElement("a");
     out.href = "#"; out.textContent = "로그아웃";

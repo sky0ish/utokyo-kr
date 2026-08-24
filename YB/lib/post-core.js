@@ -1,6 +1,6 @@
 // ─── 게시판 글보기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
-import { sb, currentUser, myProfile } from "/auth/auth.js";
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 import { applyNav } from "/YB/lib/nav.js?v=10";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
@@ -168,7 +168,7 @@ export async function initPost(ORG) {
     const st = document.createElement("span");
     st.textContent = "[로그인중]"; st.style.color = "#7fc48a"; st.style.fontWeight = "700";
     const my = document.createElement("a");
-    my.href = "/auth/mypage.html"; my.textContent = "내 정보";
+    my.href = "/YB/auth/mypage.html"; my.textContent = "내 정보";
     const out = document.createElement("a");
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
@@ -218,7 +218,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
                                : "게시글 | 재한 도쿄대학 총동문회");
   if (error || !p) {
     box.innerHTML = '<div class="empty">글을 찾을 수 없거나 열람 권한이 없습니다.<br><br><a class="btn line" href="' + HOME + '/board.html">목록으로</a>' +
-      (user ? "" : ' <a class="btn dark" href="/auth/login.html">로그인</a>') + '</div>';
+      (user ? "" : ' <a class="btn dark" href="/YB/auth/login.html">로그인</a>') + '</div>';
   } else {
     box.innerHTML = `
       <div>
@@ -308,7 +308,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
     if (!canWrite) {
       formBox.innerHTML = user
         ? '<div class="cmt-login">댓글 작성은 운영진 승인이 완료된 회원만 가능합니다. (현재: 승인 대기중)</div>'
-        : '<div class="cmt-login">댓글을 작성하려면 로그인이 필요합니다. <a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a></div>';
+        : '<div class="cmt-login">댓글을 작성하려면 로그인이 필요합니다. <a href="/YB/auth/login.html">로그인</a> · <a href="/YB/auth/signup.html">회원가입</a></div>';
     }
 
     async function loadComments() {

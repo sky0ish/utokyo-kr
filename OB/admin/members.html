@@ -14,7 +14,7 @@
   .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
   @font-face{
     font-family:"Vitro Core";
-    src:url("../fonts/VitroCore.woff2") format("woff2");
+    src:url("/fonts/VitroCore.woff2") format("woff2");
     font-weight:400 900; font-style:normal; font-display:swap;
   }
   .head h1{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;font-size:24px;font-weight:600;}
@@ -119,8 +119,8 @@
     <h1>회원 관리</h1>
     <div class="sub">가입 승인 · 안내 메일 발송 (운영진 전용)</div>
     <div class="links">
-      <a href="../OB/index.html">총동문회 홈</a>
-      <a href="../YB/index.html">학생회 홈</a>
+      <a href="/OB/index.html">총동문회 홈</a>
+      <a href="/YB/index.html">학생회 홈</a>
       <a href="gallery.html">갤러리 관리</a>
       <a href="index.html">게시글 수집 관리</a>
     </div>
@@ -227,14 +227,14 @@
 </div>
 
 <script type="module">
-import { sb, currentUser, myProfile } from "../auth/auth.js";
+import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 
 const user = await currentUser();
 const me = user ? await myProfile() : null;
 const gate = document.getElementById("gate");
 if (!me || !me.is_admin) {
   gate.innerHTML = '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
-    '<a class="btn" href="../auth/login.html">로그인</a></div>';
+    '<a class="btn" href="/OB/auth/login.html">로그인</a></div>';
 } else {
   gate.style.display = "none";
   document.getElementById("panel").style.display = "block";

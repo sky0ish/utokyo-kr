@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>회원 관리 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f7f5ef;color:#2f2a1d;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;}
+  .head{background:#101d33;color:#fff;padding:20px 0;}
+  .inner{max-width:1180px;margin:0 auto;padding:0 24px;}
+  @font-face{
+    font-family:"Vitro Core";
+    src:url("/fonts/VitroCore.woff2") format("woff2");
+    font-weight:400 900; font-style:normal; font-display:swap;
+  }
+  .head h1{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;font-size:24px;font-weight:600;}
+  .head .sub{margin-top:5px;font-size:12.5px;color:rgba(255,255,255,.55);}
+  .head .links{margin-top:12px;display:flex;gap:14px;font-size:13px;flex-wrap:wrap;}
+  .head .links a{color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.25);}
+  .head .links a:hover{color:#e8c876;border-color:#e8c876;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px;}
+  .card{background:#fff;border:1px solid #e6dfcb;border-radius:12px;padding:24px;margin-bottom:22px;
+    box-shadow:0 2px 8px rgba(60,50,20,.06);}
+  .card h2{font-family:'Noto Serif KR',serif;font-size:18px;margin-bottom:6px;}
+  .card .hint{font-size:12.5px;color:#9a947f;margin-bottom:16px;line-height:1.7;}
+  label{display:block;font-size:12.5px;font-weight:500;color:#5c563f;margin:14px 0 6px;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
+  textarea{min-height:110px;resize:vertical;line-height:1.7;}
+  .btn{display:inline-block;padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 2px 4px rgba(90,70,20,.16);transition:.2s;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn:disabled{opacity:.5;cursor:default;transform:none;}
+  .btn.dark{background:#22283a;border-color:#22283a;color:#fff;}
+  .btn.sm{padding:6px 13px;font-size:12px;}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .msg{margin-top:12px;font-size:13px;color:#7d7768;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .tabs a{padding:8px 16px;border-radius:8px;font-size:13.5px;color:#5c563f;background:#fff;
+    border:1px solid #e0d7bf;cursor:pointer;}
+  .tabs a.on{background:linear-gradient(#fdf1d3,#f0dfb2);border-color:#d3bd85;color:#4a3c14;font-weight:500;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;font-weight:600;color:#5c563f;font-size:12.5px;padding:9px 10px;
+    border-bottom:2px solid #ece5d4;white-space:nowrap;}
+  .btn.sm.adm{margin-left:6px;background:#f3ede0;color:#7a6428;border:1px solid #e2d6b8;}
+  .btn.sm.adm:hover{background:#ece2cc;}
+  th[data-s]{cursor:pointer;user-select:none;}
+  th[data-s]:hover{color:#8a6d2b;background:#faf6ea;}
+  th .arr{margin-left:3px;color:#c4bda6;font-size:10px;}
+  th.sorted{color:#8a6d2b;}
+  th.sorted .arr{color:#c9a24b;}
+  td{padding:9px 10px;border-bottom:1px solid #f4f0e5;vertical-align:middle;}
+  tr:hover td{background:#fcfaf4;}
+  td.em{color:#5b6474;font-size:12.5px;word-break:break-all;}
+  .chip{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:500;}
+  .chip.ok{background:#e7f3ea;color:#2f7a45;}
+  .chip.wait{background:#fdf1e2;color:#a3671f;}
+  .chip.ob{background:#fdf6e6;color:#8a6d2b;}
+  .chip.yb{background:#eaf4ec;color:#2f6b3c;}
+  .empty{padding:44px 0;text-align:center;color:#a8a291;font-size:14px;}
+  /* 이름으로 받는 사람 고르기 */
+  .finder{margin-top:6px;border:1px solid #ece5d4;border-radius:8px;max-height:190px;overflow:auto;display:none;}
+  .finder.on{display:block;}
+  .finder div{padding:9px 12px;font-size:13.5px;cursor:pointer;border-bottom:1px solid #f6f2e8;}
+  .finder div:last-child{border-bottom:none;}
+  .finder div:hover{background:#faf7ef;}
+  .finder small{color:#a09a86;margin-left:6px;font-size:12px;}
+  .finder .none{color:#a8a291;cursor:default;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .chips span{display:inline-flex;align-items:center;gap:6px;background:#fdf1d3;border:1px solid #e2cf9f;
+    color:#4a3c14;border-radius:100px;padding:5px 8px 5px 12px;font-size:12.5px;}
+  .chips b{font-weight:500;}
+  .chips button{border:none;background:none;color:#8a6d2b;cursor:pointer;font-size:14px;line-height:1;padding:0 2px;}
+  .bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;
+    padding:11px 14px;background:#faf7ef;border:1px solid #ece5d4;border-radius:9px;}
+  .bulk #selCnt{font-size:13px;color:#5c563f;font-weight:500;margin-right:4px;}
+  th input[type=checkbox],td input[type=checkbox]{width:16px;height:16px;cursor:pointer;margin:0;}
+  @media (max-width:760px){ table{font-size:12.5px;} th,td{padding:7px 6px;} }
+  .rnote{margin-top:4px;font-size:11px;color:#8b8474;line-height:1.5;word-break:keep-all;}
+  .rnote a{color:#2f6ea8;}
+  td.acts{white-space:nowrap;}
+  td.acts .btn{margin:1px 0;}
+  .gsel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
+    font-family:inherit;font-size:11.5px;background:#fffdf8;color:#2f2a1d;cursor:pointer;}
+  .gsel:focus{outline:0;border-color:#c9a24b;}
+  .btn.sm.done{background:#eeeae0;border-color:#ddd6c4;color:#a09a86;font-weight:400;}
+  .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
+  .cardhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .cardhead h2{margin:0;}
+  /* 오른쪽 위 : 총동문회(OB) · 학생회(YB) 가르기 */
+  .orgseg{display:inline-flex;border:1px solid #d9cfae;border-radius:10px;overflow:hidden;
+    background:#fffdf6;}
+  .orgseg a{padding:9px 18px;font-size:13.5px;font-weight:600;color:#6b6350;cursor:pointer;
+    border-right:1px solid #eae2c9;transition:.15s;white-space:nowrap;}
+  .orgseg a:last-child{border-right:none;}
+  .orgseg a:hover{background:#f7f1de;color:#3f3a29;}
+  .orgseg a.on{background:#c9a961;color:#2b2410;}
+  .orgseg a.on.yb{background:#1e5230;color:#fff;}
+  @media (max-width:760px){ .orgseg{margin:8px 0;} .orgseg a{padding:8px 12px;font-size:12.5px;} }
+  .csvbtns{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap;}
+  .btn.csvtop{padding:8px 16px;font-size:13px;background:#fff;border:1px solid #ddcb9e;color:#4a3c14;
+    border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;}
+  .btn.csvtop:hover{background:#fdf6e6;}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="inner">
+    <h1>회원 관리</h1>
+    <div class="sub">가입 승인 · 안내 메일 발송 (운영진 전용)</div>
+    <div class="links">
+      <a href="/OB/index.html">총동문회 홈</a>
+      <a href="/YB/index.html">학생회 홈</a>
+      <a href="gallery.html">갤러리 관리</a>
+      <a href="index.html">게시글 수집 관리</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+
+    <!-- 회원 목록 -->
+    <div class="card">
+      <div class="cardhead">
+        <span class="orgseg" id="orgseg"></span>
+        <span class="csvbtns">
+          <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV</button>
+          <button class="btn csvtop" id="csvGuest">⤓ 준회원만 CSV</button>
+          <button class="btn csvtop" id="csvPick">⤓ 선택한 분만 CSV</button>
+        </span>
+      </div>
+      <div class="tabs" id="tabs">
+        <a data-f="all" class="on">전체</a>
+        <a data-f="wait">승인 대기</a>
+        <a data-f="approved">승인 완료</a>
+      </div>
+      <div class="bulk">
+        <span id="selCnt">선택 0명</span>
+        <button class="btn sm dark" id="okSel">선택 승인</button>
+        <button class="btn sm" id="noSel">선택 승인 취소</button>
+        <button class="btn sm" id="autoGrade">회원여부 일괄확인</button>
+        <button class="btn sm" id="okWait">대기자 전체 승인</button>
+      </div>
+      <div class="msg" id="listMsg"></div>
+      <div style="overflow-x:auto;"><table id="tbl"></table></div>
+    </div>
+
+    <!-- 안내 메일 -->
+    <div class="card">
+      <h2>메일 보내기</h2>
+      <div class="hint">
+        <b>지금 보내기</b>를 누르면 홈페이지에서 바로 발송됩니다. (운영진 전용 · 숨은참조로 발송되어 서로의 주소가 보이지 않습니다)<br>
+        발송 기능이 아직 준비되지 않았다면 <b>주소 복사</b>로 주소를 받아 쓰시는 메일의 <b>숨은참조(BCC)</b>에 붙여넣어 보내시고,
+        <b>보낸 것으로 표시</b>를 눌러 기록해두시면 다음부터 그 분들은 대상에서 빠집니다.
+      </div>
+
+      <label>보낼 대상</label>
+      <select id="target">
+        <option value="unsent">아직 안 보낸 회원 (권장)</option>
+        <option value="unsent-OB">아직 안 보낸 회원 — 총동문회(OB)</option>
+        <option value="unsent-YB">아직 안 보낸 회원 — 학생회(YB)</option>
+        <option value="all">전체 회원</option>
+        <option value="approved">승인된 회원</option>
+        <option value="wait">승인 대기 회원</option>
+        <option value="OB">총동문회(OB) 회원</option>
+        <option value="YB">학생회(YB) 회원</option>
+        <option value="pick">직접 고르기 (이름 검색)</option>
+      </select>
+
+      <div id="pickBox" style="display:none;">
+        <label>받는 사람 검색 <span style="font-weight:300;color:#9a947f;">(이름 또는 이메일 · 클릭하면 추가됩니다)</span></label>
+        <input type="text" id="who" placeholder="예: 양일모" autocomplete="off">
+        <div id="whoList" class="finder"></div>
+        <div id="chips" class="chips"></div>
+      </div>
+
+      <label>제목</label>
+      <input type="text" id="subj" value="[도쿄대학 한국인 총동문회] 가입이 완료되었습니다">
+
+      <label>내용</label>
+      <textarea id="body">도쿄대학 한국인 총동문회에 가입완료 되었습니다.
+가입 감사합니다~!
+
+이제 재한동경대총동문회와 도쿄대학 한국인학생회를 같은 홈페이지로 공동운영하여
+좀더 긴밀한 협력을 하고자 합니다. 응원해주시고 많은 도움 부탁드립니다.
+
+비밀번호를 잊으셨을 때 다시 세팅할 수 있도록 추가 수정하였습니다.
+홈페이지 개선에 대한 의견 주시면 최대한 반영하여 수정하도록 하겠습니다.
+
+앞으로 자주 활용해주세요^.^
+
+▶ 홈페이지 : https://u-tokyo.kr
+▶ 회비 안내  (동문회 회비는 사랑입니다)
+    일반회원 5만원, 이사진 10만원, 부회장단 이상 20만원
+    카카오뱅크 7942-31-14274 김소영 (총무이사)
+
+도쿄대학 한국인 총동문회
+(도쿄대학 한국인학생회 + 재한 도쿄대학 총동문회)</textarea>
+
+      <div class="btns">
+        <button class="btn dark" id="sendBtn">✉ 지금 보내기</button>
+        <button class="btn" id="copyBtn">주소 복사</button>
+        <button class="btn" id="mailBtn">메일 앱으로 열기</button>
+        <button class="btn" id="markBtn">보낸 것으로 표시</button>
+        <button class="btn" id="csvBtn">명단 내려받기 (CSV)</button>
+      </div>
+      <div class="msg" id="mailMsg"></div>
+
+      <label style="margin-top:18px;">받는 주소 <span style="font-weight:300;color:#9a947f;">(복사가 안 되면 여기서 직접 선택해 복사하세요)</span></label>
+      <textarea id="emails" readonly style="min-height:80px;background:#f7f5ee;font-size:12.5px;"></textarea>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+const gate = document.getElementById("gate");
+if (!me || !me.is_admin) {
+  gate.innerHTML = '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="/YB/auth/login.html">로그인</a></div>';
+} else {
+  gate.style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  start();
+}
+
+function esc(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+async function start() {
+  let rows = [], filter = "all", orgF = "all";
+  let sortKey = "", sortDir = 1;                    // 빈 값이면 기본 차례 (가입 최신순)
+  // 어느 홈페이지에서 들어왔는지 — 그 쪽 회원을 위에 보여준다
+  let HOME = (new URLSearchParams(location.search).get("org") || "").toUpperCase();
+  if (HOME !== "OB" && HOME !== "YB") HOME = "";
+  const HOME_NAME = { OB: "재한 도쿄대학 총동문회(OB)", YB: "도쿄대학 한국인학생회(YB)" };
+  const other = (o) => (o === "OB" ? "YB" : "OB");
+
+  async function load() {
+    // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
+    const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at,roster_dept,roster_year,roster_belong,roster_email";
+    let { data, error } = await sb.from("profiles")
+      .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
+    if (error && /welcome_sent_at/.test(error.message || "")) {
+      const again = await sb.from("profiles").select(COLS).order("created_at", { ascending: false });
+      data = again.data; error = again.error;
+      const m = document.getElementById("listMsg");
+      m.className = "msg";
+      m.textContent = "메일 발송 기록 칸이 아직 없습니다 — auth/admin_members.sql 을 한 번 실행하시면 " +
+                      "‘아직 안 보낸 회원’ 기능까지 쓰실 수 있습니다.";
+    }
+    if (error) {
+      document.getElementById("listMsg").className = "msg err";
+      document.getElementById("listMsg").textContent =
+        "회원 목록을 불러오지 못했습니다: " + error.message +
+        " — auth/admin_members.sql 을 실행하셨는지 확인해주세요.";
+      return;
+    }
+    rows = data || [];
+    render(); refreshEmails();
+  }
+
+  const byOrg = (r) => orgF === "all" ? true : (r.member_type || "") === orgF;
+  // 소속 단추 — 들어온 홈페이지 쪽이 앞에
+  {
+    const order = HOME === "YB" ? ["YB", "OB"] : ["OB", "YB"];
+    document.getElementById("orgseg").innerHTML =
+      order.map(o => `<a data-o="${o}"${o === "YB" ? ' class="yb"' : ""}>${HOME_NAME[o]}</a>`).join("") +
+      '<a data-o="all">도쿄대학 한국인 총동문회(전체)</a>';
+    orgF = HOME || "all";                       // 처음에는 들어온 쪽 명단부터
+  }
+  const homeFirst = (a, b) => {                 // 들어온 홈페이지 쪽을 위로
+    if (!HOME) return 0;
+    const ra = (a.member_type === HOME) ? 0 : 1, rb = (b.member_type === HOME) ? 0 : 1;
+    return ra - rb;
+  };
+  const pick = (f) => rows.filter(r => byOrg(r) && (
+    f === "all" ? true :
+    f === "wait" ? !r.approved :
+    f === "approved" ? r.approved :
+    f === "unsent" ? !r.welcome_sent_at :
+    f === "unsent-OB" ? (!r.welcome_sent_at && r.member_type === "OB") :
+    f === "unsent-YB" ? (!r.welcome_sent_at && r.member_type === "YB") :
+    r.member_type === f));
+
+  // 전체 자동 확인 — 가입자 이름을 동문 명단과 한꺼번에 대조
+  document.getElementById("autoGrade").addEventListener("click", async () => {
+    const b = document.getElementById("autoGrade");
+    const msg = document.getElementById("listMsg");
+    b.disabled = true; b.textContent = "확인 중…";
+    const { data, error } = await sb.rpc("roster_autoset");
+    b.disabled = false; b.textContent = "회원여부 일괄확인";
+    if (error) {
+      msg.className = "msg err";
+      msg.textContent = "자동 확인 실패: " + error.message +
+        " — board/roster_import.sql 과 board/grade_autoset.sql 을 실행하셨는지 확인해주세요.";
+      return;
+    }
+    const line = (data || []).map(x => `${x["등급"]} ${x["인원"]}명`).join(" · ");
+    await load();
+    msg.className = "msg ok";
+    msg.textContent = "동문 명단과 대조했습니다 — " + line;
+  });
+
+  const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
+  /** 등급을 손으로 바꾸는 칸 (운영진 계정은 관리자로 고정) */
+  function gradeSel(r) {
+    const btn = `<button type="button" class="btn sm adm" title="운영진 지정·해제">` +
+      (r.is_admin ? "운영진 해제" : "운영진 지정") + "</button>";
+    if (r.is_admin) return btn;
+    const g = r.grade || "guest";
+    return '<select class="gsel">' +
+      [["member", "회원"], ["guest", "준회원"]]
+        .map(([k, v]) => `<option value="${k}"${k === g ? " selected" : ""}>${v}</option>`).join("") +
+      "</select>" + btn;
+  }
+
+  /** 명단에 없었지만 운영진이 직접 회원으로 올린 경우 = 재승인 */
+  const isRegrant = (r) => !r.is_admin && r.grade === "member" && !!r.grade_manual_at;
+
+  function gradeChip(r) {
+    const g = r.is_admin ? "admin" : (r.grade || "guest");
+    const [t, c] = GRADE[g] || GRADE.guest;
+    return `<span class="chip ${c}">${isRegrant(r) ? "재승인" : t}</span>`;
+  }
+
+  // 칸 이름을 누르면 그 칸으로 줄을 세운다 (같은 칸을 또 누르면 거꾸로)
+  document.getElementById("tbl").addEventListener("click", (e) => {
+    const th = e.target.closest("th[data-s]");
+    if (!th) return;
+    const k = th.dataset.s;
+    if (sortKey === k) sortDir = -sortDir;
+    else { sortKey = k; sortDir = (k === "joined") ? -1 : 1; }   // 가입일은 최신순부터
+    render();
+  });
+
+  function render() {
+    document.querySelectorAll("#orgseg a").forEach(a =>
+    a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
+  document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.f === filter));
+    document.querySelectorAll("#orgseg a").forEach(a => a.classList.toggle("on", a.dataset.o === orgF));
+    const SORTV = {
+      name:    r => (r.name || "").trim(),
+      email:   r => (r.email || "").toLowerCase(),
+      phone:   r => String(r.phone || "").replace(/[^0-9]/g, ""),
+      org:     r => r.member_type || "",
+      faculty: r => ((r.faculty || "") + " " + (r.grad_year || "")).trim(),
+      joined:  r => r.created_at || "",
+      grade:   r => r.grade || "",
+      state:   r => (r.approved ? (isRegrant(r) ? 1 : 0) : 2),
+    };
+    const list = pick(filter).slice();
+    if (sortKey && SORTV[sortKey]) {
+      const v = SORTV[sortKey];
+      list.sort((a, b) => {
+        const x = v(a), y = v(b);
+        if (typeof x === "number") return (x - y) * sortDir;
+        // 빈 칸은 늘 뒤로
+        if (!x && y) return 1;
+        if (x && !y) return -1;
+        return x.localeCompare(y, "ko") * sortDir;
+      });
+    } else {
+      list.sort(homeFirst);
+    }
+    document.getElementById("listMsg").className = "msg";
+    document.getElementById("listMsg").textContent =
+      (() => {
+        const inOrg = rows.filter(byOrg);
+        const who = orgF === "OB" ? "재한 도쿄대학 총동문회(OB)" : orgF === "YB" ? "도쿄대학 한국인학생회(YB)" : "도쿄대학 한국인 총동문회(전체)";
+        const ob = rows.filter(r => r.member_type === "OB").length;
+        const yb = rows.filter(r => r.member_type === "YB").length;
+        return `${who} ${inOrg.length}명 · 승인 ${inOrg.filter(r=>r.approved).length}명 · ` +
+               `대기 ${inOrg.filter(r=>!r.approved).length}명` +
+               (filter === "all" ? "" : ` (표시 ${list.length}명)`) +
+               `　—　명부 전체 ${rows.length}명 (총동문회 ${ob} · 학생회 ${yb})`;
+      })();
+    const t = document.getElementById("tbl");
+    if (!list.length) {
+      t.innerHTML = '<tr><td class="empty">' + (rows.length
+        ? "이 조건에 맞는 회원이 없습니다."
+        : "회원이 한 명도 보이지 않습니다.<br><br>" +
+          "운영진이 다른 회원까지 보려면 <b>auth/admin_members.sql</b> 을 한 번 실행해야 합니다.<br>" +
+          "(그 전에는 본인 정보만 보입니다)") + '</td></tr>';
+      return;
+    }
+    t.innerHTML =
+      '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
+      [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
+       ["faculty","전공 · 연도"],["joined","가입일"],["grade","등급"],["state","상태"]]
+        .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
+          `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
+      "<th></th></tr></thead><tbody>" +
+      list.map(r => `<tr data-id="${r.id}">
+        <td><input type="checkbox" class="chk"></td>
+        <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
+        <td class="em">${esc(r.email) || "-"}</td>
+        <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
+        <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
+        <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
+        <td>${(r.created_at || "").slice(0, 10)}</td>
+        <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
+        <td>${r.approved
+              ? (isRegrant(r) ? '<span class="chip ok">재승인</span>'
+                              : '<span class="chip ok">승인</span>')
+              : '<span class="chip wait">대기</span>'}</td>
+        <td class="acts"><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button>
+            ${r.grade_checked_at
+                ? '<button class="btn sm chk2 done" title="다시 확인">확인</button>'
+                : '<button class="btn sm chk2">회원여부 확인</button>'}</td>
+      </tr>`).join("") + "</tbody>";
+
+    // ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
+    t.querySelectorAll(".gsel").forEach(sel => sel.addEventListener("change", async () => {
+      const tr = sel.closest("tr");
+      const r = rows.find(x => x.id === tr.dataset.id);
+      const to = sel.value;
+      sel.disabled = true;
+      const now = new Date().toISOString();
+      const { error } = await sb.from("profiles")
+        .update({ grade: to, grade_manual_at: now }).eq("id", r.id);
+      sel.disabled = false;
+      if (error) {
+        alert("등급 변경 실패: " + error.message +
+              " — board/grade_setup.sql 을 실행하셨는지 확인해주세요.");
+        sel.value = r.grade || "guest";
+        return;
+      }
+      r.grade = to; r.grade_manual_at = now;
+      const cell = tr.querySelector(".gcell");
+      cell.innerHTML = gradeChip(r) + gradeSel(r);
+      render();
+      const m = document.getElementById("listMsg");
+      m.className = "msg ok";
+      m.textContent = `${r.name || "회원"} 님을 ${to === "member" ? "회원" : "준회원"}으로 바꿨습니다.`;
+    }));
+
+    // ── 동문 명단에서 회원 여부 확인 ──
+    t.querySelectorAll(".chk2").forEach(b => b.addEventListener("click", async () => {
+      const tr = b.closest("tr");
+      const r = rows.find(x => x.id === tr.dataset.id);
+      if (!r || !r.name) { alert("이름이 없는 회원입니다."); return; }
+      b.disabled = true; b.textContent = "확인 중…";
+      const { data, error } = await sb.rpc("roster_check", { q: r.name, p_org: r.member_type || null });
+      b.disabled = false;
+      if (error) {
+        b.textContent = "회원여부 확인";
+        alert("확인 실패: " + error.message +
+              " — board/roster_import.sql 을 실행하셨는지 확인해주세요.");
+        return;
+      }
+      b.textContent = "확인";
+      b.classList.add("done");
+      b.title = "다시 확인";
+      const now = new Date().toISOString();
+      const h0 = (data || [])[0] || {};
+      const patch = { grade_checked_at: now,
+                      roster_dept: h0.department || null, roster_year: h0.degree_year || null,
+                      roster_belong: h0.belong || null,   roster_email: h0.email || null };
+      sb.from("profiles").update(patch).eq("id", r.id).then(() => Object.assign(r, patch));
+      const hits = data || [];
+      const cell = tr.querySelector(".gcell");
+      if (!hits.length) {
+        cell.innerHTML = gradeChip({ grade: "guest" }) +
+          '<div class="rnote">동문 명단에 없음</div>';
+        await setGrade(r, "guest");
+        return;
+      }
+      const h = hits[0];
+      cell.innerHTML = gradeChip({ grade: "member" }) +
+        `<div class="rnote">${esc(h.department || "")} ${esc(h.degree_year || "")}<br>` +
+        `${esc(h.belong || "")}${h.email ? `<br><a href="mailto:${esc(h.email)}">${esc(h.email)}</a>` : ""}` +
+        (hits.length > 1 ? `<br>동명이인 ${hits.length}명` : "") + "</div>";
+      await setGrade(r, "member");
+    }));
+
+    t.querySelectorAll(".adm").forEach(b => b.addEventListener("click", async () => {
+      const id = b.closest("tr").dataset.id;
+      const r = rows.find(x => x.id === id);
+      const on = !r.is_admin;
+      if (!confirm(`${r.name || "이 분"}을 ${on ? "운영진으로 지정" : "운영진에서 해제"}할까요?`)) return;
+      b.disabled = true;
+      const { error } = await sb.rpc("set_admin", { p_id: id, p_on: on });
+      b.disabled = false;
+      if (error) {
+        alert("바꾸지 못했습니다: " + error.message +
+              " — board/make_admin.sql 을 실행하셨는지 확인해주세요.");
+        return;
+      }
+      r.is_admin = on;
+      if (on) { r.approved = true; r.grade = "admin"; }
+      else if (r.grade === "admin") r.grade = "member";
+      render();
+    }));
+
+    async function setGrade(r, g) {
+      if (r.is_admin || r.grade === g) return;
+      const { error } = await sb.from("profiles").update({ grade: g }).eq("id", r.id);
+      if (!error) r.grade = g;
+    }
+
+    t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
+      const id = b.closest("tr").dataset.id;
+      const r = rows.find(x => x.id === id);
+      b.disabled = true;
+      const { error } = await sb.from("profiles").update({ approved: !r.approved }).eq("id", id);
+      if (error) { alert("변경 실패: " + error.message); b.disabled = false; return; }
+      r.approved = !r.approved;
+      render(); refreshEmails();
+    }));
+
+    // 체크박스 (한꺼번에 선택)
+    const all = t.querySelector("#chkAll");
+    const boxes = [...t.querySelectorAll(".chk")];
+    all.addEventListener("change", () => { boxes.forEach(c => c.checked = all.checked); count(); });
+    boxes.forEach(c => c.addEventListener("change", () => {
+      all.checked = boxes.every(x => x.checked); count();
+    }));
+    count();
+  }
+
+  /** 선택된 회원 id 목록 */
+  function selected() {
+    return [...document.querySelectorAll("#tbl tbody tr")]
+      .filter(tr => tr.querySelector(".chk") && tr.querySelector(".chk").checked)
+      .map(tr => tr.dataset.id);
+  }
+  function count() {
+    document.getElementById("selCnt").textContent = `선택 ${selected().length}명`;
+  }
+
+  /** 여러 명 한꺼번에 승인/취소 */
+  async function bulk(ids, value) {
+    if (!ids.length) { alert("먼저 회원을 선택해주세요."); return; }
+    const word = value ? "승인" : "승인 취소";
+    if (!confirm(`${ids.length}명을 ${word}할까요?`)) return;
+    const msg = document.getElementById("listMsg");
+    msg.className = "msg"; msg.textContent = `${word} 처리 중…`;
+    const { error } = await sb.from("profiles").update({ approved: value }).in("id", ids);
+    if (error) { msg.className = "msg err"; msg.textContent = word + " 실패: " + error.message; return; }
+    ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.approved = value; });
+    render(); refreshEmails();
+    msg.className = "msg ok"; msg.textContent = `${ids.length}명을 ${word}했습니다.`;
+  }
+
+  document.getElementById("okSel").addEventListener("click", () => bulk(selected(), true));
+  document.getElementById("noSel").addEventListener("click", () => bulk(selected(), false));
+  document.getElementById("okWait").addEventListener("click", () =>
+    bulk(rows.filter(r => !r.approved).map(r => r.id), true));
+
+  document.querySelectorAll("#orgseg a").forEach(a =>
+    a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
+  document.querySelectorAll("#tabs a").forEach(a =>
+    a.addEventListener("click", () => { filter = a.dataset.f; render(); }));
+
+  // ── 메일 대상 ──
+  let chosen = [];                                   // 직접 고른 회원 id 목록
+
+  function targetRows() {
+    const v = document.getElementById("target").value;
+    return v === "pick" ? chosen.map(id => rows.find(r => r.id === id)).filter(Boolean) : pick(v);
+  }
+  function targets() {
+    return targetRows().map(r => (r.email || "").trim()).filter(Boolean);
+  }
+  function refreshEmails(keepMsg) {
+    const list = targets();
+    document.getElementById("emails").value = list.join(", ");
+    if (!keepMsg) {                       // 보내기 결과 문구는 지우지 않는다
+      document.getElementById("mailMsg").className = "msg";
+      document.getElementById("mailMsg").textContent = `받는 사람 ${list.length}명`;
+    }
+    drawChips();
+  }
+  document.getElementById("target").addEventListener("change", () => {
+    const isPick = document.getElementById("target").value === "pick";
+    document.getElementById("pickBox").style.display = isPick ? "block" : "none";
+    refreshEmails();
+  });
+
+  // ── 이름으로 받는 사람 고르기 ──
+  const who = document.getElementById("who");
+  const whoList = document.getElementById("whoList");
+
+  function drawChips() {
+    const box = document.getElementById("chips");
+    if (document.getElementById("target").value !== "pick") { box.innerHTML = ""; return; }
+    box.innerHTML = chosen.map(id => {
+      const r = rows.find(x => x.id === id);
+      if (!r) return "";
+      return `<span><b>${esc(r.name) || "이름없음"}</b><small style="color:#8a7a55;">${esc(r.email)}</small>
+              <button data-id="${id}" title="빼기">✕</button></span>`;
+    }).join("") || '<span style="background:none;border:none;color:#a8a291;padding-left:0;">아래에서 이름을 검색해 추가해주세요.</span>';
+    box.querySelectorAll("button[data-id]").forEach(b => b.addEventListener("click", () => {
+      chosen = chosen.filter(x => x !== b.dataset.id);
+      refreshEmails();
+    }));
+  }
+
+  who.addEventListener("input", () => {
+    const q = who.value.trim().toLowerCase();
+    if (!q) { whoList.classList.remove("on"); return; }
+    const hit = rows.filter(r =>
+      !chosen.includes(r.id) &&
+      ((r.name || "").toLowerCase().includes(q) || (r.email || "").toLowerCase().includes(q))
+    ).slice(0, 20);
+    whoList.innerHTML = hit.length
+      ? hit.map(r => `<div data-id="${r.id}">${esc(r.name) || "이름없음"}
+          <small>${esc(r.email)}</small>
+          <small>${r.member_type || ""} ${r.approved ? "" : "· 승인대기"}</small></div>`).join("")
+      : '<div class="none">찾는 회원이 없습니다.</div>';
+    whoList.classList.add("on");
+    whoList.querySelectorAll("div[data-id]").forEach(d => d.addEventListener("click", () => {
+      if (!chosen.includes(d.dataset.id)) chosen.push(d.dataset.id);
+      who.value = ""; whoList.classList.remove("on");
+      refreshEmails();
+    }));
+  });
+  who.addEventListener("blur", () => setTimeout(() => whoList.classList.remove("on"), 200));
+
+  // ── 발송 기록 남기기 (같은 사람에게 다시 보내지 않도록) ──
+  async function markSent(list) {
+    const ids = targetRows().filter(r => list.includes((r.email || "").trim())).map(r => r.id);
+    if (!ids.length) return;
+    const now = new Date().toISOString();
+    const { error } = await sb.from("profiles").update({ welcome_sent_at: now }).in("id", ids);
+    if (!error) ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.welcome_sent_at = now; });
+    render();
+  }
+
+  // ── 지금 보내기 (Supabase Edge Function → Resend) ──
+  document.getElementById("sendBtn").addEventListener("click", async () => {
+   const msgEl = document.getElementById("mailMsg");
+   try {
+    const btn = document.getElementById("sendBtn");
+    const msg = msgEl;
+    const list = targets();
+    const subject = document.getElementById("subj").value.trim();
+    const text = document.getElementById("body").value;
+    if (!list.length) { msg.className = "msg err"; msg.textContent = "받는 사람이 없습니다."; return; }
+    if (!subject || !text.trim()) { msg.className = "msg err"; msg.textContent = "제목과 내용을 입력해주세요."; return; }
+    if (!confirm(`${list.length}명에게 메일을 보낼까요?\n\n제목: ${subject}`)) {
+      msg.className = "msg err"; msg.textContent = "보내기를 취소했습니다.";
+      return;
+    }
+
+    btn.disabled = true;
+    msg.className = "msg"; msg.textContent = `보내는 중… (${list.length}명)`;
+    // 함수 이름이 send-mail 이 아니어도 되도록, 흔한 이름들을 차례로 시도합니다
+    const NAMES = ["send-mail", "send_mail", "sendmail", "hyper-responder"];
+    let data = null, error = null;
+    for (const nm of NAMES) {
+      const r = await sb.functions.invoke(nm, { body: { to: list, subject, text } });
+      const notFound = r.error && /not ?found|404|Failed to send a request/i.test(r.error.message || "");
+      if (!notFound) { data = r.data; error = r.error; break; }
+      error = r.error;
+    }
+    btn.disabled = false;
+
+    if (error || (data && data.error)) {
+      // 함수가 돌려준 자세한 사유까지 꺼내 보여준다
+      let detail = data?.error || error?.message || "알 수 없는 오류";
+      try {
+        const body = await error?.context?.text?.();
+        if (body) {
+          const j = JSON.parse(body);
+          detail = j.error || j.message || body.slice(0, 300);
+        }
+      } catch (e) {}
+      msg.className = "msg err";
+      msg.textContent = "보내기 실패: " + detail;
+      alert("보내기 실패\n\n" + detail + 
+            "\n\n· RESEND_API_KEY / MAIL_FROM 을 Edge Functions → Secrets 에 넣으셨는지" +
+            "\n· Resend 에서 u-tokyo.kr 도메인이 인증(Verified) 되었는지 확인해주세요.");
+      return;
+    }
+    const okCount = data?.sent || 0;
+    await markSent(data?.sentEmails || []);
+    msg.className = "msg " + (data?.ok ? "ok" : "err");
+    msg.textContent = `${okCount}명에게 보냈습니다.` +
+      (data?.failed?.length ? ` (일부 실패: ${data.failed[0].reason})` : " 보낸 분들은 다음부터 대상에서 빠집니다.");
+    refreshEmails(true);
+   } catch (e) {
+    document.getElementById("sendBtn").disabled = false;
+    msgEl.className = "msg err";
+    msgEl.textContent = "보내기 도중 문제가 생겼습니다: " + (e && e.message ? e.message : String(e));
+   }
+  });
+
+  // ── 직접 보낸 경우 수동으로 기록 ──
+  document.getElementById("markBtn").addEventListener("click", async () => {
+    const list = targets();
+    const msg = document.getElementById("mailMsg");
+    if (!list.length) { msg.className = "msg err"; msg.textContent = "대상이 없습니다."; return; }
+    if (!confirm(`${list.length}명을 '메일 보냄'으로 기록할까요?\n다음부터 '아직 안 보낸 회원' 목록에서 빠집니다.`)) return;
+    await markSent(list);
+    msg.className = "msg ok";
+    msg.textContent = `${list.length}명을 보낸 것으로 기록했습니다.`;
+    refreshEmails(true);
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    const box = document.getElementById("emails");
+    const msg = document.getElementById("mailMsg");
+    if (!box.value) { msg.className = "msg err"; msg.textContent = "보낼 주소가 없습니다."; return; }
+    try {
+      await navigator.clipboard.writeText(box.value);
+      msg.className = "msg ok";
+      msg.textContent = `주소 ${targets().length}개를 복사했습니다 — 메일의 숨은참조(BCC)에 붙여넣어 주세요.`;
+    } catch (e) {
+      box.select();
+      msg.className = "msg err";
+      msg.textContent = "자동 복사가 막혀 있습니다. 아래 칸이 선택되었으니 Ctrl+C 로 복사해주세요.";
+    }
+  });
+
+  document.getElementById("mailBtn").addEventListener("click", () => {
+    const list = targets();
+    const msg = document.getElementById("mailMsg");
+    if (!list.length) { msg.className = "msg err"; msg.textContent = "보낼 주소가 없습니다."; return; }
+    const url = "mailto:?bcc=" + encodeURIComponent(list.join(","))
+      + "&subject=" + encodeURIComponent(document.getElementById("subj").value)
+      + "&body=" + encodeURIComponent(document.getElementById("body").value);
+    if (url.length > 1800) {
+      msg.className = "msg err";
+      msg.textContent = `받는 사람이 ${list.length}명이라 메일 앱으로 한 번에 열기는 어렵습니다. 「주소 복사」를 이용해주세요.`;
+      return;
+    }
+    location.href = url;
+    msg.className = "msg ok";
+    msg.textContent = "메일 앱을 열었습니다. 내용을 확인하고 보내주세요.";
+  });
+
+  const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
+  const HEADER = "이름,이메일,연락처,구분,전공,졸업연도,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
+  /** 전화번호를 010-1234-5678 꼴로 (엑셀이 숫자로 바꿔 앞 0 이 사라지는 것도 막습니다) */
+  function phoneText(v) {
+    const d = String(v || "").replace(/[^0-9]/g, "");
+    if (!d) return "";
+    if (d.length === 11) return d.slice(0, 3) + "-" + d.slice(3, 7) + "-" + d.slice(7);
+    if (d.length === 10) return d.startsWith("02")
+      ? d.slice(0, 2) + "-" + d.slice(2, 6) + "-" + d.slice(6)
+      : d.slice(0, 3) + "-" + d.slice(3, 6) + "-" + d.slice(6);
+    return String(v);
+  }
+
+  const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year,
+                          isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
+                          r.approved ? (isRegrant(r) ? "재승인" : "승인") : "대기",
+                          (r.created_at || "").slice(0, 10),
+                          r.roster_dept, r.roster_year, r.roster_belong, r.roster_email]
+    .map(v => `"${(v || "").toString().replace(/"/g, '""')}"`).join(",");
+
+  function download(text, name) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["﻿" + text], { type: "text/csv;charset=utf-8" }));
+    a.download = name;
+    a.click();
+  }
+
+  /** 지금 보고 있는 목록만 저장 (메일 칸의 버튼) */
+  function saveCsv(list) {
+    download(HEADER + "\n" + list.map(csvLine).join("\n"), "회원명단.csv");
+  }
+
+  /** 전체 명단 — 관리자·회원·재승인·준회원 모두 (체크 여부와 무관) */
+  function saveCsvAll() {
+    const today = new Date().toISOString().slice(0, 10);
+    saveNamed(rows.slice(), "회원명단_전체_" + today, "전체 명단");
+  }
+
+  /** 체크한 분만 따로 */
+  function saveCsvPicked() {
+    const ids = selected();
+    if (!ids.length) { alert("먼저 회원을 선택해주세요."); return; }
+    const list = ids.map(id => rows.find(r => r.id === id)).filter(Boolean);
+    const today = new Date().toISOString().slice(0, 10);
+    saveNamed(list, "회원명단_선택_" + today, "선택한 분");
+  }
+
+  /** 준회원만 따로 (별도 파일) */
+  function saveCsvGuest() {
+    const list = rows.filter(r => !r.is_admin && (r.grade || "guest") === "guest");
+    const today = new Date().toISOString().slice(0, 10);
+    if (!list.length) {
+      const m = document.getElementById("listMsg");
+      m.className = "msg"; m.textContent = "준회원이 없습니다.";
+      return;
+    }
+    saveNamed(list, "회원명단_준회원_" + today, "준회원");
+  }
+
+  function saveNamed(list, fileName, label) {
+    const B = String.fromCharCode(10);
+    const today = new Date().toISOString().slice(0, 10);
+    const text = '"[' + label + ']  ' + list.length + "명 · " + today + '"' + B
+               + HEADER + B + list.map(csvLine).join(B);
+    download(text, fileName + ".csv");
+    const m = document.getElementById("listMsg");
+    m.className = "msg ok";
+    m.textContent = label + " " + list.length + "명을 CSV 로 저장했습니다. (" + fileName + ".csv)";
+  }
+
+  document.getElementById("csvBtn").addEventListener("click",
+    () => saveCsv(pick(document.getElementById("target").value)));
+  document.getElementById("csvTop").addEventListener("click", saveCsvAll);
+  document.getElementById("csvGuest").addEventListener("click", saveCsvGuest);
+  document.getElementById("csvPick").addEventListener("click", saveCsvPicked);
+
+  load();
+}
+</script>
+
+</body>
+</html>

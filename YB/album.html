@@ -117,7 +117,7 @@
     <div class="backs">
       <a class="back" id="aback" href="gallery.html">← 갤러리 목록</a>
       <a class="back" href="index.html">⌂ 학생회 첫화면</a>
-      <a class="back" href="../index.html">통합 홈</a>
+      <a class="back" href="/index.html">통합 홈</a>
     </div>
   </div>
 </div>
@@ -157,8 +157,8 @@
 </div>
 
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=9";
-import { sb, currentUser, myProfile } from "../auth/auth.js";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=10";
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
@@ -170,8 +170,8 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
     if (!ok && cat !== "assembly") {
       document.getElementById("agrid").innerHTML =
         '<div class="aempty" style="grid-column:1/-1;">이 사진첩은 회원만 보실 수 있습니다.<br><br>' +
-        '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
-        '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+        '<a class="btn dark" href="/YB/auth/login.html">로그인</a> ' +
+        '<a class="btn line" href="/YB/auth/signup.html">회원가입</a></div>';
       throw new Error("member only");
     }
   }

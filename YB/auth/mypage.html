@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 정보 | 도쿄대학 한국인 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+  <h1>내 정보</h1>
+  <p class="desc" id="statusLine">불러오는 중…</p>
+
+  <form id="editForm" style="display:none;">
+    <label>이름 *</label>
+    <input type="text" id="f_name" required>
+
+    <label>구분 *</label>
+    <select id="f_type">
+      <option value="YB">YB — 재학생 (한국인학생회)</option>
+      <option value="OB">OB — 동문 (재한 도쿄대학 총동문회)</option>
+    </select>
+
+    <div class="row2">
+      <div>
+        <label>학부/연구과</label>
+        <input type="text" id="f_faculty">
+      </div>
+      <div>
+        <label>졸업(예정)연도</label>
+        <input type="text" id="f_grad">
+      </div>
+    </div>
+
+    <label>전화번호</label>
+    <input type="tel" id="f_phone" placeholder="010-0000-0000">
+
+    <label>이메일 <span style="font-weight:300;color:#9a947f;">(변경 불가)</span></label>
+    <input type="email" id="f_email" disabled style="background:#f2efe8;color:#8a8574;">
+
+    <label>승인 상태</label>
+    <div id="f_status" style="padding:4px 0;"></div>
+
+    <button class="primary" id="saveBtn" type="submit">수정 내용 저장</button>
+    <div class="msg" id="msg"></div>
+  </form>
+
+  <button class="primary" id="goSite" style="display:none;background:#8a6d2b;" onclick="location.href='../OB/index.html'">홈페이지로 이동</button>
+  <button class="ghost" id="logoutBtn">로그아웃</button>
+  <div class="back" style="text-align:center;"><a href="/index.html">← 통합 홈으로</a></div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile, logout, showMsg } from "./auth.js";
+
+document.getElementById("logoutBtn").addEventListener("click", logout);
+
+const user = await currentUser();
+if (!user) {
+  location.href = "login.html";
+} else {
+  const p = await myProfile();
+  const st = document.getElementById("statusLine");
+  if (!p) {
+    st.textContent = "프로필을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+  } else {
+    st.textContent = (p.name || "회원") + "님, 가입 정보를 확인하고 수정하실 수 있습니다.";
+    document.getElementById("f_name").value = p.name || "";
+    document.getElementById("f_type").value = p.member_type === "YB" ? "YB" : "OB";
+    document.getElementById("f_faculty").value = p.faculty || "";
+    document.getElementById("f_grad").value = p.grad_year || "";
+    document.getElementById("f_phone").value = p.phone || "";
+    document.getElementById("f_email").value = p.email || user.email;
+    document.getElementById("f_status").innerHTML = p.approved
+      ? '<span class="badge ok">승인 완료 — 정회원</span>'
+      : '<span class="badge wait">운영진 승인 대기중</span>';
+    document.getElementById("editForm").style.display = "block";
+    document.getElementById("goSite").style.display = "block";
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("saveBtn");
+      const msg = document.getElementById("msg");
+      btn.disabled = true;
+      const { error } = await sb.from("profiles").update({
+        name: document.getElementById("f_name").value.trim(),
+        member_type: document.getElementById("f_type").value,
+        faculty: document.getElementById("f_faculty").value.trim(),
+        grad_year: document.getElementById("f_grad").value.trim(),
+        phone: document.getElementById("f_phone").value.trim(),
+      }).eq("id", user.id);
+      btn.disabled = false;
+      if (error) showMsg(msg, "저장 실패: " + error.message);
+      else showMsg(msg, "저장되었습니다.", true);
+    });
+  }
+}
+</script>
+
+</body>
+</html>

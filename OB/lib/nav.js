@@ -144,7 +144,7 @@ export function applyNav(org, title) {
 export async function applyAuthLinks(org) {
   const el = document.getElementById("authLinks");
   if (!el) return;
-  const { sb, currentUser, myProfile } = await import("/auth/auth.js");
+  const { sb, currentUser, myProfile } = await import("/OB/auth/auth.js");
   let user = null, p = null;
   try {
     user = await currentUser();
@@ -157,7 +157,7 @@ export async function applyAuthLinks(org) {
   st.textContent = (p && p.name) ? `[${p.name}님 로그인중]` : "[로그인중]";
   st.style.color = "#7fc48a"; st.style.fontWeight = "700";
   const my = document.createElement("a");
-  my.href = "/auth/mypage.html";
+  my.href = "/OB/auth/mypage.html";
   my.textContent = "내 정보";
   my.title = "내 정보 보기 · 고치기";
   const out = document.createElement("a");
@@ -174,9 +174,9 @@ export async function applyAuthLinks(org) {
       a.style.color = "#e8c876"; a.style.fontWeight = "600";
       return a;
     };
-    el.append(mk("/admin/members.html?org=" + org, "⚙ 회원 승인"),
-              mk("/admin/gallery.html?org=" + org, "⚙ 갤러리 관리"),
-              mk("/admin/index.html", "⚙ 글 가져오기"));
+    el.append(mk("/OB/admin/members.html?org=" + org, "⚙ 회원 승인"),
+              mk("/OB/admin/gallery.html?org=" + org, "⚙ 갤러리 관리"),
+              mk("/OB/admin/index.html", "⚙ 글 가져오기"));
   }
 }
 

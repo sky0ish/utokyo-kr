@@ -13,7 +13,7 @@
      원본 OTF(482KB)에서 홈페이지에 쓰는 글자만 남겨 woff2 로 줄였습니다 (155KB). */
   @font-face{
     font-family:"Vitro Core";
-    src:url("../fonts/VitroCore.woff2") format("woff2");
+    src:url("/fonts/VitroCore.woff2") format("woff2");
     font-weight:400 900; font-style:normal; font-display:swap;
   }
 </style>
@@ -453,13 +453,13 @@
 <div class="utilbar">
   <div class="container">
     <div class="links">
-      <a href="../index.html">⌂ 통합 홈</a>
+      <a href="/index.html">⌂ 통합 홈</a>
       <a href="https://www.u-tokyo.ac.jp/en/about/plog_2026_0506.html" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
-      <a href="../YB/index.html">한국인학생회</a>
+      <a href="/YB/index.html">한국인학생회</a>
       <a href="https://alumni.tokyoksa.com/" target="_blank" rel="noopener">총동문회 홈페이지(기존)</a>
     </div>
     <div class="links" id="authLinks">
-      <a href="../auth/login.html">로그인</a><a href="../auth/signup.html">회원가입</a><a href="../auth/find.html">아이디·비번 찾기</a>
+      <a href="/OB/auth/login.html">로그인</a><a href="/OB/auth/signup.html">회원가입</a><a href="/OB/auth/find.html">아이디·비번 찾기</a>
     </div>
   </div>
 </div>
@@ -551,9 +551,9 @@
   <div class="container" style="padding-top:13px;padding-bottom:13px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;font-size:14px;color:#6f6a5c;">
     <span>🔒 <b style="color:#22283a;font-weight:600;">로그인 하시면 상세정보를 보실 수 있습니다</b> — 게시판·갤러리 등 회원 전용 콘텐츠</span>
     <span>
-      <a href="../auth/login.html" style="color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;">로그인</a>
+      <a href="/OB/auth/login.html" style="color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;">로그인</a>
       <span style="color:#c9c2ae;margin:0 6px;">|</span>
-      <a href="../auth/signup.html" style="color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;">회원가입</a>
+      <a href="/OB/auth/signup.html" style="color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;">회원가입</a>
     </span>
   </div>
 </div>
@@ -1428,8 +1428,8 @@
         </p>
       </div>
       <div class="links">
-        <a href="../index.html">통합 홈</a>
-        <a href="../YB/index.html">한국인학생회</a>
+        <a href="/index.html">통합 홈</a>
+        <a href="/YB/index.html">한국인학생회</a>
         <a href="#">회칙</a>
         <a href="#">개인정보처리방침</a>
       </div>
@@ -1440,7 +1440,7 @@
 
 <script type="module">
 // 로그인 상태를 상단바에 반영
-import { sb, currentUser, myProfile } from "../auth/auth.js";
+import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 
 // ─── 모음판: 최근 게시글 ───
 (async () => {
@@ -1454,11 +1454,11 @@ import { sb, currentUser, myProfile } from "../auth/auth.js";
       .select("id,title,category,created_at")
       .order("created_at", { ascending: false }).limit(6);
     if (error || !data || !data.length) {
-      el.innerHTML = '<li><a href="../auth/login.html"><span class="tt">로그인하시면 회원 전용 게시글을 보실 수 있습니다.</span></a></li>';
+      el.innerHTML = '<li><a href="/OB/auth/login.html"><span class="tt">로그인하시면 회원 전용 게시글을 보실 수 있습니다.</span></a></li>';
       return;
     }
     el.innerHTML = data.map(p => `
-      <li><a href="../board/post.html?id=${p.id}">
+      <li><a href="/OB/post.html?id=${p.id}">
         <span class="tt">${esc(p.title)}</span>
         <span class="dt">${(p.created_at||"").slice(0,10)}</span>
       </a></li>`).join("");
@@ -1478,7 +1478,7 @@ try {
     st.style.fontWeight = "700";
     el.append(st);
     const my = document.createElement("a");
-    my.href = "../auth/mypage.html";
+    my.href = "/OB/auth/mypage.html";
     my.textContent = (p && p.name ? p.name + "님" : "내 정보") + (p && !p.approved ? " (승인대기)" : "");
     const out = document.createElement("a");
     out.href = "#";
@@ -1493,8 +1493,8 @@ try {
         a.style.color = "#e8c876"; a.style.fontWeight = "600";
         return a;
       };
-      const appr = mk("../admin/members.html?org=OB", "⚙ 회원 승인");
-      el.append(appr, mk("../admin/gallery.html?org=OB", "⚙ 갤러리 관리"));
+      const appr = mk("/OB/admin/members.html?org=OB", "⚙ 회원 승인");
+      el.append(appr, mk("/OB/admin/gallery.html?org=OB", "⚙ 갤러리 관리"));
       // 승인 대기 인원을 버튼에 표시
       sb.from("profiles").select("id", { count: "exact", head: true }).eq("approved", false)
         .then(({ count }) => {

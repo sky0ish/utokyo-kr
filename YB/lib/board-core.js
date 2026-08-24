@@ -1,4 +1,4 @@
-import { sb, currentUser, myProfile } from "/auth/auth.js";
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // ─── 게시판 목록 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
@@ -115,7 +115,7 @@ export async function initBoard(ORG) {
     st.textContent = (p && p.name) ? `[${p.name}님 로그인중]` : "[로그인중]";
     st.style.color = "#7fc48a"; st.style.fontWeight = "700";
     const my = document.createElement("a");
-    my.href = "/auth/mypage.html";
+    my.href = "/YB/auth/mypage.html";
     my.textContent = "내 정보";
     my.title = "내 정보 보기 · 고치기";
     const out = document.createElement("a");
@@ -125,9 +125,9 @@ export async function initBoard(ORG) {
     if (p && p.is_admin) {                      // 운영진 관리 메뉴
       const mk = (href, text) => { const a = document.createElement("a");
         a.href = href; a.textContent = text; a.style.color = "#e8c876"; a.style.fontWeight = "600"; return a; };
-      el.append(mk("/admin/members.html?org=" + ORG, "⚙ 회원 승인"),
-                mk("/admin/gallery.html?org=" + ORG, "⚙ 갤러리 관리"));
-      el.append(mk("/admin/index.html", "⚙ 글 가져오기"));
+      el.append(mk("/YB/admin/members.html?org=" + ORG, "⚙ 회원 승인"),
+                mk("/YB/admin/gallery.html?org=" + ORG, "⚙ 갤러리 관리"));
+      el.append(mk("/YB/admin/index.html", "⚙ 글 가져오기"));
     }
   } else {
     const ln = document.getElementById("loginNotice");
@@ -135,7 +135,7 @@ export async function initBoard(ORG) {
     document.getElementById("catTabs").appendChild(ln);
     ln.innerHTML =
       `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b> ` +
-      '<a href="/auth/login.html">로그인</a> · <a href="/auth/signup.html">회원가입</a>';
+      '<a href="/YB/auth/login.html">로그인</a> · <a href="/YB/auth/signup.html">회원가입</a>';
     // 회원 전용 탭과 「전체」 탭 숨기기
     document.querySelectorAll("#catTabs a[data-cat]").forEach(a => {
       const c = a.dataset.cat || "";
@@ -148,7 +148,7 @@ export async function initBoard(ORG) {
   }
 
   document.getElementById("writeBtn").addEventListener("click", async () => {
-    if (!user) { location.href = "/auth/login.html"; return; }
+    if (!user) { location.href = "/YB/auth/login.html"; return; }
     const qs = [];
     if (cat) qs.push("cat=" + cat);
     location.href = HOME + "/write.html" + (qs.length ? "?" + qs.join("&") : "");
@@ -169,8 +169,8 @@ export async function initBoard(ORG) {
   async function load(append = false, keepTotal = false) {
     if (memberOnlyBlocked) {   // 비로그인 상태에서 회원 전용 게시판 요청
       listEl.innerHTML = `<div class="empty"><b>${memberOnlyBlocked}</b> 게시판은 회원 전용입니다.<br><br>` +
-        '<a class="btn dark" href="/auth/login.html">로그인</a> ' +
-        '<a class="btn line" href="/auth/signup.html">회원가입</a></div>';
+        '<a class="btn dark" href="/YB/auth/login.html">로그인</a> ' +
+        '<a class="btn line" href="/YB/auth/signup.html">회원가입</a></div>';
       moreBox.style.display = "none";
       document.getElementById("statBox").innerHTML = "";
       return;
