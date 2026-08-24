@@ -52,9 +52,8 @@ const NAV = {
       <div class="dd">
         <a href="/YB/index.html#school">학교안내</a>
         <div class="dd-menu">
-          <a href="/YB/index.html#intro">학교 소개</a>
-          <a href="/YB/index.html#access">오시는 길</a>
-          <a href="/YB/index.html#campus">캠퍼스 안내</a>
+          <a href="/YB/index.html#introtx">학교 소개</a>
+          <a href="/YB/index.html#access">오시는 길 · 캠퍼스 안내</a>
           <a href="/YB/index.html#faq">FAQ</a>
           <a href="/YB/index.html#usage">홈페이지 이용안내</a>
         </div>
