@@ -10,13 +10,13 @@
 body{font-family:'Noto Sans KR',sans-serif;color:#22283a;background:#f8f7f3;min-height:100vh;line-height:1.7;}
 a{text-decoration:none;color:inherit;}
 .topbar{background:#101d33;color:rgba(255,255,255,.75);font-size:12.5px;
-  position:sticky;top:0;z-index:110;}   /* 어느 메뉴에서든 늘 보이게 */
+  position:sticky;top:0;z-index:1300;}   /* 어느 메뉴에서든 늘 보이게 */
 .topbar .inner{max-width:1180px;margin:0 auto;padding:9px 20px;display:flex;justify-content:space-between;gap:16px;}
 .topbar a:hover{color:#e8c876;}
 .topbar .links{display:flex;gap:16px;}
 /* ─── 메인 메뉴 헤더 (서브페이지 공용) ─── */
 .mhead{background:#101d33;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);
-  position:sticky;top:35px;z-index:100;}
+  position:sticky;top:35px;z-index:1200;}
 .mhead .inner{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
 .mhead .mlogo{font-family:'Noto Serif KR',serif;font-weight:600;font-size:16.5px;color:#fff;line-height:1.25;}
 .mhead .mlogo small{display:block;font-size:9.5px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.14em;font-family:'Noto Sans KR',sans-serif;}

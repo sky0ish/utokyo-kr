@@ -28,7 +28,7 @@
 /* 지도 */
 .mapwrap{background:#fff;border:1px solid var(--map-line,#e6dfcb);border-radius:12px;
   overflow:hidden;box-shadow:0 2px 8px rgba(60,50,20,.07);}
-.mapbox{position:relative;flex:1;min-width:0;height:100%;background:#f1efe8;}
+.mapbox{position:relative;z-index:0;flex:1;min-width:0;height:100%;background:#f1efe8;}
 
 /* 지도 + 오른쪽 곁 상자 */
 /* 지도와 오른쪽 곁상자의 높이를 맞춘다 */
