@@ -51,6 +51,8 @@
   table{width:100%;border-collapse:collapse;font-size:13.5px;}
   th{text-align:left;font-weight:600;color:#5c563f;font-size:12.5px;padding:9px 10px;
     border-bottom:2px solid #ece5d4;white-space:nowrap;}
+  .btn.sm.adm{margin-left:6px;background:#f3ede0;color:#7a6428;border:1px solid #e2d6b8;}
+  .btn.sm.adm:hover{background:#ece2cc;}
   th[data-s]{cursor:pointer;user-select:none;}
   th[data-s]:hover{color:#8a6d2b;background:#faf6ea;}
   th .arr{margin-left:3px;color:#c4bda6;font-size:10px;}
@@ -319,12 +321,14 @@ async function start() {
   const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
   /** 등급을 손으로 바꾸는 칸 (운영진 계정은 관리자로 고정) */
   function gradeSel(r) {
-    if (r.is_admin) return "";
+    const btn = `<button type="button" class="btn sm adm" title="운영진 지정·해제">` +
+      (r.is_admin ? "운영진 해제" : "운영진 지정") + "</button>";
+    if (r.is_admin) return btn;
     const g = r.grade || "guest";
     return '<select class="gsel">' +
       [["member", "회원"], ["guest", "준회원"]]
         .map(([k, v]) => `<option value="${k}"${k === g ? " selected" : ""}>${v}</option>`).join("") +
-      "</select>";
+      "</select>" + btn;
   }
 
   /** 명단에 없었지만 운영진이 직접 회원으로 올린 경우 = 재승인 */
@@ -484,6 +488,25 @@ async function start() {
         `${esc(h.belong || "")}${h.email ? `<br><a href="mailto:${esc(h.email)}">${esc(h.email)}</a>` : ""}` +
         (hits.length > 1 ? `<br>동명이인 ${hits.length}명` : "") + "</div>";
       await setGrade(r, "member");
+    }));
+
+    t.querySelectorAll(".adm").forEach(b => b.addEventListener("click", async () => {
+      const id = b.closest("tr").dataset.id;
+      const r = rows.find(x => x.id === id);
+      const on = !r.is_admin;
+      if (!confirm(`${r.name || "이 분"}을 ${on ? "운영진으로 지정" : "운영진에서 해제"}할까요?`)) return;
+      b.disabled = true;
+      const { error } = await sb.rpc("set_admin", { p_id: id, p_on: on });
+      b.disabled = false;
+      if (error) {
+        alert("바꾸지 못했습니다: " + error.message +
+              " — board/make_admin.sql 을 실행하셨는지 확인해주세요.");
+        return;
+      }
+      r.is_admin = on;
+      if (on) { r.approved = true; r.grade = "admin"; }
+      else if (r.grade === "admin") r.grade = "member";
+      render();
     }));
 
     async function setGrade(r, g) {
