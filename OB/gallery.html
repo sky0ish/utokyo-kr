@@ -139,9 +139,11 @@
     height:clamp(150px, 26vw, 420px);
     display:flex;flex-direction:column;justify-content:flex-start;
   }
-  /* 글자는 사람과 겹치지 않게 위쪽에 */
-  .banner .binner{padding-top:18px;padding-bottom:0;}
-  @media (max-width:680px){ .banner .binner{padding-top:12px;} }
+  /* 글자는 MAP 배너처럼 왼쪽 위로 — 가운데 실루엣과 겹치지 않게 */
+  .banner .binner{max-width:none;margin:0;padding:20px 34px 0;}
+  .banner .en{text-shadow:0 1px 10px rgba(0,0,0,.6);}
+  .banner h1{text-shadow:0 2px 16px rgba(0,0,0,.6);}
+  @media (max-width:680px){ .banner .binner{padding:12px 18px 0;} }
   @media (max-width:680px){ .banner{min-height:112px;} }
 </style>
 </head>
