@@ -134,6 +134,17 @@
       </div>
       <div class="log" id="log"></div>
     </div>
+
+    <div class="card">
+      <h2>④ 학생회 소모임 · 활동 이력 가져오기</h2>
+      <p>옛 홈페이지(tokyoksa.com)의 <b>소모임 21건</b>과 <b>학생회 활동 이력 18건</b>을
+        학생회 게시판으로 옮깁니다. SQL 을 돌리실 필요 없이 단추 한 번이면 됩니다.</p>
+      <p class="hint">이미 들어간 글은 건너뜁니다. 여러 번 눌러도 겹치지 않습니다.</p>
+      <div style="margin-top:14px;">
+        <button class="btn dark" id="legacyBtn">소모임 · 활동 이력 넣기</button>
+      </div>
+      <div class="log" id="legacyLog"></div>
+    </div>
   </div>
 </div>
 
@@ -299,6 +310,55 @@ if (!user) {
     };
     r.readAsText(f, "utf-8");
   }
+
+  // ── ④ 학생회 소모임 · 활동 이력 가져오기 ──
+  document.getElementById("legacyBtn").addEventListener("click", async () => {
+    const b = document.getElementById("legacyBtn");
+    const lg = document.getElementById("legacyLog");
+    b.disabled = true; lg.style.display = "block";
+    lg.textContent = "옮길 글을 읽는 중…\n";
+    let rows;
+    try {
+      rows = await fetch("/board/ksa_legacy.json?" + Date.now()).then(r => r.json());
+    } catch (e) {
+      lg.textContent += "자료를 읽지 못했습니다: " + e.message;
+      b.disabled = false; return;
+    }
+    const nClub = rows.filter(r => r.category === "club").length;
+    const nHist = rows.filter(r => r.category === "history").length;
+    lg.textContent += "옮길 글 " + rows.length + "건 (소모임 " + nClub + " · 활동 이력 " + nHist + ")\n";
+
+    const urls = rows.map(r => r.source_url);
+    const have = new Set();
+    for (let i = 0; i < urls.length; i += 100) {
+      const { data, error } = await sb.from("posts").select("source_url")
+        .eq("org", "YB").in("source_url", urls.slice(i, i + 100));
+      if (error) { lg.textContent += "확인 실패: " + error.message; b.disabled = false; return; }
+      (data || []).forEach(d => have.add(d.source_url));
+    }
+    const fresh = rows.filter(r => !have.has(r.source_url));
+    lg.textContent += "이미 있는 글 " + have.size + "건은 건너뜁니다. 새로 넣을 글 " + fresh.length + "건\n\n";
+    if (!fresh.length) { lg.textContent += "새로 넣을 글이 없습니다."; b.disabled = false; return; }
+
+    let ok = 0;
+    for (let i = 0; i < fresh.length; i += 20) {
+      const chunk = fresh.slice(i, i + 20).map(r => ({
+        author_name: "도쿄대학 한국인학생회", org: "YB", category: r.category,
+        title: r.title, content: r.content, visibility: "members",
+        source: "legacy", source_url: r.source_url,
+        created_at: r.created_at || new Date().toISOString(),
+        author_id: user.id,
+      }));
+      const { error } = await sb.from("posts").insert(chunk);
+      if (error) { lg.textContent += "오류: " + error.message + "\n"; break; }
+      ok += chunk.length;
+      lg.textContent += "진행 " + ok + "/" + fresh.length + "\n";
+      lg.scrollTop = lg.scrollHeight;
+    }
+    lg.textContent += "\n완료 — " + ok + "건을 넣었습니다.";
+    if (ok) lg.textContent += "\n학생회 게시판의 「소모임」·「활동 이력」 갈래에서 보실 수 있습니다.";
+    b.disabled = false;
+  });
 
   goBtn.addEventListener("click", async () => {
     goBtn.disabled = true;
