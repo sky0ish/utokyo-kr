@@ -247,8 +247,8 @@ async function start() {
   let rows = [], filter = "all", orgF = "all";
   let sortKey = "", sortDir = 1;                    // 빈 값이면 기본 차례 (가입 최신순)
   // 어느 홈페이지에서 들어왔는지 — 그 쪽 회원을 위에 보여준다
-  let HOME = (new URLSearchParams(location.search).get("org") || "").toUpperCase();
-  if (HOME !== "OB" && HOME !== "YB") HOME = "";
+  // 이 화면은 재한 도쿄대학 총동문회 운영진 것입니다. 제 단체 명단이 먼저 나옵니다.
+  const HOME = "OB";
   const HOME_NAME = { OB: "재한 도쿄대학 총동문회(OB)", YB: "도쿄대학 한국인학생회(YB)" };
   const other = (o) => (o === "OB" ? "YB" : "OB");
 

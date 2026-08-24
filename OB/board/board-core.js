@@ -125,8 +125,8 @@ export async function initBoard(ORG) {
     if (p && p.is_admin) {                      // 운영진 관리 메뉴
       const mk = (href, text) => { const a = document.createElement("a");
         a.href = href; a.textContent = text; a.style.color = "#e8c876"; a.style.fontWeight = "600"; return a; };
-      el.append(mk("/OB/admin/members.html?org=" + ORG, "⚙ 회원 승인"),
-                mk("/OB/admin/gallery.html?org=" + ORG, "⚙ 갤러리 관리"));
+      el.append(mk("/OB/admin/members.html", "⚙ 회원 승인"),
+                mk("/OB/admin/gallery.html", "⚙ 갤러리 관리"));
       el.append(mk("/OB/admin/index.html", "⚙ 글 가져오기"));
     }
   } else {
