@@ -140,6 +140,14 @@
     .skyrow{padding:0 16px 12px;margin-top:-4px;}
     .ssky{height:56px;} .ssline{height:2px;margin-bottom:3px;}
   }
+
+  /* ── 갤러리 배너 : 노을 실루엣 (좌우가 다 들어오게, 위아래만 잘라냄) ── */
+  .banner{
+    background:linear-gradient(rgba(10,16,28,.30),rgba(10,16,28,.40)),
+               url('/OB/images/ob_gallery_sunset.jpg?v=1') center/100% auto no-repeat, #16202f;
+    min-height:150px;display:flex;flex-direction:column;justify-content:center;
+  }
+  @media (max-width:680px){ .banner{min-height:104px;} }
 </style>
 </head>
 <body>
@@ -148,7 +156,7 @@
   <div class="inner">
     <div class="links">
       <a href="/index.html">⌂ 통합 홈</a>
-      <a href="https://www.u-tokyo.ac.jp/en/about/plog_2026_0506.html" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
+      <a href="https://www.u-tokyo.ac.jp/en/" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
       <a href="/YB/index.html">한국인학생회</a>
       <a href="https://alumni.tokyoksa.com/" target="_blank" rel="noopener">총동문회 홈페이지(기존)</a>
 
