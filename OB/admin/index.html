@@ -26,6 +26,7 @@
   ol li{margin-bottom:7px;}
   .bmk{display:inline-block;margin:14px 0 4px;padding:12px 24px;background:var(--navy);color:#fff;border-radius:8px;
     font-weight:700;font-size:15px;cursor:grab;box-shadow:0 6px 18px rgba(0,0,0,.2);}
+  .whose{margin:6px 0 0;font-size:13.5px;color:#c9a24b;letter-spacing:.02em;}
   .hint{font-size:12.5px;color:#9a947f;}
   .srcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin:14px 0 4px;}
   .src{display:block;padding:13px 15px;border:1px solid #ddd6c6;border-radius:6px;background:#fdfcfa;
@@ -66,6 +67,7 @@
   <div class="inner">
     <span class="en">Sync &amp; Import</span>
     <h1>게시글 가져오기</h1>
+    <p class="whose">재한 도쿄대학 총동문회</p>
   </div>
 </div>
 
@@ -97,32 +99,22 @@
 
       <div class="srcs">
         <a class="src" href="https://www.band.us/band/58105635/post" target="_blank" rel="noopener">
-          <span class="go">→</span><b>총동문회 네이버 밴드</b><small>재한 도쿄대학 총동문회 · OB</small></a>
+          <span class="go">→</span><b>총동문회 네이버 밴드</b><small>band.us · 글과 사진</small></a>
         <a class="src" href="https://www.facebook.com/groups/Korean.Alumni.ut" target="_blank" rel="noopener">
-          <span class="go">→</span><b>총동문회 페이스북 그룹</b><small>Korean.Alumni.ut · OB</small></a>
-        <a class="src" href="https://www.facebook.com/tokyoksa" target="_blank" rel="noopener">
-          <span class="go">→</span><b>학생회 페이스북</b><small>facebook.com/tokyoksa · YB</small></a>
-        <a class="src off" href="https://www.tokyoksa.com/bbs/board.php?bo_table=sub03_01" target="_blank" rel="noopener">
-          <span class="go">→</span><b>학생회 구게시판</b><small>tokyoksa.com · 수집 단추는 안 됩니다 (아래 설명)</small></a>
+          <span class="go">→</span><b>총동문회 페이스북 그룹</b><small>Korean.Alumni.ut</small></a>
+        <a class="src off" href="https://alumni.tokyoksa.com/bbs/board.php?bo_table=alumni_b23" target="_blank" rel="noopener">
+          <span class="go">→</span><b>총동문회 구게시판</b><small>alumni.tokyoksa.com · 수집 단추는 안 됩니다</small></a>
       </div>
 
       <div style="background:#f6f2e6;color:#6f6a5c;padding:12px 14px;border-radius:4px;font-size:13.5px;margin-top:12px;">
-        <b>학생회 구게시판</b>은 수집 단추가 듣지 않습니다. 밴드·페이스북과 화면 짜임이 달라서입니다.
-        다만 그곳 글 4,490건은 <b>이미 모두 옮겨와 있고</b> 옛 사이트에는 새 글이 올라오지 않으니,
-        구경하실 때만 쓰시면 됩니다.
+        <b>구게시판</b>은 수집 단추가 듣지 않습니다. 밴드·페이스북과 화면 짜임이 달라서입니다.
+        그곳 글은 이미 옮겨와 있으니 구경하실 때만 쓰시면 됩니다.
       </div>
     </div>
 
     <div class="card">
       <h2>③ 수집한 파일 올리기</h2>
       <p>이미 등록된 글은 자동으로 건너뛰고 <b>새 글만</b> 게시판에 올라갑니다.</p>
-      <p style="margin-bottom:10px;">어느 게시판에 넣을까요?
-        <select id="orgSel" style="margin-left:8px;padding:7px 10px;font-family:inherit;font-size:13.5px;
-          border:1px solid #ddd6c6;border-radius:4px;background:#fdfcfa;">
-          <option value="OB">재한 도쿄대학 총동문회 (OB)</option>
-          <option value="YB">도쿄대학 한국인학생회 (YB)</option>
-        </select>
-      </p>
       <div class="drop" id="drop">
         <b>파일을 여기에 끌어다 놓으세요</b>
         <span>또는 클릭해서 선택 (band_collected.json / facebook_collected.json)</span>
@@ -189,11 +181,7 @@ if (!user) {
   let rows = [], lastFile = null;
 
   // 넣을 게시판을 바꾸면 미리보기를 다시 만든다
-  document.getElementById("orgSel").addEventListener("change", () => {
-    if (lastFile) read(lastFile);
-  });
-
-  drop.addEventListener("click", () => fileInput.click());
+    drop.addEventListener("click", () => fileInput.click());
   drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("on"); });
   drop.addEventListener("dragleave", () => drop.classList.remove("on"));
   drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("on"); if (e.dataTransfer.files[0]) read(e.dataTransfer.files[0]); });
@@ -283,7 +271,7 @@ if (!user) {
           .replace(/^\s*[#]+\s*/, "")
           .replace(/^\s*[\[【][^\]】]{1,14}[\]】]\s*/, "")
           .slice(0, 58);
-        const org = document.getElementById("orgSel").value;
+        const org = "OB";                       // 이 화면은 재한 도쿄대학 총동문회 전용입니다
         // 학생회 게시판에는 그쪽 분류로 바꿔 넣는다
         const YB_MAP = { notice:"notice", free:"free", club:"free",
                          promo:"jobs", condolence:"free", mentoring:"mentoring" };
@@ -388,7 +376,7 @@ if (!user) {
     }
     log.textContent += `\n완료 — 등록 ${ok}건${fail ? ` / 실패 ${fail}건` : ""}`;
     document.getElementById("preview").insertAdjacentHTML("beforeend",
-      `<div class="ok">${ok}건이 게시판에 등록되었습니다. <a href="/${document.getElementById("orgSel").value}/board.html" style="color:#3f6a3a;text-decoration:underline;">게시판 보기 →</a></div>`);
+      `<div class="ok">${ok}건이 게시판에 등록되었습니다. <a href="/OB/board.html" style="color:#3f6a3a;text-decoration:underline;">게시판 보기 →</a></div>`);
     goBtn.disabled = false;
   });
 }
