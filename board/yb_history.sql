@@ -19,7 +19,7 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=3', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=3', '2012-04-16 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=3', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=3', '2012-04-16 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제40기 학생회 1차 임원회의 (2012.4.7)', '제40기 학생회 1차 임원회의를 하였습니다.
 주요 회의 내용 - 한국어 교실 관련사항- 2012년 봄학기 개강모임 및 신입생 환영회 준비사항참석 임원 : 30명장소 : 코마바리서치캠퍼스
 스크랩
@@ -27,7 +27,7 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=2', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=2', '2012-04-16 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=2', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=2', '2012-04-16 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제40기 학생회 첫 임원모임 (2012.3.20)', '제40기 학생회 첫 임원모임을 가졌습니다.
 다양한 전공, 캠퍼스의 임원들이 모여서 학생회가 나아가야 할 방향에 관해서 이야기를나누었습니다. 참석 임원 : 18명장소 : 신오오쿠보
 스크랩
@@ -35,14 +35,14 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=1', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=1', '2012-04-16 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=1', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=1', '2012-04-16 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 여름학기 개강파티 및 신입생환영회 (2012.4.25)', '2012년 여름학기 개강파티 및 신입생환영회를 개최하였습니다.참가 인원 : 약 130명 (2차 참가 인원 : 62명)장소 : 혼고캠퍼스 제2식당
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=8', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=8', '2012-05-10 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=8', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=8', '2012-05-10 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 개강파티 리포트', '[단독] 2012년 여름학기 개강파티 잠입취재!
 독자 여러분 안녕하세요! 항상 특종만을 보도하는 Tokyo KSA 뉴스입니다. 지난 4월 25일 수요일, 도쿄대 홍고 캠퍼스 제2식당에서 도쿄대 한국인학생회의 2012년 여름학기 개강파티가 열렸는데요, 그 축제의 현장에 바로 저희 Tokyo KSA 뉴스가 단독으로 잠입취재를 다녀왔습니다! 재밌었다고 소문난 이번 개강파티! 어떤 모습이었을지 함께 보실까요?
 이번 개강파티에는 무려 약 140명 정도의 재학생분들이 참석해 주셨답니다! 넓은 제 2식당이 꽉 차는 것 같더라구요! 그리고 개회사를 맡아주신 하네다 부학장님, 폐회사를 맡아주신 홍정국 교수님을 비롯해, 생산기술연구소의 김범준 교수님, 현대한국연구센터의 이애리아 교수님, 동경한국종합교육원의 신승인 원장님, 삼성테크윈의 이종규 수석연구원님과 이명우 과장님, LG화학 일본연구소의 박상현 사장님, 재일한국과학기술협회의 김진헌 이사님과 김해곤 이사님, 한국연구재단 일본사무소의 김종현 소장님, 현대자동차 일본기술연구소의 한봉훈 사장님께서 참석해 자리를 빛내 주셨습니다.
@@ -64,7 +64,7 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=10', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=10', '2012-06-27 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=10', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=10', '2012-06-27 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제40기 학생회 3차 임원회의 (2012.6.16)', '제40기 학생회 3차 임원회의를 하였습니다.
 주요 회의 내용 - 한국어 스피치 대회 준비사항- 학생회 활성화 방안 모색참석 임원 : 25명장소 : 코마바리서치캠퍼스 생산기술연구소
 스크랩
@@ -72,21 +72,21 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=11', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=11', '2012-06-29 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=11', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=11', '2012-06-29 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제1회 운동하기 프로젝트 (2012.7.20)', '2012년 제1회 운동하기 프로젝트를 개최하였습니다.참가 인원 : 약 20명 일시 : 2012년 7월 20일장소 : 혼고캠퍼스 고텐시타체육관운동종목 : 농구, 풋살, 배드민턴, 탁구
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=13', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=13', '2012-07-24 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=13', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=13', '2012-07-24 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제1회 강연회 - 「色を知れば，生き方が変わる」 (2012.6.26)', '2012년 제1회 강연회를 개최하였습니다.색을 알면, 인생이 바뀝니다! 「色を知れば，生き方が変わる」컬러 코디네이터 카도소노 후미코　門園　富美子참가 인원 : 약 25명 장소 : 혼고캠퍼스
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=12', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=12', '2012-07-24 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=12', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=12', '2012-07-24 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 한국어 스피치 대회 (2012.7.20)', '2012년 한국어 스피치 대회를 개최하였습니다.스피치 대회 발표 인원 : 9명 일시 : 2012년 7월 20일한국어에 대한 뜨거운 관심과 열정을 다시 한번 느낄 수 있는 대회였습니다.
 한일 왕복항공권의 주인공~!
 스크랩
@@ -94,21 +94,21 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=14', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=14', '2012-07-26 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=14', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=14', '2012-07-26 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제40기 학생회 4차 임원회의 (2012.9.22)', '제40기 학생회 4차 임원회의를 하였습니다.  주요 회의 내용 - 여름학기 활동 보고 및 향후 계획 - 겨울학기 개강파티 계획참석 임원 : 26명 장소 : 코마바리서치캠퍼스 생산기술연구소
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=15', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=15', '2012-09-24 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=15', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=15', '2012-09-24 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 겨울학기 개강파티 및 신입생환영회 (2012.10.26)', '2012년 겨울학기 개강파티 및 신입생환영회를 개최하였습니다.참가 인원 : 약 125명 (2차 참가 인원 : 61명)장소 : 코마바제1캠퍼스 생협식당2층
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=17', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=17', '2012-11-07 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=17', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=17', '2012-11-07 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2012년 제40기 학생회 5차 임원회의 (2012.10.6)', '제40기 학생회 5차 임원회의를 하였습니다.
 주요 회의 내용 - 2012년 겨울학기 개강모임 및 신입생 환영회 준비사항 논의- 체육대회 준비사항 논의참석 임원 : 28명장소 : 혼고캠퍼스 근처 오이와케 기숙사
 스크랩
@@ -116,49 +116,49 @@ select v.* from (values
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=16', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=16', '2012-11-07 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=16', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=16', '2012-11-07 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 삼성전자 반도체연구소 석식간담회', '삼성전자 반도체연구소 인사팀 황성욱 차장님과 김건중 사원님이 회사설명회를 위해 도쿄대학을 방문해주셨습니다. 약 20명 정도의 박사과정학생들과 1:1면담 및 석식간담회를 개최하였습니다.- 일시 : 2016년 3월 16일(수)- 장소 : 우에노 sakanaya
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=18', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=18', '2016-03-18 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=18', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=18', '2016-03-18 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2026년 개강 맞이 봄 소풍회 @요요기 공원 (2026.4.25)', '< 개강맞이 봄 소풍회 > 2026년 4월 25일 토요일 개강을 맞이 하여 봄소풍이 있었습니다.함께해서 더 즐거웠던 요요기 공원에서의 소풍 현장을 공유합니다! 다양한 레크레이션과 게임들로 한층 더 친해진 시간이었습니다.오늘 만든 추억이 어려분의 유학생활에 작은 활력이 되었길 바랍니다. 참여해주신 분들 감사합니다.
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=28', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=28', '2026-04-29 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=28', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=28', '2026-04-29 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2026년 개강총회(파티) (2026.4.18)', '< 도쿄대학 한국인학생회 봄 개강총회 > 2026년 4월 18일 토요일﻿ 도쿄대학 한국인학생회 봄 개강총회(파티)가 있었습니다 타지 생활에서 그리운 한식 메뉴들과 함께하며, 학우들 간의 긴장을 풀고 화기애애한 분위기 속에서 대화를 나눌 수 있었습니다. 바쁜 일정 중에도 참석해 주신 모든 학우분께 감사 인사를 전합니다.이번 학기에도 학우분들 모두가 건강하고 보람찬 학교생활을 이어가길 진심으로 응원합니다:)
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=27', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=27', '2026-04-29 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=27', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=27', '2026-04-29 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2026년 제54기 학생회 임원진 소개', '< 제54대 도쿄대학 한국인학생회 임원진을 소개합니다 >안녕하십니까, 제54기 학생회입니다. 올해 학생회를 이끌어갈 운영진 학우분들을 간단히 소개합니다:) 캠퍼스에서 마주치면 반갑게 인사 나누고,기회 되면 같이 밥도 먹으며 편하게 소통했으면 좋겠습니다. 학생 여러분의 즐거운 캠퍼스 생활과 권익을 위해 최선을 다하겠습니다!많은 응원 부탁드립니다.
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=25', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=25', '2026-04-29 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=25', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=25', '2026-04-29 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] [공지] 도쿄대학 한국인 유학생회 커뮤니티', '< 도쿄대학 한국인 유학생회 커뮤니티 공지 > 슬기로운 유학생활의 시작은 정보력부터! 실시간 학교 소식과 선배들의 경험담 및 동아리 소식까지 가장 빠르게 확인하세요. - 참여 대상: 도쿄대학 소속 한국인이라면 누구나!(학부생, 교환학생, 연구생, 대학원생, 졸업생 모두 환영합니다 ) - 입장 방법: 학생회장의 카카오톡 ID를 통한 학생증 및 서류 간단 인증 지금 바로 참여해서 더 즐겁고 유익한 유학생활을 시작해 보세요!
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=24', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=24', '2026-04-29 09:00:00+09'),
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=24', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=24', '2026-04-29 09:00:00+09'::timestamptz),
 ('도쿄대학 한국인학생회', 'YB', 'history', '[활동] 2026년 제54기 학생회 1차 임원회의 (2026.3.29)', '< 제54기 학생회 1차 임원회의 > 일시: 2026.3.29장소: 우에노 회의룸 ​제54기 학생회 1차 임원회의가 있었습니다. 더 활발한 정보 교류와 소통의 창구를 활성화하기 위한여러 대안을 토론하는 시간이었습니다. 앞으로도 도쿄대학 한국인 유학생 학우분들의 유익한 학교생활을 위해 노력하는 학생회가 되겠습니다.
 스크랩
 잠금
 
 기존 홈페이지 「학생회 활동 이력」 게시판에서 옮겨온 글입니다.
 아래 댓글로 그때 이야기를 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=23', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=23', '2026-04-29 09:00:00+09')
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=23', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=sub02_08&wr_id=23', '2026-04-29 09:00:00+09'::timestamptz)
 ) as v(author_name, org, category, title, content, visibility, source, source_url, created_at)
 where not exists (
   select 1 from public.posts p where p.org = 'YB' and p.source_url = v.source_url);
