@@ -1,17 +1,21 @@
 -- ═══════════════════════════════════════════════════════════
 -- 학생회 소모임을 게시판으로
 --
---   옛 홈페이지 「소모임」 게시판의 스물한 개 글을 그대로 옮깁니다.
---   글마다 댓글이 달리므로, 소모임 회원끼리 그 자리에서 이야기할 수 있습니다.
+--   옛 홈페이지 「소모임」 게시판의 글을 그대로 옮깁니다. (21건)
+--   글마다 댓글이 달리므로, 그 자리에서 이야기를 나눌 수 있습니다.
 --   회원 전용입니다.
 --
 -- 실행: Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
--- ※ 여러 번 실행해도 겹쳐 들어가지 않습니다.
+-- ※ 다시 돌리면 이 갈래의 옮겨온 글을 지우고 새로 넣습니다.
+--   (직접 쓰신 글과 댓글이 있다면 함께 지워지니 한 번만 돌려주세요)
 -- ═══════════════════════════════════════════════════════════
+
+delete from public.posts
+ where org = 'YB' and category = 'club' and source = 'legacy';
 
 insert into public.posts
   (author_name, org, category, title, content, visibility, source, source_url, created_at)
-select v.* from (values
+values
 ('도쿄대학 한국인학생회', 'YB', 'club', '[소모임] 동경대학 한국인 축구모임', '1. 정식 명칭
  KSA F.C.   (한국인 유학생회 축구클럽)
 
@@ -354,10 +358,7 @@ JSPS 스터디 모임 ​
 
 기존 홈페이지 「소모임」 게시판에서 옮겨온 글입니다.
 아래 댓글로 소모임 회원끼리 이야기 나누실 수 있습니다.
-원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', now() - interval '3 minutes')
-) as v(author_name, org, category, title, content, visibility, source, source_url, created_at)
-where not exists (
-  select 1 from public.posts p where p.org = 'YB' and p.source_url = v.source_url);
+원문 보기 : https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', now() - interval '3 minutes');
 
 -- ── 확인 ──
 select left(title, 46) as 제목, created_at::date as 날짜
