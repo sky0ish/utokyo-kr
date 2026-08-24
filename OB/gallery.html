@@ -127,6 +127,19 @@
   .gempty{padding:70px 0;text-align:center;color:#a8a291;}
   @media (max-width:980px){ .ggrid{grid-template-columns:repeat(3,1fr);} }
   @media (max-width:680px){ .ggrid{grid-template-columns:repeat(2,1fr);gap:12px;} .gtabs a{font-size:13.5px;padding:9px 16px;} }
+
+  /* 배너 아래줄 : 왼쪽으로 뻗는 흰 선 — 오른쪽 도쿄 스카이라인 */
+  .banner .binner{padding-bottom:0;}
+  .skyrow{position:relative;z-index:3;max-width:1180px;margin:-6px auto 0;
+    padding:0 24px 14px;display:flex;align-items:flex-end;}
+  .ssline{flex:1;height:3px;background:rgba(255,255,255,.92);border-radius:2px;
+    margin-bottom:5px;box-shadow:0 1px 6px rgba(0,0,0,.35);}
+  .ssky{flex:none;height:88px;width:auto;display:block;
+    filter:brightness(0) invert(1) drop-shadow(0 1px 6px rgba(0,0,0,.45));opacity:.96;}
+  @media (max-width:680px){
+    .skyrow{padding:0 16px 12px;margin-top:-4px;}
+    .ssky{height:56px;} .ssline{height:2px;margin-bottom:3px;}
+  }
 </style>
 </head>
 <body>
@@ -202,6 +215,10 @@
   <div class="binner">
     <span class="en">Gallery</span>
     <h1>갤러리</h1>
+  </div>
+  <div class="skyrow">
+    <span class="ssline"></span>
+    <img class="ssky" src="/images/yb_skyline.png" alt="도쿄 스카이라인">
   </div>
 </div>
 
