@@ -97,7 +97,7 @@ const NAV = {
 };
 
 const LOGO = {
-  OB: { html: "재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small>",
+  OB: { html: "<span class=\"hmark\"></span><span class=\"hname\">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></span>",
         href: "/OB/index.html", name: "재한 도쿄대학 총동문회" },
   YB: { html: "도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small>",
         href: "/YB/index.html", name: "도쿄대학 한국인학생회" },

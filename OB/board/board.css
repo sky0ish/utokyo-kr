@@ -236,3 +236,10 @@ body.yb .sec-head .t h2,
 @media (max-width:680px){
   body.yb .pager a{min-width:32px;padding:7px 9px;font-size:12.5px;}
 }
+
+/* 머리글 왼쪽 동그란 마크 — 어느 화면에서든 보이게 */
+.mhead .mlogo{display:inline-flex;align-items:center;gap:11px;}
+.mhead .hmark{flex:none;width:34px;height:34px;
+  background:url('/OB/images/ob_emblem.svg') center/contain no-repeat;}
+.mhead .hname{display:block;}
+@media (max-width:700px){ .mhead .hmark{width:27px;height:27px;} .mhead .mlogo{gap:8px;} }

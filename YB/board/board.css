@@ -301,3 +301,10 @@ body.yb .pager a.off{opacity:.38;pointer-events:none;}
   background:url('/YB/images/yb_mark.png') left center/contain no-repeat;
   filter:brightness(0) invert(1);opacity:.9;}
 @media (max-width:700px){ .mhead .ksamark{width:28px;height:14px;margin-left:7px;} }
+
+/* 머리글 왼쪽 동그란 마크 — 어느 화면에서든 보이게 */
+.mhead .mlogo{display:inline-flex;align-items:center;gap:11px;}
+.mhead .hmark{flex:none;width:34px;height:34px;
+  background:url('/YB/images/yb_emblem.svg') center/contain no-repeat;}
+.mhead .hname{display:block;}
+@media (max-width:700px){ .mhead .hmark{width:27px;height:27px;} .mhead .mlogo{gap:8px;} }
