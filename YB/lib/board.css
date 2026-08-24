@@ -89,6 +89,7 @@ a{text-decoration:none;color:inherit;}
 .chip.promo{background:#f5e9e2;color:#9a5a2b;}
 .chip.qna{background:#e7eef7;color:#2f4b8f;}
 .chip.parttime{background:#eef3e8;color:#5a7a33;}
+.chip.history{background:#f0ece2;color:#7a6a3c;}
 
 /* ═══ 학생회(YB) 초록 테마 ═══ */
 body.yb .mhead{background:#1e5230;}
