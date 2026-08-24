@@ -360,6 +360,55 @@
   footer.site .links{display:flex;gap:22px;}
   footer.site .links a:hover{color:var(--leaf-bright);}
   footer.site .cr{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;font-size:12px;color:rgba(255,255,255,.38);}
+
+  /* ── 공항에서 오는 길 · 캠퍼스 안내 (옛 홈페이지에서 옮겨옴) ── */
+  .airway,.campus{margin-top:38px;}
+  .awhead{margin-bottom:18px;}
+  .awhead h3{font-family:'Noto Serif KR',serif;font-size:21px;font-weight:600;color:#1e5230;
+    margin:0 0 5px;padding-bottom:10px;border-bottom:2px solid #1e5230;}
+  .awhead p{margin:10px 0 0;font-size:14.5px;color:#7d8a80;word-break:keep-all;}
+  .aw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+  .aw{background:#fff;border:1px solid #dfe9e1;border-radius:10px;padding:20px 22px;}
+  .aw h4{margin:0 0 12px;font-size:16.5px;font-weight:700;color:#1e5230;}
+  .aw dl{margin:0;}
+  .aw dt{font-size:12.5px;font-weight:700;color:#4f9d5d;letter-spacing:.02em;margin-top:12px;}
+  .aw dt:first-child{margin-top:0;}
+  .aw dd{margin:3px 0 0;font-size:14px;line-height:1.7;color:#41504a;word-break:keep-all;}
+  .aw dd b{color:#1e5230;font-weight:600;}
+  .awnote{margin:14px 0 0;padding:10px 12px;background:#fdf6e4;border-radius:6px;
+    font-size:13px;color:#7a6428;word-break:keep-all;}
+  .awnote b{color:#5c4a1c;}
+
+  .cg{background:#fff;border:1px solid #dfe9e1;border-radius:10px;padding:22px 24px;margin-bottom:14px;}
+  .cg h4{margin:0 0 8px;font-size:17.5px;font-weight:700;color:#1e5230;
+    display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+  .cg h4 .jp{font-size:12.5px;font-weight:400;color:#9fb0a5;}
+  .cglead{margin:0 0 16px;font-size:14.5px;line-height:1.8;color:#5a6a5f;word-break:keep-all;}
+  .cglead b{color:#1e5230;font-weight:600;}
+  .cg .sub{display:grid;gap:10px;}
+  .cg .sc{background:#f6faf7;border-radius:8px;padding:14px 16px;}
+  .cg .sc > b{display:block;font-size:14.5px;color:#2a6b40;margin-bottom:7px;}
+  .cg .sc p{margin:0 0 5px;font-size:13.5px;line-height:1.65;color:#51605a;word-break:keep-all;
+    display:grid;grid-template-columns:52px 1fr;gap:10px;}
+  .cg .sc p:last-child{margin-bottom:0;}
+  .cg .sc p span{font-size:11.5px;font-weight:700;color:#8ba394;padding-top:3px;}
+  @media (max-width:560px){ .cg .sc p{grid-template-columns:1fr;gap:1px;} }
+
+  /* ── 홈페이지 이용안내 ── */
+  .usage ol{margin:0;padding:0;list-style:none;counter-reset:u;display:flex;flex-direction:column;gap:9px;}
+  .usage ol li{counter-increment:u;display:grid;grid-template-columns:26px 1fr;gap:12px;
+    font-size:14.5px;line-height:1.7;color:#41504a;word-break:keep-all;}
+  .usage ol li::before{content:counter(u);width:26px;height:26px;border-radius:50%;
+    background:#e2f0e5;color:#1e5230;font-size:12.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;}
+  .usage ol li b{color:#1e5230;}
+
+  /* ── 후원단체 ── */
+  .spo-list{margin-top:26px;}
+  .spo-list h3{font-size:15px;font-weight:700;color:#1e5230;text-align:center;margin:0 0 14px;}
+  .spo-orgs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .spo-orgs span{background:#fff;border:1px solid #dfe9e1;border-radius:100px;
+    padding:9px 20px;font-size:14.5px;color:#41504a;}
 </style>
 </head>
 <body>
@@ -569,6 +618,129 @@
         <ul class="mways" id="mWays"></ul>
       </div>
       <div class="maptip">지도를 <b>끌어서 이동</b>, <b>마우스 휠 또는 + / −</b> 로 확대·축소할 수 있습니다. 지도 위 표시를 누르면 캠퍼스가 바뀝니다.</div>
+
+    <!-- 공항에서 오는 길 -->
+    <div class="airway">
+      <div class="awhead"><h3>공항에서 오는 길</h3>
+        <p>처음 오시는 분을 위해 캠퍼스별로 정리했습니다.</p></div>
+      <div class="aw-grid">
+
+        <div class="aw">
+          <h4>혼고 캠퍼스</h4>
+          <dl>
+            <dt>나리타 공항</dt>
+            <dd>케이세이선(일반·특급·스카이라이너)으로 <b>케이세이우에노</b>역 → JR 우에노역으로 도보 1분 →
+              역 앞에서 버스 <b>学01</b> 을 타고 종점 <b>도다이코나이(東大構内)</b> 하차.
+              택시로는 약 1,000엔입니다.</dd>
+            <dt>하네다 공항</dt>
+            <dd>도쿄모노레일로 <b>하마마츠초</b> → JR 야마노테선으로 도쿄역 →
+              지하철 마루노우치선(이케부쿠로 방향)으로 <b>혼고산초메</b> 하차, 도보 8분.</dd>
+            <dt>도쿄역</dt>
+            <dd>마루노우치선(이케부쿠로 방향) <b>혼고산초메</b> 하차, 도보 8분.</dd>
+          </dl>
+        </div>
+
+        <div class="aw">
+          <h4>고마바 캠퍼스</h4>
+          <dl>
+            <dt>나리타 공항</dt>
+            <dd>케이세이선으로 우에노 → JR 야마노테선(시부야 방향)으로 <b>시부야</b> →
+              게이오 이노카시라선 <b>완행</b>으로 갈아타 <b>고마바토다이마에</b> 하차. 내리면 바로 학교입니다.</dd>
+            <dt>하네다 공항</dt>
+            <dd>도쿄모노레일로 하마마츠초 → JR 야마노테선(시부야 방향) →
+              이노카시라선 <b>완행</b>으로 고마바토다이마에 하차.</dd>
+            <dt>도쿄역</dt>
+            <dd>JR 야마노테선으로 시부야 → 이노카시라선 <b>완행</b>으로 고마바토다이마에 하차.</dd>
+          </dl>
+          <p class="awnote">이노카시라선 <b>급행은 고마바토다이마에에 서지 않습니다.</b> 반드시 완행(各駅)을 타세요.</p>
+        </div>
+
+        <div class="aw">
+          <h4>가시와 캠퍼스</h4>
+          <dl>
+            <dt>나리타 공항</dt>
+            <dd>제1터미널 5번·제2터미널 12번 정류장에서 마쓰도·가시와행
+              <b>나리타 급행교통 버스</b>를 타고 <b>가시와역</b> 하차 (약 1,700엔).</dd>
+            <dt>하네다 공항</dt>
+            <dd>게이큐 리무진버스 또는 도부 고속버스(가시와역 서쪽 출구행)를 타고
+              <b>국립암센터</b> 하차 (약 1,500엔), 도보 3분.</dd>
+            <dt>도쿄역</dt>
+            <dd>JR 야마노테선으로 우에노 → JR 조반선으로 <b>가시와역</b>.
+              또는 아키하바라에서 쓰쿠바 익스프레스로 <b>가시와노하캠퍼스역</b>.</dd>
+          </dl>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 캠퍼스 안내 -->
+    <div class="campus" id="campus">
+      <div class="awhead"><h3>캠퍼스 안내</h3>
+        <p>도쿄대학은 혼고 · 고마바 · 가시와 세 지구를 중심으로, 시로카네다이와 나카노에도 캠퍼스를 두고 있습니다.</p></div>
+
+      <div class="cg">
+        <h4>혼고지구 캠퍼스 <span class="jp">本郷地区キャンパス</span></h4>
+        <p class="cglead">도쿄도 분쿄구 혼고와 야요이에 있는 <b>대학 본부</b> 캠퍼스입니다.
+          여러 대학원 과정과 학부 3·4학년 과정을 이곳에서 이수하며, 부설 연구소 대부분이 여기 있습니다.
+          혼고 · 야요이 · 아사노 세 구역으로 나뉩니다.</p>
+        <div class="sub">
+          <div class="sc"><b>혼고 캠퍼스</b>
+            <p><span>학부</span>법학부 · 의학부 · 공학부 · 문학부 · 이학부 · 경제학부 · 교육학부 · 약학부</p>
+            <p><span>연구과</span>인문사회계 · 교육학 · 법학정치학 · 경제학 · 이학계 · 공학계 · 의학계 · 약학계 · 정보이공학계 연구과, 정보학환·학제정보학부, 공공정책학</p>
+            <p><span>시설</span>의학부 부속병원, 동양문화연구소, 사회과학연구소, 사료편찬소, 종합연구박물관, 유학생센터, 보건센터, 소립자물리국제연구센터 등</p>
+          </div>
+          <div class="sc"><b>야요이 캠퍼스</b>
+            <p><span>학부</span>농학부</p>
+            <p><span>연구과</span>농학생명과학 연구과</p>
+            <p><span>시설</span>지진연구소, 분자세포생물학연구소, 아시아생물자원환경연구센터 등</p>
+          </div>
+          <div class="sc"><b>아사노 캠퍼스</b>
+            <p><span>학부</span>공학부 · 이학부 (일부)</p>
+            <p><span>연구과</span>이학계 · 공학계 연구과 (일부)</p>
+            <p><span>시설</span>정보기반센터, 저온센터, 아이소토프종합센터 등</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cg">
+        <h4>고마바지구 캠퍼스 <span class="jp">駒場地区キャンパス</span></h4>
+        <p class="cglead">도쿄도 메구로구 고마바에 있으며, <b>교양학부의 대명사</b>로 불립니다.
+          학부 1·2학년은 보통 이곳에서 마칩니다. 고마바 I 과 고마바 II 로 이루어져 있고,
+          흔히 「고마바 캠퍼스」라고 하면 고마바 I 을 가리킵니다.</p>
+        <div class="sub">
+          <div class="sc"><b>고마바 I 캠퍼스</b>
+            <p><span>학부</span>교양학부(전기·후기 과정), 이학부 수학과</p>
+            <p><span>연구과</span>종합문화 연구과, 수리과학 연구과</p>
+            <p><span>시설</span>교양교육개발기구, 미국태평양지역연구센터, 보건센터</p>
+          </div>
+          <div class="sc"><b>고마바 II 캠퍼스</b>
+            <p><span>학부</span>없음 (공학계 연구과 일부 연구실)</p>
+            <p><span>시설</span>생산기술연구소, 첨단과학기술연구센터, 국제·산학공동연구센터, 고마바오픈연구실</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cg">
+        <h4>가시와지구 캠퍼스 <span class="jp">柏地区キャンパス</span></h4>
+        <p class="cglead">지바현 가시와시 가시와노하에 있습니다.
+          예전에 미타카 · 롯폰기 · 다나시 등에 흩어져 있던 부설 연구소들을 한데 모아 새로 연 캠퍼스로,
+          <b>대학원과 연구 중심</b>입니다.</p>
+        <div class="sub">
+          <div class="sc"><b>가시와 캠퍼스</b>
+            <p><span>연구과</span>신영역창성과학 연구과, 이학계 · 공학계 연구과 (일부)</p>
+            <p><span>시설</span>우주선연구소, 물성연구소, 대기해양연구소, 국제고등연구소(카블리 IPMU), 생산기술연구소</p>
+            <p><span>센터</span>환경안전 · 인공물공학 · 공간정보과학 · 고온플라즈마 · 기후시스템 · 정보기반 연구센터, 고령사회종합연구기구, 가시와도서관 등</p>
+          </div>
+          <div class="sc"><b>가시와 II 캠퍼스</b>
+            <p><span>시설</span>신영역창성과학 연구과 부속 생애스포츠건강과학연구센터</p>
+          </div>
+          <div class="sc"><b>가시와노하역앞 캠퍼스</b>
+            <p><span>시설</span>산학제휴시설, 국제연구지원시설 등</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </div>
   </div>
 </section>
@@ -761,6 +933,17 @@
         <div class="cnote">각 소모임의 소개와 연락처는 <a href="https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05" target="_blank" rel="noopener">기존 홈페이지 소모임 →</a> 에서 확인하실 수 있습니다.</div>
       </div>
 
+      <div class="cbox wide usage" id="usage">
+        <h3>홈페이지 이용안내</h3>
+        <p style="margin-bottom:14px;">이 홈페이지는 <b>실명 회원등록</b>을 기본으로 합니다.
+          가입하지 않으시면 보실 수 있는 정보가 크게 제한됩니다. 등급은 네 단계입니다.</p>
+        <ol>
+          <li><b>준회원</b> — 기업 관계자, 유학 준비생</li>
+          <li><b>졸업생</b> — 도쿄대학에서 활동하셨던 연구생 · 연구원 · 교환교수와 그 가족</li>
+          <li><b>정회원</b> — 연구생, 학부 · 석사 · 박사과정, 졸업생, 연구원, 교환교수와 그 가족</li>
+          <li><b>운영진</b> — 현 도쿄대학 한국인학생회 임원</li>
+        </ol>
+      </div>
       <div class="cbox wide" id="rules">
         <h3>회칙 <span style="font-weight:400;font-size:14px;color:#8a9a90;">2009년 2월 15일 시행 · 전 7장 11조</span></h3>
         <ul>
@@ -805,6 +988,15 @@
       도쿄대학 한국인학생회는 <b>기업과 개인 여러분의 후원</b>으로 운영됩니다.<br>
       후원해 주시는 모든 분들께 진심으로 감사드리며, 그 마음이 유학생들의 배움과 만남으로 이어지고 있습니다.
     </p>
+
+    <div class="spo-list">
+      <h3>함께해 주신 후원단체</h3>
+      <div class="spo-orgs">
+        <span>삼성디스플레이</span>
+        <span>재일한국과학기술자협회</span>
+        <span>LG Display</span>
+      </div>
+    </div>
 
     <div class="spo-grid">
       <div class="spo-card">
