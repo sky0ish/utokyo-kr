@@ -443,6 +443,12 @@
   .maphead .jump a{font-size:12.5px;color:#2a6b40;background:#e9f2eb;border-radius:100px;
     padding:5px 13px;text-decoration:none;transition:.15s;}
   .maphead .jump a:hover{background:#d7e9dc;}
+
+  /* 학생회 마크 — 제목 위에 왕관처럼 */
+  .sb-tx .ybmark{display:block;height:34px;width:auto;margin:0 0 9px;
+    filter:brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,.45));
+    opacity:.95;}
+  @media (max-width:700px){ .sb-tx .ybmark{height:24px;margin-bottom:6px;} }
 </style>
 </head>
 <body>
@@ -900,7 +906,10 @@
 <section class="block tint hasbanner" id="council">
   <div class="secbanner center">
     <img src="../YB/images/yb_yasuda.jpg" alt="도쿄대학 야스다강당(安田講堂)">
-    <div class="sb-tx"><span class="en">Student Council</span><h2>학생회</h2></div>
+    <div class="sb-tx">
+      <img class="ybmark" src="/YB/images/yb_mark.png" alt="도쿄대학 한국인학생회 마크">
+      <span class="en">Student Council</span><h2>학생회</h2>
+    </div>
     <div class="sb-cap">安田講堂</div>
   </div>
   <div class="container">
