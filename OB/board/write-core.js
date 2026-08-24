@@ -94,14 +94,14 @@ export async function initWrite(ORG) {
         renderTags();
       }));
     }
-    const PUBLIC_CATS = ORG === "YB" ? ["notice", "jobs", "parttime"] : ["notice", "promo"];
+    const PUBLIC_CATS = ORG === "YB" ? ["notice", "jobs", "parttime"] : ["notice", "promo", "condolence"];
     function setCat(v) {
       category = v;
       catPick.querySelectorAll("a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
       if (!(TAGS[category] || []).includes(headTag)) headTag = "";
       renderTags();
       const vi = document.getElementById("visInfo");
-      if (vi) vi.value = PUBLIC_CATS.includes(category) ? "전체 공개 (공지사항·홍보)" : "회원 전용";
+      if (vi) vi.value = PUBLIC_CATS.includes(category) ? "전체 공개 (공지사항·홍보·경조사)" : "회원 전용";
     }
     catPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => { e.preventDefault(); setCat(a.dataset.v); }));
 

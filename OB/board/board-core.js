@@ -104,7 +104,7 @@ export async function initBoard(ORG) {
   setBoardTitle(cat);   // 주소로 들어온 분류 기준 (비회원 안내로 바뀌기 전의 값)
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
-  const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다
+  const PUBLIC_CATS = ["notice", "condolence"];   // 공지사항과 경조사는 누구나 볼 수 있습니다
   let memberOnlyBlocked = null;
   const user = await currentUser();
   if (user) {
