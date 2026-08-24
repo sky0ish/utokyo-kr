@@ -450,6 +450,12 @@
     filter:brightness(0) invert(1) drop-shadow(0 1px 5px rgba(0,0,0,.5));
     opacity:.92;}
   @media (max-width:700px){ .sb-tx .ybmark{width:30px;height:15px;margin-bottom:4px;} }
+
+  /* 이름 오른쪽의 학생회 마크 */
+  .ksamark{display:inline-block;width:40px;height:20px;margin-left:11px;vertical-align:-2px;
+    background:url('/YB/images/yb_mark.png') left center/contain no-repeat;
+    filter:brightness(0) invert(1);opacity:.9;}
+  @media (max-width:700px){ .ksamark{width:30px;height:15px;margin-left:8px;} }
 </style>
 </head>
 <body>
@@ -479,7 +485,7 @@
           </g>
         </svg>
       </span>
-      <span class="name">도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small></span>
+      <span class="name">도쿄대학 한국인학생회<span class="ksamark" role="img" aria-label="도쿄대학 한국인학생회 마크"></span><small>東京大学韓国人学生会 · UT-KSA</small></span>
     </a>
     <nav class="gnb">
       <div class="dd">
