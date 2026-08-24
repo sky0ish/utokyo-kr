@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/lib/board.css?v=53">
+<link rel="stylesheet" href="/OB/board/board.css?v=53">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -420,7 +420,7 @@ async function autoMerge(all) {
   }
   btn.disabled = false; btn.textContent = "⟳ 새 사진 자동 정리";
   if (err) {
-    alert("정리 실패: " + err.message + " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
+    alert("정리 실패: " + err.message + " — OB/board/sql/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
     return;
   }
   location.reload();
@@ -484,7 +484,7 @@ function enableMerge(list) {
     mvGo.disabled = false; mvGo.textContent = "선택한 앨범 옮기기";
     if (err) {
       alert("옮기기 실패: " + err.message +
-            " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
+            " — OB/board/sql/gallery_setup.sql 을 실행하셨는지 확인해주세요.");
       return;
     }
     location.href = "gallery.html?cat=" + newCat;

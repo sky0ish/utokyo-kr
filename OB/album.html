@@ -405,7 +405,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
           const err = r1.error || r2.error || r3.error;
           if (err) {
             rmsg.textContent = "저장 실패: " + err.message +
-              " — board/gallery_setup.sql 을 실행하셨는지 확인해주세요.";
+              " — OB/board/sql/gallery_setup.sql 을 실행하셨는지 확인해주세요.";
             return;
           }
           document.getElementById("atitle").textContent = t;
@@ -450,7 +450,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
         covBtn.disabled = false;
         if (error) {
           alert("대표사진 지정 실패: " + error.message +
-                " — board/gallery_cover.sql 을 실행하셨는지 확인해주세요.");
+                " — OB/board/sql/gallery_cover.sql 을 실행하셨는지 확인해주세요.");
           return;
         }
         album.coverKey = p.key;
@@ -475,7 +475,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
             { onConflict: "photo_key" });
           if (error) {
             return /gallery_overrides/.test(error.message)
-              ? "기본 제공 사진을 감추려면 board/gallery_setup.sql 을 Supabase에서 한 번 실행해야 합니다."
+              ? "기본 제공 사진을 감추려면 OB/board/sql/gallery_setup.sql 을 Supabase에서 한 번 실행해야 합니다."
               : "숨김 실패: " + error.message;
           }
         }

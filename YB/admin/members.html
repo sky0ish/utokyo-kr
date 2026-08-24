@@ -309,7 +309,7 @@ async function start() {
     if (error) {
       msg.className = "msg err";
       msg.textContent = "자동 확인 실패: " + error.message +
-        " — board/roster_import.sql 과 board/grade_autoset.sql 을 실행하셨는지 확인해주세요.";
+        " — YB/board/sql/roster_import.sql 과 YB/board/sql/grade_autoset.sql 을 실행하셨는지 확인해주세요.";
       return;
     }
     const line = (data || []).map(x => `${x["등급"]} ${x["인원"]}명`).join(" · ");
@@ -438,7 +438,7 @@ async function start() {
       sel.disabled = false;
       if (error) {
         alert("등급 변경 실패: " + error.message +
-              " — board/grade_setup.sql 을 실행하셨는지 확인해주세요.");
+              " — YB/board/sql/grade_setup.sql 을 실행하셨는지 확인해주세요.");
         sel.value = r.grade || "guest";
         return;
       }
@@ -462,7 +462,7 @@ async function start() {
       if (error) {
         b.textContent = "회원여부 확인";
         alert("확인 실패: " + error.message +
-              " — board/roster_import.sql 을 실행하셨는지 확인해주세요.");
+              " — YB/board/sql/roster_import.sql 을 실행하셨는지 확인해주세요.");
         return;
       }
       b.textContent = "확인";
@@ -500,7 +500,7 @@ async function start() {
       b.disabled = false;
       if (error) {
         alert("바꾸지 못했습니다: " + error.message +
-              " — board/make_admin.sql 을 실행하셨는지 확인해주세요.");
+              " — YB/board/sql/make_admin.sql 을 실행하셨는지 확인해주세요.");
         return;
       }
       r.is_admin = on;

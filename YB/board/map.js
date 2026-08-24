@@ -1,7 +1,7 @@
 // ─── MAP — 도쿄대학 · 도쿄맛집 · 도쿄까페 · 추억핫플 · 건축물 ────
 // 화면 파일은 OB/map.html · YB/map.html 로 따로 두고,
 // 지도 내용은 이 파일 하나를 함께 씁니다. 양쪽에 같은 장소가 보입니다.
-import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 
 export const CATS = [
   ["utokyo", "도쿄대학"],
@@ -1099,7 +1099,7 @@ export async function initMap(org = "OB", mountId = "mapapp") {
       const m = error.message || "";
       msg.textContent =
         /schema cache|does not exist/i.test(m)
-          ? "지도 기능이 아직 켜지지 않았습니다 — 운영진이 board/map_places.sql 을 한 번 실행해주세요."
+          ? "지도 기능이 아직 켜지지 않았습니다 — 운영진이 YB/board/sql/map_places.sql 을 한 번 실행해주세요."
         : /row-level security|policy/i.test(m)
           ? "승인된 회원만 올릴 수 있습니다. 운영진 승인 후 다시 시도해주세요."
         : "올리기 실패: " + m;

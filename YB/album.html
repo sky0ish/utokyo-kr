@@ -376,7 +376,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
         covBtn.disabled = false;
         if (error) {
           alert("대표사진 지정 실패: " + error.message +
-                " — board/gallery_cover.sql 을 실행하셨는지 확인해주세요.");
+                " — YB/board/sql/gallery_cover.sql 을 실행하셨는지 확인해주세요.");
           return;
         }
         album.coverKey = p.key;

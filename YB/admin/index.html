@@ -319,7 +319,7 @@ if (!user) {
     lg.textContent = "옮길 글을 읽는 중…\n";
     let rows;
     try {
-      rows = await fetch("/board/ksa_legacy.json?" + Date.now()).then(r => r.json());
+      rows = await fetch("/YB/board/sql/ksa_legacy.json?" + Date.now()).then(r => r.json());
     } catch (e) {
       lg.textContent += "자료를 읽지 못했습니다: " + e.message;
       b.disabled = false; return;
