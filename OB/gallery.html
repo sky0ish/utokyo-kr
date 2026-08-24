@@ -143,9 +143,10 @@
 
   /* ── 갤러리 배너 : 노을 실루엣 (좌우가 다 들어오게, 위아래만 잘라냄) ── */
   .banner{
-    background:linear-gradient(rgba(10,16,28,.22),rgba(10,16,28,.38)),
-               url('/OB/images/ob_gallery_sunset2.jpg?v=2') center/contain no-repeat, #101a26;
-    aspect-ratio:2174/723;max-height:300px;min-height:120px;
+    background:linear-gradient(rgba(10,16,28,.22),rgba(10,16,28,.40)),
+               url('/OB/images/ob_gallery_sunset2.jpg?v=3') center top/min(100%, 1500px) auto no-repeat,
+               #101a26;
+    height:clamp(128px, 22vw, 330px);
     display:flex;flex-direction:column;justify-content:center;
   }
   @media (max-width:680px){ .banner{min-height:112px;} }
