@@ -78,8 +78,6 @@ const NAV = {
           <a href="/YB/board.html?cat=jobs">취업정보</a>
           <a href="/YB/board.html?cat=parttime">아르바이트</a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
-          <a href="/YB/board.html?cat=club">소모임</a>
-          <a href="/YB/board.html?cat=history">활동 이력</a>
           <a href="/YB/board.html?cat=mentoring">멘토멘티</a>
         </div>
       </div>
