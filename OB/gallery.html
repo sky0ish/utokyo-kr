@@ -131,12 +131,17 @@
 
   /* ── 갤러리 배너 : 노을 실루엣 (좌우가 다 들어오게, 위아래만 잘라냄) ── */
   .banner{
-    background:linear-gradient(rgba(10,16,28,.20),rgba(10,16,28,.38)),
-               url('/OB/images/ob_gallery_sunset2.jpg?v=4') center 38%/cover no-repeat,
+    /* 폭에 딱 맞춰 깔아 좌우가 끊기지도, 옆으로 확대되지도 않게 한다.
+       (cover 로 하면 좁은 화면에서 옆으로 당겨져 사람 다리가 잘렸습니다) */
+    background:linear-gradient(rgba(8,14,24,.42),rgba(8,14,24,.10) 46%,rgba(8,14,24,.22)),
+               url('/OB/images/ob_gallery_sunset2.jpg?v=5') center 30%/100% auto no-repeat,
                #101a26;
-    height:clamp(140px, 19vw, 300px);
-    display:flex;flex-direction:column;justify-content:center;
+    height:clamp(150px, 26vw, 420px);
+    display:flex;flex-direction:column;justify-content:flex-start;
   }
+  /* 글자는 사람과 겹치지 않게 위쪽에 */
+  .banner .binner{padding-top:18px;padding-bottom:0;}
+  @media (max-width:680px){ .banner .binner{padding-top:12px;} }
   @media (max-width:680px){ .banner{min-height:112px;} }
 </style>
 </head>
