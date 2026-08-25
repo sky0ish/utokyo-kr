@@ -13,6 +13,7 @@
 !/supabase/
 !/common/
 !/fonts/
+!/.github/
 
 # 페이스북 이전 글(개인 이름 포함)은 공개 저장소에 올리지 않음
 board/fb_import_*.sql
