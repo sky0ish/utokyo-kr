@@ -47,7 +47,7 @@
     <div class="msg" id="msg"></div>
   </form>
 
-  <button class="primary" id="goSite" style="display:none;background:#8a6d2b;" onclick="location.href='../OB/index.html'">홈페이지로 이동</button>
+  <button class="primary" id="goSite" style="display:none;background:#8a6d2b;">홈페이지로 이동</button>
   <button class="ghost" id="logoutBtn">로그아웃</button>
   <div class="back" style="text-align:center;"><a href="/index.html">← 통합 홈으로</a></div>
 </div>
@@ -77,7 +77,15 @@ if (!user) {
       ? '<span class="badge ok">승인 완료 — 정회원</span>'
       : '<span class="badge wait">운영진 승인 대기중</span>';
     document.getElementById("editForm").style.display = "block";
-    document.getElementById("goSite").style.display = "block";
+    // 회원 구분에 맞는 홈페이지로 (학생회 회원이면 학생회 홈으로)
+    {
+      const go = document.getElementById("goSite");
+      const home = (p.member_type === "YB") ? "/YB/index.html" : "/OB/index.html";
+      go.textContent = (p.member_type === "YB")
+        ? "도쿄대학 한국인학생회 홈페이지로" : "재한 도쿄대학 총동문회 홈페이지로";
+      go.addEventListener("click", () => { location.href = home; });
+      go.style.display = "block";
+    }
 
     document.getElementById("editForm").addEventListener("submit", async (e) => {
       e.preventDefault();
