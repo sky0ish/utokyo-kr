@@ -1,0 +1,281 @@
+// ═══════════════════════════════════════════════════════════
+//  일정 달력 — 게시판 글에서 날짜를 스스로 찾아 달력에 얹습니다
+//
+//   · 소모임 · 경조사 · 포럼/세미나 · 멘토멘티 · 총회 글만 봅니다.
+//   · 그 글의 제목이나 본문에 「2026년 3월 15일」, 「3월 15일(토) 18:30」,
+//     「2026-03-15」 같은 날짜가 있으면 그날 일정으로 얹습니다.
+//   · 따로 적어 넣는 곳은 없습니다. 글만 올리면 알아서 실립니다.
+//
+//   쓰는 법:  initCalendar("#calFull", { mode: "full" });
+//             initCalendar("#calMini", { mode: "mini", link: "#join" });
+// ═══════════════════════════════════════════════════════════
+import { sb } from "/OB/auth/auth.js";
+
+const ORG = "OB";
+
+const CATNAME = {
+  notice: "공지", free: "자유", club: "소모임", mentoring: "멘토멘티",
+  promo: "홍보·채용", condolence: "경조사", forum: "포럼·세미나",
+  jobs: "구인", faculty: "단과대별", news: "소식", market: "장터",
+};
+
+// ── 달력에 실을 갈래 ──
+//   소모임 · 경조사 · 포럼/세미나 · 멘토멘티 · 공지(총회 등)
+//   자유·구인·장터처럼 모임과 관계없는 갈래는 아예 보지 않습니다.
+const MEET_CATS = ["club", "condolence", "forum", "mentoring", "notice"];
+
+// 공지는 모임 아닌 글도 많으므로 아래 말이 제목에 있을 때만 봅니다
+const MEET_WORDS = [
+  "총회", "모임", "소모임", "세미나", "포럼", "심포지엄", "간담회", "강연", "특강",
+  "워크숍", "워크샵", "설명회", "발표회", "오리엔테이션", "행사", "월례회", "정기회",
+  "등산", "산행", "골프", "라운딩", "답사", "야유회", "체육대회",
+  "송년회", "신년회", "환영회", "번개", "회식", "만찬", "오찬", "MT",
+  "멘토", "멘티", "결혼", "혼례", "화혼", "부고", "발인", "장례", "빈소", "추도", "위로연",
+];
+
+// 이 말이 곁에 있으면 「행사 날짜」로 봅니다
+const EVENT_WORDS = [
+  "일시", "날짜", "일정", "때", "개최", "열립니다", "열린다", "진행",
+  "모임", "세미나", "포럼", "총회", "행사", "강연", "특강", "심포지엄",
+  "워크숍", "워크샵", "발표회", "간담회", "설명회", "오리엔테이션",
+  "신청", "접수", "마감", "참가", "참석", "등록",
+  "라운딩", "골프", "등산", "산행", "답사", "미팅", "회식", "만찬", "오찬",
+  "환영", "송년", "신년", "정기", "월례", "번개", "MT",
+  "모입니다", "모여", "뵙", "예정", "개최일", "출발", "집합",
+  "발인", "빈소", "장례", "영결", "추도", "부고", "訃告",
+  "결혼", "혼례", "화혼", "예식", "청첩",
+];
+
+// 날짜로 보면 안 되는 것들 (전화번호·금액·회차 등)
+const NOT_DATE = /(원|명|회|기|호|번|%|℃)$/;
+
+const two = (n) => (n < 10 ? "0" + n : "" + n);
+const key = (d) => d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate());
+const esc = (s) => (s || "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/** 「18:30」「오후 6시 30분」「18시」를 찾아 "18:30" 꼴로 */
+function findTime(tail) {
+  let m = tail.match(/^[^\d]{0,12}?(\d{1,2})\s*:\s*(\d{2})/);
+  if (m) return two(+m[1]) + ":" + m[2];
+  m = tail.match(/^[^\d]{0,12}?(오전|오후|아침|점심|저녁|밤)?\s*(\d{1,2})\s*시\s*(\d{1,2})?\s*분?/);
+  if (m) {
+    let h = +m[2];
+    const pm = m[1] === "오후" || m[1] === "저녁" || m[1] === "밤" || m[1] === "점심";
+    if (pm && h < 12) h += 12;
+    if ((m[1] === "오전" || m[1] === "아침") && h === 12) h = 0;
+    return two(h) + ":" + two(+(m[3] || 0));
+  }
+  return "";
+}
+
+/**
+ * 글 한 편에서 날짜를 찾습니다.
+ * @param {string} title  제목 — 여기 있는 날짜는 무조건 일정으로 봅니다
+ * @param {string} body   본문 — 행사 관련 말이 곁에 있을 때만 봅니다
+ * @param {Date}   base   글을 쓴 날 (연도가 없는 「3월 15일」의 해를 정할 때 씁니다)
+ */
+export function findDates(title, body, base) {
+  const out = [];
+  const seen = new Set();
+  const baseY = base.getFullYear();
+
+  // 제목이 이미 모임을 알리는 글이면 본문 줄도 너그럽게 봅니다
+  const titleHot = EVENT_WORDS.some((w) => (title || "").indexOf(w) > -1);
+
+  const scan = (text, always) => {
+    if (!text) return;
+    // 한 줄씩 보아야 「일시:」 같은 말이 곁에 있는지 알 수 있습니다
+    text.split(/\n+/).forEach((line) => {
+      const hot = always || titleHot || EVENT_WORDS.some((w) => line.indexOf(w) > -1);
+      if (!hot) return;
+
+      // ① 2026년 3월 15일 / 2026-03-15 / 2026.3.15 / 2026/3/15
+      const RE_FULL = /(20\d{2})\s*[년.\-\/]\s*(\d{1,2})\s*[월.\-\/]\s*(\d{1,2})\s*일?/g;
+      // ② 3월 15일 / 3月15日
+      const RE_MD = /(?:^|[^\d])(\d{1,2})\s*[월月]\s*(\d{1,2})\s*[일日]/g;
+
+      let m;
+      while ((m = RE_FULL.exec(line))) {
+        push(+m[1], +m[2], +m[3], line.slice(m.index + m[0].length), line);
+      }
+      while ((m = RE_MD.exec(line))) {
+        let y = baseY;
+        // 글 쓴 날보다 3달 넘게 앞선 날짜라면 이듬해로 봅니다
+        const cand = new Date(y, +m[1] - 1, +m[2]);
+        if (cand.getTime() < base.getTime() - 92 * 864e5) y += 1;
+        push(y, +m[1], +m[2], line.slice(m.index + m[0].length), line);
+      }
+    });
+  };
+
+  function push(y, mo, d, tail, line) {
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return;
+    if (NOT_DATE.test(tail.trim().slice(0, 2))) return;
+    const dt = new Date(y, mo - 1, d);
+    if (dt.getMonth() !== mo - 1) return;              // 2월 30일 같은 것
+    const k = key(dt);
+    if (seen.has(k)) return;
+    seen.add(k);
+    out.push({ key: k, date: dt, time: findTime(tail), line: line.trim().slice(0, 90) });
+  }
+
+  scan(title, true);
+  scan(body, false);
+  return out.slice(0, 4);                              // 한 글에서 넷까지만
+}
+
+/** 게시판 글을 읽어 일정 목록을 만듭니다 */
+export async function loadEvents() {
+  const since = new Date(Date.now() - 400 * 864e5).toISOString();
+  const { data, error } = await sb.from("posts")
+    .select("id,title,category,content,created_at")
+    .eq("org", ORG).gte("created_at", since)
+    .order("created_at", { ascending: false }).limit(250);
+  if (error || !data) return { events: [], error };
+
+  const lo = Date.now() - 400 * 864e5, hi = Date.now() + 730 * 864e5;
+  const events = [];
+  data.forEach((p) => {
+    // 주요 모임 갈래만 — 공지는 모임을 알리는 글만
+    if (MEET_CATS.indexOf(p.category) === -1) return;
+    if (p.category === "notice" &&
+        !MEET_WORDS.some((w) => (p.title || "").indexOf(w) > -1)) return;
+    const base = new Date(p.created_at);
+    findDates(p.title, p.content, base).forEach((h) => {
+      if (h.date.getTime() < lo || h.date.getTime() > hi) return;
+      events.push({
+        key: h.key, date: h.date, time: h.time,
+        title: p.title, cat: p.category, id: p.id, line: h.line,
+      });
+    });
+  });
+  events.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0) ||
+                        (a.time < b.time ? -1 : 1));
+  return { events, error: null };
+}
+
+/** 날짜별로 묶기 */
+function byDay(events) {
+  const m = new Map();
+  events.forEach((e) => {
+    if (!m.has(e.key)) m.set(e.key, []);
+    m.get(e.key).push(e);
+  });
+  return m;
+}
+
+const WD = ["일", "월", "화", "수", "목", "금", "토"];
+
+function monthGrid(year, month, map, todayKey, mode) {
+  const first = new Date(year, month, 1);
+  const start = new Date(year, month, 1 - first.getDay());
+  let html = '<div class="cal-wd">' + WD.map((w, i) =>
+    `<span class="${i === 0 ? "sun" : i === 6 ? "sat" : ""}">${w}</span>`).join("") + "</div>";
+  html += '<div class="cal-days">';
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    if (i >= 35 && d.getMonth() !== month) break;         // 마지막 줄이 다 남의 달이면 접습니다
+    const k = key(d);
+    const ev = map.get(k) || [];
+    const cls = ["cd"];
+    if (d.getMonth() !== month) cls.push("off");
+    if (k === todayKey) cls.push("today");
+    if (ev.length) cls.push("has");
+    if (d.getDay() === 0) cls.push("sun");
+    if (d.getDay() === 6) cls.push("sat");
+    html += `<div class="${cls.join(" ")}" data-k="${k}"${ev.length ? ' role="button" tabindex="0"' : ""}>` +
+            `<span class="n">${d.getDate()}</span>`;
+    if (ev.length) {
+      html += mode === "full"
+        ? '<span class="chips">' + ev.slice(0, 2).map((e) =>
+            `<i class="chip c-${esc(e.cat)}">${esc(e.title)}</i>`).join("") +
+          (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "") + "</span>"
+        : `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
+    }
+    html += "</div>";
+  }
+  return html + "</div>";
+}
+
+function evLine(e) {
+  return `<a class="cev" href="/OB/post.html?id=${e.id}">
+    <span class="cev-d">${e.key.slice(5).replace("-", ".")}${e.time ? ` <b>${e.time}</b>` : ""}</span>
+    <span class="cev-t">${esc(e.title)}</span>
+    <span class="cev-c">${esc(CATNAME[e.cat] || e.cat)}</span></a>`;
+}
+
+/**
+ * 달력을 그립니다.
+ * @param {string} sel    넣을 자리 (선택자)
+ * @param {object} opts   { mode: "full" | "mini", link: 자세히 보기 주소 }
+ */
+export async function initCalendar(sel, opts) {
+  const box = document.querySelector(sel);
+  if (!box) return;
+  const mode = (opts && opts.mode) || "full";
+  box.classList.add("cal", mode === "mini" ? "cal-mini" : "cal-full");
+  box.innerHTML = '<div class="cal-loading">일정을 불러오는 중…</div>';
+
+  const { events } = await loadEvents();
+  const map = byDay(events);
+  const today = new Date();
+  const todayKey = key(today);
+  let y = today.getFullYear(), mo = today.getMonth(), picked = "";
+
+  // 이번 달에 아무것도 없으면 앞으로 가장 가까운 일정이 있는 달을 보여줍니다
+  const ahead = events.filter((e) => e.key >= todayKey);
+  if (ahead.length && !events.some((e) => e.key.slice(0, 7) === todayKey.slice(0, 7))) {
+    y = ahead[0].date.getFullYear(); mo = ahead[0].date.getMonth();
+  }
+
+  function draw() {
+    const monTitle = `${y}년 ${mo + 1}월`;
+    const upcoming = events.filter((e) => e.key >= todayKey).slice(0, mode === "mini" ? 3 : 6);
+    const dayList = picked ? (map.get(picked) || []) : [];
+
+    box.innerHTML =
+      `<div class="cal-head">
+         <button class="cal-nav" data-d="-1" title="지난달">‹</button>
+         <b class="cal-title">${monTitle}</b>
+         <button class="cal-nav" data-d="1" title="다음달">›</button>
+         <button class="cal-now" title="이번 달로">오늘</button>
+         ${opts && opts.link ? `<a class="cal-more" href="${opts.link}">전체 일정 +</a>` : ""}
+       </div>` +
+      monthGrid(y, mo, map, todayKey, mode) +
+      (picked
+        ? `<div class="cal-list">
+             <div class="cal-lh">${picked.replace(/-/g, ".")} 일정 ${dayList.length}건
+               <button class="cal-x" title="닫기">✕</button></div>
+             ${dayList.map(evLine).join("") || '<div class="cal-none">이 날은 일정이 없습니다.</div>'}
+           </div>`
+        : `<div class="cal-list">
+             <div class="cal-lh">다가오는 일정</div>
+             ${upcoming.map(evLine).join("") ||
+               '<div class="cal-none">' + (events.length
+                  ? "앞으로 잡힌 일정이 아직 없습니다."
+                  : "게시판에서 찾은 모임 일정이 아직 없습니다.<br>" +
+                    '<a href="/OB/auth/login.html">로그인</a>하시면 회원 전용 글의 일정까지 보실 수 있습니다.') + "</div>"}
+           </div>`);
+
+    box.querySelectorAll(".cal-nav").forEach((b) => b.addEventListener("click", () => {
+      mo += +b.dataset.d;
+      if (mo < 0) { mo = 11; y--; }
+      if (mo > 11) { mo = 0; y++; }
+      picked = ""; draw();
+    }));
+    const now = box.querySelector(".cal-now");
+    if (now) now.addEventListener("click", () => {
+      y = today.getFullYear(); mo = today.getMonth(); picked = ""; draw();
+    });
+    const x = box.querySelector(".cal-x");
+    if (x) x.addEventListener("click", () => { picked = ""; draw(); });
+
+    box.querySelectorAll(".cd.has").forEach((c) => {
+      const go = () => { picked = c.dataset.k; draw(); };
+      c.addEventListener("click", go);
+      c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+  }
+  draw();
+}
