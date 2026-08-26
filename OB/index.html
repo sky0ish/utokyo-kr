@@ -465,10 +465,10 @@
   .cal-more{margin-left:auto;font-size:12px;color:#a8a291;letter-spacing:.08em;}
   .cal-more:hover{color:var(--gold);}
 
-  .cal-wd{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:1px;}
+  .cal-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;margin-bottom:1px;}
   .cal-wd span{text-align:center;font-size:11.5px;color:#a8a291;padding:4px 0;letter-spacing:.05em;}
   .cal-wd .sun{color:#c07b7b;} .cal-wd .sat{color:#7b8fc0;}
-  .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;
+  .cal-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;
     background:var(--cal-line);border:1px solid var(--cal-line);border-radius:4px;overflow:hidden;}
   .cd{background:#fff;min-height:34px;padding:4px 5px 5px;position:relative;}
   .cd .n{font-size:12.5px;color:var(--cal-ink);}
@@ -478,24 +478,13 @@
   .cd.today .n{font-weight:700;color:#8a6d2b;}
   .cd.has{cursor:pointer;} .cd.has:hover{background:#f8f4ea;}
 
-  /* 작은 달력 — 점만 */
-  .cal-mini .cd{min-height:30px;text-align:center;padding:4px 2px;}
-  .cal-mini .cd .dot{display:block;margin:2px auto 0;width:5px;height:5px;border-radius:50%;
+  /* 날짜칸 — 점만 찍습니다 */
+  .cd{text-align:center;padding:3px 2px;min-height:25px;}
+  .cd .n{font-size:11.5px;}
+  .cd .dot{display:block;margin:2px auto 0;width:5px;height:5px;border-radius:50%;
     background:var(--gold);font-size:9px;line-height:5px;color:transparent;}
-  .cal-mini .cd .dot:not(:empty){width:auto;height:auto;border-radius:8px;padding:0 5px;
+  .cd .dot:not(:empty){width:auto;height:auto;border-radius:8px;padding:0 5px;
     line-height:13px;color:#fff;font-size:9.5px;}
-
-  /* 큰 달력 — 제목 조각 */
-  .cal-full .cd{min-height:74px;}
-  .cal-full .chips{display:block;margin-top:3px;}
-  .cal-full .chip{display:block;font-style:normal;font-size:10.5px;line-height:1.45;
-    padding:1px 4px;margin-top:2px;border-radius:2px;background:#f2ede0;color:#6b5a2c;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cal-full .chip.c-club{background:#eaf3ec;color:#33633f;}
-  .cal-full .chip.c-forum{background:#eef1f8;color:#3d4a7a;}
-  .cal-full .chip.c-condolence{background:#f2eef3;color:#5c4a63;}
-  .cal-full .chip.c-mentoring{background:#f7f0e6;color:#7a5a2c;}
-  .cal-full .chip.more{background:none;color:#a8a291;padding-left:0;}
 
   .cal-list{margin-top:12px;}
   .cal-lh{display:flex;align-items:center;font-size:12px;color:#a8a291;letter-spacing:.08em;
@@ -510,20 +499,37 @@
   .cev-d b{font-weight:500;color:#a8a291;}
   .cev-t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cev-c{flex:none;font-size:11px;color:#a8a291;}
+  .cev-card{display:block;padding:11px 12px;margin-top:8px;border:1px solid var(--cal-line);
+    border-radius:4px;background:#fdfcfa;border-bottom:1px solid var(--cal-line);}
+  .cev-card:hover{border-color:var(--gold);background:#fdf9f0;}
+  .cev-card .cc-top b{display:block;font-size:13.5px;font-weight:600;color:var(--cal-ink);line-height:1.5;}
+  .cev-card:hover .cc-top b{color:#8a6d2b;}
+  .cev-card .cc-meta{display:block;margin-top:3px;font-size:11.5px;color:#a8a291;}
+  .cev-card .cc-meta em{font-style:normal;color:#8a6d2b;font-weight:600;}
+  .cev-card .cc-line{display:block;margin-top:6px;font-size:12px;color:#6f6a5c;line-height:1.65;
+    padding-left:8px;border-left:2px solid #ece6d8;}
+  .cev-card .cc-go{display:block;margin-top:7px;font-size:11.5px;color:#b0a98f;letter-spacing:.04em;}
+  .cev-card:hover .cc-go{color:var(--gold);}
+  .cal-side .cev-card{padding:10px 11px;}
   .cal-none{padding:18px 2px;font-size:13px;color:#a8a291;text-align:center;line-height:1.7;}
   .cal-none a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
 
-  /* 참여마당 안의 큰 달력 */
-  .cal-panel{background:#fff;border:1px solid var(--line);border-radius:6px;
-    padding:20px 22px 22px;margin-bottom:26px;}
-  .cal-panel .cal-cap{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;}
-  .cal-panel .cal-cap h3{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;
-    font-size:19px;color:var(--navy);}
-  .cal-panel .cal-cap small{font-size:12px;color:#a8a291;}
-  @media(max-width:760px){
-    .cal-full .cd{min-height:56px;}
-    .cal-full .chip{font-size:9.5px;}
-    .cal-panel{padding:16px 14px 18px;}
+  /* 참여마당 — 제목 오른쪽 빈자리에 놓는 작은 달력 */
+  #join .sec-head{align-items:flex-start;gap:34px;}
+  .cal-side{flex:0 0 330px;max-width:330px;background:#fff;border:1px solid var(--line);
+    border-radius:6px;padding:13px 15px 14px;}
+  .cal-side .cal-cap{display:flex;align-items:baseline;gap:8px;margin-bottom:9px;}
+  .cal-side .cal-cap h3{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;
+    font-size:15px;color:var(--navy);}
+  .cal-side .cal-cap small{font-size:11px;color:#a8a291;}
+  .cal-side .cal-head{padding:0 0 8px;}
+  .cal-side .cal-title{font-size:14px;min-width:78px;}
+  .cal-side .cal-list{margin-top:9px;}
+  .cal-side .cev{padding:7px 2px;font-size:12.5px;}
+  .cal-side .cev-c{display:none;}
+  @media(max-width:860px){
+    #join .sec-head{flex-direction:column;gap:20px;}
+    .cal-side{flex:1 1 auto;max-width:none;width:100%;}
   }
 </style>
 </head>
@@ -700,10 +706,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=69b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=69b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=69b3b5b07" alt="단과대모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=69b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=70b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=70b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=70b3b5b07" alt="단과대모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=70b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -1271,14 +1277,10 @@
   <div class="container">
     <div class="sec-head">
       <div class="t"><span class="en">Participation</span><h2>참여마당</h2></div>
-    </div>
-
-    <div class="cal-panel">
-      <div class="cal-cap">
-        <h3>일정</h3>
-        <small>게시판의 총회 · 소모임 · 포럼/세미나 · 멘토멘티 · 경조사 글에서 날짜를 찾아 모았습니다</small>
+      <div class="cal-side">
+        <div class="cal-cap"><h3>일정</h3><small>모임 글에서 모은 날짜</small></div>
+        <div id="calFull"></div>
       </div>
-      <div id="calFull"></div>
     </div>
 
     <div class="join-grid">
@@ -1404,31 +1406,31 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=69b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=70b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=69b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=70b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=69b3b5b07" alt="단과대모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=70b3b5b07" alt="단과대모임" loading="lazy"></span>
         <span class="cap">단과대모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=69b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=70b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=69b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=70b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=69b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=70b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=etc">
-        <span class="ph"><img src="../images/gallery/etc/cover_t.jpg?v=69b3b5b07" alt="기타" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/etc/cover_t.jpg?v=70b3b5b07" alt="기타" loading="lazy"></span>
         <span class="cap">기타<small>안내장 · 기록물</small></span>
       </a>
     </div>
@@ -1538,10 +1540,10 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=69";
+import { initCalendar } from "/OB/board/calendar.js?v=70";
 
 // ─── 일정 달력 ───
-initCalendar("#calFull", { mode: "full" });
+initCalendar("#calFull", { mode: "mini" });
 initCalendar("#calMini", { mode: "mini", link: "#join" });
 
 // ─── 모음판: 최근 게시글 ───

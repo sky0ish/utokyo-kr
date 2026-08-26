@@ -4,6 +4,8 @@
 //   · 소모임 · 경조사 · 포럼/세미나 · 멘토멘티 · 총회 글만 봅니다.
 //   · 그 글의 제목이나 본문에 「2026년 3월 15일」, 「3월 15일(토) 18:30」,
 //     「2026-03-15」 같은 날짜가 있으면 그날 일정으로 얹습니다.
+//   · 글 하나는 하루만 차지합니다. 제목에 적힌 날을 가장 먼저 보되,
+//     경조사는 상 당한 날(가장 이른 날)로 잡습니다.
 //   · 따로 적어 넣는 곳은 없습니다. 글만 올리면 알아서 실립니다.
 //
 //   쓰는 법:  initCalendar("#calFull", { mode: "full" });
@@ -74,8 +76,9 @@ function findTime(tail) {
  * @param {string} title  제목 — 여기 있는 날짜는 무조건 일정으로 봅니다
  * @param {string} body   본문 — 행사 관련 말이 곁에 있을 때만 봅니다
  * @param {Date}   base   글을 쓴 날 (연도가 없는 「3월 15일」의 해를 정할 때 씁니다)
+ * @param {object} opts   { earliest: true } 면 가장 이른 날을 고릅니다 (경조사)
  */
-export function findDates(title, body, base) {
+export function findDates(title, body, base, opts) {
   const out = [];
   const seen = new Set();
   const baseY = base.getFullYear();
@@ -120,9 +123,20 @@ export function findDates(title, body, base) {
     out.push({ key: k, date: dt, time: findTime(tail), line: line.trim().slice(0, 90) });
   }
 
+  // 글 하나는 달력에서 하루만 차지합니다.
+  if (opts && opts.earliest) {
+    // 경조사 — 상 당한 날(가장 이른 날)로 잡습니다.
+    // 부고 글에는 별세일 · 조문일 · 발인일이 함께 적히기 때문입니다.
+    scan(title, true);
+    scan(body, true);
+    out.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+    return out.slice(0, 1);
+  }
+  // 그 밖의 모임 — 제목에 적힌 날이 곧 모이는 날입니다.
   scan(title, true);
+  if (out.length) return out.slice(0, 1);
   scan(body, false);
-  return out.slice(0, 4);                              // 한 글에서 넷까지만
+  return out.slice(0, 1);
 }
 
 /** 게시판 글을 읽어 일정 목록을 만듭니다 */
@@ -142,7 +156,8 @@ export async function loadEvents() {
     if (p.category === "notice" &&
         !MEET_WORDS.some((w) => (p.title || "").indexOf(w) > -1)) return;
     const base = new Date(p.created_at);
-    findDates(p.title, p.content, base).forEach((h) => {
+    findDates(p.title, p.content, base,
+              { earliest: p.category === "condolence" }).forEach((h) => {
       if (h.date.getTime() < lo || h.date.getTime() > hi) return;
       events.push({
         key: h.key, date: h.date, time: h.time,
@@ -186,16 +201,20 @@ function monthGrid(year, month, map, todayKey, mode) {
     if (d.getDay() === 6) cls.push("sat");
     html += `<div class="${cls.join(" ")}" data-k="${k}"${ev.length ? ' role="button" tabindex="0"' : ""}>` +
             `<span class="n">${d.getDate()}</span>`;
-    if (ev.length) {
-      html += mode === "full"
-        ? '<span class="chips">' + ev.slice(0, 2).map((e) =>
-            `<i class="chip c-${esc(e.cat)}">${esc(e.title)}</i>`).join("") +
-          (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "") + "</span>"
-        : `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
-    }
+    // 칸이 좁으므로 제목 대신 점만 찍고, 자세한 것은 아래 목록에서 봅니다
+    if (ev.length) html += `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
     html += "</div>";
   }
   return html + "</div>";
+}
+
+/** 날짜를 눌렀을 때 — 제목과 함께 글 속의 그 줄을 그대로 보여줍니다 */
+function evCard(e) {
+  return `<a class="cev cev-card" href="/OB/post.html?id=${e.id}">
+    <span class="cc-top"><b>${esc(e.title)}</b></span>
+    <span class="cc-meta">${e.time ? `<em>${e.time}</em> · ` : ""}${esc(CATNAME[e.cat] || e.cat)}</span>
+    ${e.line ? `<span class="cc-line">${esc(e.line)}</span>` : ""}
+    <span class="cc-go">글 열어보기 →</span></a>`;
 }
 
 function evLine(e) {
@@ -247,7 +266,7 @@ export async function initCalendar(sel, opts) {
         ? `<div class="cal-list">
              <div class="cal-lh">${picked.replace(/-/g, ".")} 일정 ${dayList.length}건
                <button class="cal-x" title="닫기">✕</button></div>
-             ${dayList.map(evLine).join("") || '<div class="cal-none">이 날은 일정이 없습니다.</div>'}
+             ${dayList.map(evCard).join("") || '<div class="cal-none">이 날은 일정이 없습니다.</div>'}
            </div>`
         : `<div class="cal-list">
              <div class="cal-lh">다가오는 일정</div>
