@@ -182,7 +182,7 @@ function byDay(events) {
 
 const WD = ["일", "월", "화", "수", "목", "금", "토"];
 
-function monthGrid(year, month, map, todayKey, mode) {
+function monthGrid(year, month, map, todayKey, titles) {
   const first = new Date(year, month, 1);
   const start = new Date(year, month, 1 - first.getDay());
   let html = '<div class="cal-wd">' + WD.map((w, i) =>
@@ -201,8 +201,13 @@ function monthGrid(year, month, map, todayKey, mode) {
     if (d.getDay() === 6) cls.push("sat");
     html += `<div class="${cls.join(" ")}" data-k="${k}"${ev.length ? ' role="button" tabindex="0"' : ""}>` +
             `<span class="n">${d.getDate()}</span>`;
-    // 칸이 좁으므로 제목 대신 점만 찍고, 자세한 것은 아래 목록에서 봅니다
-    if (ev.length) html += `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
+    // 칸이 넉넉하면 행사명을 작게 얹고, 좁으면 점만 찍습니다
+    if (ev.length) {
+      html += titles
+        ? ev.slice(0, 2).map((e) => `<i class="chip c-${esc(e.cat)}">${esc(e.title)}</i>`).join("") +
+          (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "")
+        : `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
+    }
     html += "</div>";
   }
   return html + "</div>";
@@ -235,7 +240,10 @@ export async function initCalendar(sel, opts) {
   const mode = (opts && opts.mode) || "full";
   // 달력 아래 「다가오는 일정」 목록을 붙일지 (날짜를 누르면 그날 일정은 늘 펼쳐집니다)
   const showUpcoming = !(opts && opts.upcoming === false);
+  // 날짜칸 안에 행사명을 작게 보일지 (칸이 넓을 때만 쓸 만합니다)
+  const showTitles = !!(opts && opts.titles);
   box.classList.add("cal", mode === "mini" ? "cal-mini" : "cal-full");
+  if (opts && opts.titles) box.classList.add("cal-titles");
   box.innerHTML = '<div class="cal-loading">일정을 불러오는 중…</div>';
 
   const { events } = await loadEvents();
@@ -263,7 +271,7 @@ export async function initCalendar(sel, opts) {
          <button class="cal-now" title="이번 달로">오늘</button>
          ${opts && opts.link ? `<a class="cal-more" href="${opts.link}">전체 일정 +</a>` : ""}
        </div>` +
-      monthGrid(y, mo, map, todayKey, mode) +
+      monthGrid(y, mo, map, todayKey, showTitles) +
       (picked
         ? `<div class="cal-list">
              <div class="cal-lh">${picked.replace(/-/g, ".")} 일정 ${dayList.length}건
