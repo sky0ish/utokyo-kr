@@ -49,7 +49,7 @@ export async function initWrite(ORG) {
     orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
     // 게시판 분류 · 말머리 선택 (조직별)
-    const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항" };
+    const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티", forum:"포럼·세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항" };
     const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                       mentoring:"멘토멘티" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
@@ -61,8 +61,8 @@ export async function initWrite(ORG) {
       promo: ["저서", "논문·연구", "상품", "기업", "채용", "행사"],
       condolence: ["부고", "결혼", "출산", "축하"],
       notice: ["총회", "회비", "행사", "안내"],
-      forum: ["건축학", "농학생명", "공학", "인문사회", "약학", "의학", "기타"],
-      seminar: ["학술", "산업", "한일교류", "기타"]
+      forum: ["건축학", "농학생명", "공학", "인문사회", "약학", "의학",
+              "세미나", "학술", "산업", "한일교류", "기타"]
     };
     const TAGS_YB = {
       notice: ["학생회", "행사", "장학", "안내"],

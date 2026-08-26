@@ -157,7 +157,7 @@ export async function initPost(ORG) {
 
 
   const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"취업정보", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
-                forum:"단과대포럼", seminar:"세미나",
+                forum:"포럼·세미나",
                 qna:"Q&A", parttime:"아르바이트", faculty:"단과대별", news:"동문소식", market:"벼룩시장" };
   const id = new URLSearchParams(location.search).get("id");
   const box = document.getElementById("postBox");
