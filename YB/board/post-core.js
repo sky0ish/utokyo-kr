@@ -343,16 +343,56 @@ function linkify(s) {
       }
       document.getElementById("cmtCount").textContent = data.length;
       if (!data.length) { listEl.innerHTML = '<div class="cmt-empty">첫 댓글을 남겨보세요.</div>'; return; }
+      const isMine  = (c) => !!(user && c.author_id === user.id);   // 수정은 본인 것만
+      const canDrop = (c) => isMine(c) || !!(user && meProfile && meProfile.is_admin);
       listEl.innerHTML = data.map(c => `
-        <div class="cmt">
-          ${user && (c.author_id === user.id || (meProfile && meProfile.is_admin)) ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
+        <div class="cmt" data-id="${c.id}">
+          ${canDrop(c) ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
+          ${isMine(c)  ? `<button class="edit" data-id="${c.id}">수정</button>` : ""}
           <div class="who">${escapeHtml(c.author_name || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
           <div class="body">${linkify(c.content)}</div>
         </div>`).join("");
+
       listEl.querySelectorAll(".del").forEach(b => b.addEventListener("click", async () => {
         if (!confirm("댓글을 삭제할까요?")) return;
         await sb.from("comments").delete().eq("id", b.dataset.id);
         loadComments();
+      }));
+
+      // 내가 쓴 댓글 고치기 — 그 자리에서 바로
+      listEl.querySelectorAll(".edit").forEach(b => b.addEventListener("click", () => {
+        const box = b.closest(".cmt");
+        if (box.querySelector(".cmt-edit")) return;          // 이미 열려 있으면 그대로
+        const c = data.find(x => String(x.id) === String(b.dataset.id));
+        const body = box.querySelector(".body");
+        body.style.display = "none";
+        const wrapEd = document.createElement("div");
+        wrapEd.className = "cmt-edit";
+        const ta = document.createElement("textarea");
+        ta.value = c.content;
+        const row = document.createElement("div");
+        row.className = "cmt-edit-row";
+        const save = document.createElement("button");
+        save.className = "btn dark sm"; save.textContent = "저장";
+        const cancel = document.createElement("button");
+        cancel.className = "btn sm"; cancel.textContent = "취소";
+        row.append(save, cancel);
+        wrapEd.append(ta, row);
+        body.after(wrapEd);
+        ta.focus();
+
+        const close = () => { wrapEd.remove(); body.style.display = ""; };
+        cancel.addEventListener("click", close);
+        save.addEventListener("click", async () => {
+          const text = ta.value.trim();
+          if (!text) { alert("내용을 입력해주세요."); return; }
+          if (text === c.content) { close(); return; }
+          save.disabled = true;
+          const { error } = await sb.from("comments").update({ content: text }).eq("id", c.id);
+          save.disabled = false;
+          if (error) { alert("고치지 못했습니다: " + error.message); return; }
+          loadComments();
+        });
       }));
     }
     loadComments();
