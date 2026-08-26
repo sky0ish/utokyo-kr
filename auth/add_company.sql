@@ -4,13 +4,15 @@
 --   실행 방법 : Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 --   한 번만 하시면 되고, 두 번 눌러도 탈이 없습니다.
 --   OB · YB 가 한 자료방을 함께 쓰므로 이 한 번으로 양쪽 다 됩니다.
+--
+--   ※ auth/admin_members.sql 과는 다른 파일입니다. 그것과 별개로 한 번 더 실행해주세요.
 -- ═══════════════════════════════════════════════════════════
 
--- 1) 칸 두 개 만들기
+-- ── 1) 칸 두 개 만들기 ──
 alter table public.profiles add column if not exists company   text;   -- 현재 직장명
 alter table public.profiles add column if not exists job_title text;   -- 직급
 
--- 2) 새로 가입하는 분의 직장·직급이 그대로 옮겨 담기도록
+-- ── 2) 새로 가입하는 분의 직장·직급이 그대로 옮겨 담기도록 ──
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -38,9 +40,14 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
--- 3) 잘 되었는지 눈으로 확인
-select column_name
+-- ── 3) 잘 되었는지 눈으로 확인 ──
+select column_name as "새로 생긴 칸"
   from information_schema.columns
- where table_schema = 'public' and table_name = 'profiles'
-   and column_name in ('company', 'job_title');
--- → company, job_title 두 줄이 나오면 끝입니다.
+ where table_schema = 'public'
+   and table_name   = 'profiles'
+   and column_name in ('company', 'job_title')
+ order by column_name;
+
+-- → company, job_title  두 줄이 나오면 끝입니다.
+--   그 뒤 회원 관리 화면을 새로고침(Ctrl+Shift+R)하시면
+--   「직장 · 직급」 칸이 나타나고 위쪽 안내 문구가 사라집니다.
