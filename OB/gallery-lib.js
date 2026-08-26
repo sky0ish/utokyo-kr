@@ -5,18 +5,24 @@ import { sb } from "/OB/auth/auth.js";
 
 export const CATS = [
   ["assembly", "총회"],
+  ["staff",    "운영진"],
   ["club",     "소모임"],
   ["faculty",  "단과대모임"],
   ["forum",    "포럼·세미나"],
   ["old",      "옛날사진"],
   ["daily",    "일상"],
-  ["etc",      "기타"],
 ];
 export const CAT_NAME = Object.fromEntries(CATS);
+
+// 없앤 갈래는 여기 적어 옛 사진이 갈 곳을 정한다.
+// (자료방에 아직 'etc' 로 남아 있어도 화면에서는 「일상」으로 보입니다)
+const FOLD = { etc: "daily" };
+export const fold = (c) => FOLD[c] || c;
+
 const ALBUM_NAME = {
-  assembly: "{y}년도 정기총회", club: "{y}년 소모임", faculty: "{y}년 단과대 모임",
+  assembly: "{y}년도 정기총회", staff: "{y}년 운영진 모임",
+  club: "{y}년 소모임", faculty: "{y}년 단과대 모임",
   forum: "{y}년 포럼·세미나", old: "{y}년 동문회 행사", daily: "{y}년 동문회 활동",
-  etc: "{y}년 행사 자료",
 };
 const BASE = "../images/gallery/";
 // 사진 파일명이 재편성될 때 브라우저가 예전 목록을 캐시해 빈 칸이 뜨는 것을 막는다
@@ -30,7 +36,7 @@ function staticPhotos() {
   const out = [];
   for (const [cat, albums] of Object.entries(G)) {
     albums.forEach(alb => alb.p.forEach((p, i) => out.push({
-      key: `${cat}/${p.k}`, kind: "static", cat,
+      key: `${cat}/${p.k}`, kind: "static", cat: fold(cat),
       date: iso(p.d), cap: p.c || alb.t, sort: i,
       album: alb.i, albumTitle: alb.t, albumDate: iso(alb.d),
       thumb: `${BASE}${cat}/${p.k}_t.jpg${V}`, full: `${BASE}${cat}/${p.k}.jpg${V}`,
@@ -60,7 +66,7 @@ export async function loadGallery() {
       if (!o) return true;
       if (o.hidden) return false;
       // 분류나 날짜를 바꾸면 원래 앨범에서 빼내 연도 앨범으로 보낸다
-      if (o.category && o.category !== p.cat) { p.cat = o.category; p.album = null; }
+      if (o.category && fold(o.category) !== p.cat) { p.cat = fold(o.category); p.album = null; }
       if (o.taken_at) { p.date = iso(o.taken_at); p.album = null; }
       if (o.album_key) p.album = o.album_key;      // 다른 앨범으로 옮김(합치기)
       if (o.caption != null) p.cap = o.caption;
@@ -69,7 +75,7 @@ export async function loadGallery() {
     });
     // 회원이 올린 사진
     (ph.data || []).forEach(r => photos.push({
-      key: `db:${r.id}`, kind: "db", id: r.id, cat: r.category,
+      key: `db:${r.id}`, kind: "db", id: r.id, cat: fold(r.category),
       date: iso(r.taken_at), cap: r.caption || "", sort: r.sort || 0,
       album: r.album_key || null, owner: r.created_by, ownerName: r.owner_name || "", ownerAdmin: !!r.owner_admin,
       thumb: r.image_url, full: r.image_url, storage_path: r.storage_path,
@@ -87,7 +93,7 @@ export async function loadGallery() {
   // 회원이 직접 만든 사진첩 (사진이 없어도 목록에 보이도록 먼저 등록)
   for (const a of custom) {
     map.set(a.album_key, {
-      key: a.album_key, cat: a.category || "etc",
+      key: a.album_key, cat: fold(a.category) || "daily",
       year: (iso(a.event_date) || "").slice(0, 4) || "",
       title: a.title || "사진첩", custom: true, owner: a.created_by,
       ownerName: a.owner_name || "", ownerAdmin: !!a.owner_admin, coverKey: a.cover_key || "",
@@ -101,7 +107,7 @@ export async function loadGallery() {
     albums0.forEach(alb => {
       const ov = albumTitles[alb.i] || {};
       map.set(alb.i, {
-        key: alb.i, cat, year: (alb.d || "").slice(0, 4),
+        key: alb.i, cat: fold(cat), year: (alb.d || "").slice(0, 4),
         title: ov.title || alb.t, fixedDate: iso(ov.event_date) || iso(alb.d),
         coverKey: ov.cover_key || "",
         sort: ov.sort != null ? ov.sort : 0, photos: [],

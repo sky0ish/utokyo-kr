@@ -166,16 +166,16 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=81"></script>
+<script src="gallery-data.js?v=82"></script>
 <script type="module">
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=81";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=82";
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
   // 회원만 볼 수 있는 분류
   {
-    const MEMBER_ONLY = ["club", "faculty", "forum", "old", "daily", "etc"];
+    const MEMBER_ONLY = ["staff", "club", "faculty", "forum", "old", "daily"];
     let ok = false;
     try { const u = await currentUser(); const me = u ? await myProfile() : null;
           ok = !!(me && (me.approved || me.is_admin)); } catch (e) {}
