@@ -180,6 +180,26 @@ function byDay(events) {
   return m;
 }
 
+/**
+ * 달력 칸에 넣을 짧은 이름.
+ * 「[부고] 이학섭 동문 부친상 [08월 22일(토) 09시 00분 발인]」 처럼
+ * 제목 뒤에 붙은 날짜·시각 묶음을 걷어내고 이름만 남깁니다.
+ * (걷어낸 자세한 내용은 날짜를 누르면 그대로 보입니다)
+ */
+export function shortTitle(t) {
+  let s = String(t || "");
+  s = s.replace(/[（(]\s*[월화수목금토일]\s*[)）]/g, " ");        // (토) 같은 요일 표시
+  const hasDate = (g) => /\d{1,2}\s*[월시:]|\d{1,2}\s*일/.test(g);
+  for (let i = 0; i < 3; i++) {                                  // 안쪽 묶음부터 차례로
+    s = s.replace(/[（(\[［][^（(\[［)）\]］]*[)）\]］]/g, (g) => (hasDate(g) ? " " : g));
+  }
+  s = s.replace(/\d{1,2}\s*월\s*\d{1,2}\s*일/g, " ")             // 홀로 남은 날짜·시각
+       .replace(/\d{1,2}\s*:\s*\d{2}/g, " ")
+       .replace(/(오전|오후|저녁|아침)\s*\d{1,2}\s*시(\s*\d{1,2}\s*분)?/g, " ");
+  s = s.replace(/\s+/g, " ").replace(/[\s~!·,\-]+$/, "").trim();
+  return s || String(t || "");
+}
+
 const WD = ["일", "월", "화", "수", "목", "금", "토"];
 
 function monthGrid(year, month, map, todayKey, titles) {
@@ -204,7 +224,8 @@ function monthGrid(year, month, map, todayKey, titles) {
     // 칸이 넉넉하면 행사명을 작게 얹고, 좁으면 점만 찍습니다
     if (ev.length) {
       html += titles
-        ? ev.slice(0, 2).map((e) => `<i class="chip c-${esc(e.cat)}">${esc(e.title)}</i>`).join("") +
+        ? ev.slice(0, 2).map((e) =>
+            `<i class="chip c-${esc(e.cat)}" title="${esc(e.title)}">${esc(shortTitle(e.title))}</i>`).join("") +
           (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "")
         : `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
     }
@@ -302,7 +323,12 @@ export async function initCalendar(sel, opts) {
     if (x) x.addEventListener("click", () => { picked = ""; draw(); });
 
     box.querySelectorAll(".cd.has").forEach((c) => {
-      const go = () => { picked = c.dataset.k; draw(); };
+      const go = () => {
+        const ev = map.get(c.dataset.k) || [];
+        // 한 건이면 그 글로 바로, 여러 건이면 아래에 펼쳐 고르게
+        if (ev.length === 1) { location.href = "/OB/post.html?id=" + ev[0].id; return; }
+        picked = c.dataset.k; draw();
+      };
       c.addEventListener("click", go);
       c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
     });
