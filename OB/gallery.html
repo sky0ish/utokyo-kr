@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=82">
+<link rel="stylesheet" href="/OB/board/board.css?v=83">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -76,6 +76,10 @@
     font-family:inherit;border:1px solid #b8933f;background:#c9a961;color:#2b2410;transition:.2s;}
   .movebar .mvbtn:hover{background:#d8b976;}
   .movebar .mvbtn:disabled{opacity:.5;cursor:default;}
+  .movebar .rmbtn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:inherit;border:1px solid #c98686;background:#fff;color:#a15a5a;transition:.2s;}
+  .movebar .rmbtn:hover{background:#c0524a;border-color:#c0524a;color:#fff;}
+  .movebar .rmbtn:disabled{opacity:.5;cursor:default;}
   .movebar .note{color:#a09a86;font-size:12px;}
 
   /* 사진첩 만들기 */
@@ -136,7 +140,7 @@
        (cover 로 하면 좁은 화면에서 옆으로 당겨져 사람 다리가 잘렸습니다) */
     /* 게시판 배너와 같은 5.66:1 — 좌우로 넓힌 그림이라 한 점도 안 잘린다 */
     background:linear-gradient(rgba(8,14,24,.44),rgba(8,14,24,.08) 52%,rgba(8,14,24,.18)),
-               url('/OB/images/ob_gallery_wide.jpg?v=82') center/contain no-repeat,
+               url('/OB/images/ob_gallery_wide.jpg?v=83') center/contain no-repeat,
                #16212e;
     aspect-ratio:3804/576;height:auto;min-height:88px;
     display:flex;flex-direction:column;justify-content:flex-start;
@@ -259,6 +263,7 @@
     <span>를</span>
     <select id="mvCat"></select>
     <button class="mvbtn" id="mvGo">이 분류로 옮기기</button>
+    <button class="rmbtn" id="mvRm">선택한 앨범 지우기</button>
     <span class="note">앨범 안의 사진이 모두 함께 옮겨집니다.</span>
   </div>
   <div class="ggrid" id="ggrid"></div>
@@ -285,10 +290,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=82"></script>
+<script src="gallery-data.js?v=83"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=82";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=83";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";
@@ -483,6 +488,49 @@ function enableMerge(list) {
     if (chosenKeys.has(k)) chosenKeys.delete(k); else chosenKeys.add(k);
     setTimeout(paint, 0);                        // 브라우저가 되돌린 뒤에 다시 칠한다
   }));
+  // ── 고른 앨범 지우기 ──
+  //   올린 사진은 저장소와 표에서 지우고,
+  //   홈페이지에 딸려온 기본 제공 사진은 숨깁니다(파일을 지울 수 없어서입니다).
+  const mvRm = document.getElementById("mvRm");
+  if (mvRm) mvRm.addEventListener("click", async () => {
+    const chosen = [...chosenKeys].map(find).filter(Boolean);
+    if (!chosen.length) { alert("지울 앨범을 먼저 골라주세요."); return; }
+    const mine = chosen.flatMap(a => a.photos.filter(p => p.kind === "db"));
+    const base = chosen.flatMap(a => a.photos.filter(p => p.kind !== "db"));
+    const what = [mine.length ? `올린 사진 ${mine.length}장 삭제` : "",
+                  base.length ? `기본 사진 ${base.length}장 숨김` : ""].filter(Boolean).join(" · ")
+                 || "사진 없음";
+    if (!confirm(`앨범 ${chosen.length}개를 지웁니다.\n\n` +
+                 chosen.map(a => "· " + a.title).join("\n") +
+                 `\n\n${what}\n\n되돌릴 수 없습니다. 계속할까요?`)) return;
+    if (!confirm("정말 지울까요? 마지막 확인입니다.")) return;
+
+    mvRm.disabled = true; mvRm.textContent = "지우는 중…";
+    try {
+      const paths = mine.map(p => p.storage_path).filter(Boolean);
+      if (paths.length) { try { await sb.storage.from("gallery").remove(paths); } catch (e) {} }
+      if (mine.length) {
+        const r = await sb.from("gallery_photos").delete().in("id", mine.map(p => p.id));
+        if (r.error) throw r.error;
+      }
+      if (base.length) {
+        const now2 = new Date().toISOString();
+        const r = await sb.from("gallery_overrides").upsert(
+          base.map(p => ({ photo_key: p.key, hidden: true, updated_by: adminId, updated_at: now2 })),
+          { onConflict: "photo_key" });
+        if (r.error) throw r.error;
+      }
+      const r2 = await sb.from("gallery_albums").delete()
+                   .in("album_key", chosen.map(a => a.key)).eq("org", "OB");
+      if (r2.error) throw r2.error;
+    } catch (err) {
+      alert("앨범을 지우지 못했습니다: " + (err.message || err));
+      mvRm.disabled = false; mvRm.textContent = "선택한 앨범 지우기";
+      return;
+    }
+    location.reload();
+  });
+
   mvBar.classList.add("on");
   mvGo.addEventListener("click", async () => {
     const chosen = [...chosenKeys].map(find).filter(Boolean);
