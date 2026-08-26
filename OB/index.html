@@ -1451,7 +1451,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
   const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   try {
     const { data, error } = await sb.from("posts")
-      .select("id,title,category,created_at")
+      .select("id,title,category,created_at").eq("org", "OB")
       .order("created_at", { ascending: false }).limit(6);
     if (error || !data || !data.length) {
       el.innerHTML = '<li><a href="/OB/auth/login.html"><span class="tt">로그인하시면 회원 전용 게시글을 보실 수 있습니다.</span></a></li>';
