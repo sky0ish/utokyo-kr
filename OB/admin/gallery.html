@@ -34,6 +34,16 @@
   .btn:disabled{opacity:.5;cursor:default;transform:none;}
   .btn.dark{background:#22283a;border-color:#22283a;color:#fff;}
   .btn.sm{padding:7px 14px;font-size:12.5px;}
+  .bulklink{display:flex;align-items:center;gap:14px;margin:14px 0 20px;padding:14px 18px;
+    background:#fdf8ec;border:1px solid #e8dcbb;border-radius:9px;transition:.2s;}
+  .bulklink:hover{background:#fdf3e0;border-color:#c9a961;}
+  .bulklink .ico{flex:none;width:34px;height:34px;border-radius:8px;background:#c9a961;color:#2b2410;
+    display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;}
+  .bulklink .tx{flex:1;min-width:0;}
+  .bulklink .tx b{display:block;font-size:14.5px;font-weight:600;color:#4a3c14;}
+  .bulklink .tx small{display:block;margin-top:2px;font-size:12.5px;color:#8a8574;line-height:1.6;}
+  .bulklink .go{flex:none;font-size:12.5px;color:#a09a86;letter-spacing:.04em;}
+  .bulklink:hover .go{color:#8a6d2b;}
   .msg{margin-top:12px;font-size:13px;}
   .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
 
@@ -101,6 +111,14 @@
     <div class="card">
       <h2>사진 추가</h2>
       <div class="hint">촬영일의 <b>연도</b>로 앨범이 자동으로 묶입니다. 여러 장을 한 번에 올릴 수 있습니다.</div>
+
+      <a class="bulklink" href="bulk.html">
+        <span class="ico">⤒</span>
+        <span class="tx"><b>폴더째 올리기</b>
+          <small>사진이 많을 때 — 폴더를 통째로 고르면 파일 이름의 날짜를 읽어
+            해마다·행사마다 알맞은 앨범에 알아서 나눠 담습니다.</small></span>
+        <span class="go">바로가기 →</span>
+      </a>
       <div class="row">
         <div>
           <label>분류 *</label>
@@ -155,10 +173,10 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=86"></script>
+<script src="/OB/gallery-data.js?v=87"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=86";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=87";
 
 const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 document.getElementById("fCat").innerHTML = optHtml;
