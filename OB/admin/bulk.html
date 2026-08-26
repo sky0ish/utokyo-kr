@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사진 폴더째 올리기 | 재한 도쿄대학 총동문회</title>
+<link rel="icon" href="/OB/images/ob_emblem.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f6f3ec;color:#2f2a1d;font-size:15px;line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .top{background:#101d33;color:#f3ede0;padding:22px 0;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px;}
+  .top h1{font-size:22px;font-weight:500;letter-spacing:.02em;}
+  .top p{font-size:13px;color:#a9b2c4;margin-top:4px;}
+  .top .links{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;}
+  .top .links a{color:#e8c876;border-bottom:1px solid transparent;}
+  .top .links a:hover{border-color:#e8c876;}
+
+  .card{background:#fff;border:1px solid #e6dfcb;border-radius:10px;padding:24px 26px;margin:26px 0;}
+  h2{font-size:17px;font-weight:500;color:#4a3c14;margin-bottom:4px;}
+  h2 .no{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;
+    background:#c9a961;color:#2b2410;font-size:12px;font-weight:700;margin-right:8px;vertical-align:2px;}
+  .sub{font-size:13px;color:#a09a86;margin-bottom:16px;}
+
+  select,input[type=text],input[type=date]{padding:9px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
+  .btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddd6c4;background:#fff;color:#4a3c14;transition:.2s;}
+  .btn:hover{border-color:#c9a961;}
+  .btn.dark{background:#101d33;border-color:#101d33;color:#f3ede0;}
+  .btn.dark:hover{background:#1b2a45;}
+  .btn.go{background:#c9a961;border-color:#b8933f;color:#2b2410;font-weight:600;padding:12px 34px;font-size:15px;}
+  .btn.go:hover{background:#d8b976;}
+  .btn:disabled{opacity:.5;cursor:default;}
+
+  .drop{margin-top:14px;padding:26px 18px;text-align:center;cursor:pointer;
+    border:2px dashed #ddd6c4;border-radius:10px;background:#fdfaf2;transition:.15s;}
+  .drop:hover,.drop.on{border-color:#c9a961;background:#fff;}
+  .drop b{display:block;font-size:14.5px;font-weight:500;color:#4a3c14;}
+  .drop small{display:block;margin-top:6px;font-size:12.5px;color:#7d7768;}
+  .picks{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;}
+
+  table{width:100%;border-collapse:collapse;margin-top:6px;}
+  th,td{padding:11px 10px;border-bottom:1px solid #f0ebe0;text-align:left;font-size:14px;vertical-align:middle;}
+  th{font-size:12.5px;color:#a09a86;font-weight:400;border-bottom:1px solid #e6dfcb;}
+  td.n{color:#8a8574;font-size:13px;white-space:nowrap;}
+  td .day{font-weight:600;color:#4a3c14;}
+  td select{width:100%;max-width:340px;}
+  td input[type=text]{width:100%;max-width:340px;margin-top:6px;}
+  tr.off{opacity:.4;}
+
+  .bar{height:8px;border-radius:5px;background:#efe9db;overflow:hidden;margin-top:14px;display:none;}
+  .bar.on{display:block;}
+  .bar i{display:block;height:100%;width:0;background:#c9a961;transition:width .2s;}
+  .msg{margin-top:12px;font-size:13.5px;color:#7d7768;min-height:20px;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+  .note{background:#f9f5ea;border:1px solid #eee6d2;border-radius:8px;padding:12px 15px;
+    font-size:13px;color:#6f6a5c;margin-top:14px;}
+  .empty{padding:30px 0;text-align:center;color:#a09a86;font-size:14px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <h1>사진 폴더째 올리기</h1>
+    <p>파일 이름에 적힌 날짜로 알아서 나눠 앨범에 담습니다 (운영진 전용)</p>
+    <div class="links">
+      <a href="/OB/index.html">총동문회 홈</a>
+      <a href="/OB/gallery.html">갤러리</a>
+      <a href="/OB/admin/gallery.html">갤러리 관리</a>
+      <a href="/OB/admin/members.html">회원 관리</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+
+    <div class="card">
+      <h2><span class="no">1</span>어느 갈래에 넣을까요?</h2>
+      <p class="sub">고른 갈래의 앨범 가운데에서 담을 곳을 정하게 됩니다.</p>
+      <select id="cat"></select>
+    </div>
+
+    <div class="card">
+      <h2><span class="no">2</span>사진 고르기</h2>
+      <p class="sub">폴더를 통째로 고르시면 그 안의 사진을 모두 읽습니다.</p>
+      <div class="picks">
+        <button class="btn dark" id="pickDir">폴더 고르기</button>
+        <button class="btn" id="pickFile">파일 고르기</button>
+      </div>
+      <div class="drop" id="drop" tabindex="0">
+        <b>여기에 폴더나 사진을 끌어다 놓으셔도 됩니다</b>
+        <small>또는 여기를 한 번 누른 뒤 <kbd>Ctrl</kbd>+<kbd>V</kbd> 로 붙여넣기</small>
+      </div>
+      <div class="msg" id="pickMsg"></div>
+      <input type="file" id="fDir" accept="image/*" multiple webkitdirectory directory style="display:none;">
+      <input type="file" id="fFiles" accept="image/*" multiple style="display:none;">
+    </div>
+
+    <div class="card" id="planCard" style="display:none;">
+      <h2><span class="no">3</span>날짜별로 이렇게 나눴습니다</h2>
+      <p class="sub">담을 앨범을 바꾸시거나, 넣지 않을 날짜는 체크를 풀어주세요.</p>
+      <table id="plan"></table>
+      <div class="note" id="planNote"></div>
+    </div>
+
+    <div class="card" id="goCard" style="display:none;">
+      <h2><span class="no">4</span>올리기</h2>
+      <p class="sub">사진이 많으면 시간이 걸립니다. 다 끝날 때까지 이 창을 닫지 말아주세요.</p>
+      <button class="btn go" id="go">올리기</button>
+      <div class="bar" id="bar"><i></i></div>
+      <div class="msg" id="goMsg"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/OB/gallery-data.js?v=86"></script>
+<script type="module">
+import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=86";
+
+const ORG = "OB";
+const esc = (s) => (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+if (!me || !me.is_admin) {
+  document.getElementById("gate").innerHTML =
+    '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="/OB/auth/login.html">로그인</a></div>';
+} else {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  start();
+}
+
+async function start() {
+  // ── 갈래 ──
+  const catSel = document.getElementById("cat");
+  catSel.innerHTML = CATS.map(([k, v]) =>
+    `<option value="${k}"${k === "assembly" ? " selected" : ""}>${v}</option>`).join("");
+
+  let albums = [];
+  const reloadAlbums = async () => { ({ albums } = await loadGallery()); };
+  await reloadAlbums();
+
+  // ── 사진 모으기 ──
+  let picked = [];                                  // File[]
+  const pickMsg = document.getElementById("pickMsg");
+  const fDir = document.getElementById("fDir");
+  const fFiles = document.getElementById("fFiles");
+  const drop = document.getElementById("drop");
+
+  const isPic = (f) => /^image\//.test(f.type) || /\.(jpe?g|png|gif|webp|heic)$/i.test(f.name);
+
+  /** 파일 이름에서 날짜를 읽는다 — 20240222 / 2024-02-22 / 2024_02_22 */
+  function dateOf(f) {
+    const m = String(f.name).match(/(20\d{2})[-_.]?(0[1-9]|1[0-2])[-_.]?(0[1-9]|[12]\d|3[01])/);
+    if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+    // 이름에 날짜가 없으면 파일에 적힌 수정 시각을 쓴다
+    const d = new Date(f.lastModified || Date.now());
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+
+  function addFiles(list) {
+    const pics = [...list].filter(isPic);
+    if (!pics.length) return 0;
+    const seen = new Set(picked.map(f => f.name + "|" + f.size));
+    pics.forEach(f => { const k = f.name + "|" + f.size; if (!seen.has(k)) { seen.add(k); picked.push(f); } });
+    plan();
+    return pics.length;
+  }
+
+  document.getElementById("pickDir").addEventListener("click", () => fDir.click());
+  document.getElementById("pickFile").addEventListener("click", () => fFiles.click());
+  fDir.addEventListener("change", () => addFiles(fDir.files));
+  fFiles.addEventListener("change", () => addFiles(fFiles.files));
+  drop.addEventListener("click", () => { drop.focus(); fFiles.click(); });
+
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, (e) => {
+    e.preventDefault(); e.stopPropagation(); drop.classList.add("on");
+  }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (ev === "dragleave" && drop.contains(e.relatedTarget)) return;
+    drop.classList.remove("on");
+  }));
+  drop.addEventListener("drop", async (e) => {
+    const items = [...(e.dataTransfer?.items || [])];
+    const entries = items.map(i => i.webkitGetAsEntry && i.webkitGetAsEntry()).filter(Boolean);
+    if (entries.length && entries.some(en => en.isDirectory)) {
+      pickMsg.className = "msg"; pickMsg.textContent = "폴더를 읽는 중…";
+      const out = [];
+      await Promise.all(entries.map(en => walk(en, out)));
+      addFiles(out);
+      return;
+    }
+    if (!addFiles(e.dataTransfer?.files || [])) {
+      pickMsg.className = "msg err"; pickMsg.textContent = "사진 파일만 올릴 수 있습니다.";
+    }
+  });
+  window.addEventListener("paste", (e) => {
+    const cd = e.clipboardData; if (!cd) return;
+    let got = addFiles(cd.files || []);
+    if (!got) {
+      got = addFiles([...(cd.items || [])]
+        .filter(x => x.kind === "file").map(x => x.getAsFile()).filter(Boolean));
+    }
+    if (got) e.preventDefault();
+  });
+  ["dragover", "drop"].forEach(ev =>
+    window.addEventListener(ev, (e) => { if (e.target !== drop) e.preventDefault(); }));
+
+  /** 끌어다 놓은 폴더 속을 훑는다 */
+  function walk(entry, out) {
+    return new Promise((done) => {
+      if (entry.isFile) { entry.file(f => { out.push(f); done(); }, () => done()); return; }
+      const rd = entry.createReader();
+      const step = () => rd.readEntries(async (es) => {
+        if (!es.length) { done(); return; }
+        await Promise.all(es.map(en => walk(en, out)));
+        step();
+      }, () => done());
+      step();
+    });
+  }
+
+  // ── 날짜별로 나누기 ──
+  let groups = [];
+  function plan() {
+    const cat = catSel.value;
+    const by = new Map();
+    picked.forEach(f => {
+      const d = dateOf(f);
+      if (!by.has(d)) by.set(d, []);
+      by.get(d).push(f);
+    });
+    groups = [...by.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([date, files]) => ({ date, files, use: true, target: "", title: "" }));
+
+    const mine = albums.filter(a => a.cat === cat);
+    groups.forEach(g => {
+      const same = mine.find(a => (a.date || "").slice(0, 10) === g.date)
+                || mine.find(a => (a.date || "").slice(0, 4) === g.date.slice(0, 4));
+      g.target = same ? same.key : "__new__";
+      g.title = defaultTitle(cat, g.date);
+    });
+
+    pickMsg.className = "msg ok";
+    pickMsg.textContent = `사진 ${picked.length}장을 읽었습니다 · 날짜 ${groups.length}가지`;
+    draw();
+  }
+
+  function defaultTitle(cat, date) {
+    const y = date.slice(0, 4);
+    if (cat === "assembly") return `${y}년도 동문회 총회`;
+    if (cat === "staff")    return `${date.replace(/-/g, ".")} 운영진 모임`;
+    return `${date.replace(/-/g, ".")} ${CAT_NAME[cat] || ""}`.trim();
+  }
+
+  function draw() {
+    const planCard = document.getElementById("planCard");
+    const goCard = document.getElementById("goCard");
+    if (!groups.length) { planCard.style.display = goCard.style.display = "none"; return; }
+    planCard.style.display = goCard.style.display = "block";
+
+    const cat = catSel.value;
+    const mine = albums.filter(a => a.cat === cat);
+    const opts = (sel) =>
+      mine.map(a => `<option value="${esc(a.key)}"${a.key === sel ? " selected" : ""}>` +
+                    `${esc(a.title)} (사진 ${a.photos.length}장)</option>`).join("") +
+      `<option value="__new__"${sel === "__new__" ? " selected" : ""}>＋ 새 앨범 만들기</option>`;
+
+    document.getElementById("plan").innerHTML =
+      "<thead><tr><th style='width:34px;'></th><th style='width:120px;'>날짜</th>" +
+      "<th style='width:72px;'>장수</th><th>담을 앨범</th></tr></thead><tbody>" +
+      groups.map((g, i) => `
+        <tr data-i="${i}" class="${g.use ? "" : "off"}">
+          <td><input type="checkbox" class="use"${g.use ? " checked" : ""}></td>
+          <td class="day">${g.date.replace(/-/g, ".")}</td>
+          <td class="n">${g.files.length}장</td>
+          <td>
+            <select class="tgt">${opts(g.target)}</select>
+            <input type="text" class="ttl" value="${esc(g.title)}"
+                   placeholder="새 앨범 이름"${g.target === "__new__" ? "" : ' style="display:none;"'}>
+          </td>
+        </tr>`).join("") + "</tbody>";
+
+    document.querySelectorAll("#plan tr[data-i]").forEach(tr => {
+      const g = groups[+tr.dataset.i];
+      tr.querySelector(".use").addEventListener("change", (e) => {
+        g.use = e.target.checked; tr.classList.toggle("off", !g.use); note();
+      });
+      tr.querySelector(".tgt").addEventListener("change", (e) => {
+        g.target = e.target.value;
+        tr.querySelector(".ttl").style.display = g.target === "__new__" ? "" : "none";
+      });
+      tr.querySelector(".ttl").addEventListener("input", (e) => { g.title = e.target.value; });
+    });
+    note();
+  }
+
+  function note() {
+    const on = groups.filter(g => g.use);
+    const n = on.reduce((s, g) => s + g.files.length, 0);
+    const mk = on.filter(g => g.target === "__new__").length;
+    document.getElementById("planNote").innerHTML =
+      `모두 <b>${n}장</b>을 <b>${on.length}개</b> 날짜로 나눠 올립니다.` +
+      (mk ? ` 그 가운데 <b>${mk}개</b>는 새 앨범을 만듭니다.` : "");
+  }
+
+  catSel.addEventListener("change", () => { if (picked.length) plan(); });
+
+  // ── 올리기 ──
+  document.getElementById("go").addEventListener("click", async () => {
+    const on = groups.filter(g => g.use && g.files.length);
+    if (!on.length) { alert("올릴 날짜를 하나 이상 골라주세요."); return; }
+    const total = on.reduce((s, g) => s + g.files.length, 0);
+    if (!confirm(`사진 ${total}장을 올립니다.\n\n` +
+                 on.map(g => `· ${g.date} — ${g.files.length}장`).join("\n") +
+                 `\n\n시간이 걸립니다. 계속할까요?`)) return;
+
+    const go = document.getElementById("go");
+    const bar = document.getElementById("bar");
+    const fill = bar.querySelector("i");
+    const msg = document.getElementById("goMsg");
+    go.disabled = true; bar.classList.add("on");
+    const cat = catSel.value;
+    const now = new Date().toISOString();
+    let done = 0, ok = 0, fail = 0, lastErr = "";
+
+    for (const g of on) {
+      // 새 앨범이면 먼저 만든다
+      let key = g.target;
+      if (key === "__new__") {
+        key = "custom:" + g.date + "-" + Math.random().toString(36).slice(2, 7);
+        const r = await sb.from("gallery_albums").insert({
+          album_key: key, title: (g.title || defaultTitle(cat, g.date)).trim(),
+          category: cat, org: ORG, event_date: g.date,
+          created_by: user.id, updated_by: user.id, updated_at: now,
+        });
+        if (r.error) {
+          msg.className = "msg err";
+          msg.textContent = `앨범을 만들지 못했습니다 (${g.date}): ${r.error.message}`;
+          go.disabled = false; return;
+        }
+      }
+
+      // 사진을 넷씩 나란히 올린다
+      const list = g.files.slice();
+      let n = 0;
+      const one = async (f, sortNo) => {
+        const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${cat}/${g.date}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+        const up = await sb.storage.from("gallery").upload(path, f, { cacheControl: "3600" });
+        if (up.error) { fail++; lastErr = up.error.message; return; }
+        const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
+        const ins = await sb.from("gallery_photos").insert({
+          category: cat, taken_at: g.date, caption: null, org: ORG, album_key: key,
+          image_url: pub.publicUrl, storage_path: path, sort: sortNo, created_by: user.id,
+        });
+        if (ins.error) { fail++; lastErr = ins.error.message; } else ok++;
+      };
+      const lanes = Array.from({ length: 4 }, async () => {
+        while (list.length) {
+          const i = n++;
+          const f = list.shift();
+          if (!f) break;
+          await one(f, i);
+          done++;
+          fill.style.width = Math.round(done / total * 100) + "%";
+          msg.className = "msg";
+          msg.textContent = `올리는 중… ${done}/${total}장 (${g.date})`;
+        }
+      });
+      await Promise.all(lanes);
+    }
+
+    go.disabled = false;
+    fill.style.width = "100%";
+    msg.className = "msg " + (fail ? "err" : "ok");
+    msg.innerHTML = `끝났습니다 — 성공 <b>${ok}장</b>` + (fail ? ` · 실패 ${fail}장 (${lastErr})` : "") +
+      ` &nbsp;<a href="/OB/gallery.html?cat=${cat}" style="color:#8a6d2b;border-bottom:1px solid #d8cba8;">갤러리에서 보기 →</a>`;
+    picked = []; groups = [];
+    await reloadAlbums();
+    draw();
+  });
+}
+</script>
+
+</body>
+</html>
