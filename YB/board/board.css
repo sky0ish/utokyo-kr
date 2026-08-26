@@ -308,3 +308,8 @@ body.yb .pager a.off{opacity:.38;pointer-events:none;}
   background:url('/YB/images/yb_emblem.svg') center/contain no-repeat;}
 .mhead .hname{display:block;}
 @media (max-width:700px){ .mhead .hmark{width:27px;height:27px;} .mhead .mlogo{gap:8px;} }
+
+/* 운영진 : 이 글을 다른 게시판으로 옮기기 */
+.btn.movecat{border:1px solid #4f9d5d;background:#eef7f0;color:#2a6b40;font-weight:600;
+  padding:9px 14px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:13.5px;}
+.btn.movecat:hover{filter:brightness(.97);}

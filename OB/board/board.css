@@ -243,3 +243,8 @@ body.yb .sec-head .t h2,
   background:url('/OB/images/ob_emblem.svg') center/contain no-repeat;}
 .mhead .hname{display:block;}
 @media (max-width:700px){ .mhead .hmark{width:27px;height:27px;} .mhead .mlogo{gap:8px;} }
+
+/* 운영진 : 이 글을 다른 게시판으로 옮기기 */
+.btn.movecat{border:1px solid #c9a24b;background:#fdf6e4;color:#7a6428;font-weight:600;
+  padding:9px 14px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:13.5px;}
+.btn.movecat:hover{filter:brightness(.97);}

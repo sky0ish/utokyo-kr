@@ -152,10 +152,10 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=61"></script>
+<script src="/OB/gallery-data.js?v=62"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=61";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=62";
 
 const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 document.getElementById("fCat").innerHTML = optHtml;

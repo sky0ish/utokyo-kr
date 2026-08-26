@@ -156,9 +156,9 @@ export async function initPost(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
 
 
-  const CAT = { notice:"공지사항", free:"자유게시판", club:"소모임", jobs:"취업정보", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
-                forum:"포럼·세미나",
-                qna:"Q&A", parttime:"아르바이트", faculty:"단과대별", news:"동문소식", market:"벼룩시장" };
+  const CAT = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티",
+                promo:"홍보·채용", condolence:"경조사", forum:"포럼·세미나",
+                jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
   const id = new URLSearchParams(location.search).get("id");
   const box = document.getElementById("postBox");
   const user = await currentUser();
@@ -249,9 +249,9 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
       if (meProfile && meProfile.is_admin) {
         // 운영진 : 이 글을 다른 게시판으로 옮기기
         const mv = document.createElement("select");
-        mv.className = "btn";
+        mv.className = "btn movecat";
         mv.title = "다른 게시판으로 옮기기";
-        mv.innerHTML = '<option value="">↔ 게시판 옮기기…</option>' +
+        mv.innerHTML = '<option value="">↔ 이 글을 다른 게시판으로…</option>' +
           Object.entries(CAT).map(([k, v]) =>
             `<option value="${k}"${k === p.category ? " selected" : ""}>${v}</option>`).join("");
         mv.addEventListener("change", async () => {
