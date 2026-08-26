@@ -47,13 +47,15 @@
       </div>
     </div>
 
-    <label style="margin-bottom:2px;">현재 직장 <span style="font-weight:300;color:#9a947f;">(재학생은 비워두셔도 됩니다)</span></label>
-    <div class="row2">
-      <div>
-        <input type="text" id="company" placeholder="직장명 — 예: ○○상사 도쿄지점">
-      </div>
-      <div>
-        <input type="text" id="position" placeholder="직급 — 예: 과장">
+    <div id="jobBox">
+      <label style="margin-bottom:2px;">현재 직장</label>
+      <div class="row2">
+        <div>
+          <input type="text" id="company" placeholder="직장명 — 예: ○○상사 도쿄지점">
+        </div>
+        <div>
+          <input type="text" id="position" placeholder="직급 — 예: 과장">
+        </div>
       </div>
     </div>
 
@@ -78,6 +80,18 @@
 import { sb, showMsg } from "./auth.js";
 
 const form = document.getElementById("signupForm");
+
+// 재학생(YB)에게는 직장·직급을 묻지 않는다
+const jobBox = document.getElementById("jobBox");
+const typeSel = document.getElementById("member_type");
+function toggleJob() {
+  const yb = typeSel.value === "YB";
+  jobBox.style.display = yb ? "none" : "";
+  if (yb) { document.getElementById("company").value = ""; document.getElementById("position").value = ""; }
+}
+typeSel.addEventListener("change", toggleJob);
+toggleJob();
+
 const btn = document.getElementById("btn");
 const msg = document.getElementById("msg");
 

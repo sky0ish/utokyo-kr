@@ -34,10 +34,12 @@
       </div>
     </div>
 
-    <label style="margin-bottom:2px;">현재 직장</label>
-    <div class="row2">
-      <div><input type="text" id="f_company" placeholder="직장명"></div>
-      <div><input type="text" id="f_position" placeholder="직급"></div>
+    <div id="jobBox">
+      <label style="margin-bottom:2px;">현재 직장</label>
+      <div class="row2">
+        <div><input type="text" id="f_company" placeholder="직장명"></div>
+        <div><input type="text" id="f_position" placeholder="직급"></div>
+      </div>
     </div>
 
     <label>전화번호</label>
@@ -78,6 +80,12 @@ if (!user) {
     document.getElementById("f_faculty").value = p.faculty || "";
     document.getElementById("f_grad").value = p.grad_year || "";
     document.getElementById("f_company").value = p.company || "";
+    // 재학생(YB)에게는 직장·직급을 묻지 않는다
+    const jobBox = document.getElementById("jobBox");
+    const typeSel = document.getElementById("f_type");
+    const toggleJob = () => { jobBox.style.display = typeSel.value === "YB" ? "none" : ""; };
+    typeSel.addEventListener("change", toggleJob);
+    toggleJob();
     document.getElementById("f_position").value = p.job_title || "";
     document.getElementById("f_phone").value = p.phone || "";
     document.getElementById("f_email").value = p.email || user.email;
