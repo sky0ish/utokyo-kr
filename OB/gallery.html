@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=90">
+<link rel="stylesheet" href="/OB/board/board.css?v=91">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -44,6 +44,11 @@
     border-radius:9px;font-size:12.5px;color:#7d7768;}
   .mergetip.on{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   .mergetip b{color:#4a3c14;}
+  .alb.dragging{opacity:.45;}
+  .alb.mergeover{outline:3px solid #c9a961;outline-offset:2px;background:#fdf6e6;}
+  .alb.mergeover::after{content:"여기에 합치기";position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);z-index:8;background:rgba(20,24,34,.86);color:#f3ede0;
+    padding:8px 16px;border-radius:100px;font-size:13px;font-weight:600;white-space:nowrap;}
   .mergetip .upbtn{flex:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
     font-family:inherit;border:1px solid #22283a;background:#22283a;color:#fff;transition:.2s;}
   .mergetip .upbtn:hover{background:#2f3750;}
@@ -119,7 +124,7 @@
 
   /* 앨범 목록 */
   .ggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
-  .alb{cursor:pointer;display:block;border-radius:10px;overflow:hidden;background:#fff;
+  .alb{cursor:pointer;display:block;position:relative;border-radius:10px;overflow:hidden;background:#fff;
     border:1px solid #e8e2d2;box-shadow:0 2px 6px rgba(60,50,20,.07);transition:.22s;}
   .alb:hover{border-color:var(--gold,#c9a961);box-shadow:0 8px 20px rgba(60,50,20,.16);}
   .alb .sq{position:relative;display:block;width:100%;aspect-ratio:4/3;overflow:hidden;background:#f3f0e8;}
@@ -140,7 +145,7 @@
        (cover 로 하면 좁은 화면에서 옆으로 당겨져 사람 다리가 잘렸습니다) */
     /* 게시판 배너와 같은 5.66:1 — 좌우로 넓힌 그림이라 한 점도 안 잘린다 */
     background:linear-gradient(rgba(8,14,24,.44),rgba(8,14,24,.08) 52%,rgba(8,14,24,.18)),
-               url('/OB/images/ob_gallery_wide.jpg?v=90') center/contain no-repeat,
+               url('/OB/images/ob_gallery_wide.jpg?v=91') center/contain no-repeat,
                #16212e;
     aspect-ratio:3804/576;height:auto;min-height:88px;
     display:flex;flex-direction:column;justify-content:flex-start;
@@ -290,10 +295,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=90"></script>
+<script src="gallery-data.js?v=91"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=90";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=91";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";
@@ -380,7 +385,7 @@ function render() {
   }
   grid.innerHTML = list.map(a => `
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
-       data-key="${a.key}" draggable="false">
+       data-key="${a.key}" draggable="false" data-cat="${a.cat}">
       <span class="sq">
         <input type="checkbox" class="apick" title="이 앨범 선택">
         <button class="edit" title="사진첩 이름 고치기">✎ 사진이름</button>
@@ -531,6 +536,91 @@ function enableMerge(list) {
     }
     location.reload();
   };
+
+  // ── 앨범을 끌어다 다른 앨범 위에 놓으면 하나로 합치기 ──
+  //   놓인 쪽(받는 앨범)이 남고, 끌어온 앨범의 사진이 모두 그리로 옮겨갑니다.
+  {
+    let fromKey = null;
+    const cards = [...document.querySelectorAll(".alb")];
+    cards.forEach(el => {
+      el.setAttribute("draggable", "true");
+      const im = el.querySelector("img");
+      if (im) im.setAttribute("draggable", "false");   // 사진만 따로 끌려가지 않도록
+
+      el.addEventListener("dragstart", (e) => {
+        fromKey = el.dataset.key;
+        el.classList.add("dragging");
+        try {
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", fromKey);
+        } catch (err) {}
+      });
+      el.addEventListener("dragend", () => {
+        el.classList.remove("dragging");
+        cards.forEach(c => c.classList.remove("mergeover"));
+        fromKey = null;
+      });
+      el.addEventListener("dragover", (e) => {
+        if (!fromKey || el.dataset.key === fromKey) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        el.classList.add("mergeover");
+      });
+      el.addEventListener("dragleave", (e) => {
+        if (el.contains(e.relatedTarget)) return;
+        el.classList.remove("mergeover");
+      });
+      el.addEventListener("drop", async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        el.classList.remove("mergeover");
+        const src = find(fromKey), dst = find(el.dataset.key);
+        fromKey = null;
+        if (!src || !dst || src.key === dst.key) return;
+        if (!confirm(`「${src.title}」(사진 ${src.photos.length}장)를\n` +
+                     `「${dst.title}」(사진 ${dst.photos.length}장) 안으로 합칠까요?\n\n` +
+                     `사진이 모두 옮겨지고 「${src.title}」 앨범은 사라집니다.`)) return;
+
+        const now = new Date().toISOString();
+        try {
+          // 받는 앨범이 연도별 자동 앨범이면 이름을 지킬 수 있도록 사진첩으로 굳힙니다
+          let key = dst.key;
+          if (!String(key).startsWith("custom:")) {
+            key = "custom:" + (dst.date || "").slice(0, 10) + "-" +
+                  Math.random().toString(36).slice(2, 7);
+            const r0 = await sb.from("gallery_albums").upsert({
+              album_key: key, title: dst.title, category: dst.cat, org: "OB",
+              event_date: dst.date || null, created_by: adminId,
+              updated_by: adminId, updated_at: now,
+            }, { onConflict: "album_key" });
+            if (r0.error) throw r0.error;
+          }
+
+          const all = src.photos.concat(dst.photos);
+          const dbs = all.filter(p => p.kind === "db");
+          const statics = all.filter(p => p.kind !== "db");
+          if (dbs.length) {
+            const r = await sb.from("gallery_photos")
+              .update({ album_key: key, category: dst.cat }).in("id", dbs.map(p => p.id));
+            if (r.error) throw r.error;
+          }
+          if (statics.length) {
+            const r = await sb.from("gallery_overrides").upsert(
+              statics.map(p => ({ photo_key: p.key, album_key: key, category: dst.cat,
+                                  updated_by: adminId, updated_at: now })),
+              { onConflict: "photo_key" });
+            if (r.error) throw r.error;
+          }
+          // 빈 껍데기가 된 앨범 이름표를 치웁니다
+          const gone = [src.key].concat(key !== dst.key ? [dst.key] : []);
+          await sb.from("gallery_albums").delete().in("album_key", gone).eq("org", "OB");
+        } catch (err) {
+          alert("합치지 못했습니다: " + (err.message || err));
+          return;
+        }
+        location.reload();
+      });
+    });
+  }
 
   mvBar.classList.add("on");
   mvGo.onclick = async () => {
