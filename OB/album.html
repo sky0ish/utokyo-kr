@@ -60,7 +60,7 @@
   .addbox .dropzone.ready{border-color:#c9a961;border-style:solid;}
   .addbox .amsg{margin-top:10px;font-size:12.5px;color:#7d7768;}
   .addbox .amsg.err{color:#b3453b;} .addbox .amsg.ok{color:#2f7a45;}
-  .ph .rm{position:absolute;top:5px;right:5px;border:none;border-radius:6px;padding:3px 8px;
+  .ph .rm{position:absolute;top:6px;right:6px;border:none;border-radius:6px;padding:5px 11px;
     font-size:10.5px;cursor:pointer;font-family:inherit;color:#fff;background:rgba(180,60,50,.9);display:none;}
   .ph.can-rm .rm{display:block;}
   /* 여러 장 지우기 */
@@ -76,6 +76,23 @@
   .rmbar .btn:disabled{opacity:.5;cursor:default;}
   .rmbar .btn.cover{display:none;background:#e8c876;border-color:#e8c876;color:#2b2410;font-weight:600;}
   .rmbar .btn.cover.on{display:inline-block;}
+  /* 고른 사진 옮기기 · 저장 */
+  .mvbar{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;
+    padding:13px 16px;background:#fdfaf2;border:1px solid #c9a961;border-radius:10px;font-size:13.5px;}
+  .mvbar.on{display:flex;}
+  .mvbar b{color:#4a3c14;}
+  .mvbar select,.mvbar input[type=text]{padding:8px 11px;border:1px solid #e6dfcb;border-radius:7px;
+    font-family:inherit;font-size:13.5px;background:#fff;color:#2f2a1d;max-width:230px;}
+  .mvbar .btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #e6dfcb;background:#fff;color:#4a3c14;}
+  .mvbar .btn.go{background:#c9a961;border-color:#b8933f;color:#2b2410;font-weight:600;}
+  .mvbar .btn:disabled{opacity:.5;cursor:default;}
+  .mvbar .mvmsg{color:#7d7768;font-size:12.5px;}
+  .mvbar .mvmsg.err{color:#b3453b;}
+  .rmbar .btn.move{background:#fff;border-color:#c9a961;color:#4a3c14;}
+  .rmbar .btn.save{background:#fff;border-color:#e6dfcb;color:#4a3c14;}
+  .rmbar .btn.move:hover,.rmbar .btn.save:hover{background:#fdfaf2;border-color:#c9a961;}
+  .ph.can-pick .pick{display:block;}
   .rmbar .btn.cover:hover{background:#f0d795;}
   .ph .pick{position:absolute;top:6px;left:6px;width:18px;height:18px;cursor:pointer;display:none;z-index:3;}
   .ph.can-rm .pick{display:block;}
@@ -95,7 +112,7 @@
   .ph .dt{position:absolute;left:0;right:0;bottom:0;padding:18px 11px 8px;font-size:12px;color:#fff;
     text-align:right;background:linear-gradient(transparent,rgba(0,0,0,.55));opacity:0;transition:.2s;}
   .ph:hover .dt{opacity:1;}
-  .ph:hover{transform:translateY(-3px);border-color:#c9a961;box-shadow:0 8px 18px rgba(60,50,20,.18);}
+  .ph:hover{border-color:#c9a961;box-shadow:0 8px 18px rgba(60,50,20,.18);}
   .ph:hover img{transform:scale(1.06);}
 
   /* 확대 보기 */
@@ -163,7 +180,20 @@
     <span id="pickCnt">선택 0장</span>
     <button class="btn danger" id="rmSel">선택한 사진 지우기</button>
     <button class="btn cover" id="covSel">★ 대표사진으로 지정</button>
+    <button class="btn save" id="dlSel">선택한 사진 저장</button>
+    <button class="btn move" id="mvOpen" style="display:none;">다른 앨범으로 옮기기</button>
     <span class="note">직접 올린 사진은 삭제되고, 기본 제공 사진은 갤러리에서 감춰집니다(되돌리기 가능).</span>
+  </div>
+
+  <!-- 고른 사진을 다른 갈래·앨범으로 (운영진) -->
+  <div class="mvbar" id="mvbar">
+    <b>옮길 곳</b>
+    <select id="mvCat" title="갈래"></select>
+    <select id="mvAlb" title="앨범"></select>
+    <input type="text" id="mvNew" maxlength="40" placeholder="새 앨범 이름" style="display:none;">
+    <button class="btn go" id="mvGo">여기로 옮기기</button>
+    <button class="btn" id="mvCancel">취소</button>
+    <span class="mvmsg" id="mvMsg"></span>
   </div>
 
   <div class="agrid" id="agrid"></div>
@@ -179,9 +209,9 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=88"></script>
+<script src="gallery-data.js?v=89"></script>
 <script type="module">
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=88";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=89";
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
@@ -467,10 +497,14 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
       }
 
       // 사진 내리기 — 내가 올린 사진 또는 운영진만
+      // 네모칸으로 고르기는 승인된 회원이면 누구나 (내려받기에 씁니다)
+      const canPick = !!(me && (me.approved || me.is_admin));
+      let canRmAny = false;
       grid.querySelectorAll(".ph").forEach(el => {
         const p = album.photos[+el.dataset.i];
         const mine = p.kind === "db" && p.owner && user && p.owner === user.id;
-        if (mine || isAdmin) el.classList.add("can-rm");
+        if (mine || isAdmin) { el.classList.add("can-rm"); canRmAny = true; }
+        if (canPick) el.classList.add("can-pick");
       });
 
       // ── 앨범 대표사진 고르기 ──
@@ -540,9 +574,13 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 
       // 여러 장 선택해서 내리기
       const bar = document.getElementById("rmbar");
-      const picks = [...grid.querySelectorAll(".can-rm .pick")];
+      const picks = [...grid.querySelectorAll(".ph.can-pick .pick, .ph.can-rm .pick")]
+        .filter((c, i, a) => a.indexOf(c) === i);
       if (picks.length) {
         bar.classList.add("on");
+        // 지울 수 있는 사진이 하나도 없으면 지우기 단추는 감춥니다
+        if (!canRmAny) document.getElementById("rmSel").style.display = "none";
+        if (isAdmin) document.getElementById("mvOpen").style.display = "";
         const cnt = () => {
           const n = picks.filter(c => c.checked).length;
           document.getElementById("pickCnt").textContent = `선택 ${n}장`;
@@ -556,9 +594,147 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
         const allBox = document.getElementById("pickAll");
         allBox.addEventListener("change", () => { picks.forEach(c => c.checked = allBox.checked); cnt(); });
 
+        // ── 고른 사진을 내 컴퓨터에 저장 (승인된 회원 누구나) ──
+        document.getElementById("dlSel").addEventListener("click", async () => {
+          const chosen = picks.filter(c => c.checked)
+            .map(c => album.photos[+c.closest(".ph").dataset.i]);
+          if (!chosen.length) { alert("저장할 사진을 먼저 골라주세요."); return; }
+          const btn = document.getElementById("dlSel");
+          btn.disabled = true;
+          const base = (album.title || "사진").replace(/[\\/:*?"<>|]/g, "_");
+          let ok = 0, fail = 0;
+          for (const [n, p] of chosen.entries()) {
+            btn.textContent = `저장 중… ${n + 1}/${chosen.length}`;
+            const url = p.full || p.thumb;
+            const ext = (String(url).split("?")[0].split(".").pop() || "jpg").toLowerCase();
+            const name = `${base}_${String(n + 1).padStart(2, "0")}` +
+                         (p.date ? `_${p.date.replace(/-/g, "")}` : "") + "." + ext;
+            try {
+              const res = await fetch(url, { mode: "cors" });
+              if (!res.ok) throw new Error(res.status);
+              const blob = await res.blob();
+              const a = document.createElement("a");
+              a.href = URL.createObjectURL(blob);
+              a.download = name;
+              document.body.appendChild(a); a.click(); a.remove();
+              setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+              ok++;
+            } catch (e) {
+              window.open(url, "_blank", "noopener");   // 막히면 새 창으로 열어 손으로 저장
+              fail++;
+            }
+            await new Promise(r => setTimeout(r, 250));  // 브라우저가 막지 않도록 천천히
+          }
+          btn.disabled = false; btn.textContent = "선택한 사진 저장";
+          if (fail) alert(ok + "장을 저장했습니다.\n" + fail +
+            "장은 새 창으로 열었으니 사진 위에서 오른쪽 단추 → " +
+            "「이미지를 다른 이름으로 저장」 해주세요.");
+        });
+
+        // ── 고른 사진을 다른 갈래·앨범으로 옮기기 (운영진) ──
+        //   앨범에 다른 행사 사진이 섞여 들어갔을 때 그것만 골라 빼냅니다.
+        if (isAdmin) {
+          const mvbar = document.getElementById("mvbar");
+          const mvCat = document.getElementById("mvCat");
+          const mvAlb = document.getElementById("mvAlb");
+          const mvNew = document.getElementById("mvNew");
+          const mvMsg = document.getElementById("mvMsg");
+          const mvGo  = document.getElementById("mvGo");
+          const eq = (s) => String(s || "").replace(/[&<>"]/g,
+            c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+          mvCat.innerHTML = CATS.map(([k, v]) =>
+            `<option value="${k}"${k === cat ? " selected" : ""}>${v}</option>`).join("");
+
+          const showNew = () => { mvNew.style.display = mvAlb.value === "__new__" ? "" : "none"; };
+          const fillAlb = () => {
+            const others = (byCat[mvCat.value] || []).filter(a => a.key !== album.key);
+            mvAlb.innerHTML = others.map(a =>
+              `<option value="${eq(a.key)}">${eq(a.title)} (사진 ${a.photos.length}장)</option>`).join("") +
+              '<option value="__new__">＋ 새 앨범 만들기</option>';
+            if (!others.length) mvAlb.value = "__new__";
+            showNew();
+          };
+          mvCat.addEventListener("change", fillAlb);
+          mvAlb.addEventListener("change", showNew);
+          fillAlb();
+
+          document.getElementById("mvOpen").addEventListener("click", () => {
+            const n = picks.filter(c => c.checked).length;
+            if (!n) { alert("옮길 사진을 먼저 골라주세요."); return; }
+            mvbar.classList.add("on");
+            mvMsg.className = "mvmsg";
+            mvMsg.textContent = `고른 ${n}장을 옮깁니다.`;
+            mvbar.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+          document.getElementById("mvCancel").addEventListener("click",
+            () => mvbar.classList.remove("on"));
+
+          mvGo.addEventListener("click", async () => {
+            const chosen = picks.filter(c => c.checked)
+              .map(c => album.photos[+c.closest(".ph").dataset.i]);
+            if (!chosen.length) { alert("옮길 사진을 먼저 골라주세요."); return; }
+            const newCat = mvCat.value;
+            let key = mvAlb.value, title = "";
+            if (key === "__new__") {
+              title = (mvNew.value || "").trim();
+              if (!title) {
+                mvMsg.className = "mvmsg err";
+                mvMsg.textContent = "새 앨범 이름을 적어주세요.";
+                mvNew.focus(); return;
+              }
+            }
+            const where = key === "__new__"
+              ? `새 앨범 「${title}」`
+              : `「${mvAlb.selectedOptions[0].textContent.replace(/ \(사진.*$/, "")}」`;
+            if (!confirm(`고른 ${chosen.length}장을 ${CAT_NAME[newCat]} · ${where} 으로 옮길까요?`)) return;
+
+            mvGo.disabled = true; mvGo.textContent = "옮기는 중…";
+            const now = new Date().toISOString();
+            try {
+              if (key === "__new__") {
+                // 옮기는 사진 가운데 가장 이른 날짜를 앨범 날짜로 삼습니다
+                const d = chosen.map(p => p.date).filter(Boolean).sort()[0]
+                       || (album.date || "").slice(0, 10) || null;
+                key = "custom:" + (d || "new") + "-" + Math.random().toString(36).slice(2, 7);
+                const r = await sb.from("gallery_albums").insert({
+                  album_key: key, title, category: newCat, org: "OB", event_date: d,
+                  created_by: user.id, updated_by: user.id, updated_at: now,
+                });
+                if (r.error) throw r.error;
+              }
+              const dbs = chosen.filter(p => p.kind === "db");
+              const statics = chosen.filter(p => p.kind !== "db");
+              if (dbs.length) {
+                const r = await sb.from("gallery_photos")
+                  .update({ category: newCat, album_key: key }).in("id", dbs.map(p => p.id));
+                if (r.error) throw r.error;
+              }
+              if (statics.length) {
+                const r = await sb.from("gallery_overrides").upsert(
+                  statics.map(p => ({ photo_key: p.key, category: newCat, album_key: key,
+                                      updated_by: user.id, updated_at: now })),
+                  { onConflict: "photo_key" });
+                if (r.error) throw r.error;
+              }
+            } catch (err) {
+              mvMsg.className = "mvmsg err";
+              mvMsg.textContent = "옮기지 못했습니다: " + (err.message || err);
+              mvGo.disabled = false; mvGo.textContent = "여기로 옮기기";
+              return;
+            }
+            location.href = `album.html?cat=${newCat}&id=${encodeURIComponent(key)}`;
+          });
+        }
+
         document.getElementById("rmSel").addEventListener("click", async () => {
-          const chosen = picks.filter(c => c.checked).map(c => album.photos[+c.closest(".ph").dataset.i]);
-          if (!chosen.length) { alert("지울 사진을 선택해주세요."); return; }
+          const all = picks.filter(c => c.checked).map(c => album.photos[+c.closest(".ph").dataset.i]);
+          // 지우기는 손댈 수 있는 사진만 (본인이 올린 것 · 운영진은 전부)
+          const chosen = all.filter(p => isAdmin || (p.owner && user && p.owner === user.id));
+          if (!all.length) { alert("지울 사진을 선택해주세요."); return; }
+          if (!chosen.length) { alert("고르신 사진은 지우실 수 없습니다. (본인이 올린 사진만 지울 수 있습니다)"); return; }
+          if (chosen.length !== all.length &&
+              !confirm(`고른 ${all.length}장 가운데 ${chosen.length}장만 지울 수 있습니다. 계속할까요?`)) return;
           if (!confirm(`선택한 ${chosen.length}장을 갤러리에서 내릴까요?`)) return;
           const btn = document.getElementById("rmSel");
           btn.disabled = true; btn.textContent = "처리 중…";
