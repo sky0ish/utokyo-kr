@@ -47,6 +47,8 @@
     border-bottom:1px solid #ece5d4;flex-wrap:wrap;}
   .alb .ah input{flex:1;min-width:220px;padding:8px 11px;font-size:14px;font-weight:500;}
   .alb .ah .cnt{font-size:12px;color:#a09a86;white-space:nowrap;}
+  .btn.warn{border-color:#e0c3c3;color:#a15a5a;background:#fff;}
+  .btn.warn:hover{background:#fbf1f1;border-color:#c98686;color:#8c3f3f;}
   .alb .ab{padding:14px;}
 
   .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
@@ -152,15 +154,16 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=79"></script>
+<script src="/OB/gallery-data.js?v=80"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=79";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=80";
 
 const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 document.getElementById("fCat").innerHTML = optHtml;
 document.getElementById("eCat").innerHTML = optHtml;
 
+const ORG = "OB";
 const user = await currentUser();
 const me = user ? await myProfile() : null;
 const gate = document.getElementById("gate");
@@ -207,6 +210,7 @@ async function start() {
         <div class="ah">
           <input class="ttl" value="${esc(a.title)}">
           <button class="btn sm save">제목 저장</button>
+          <button class="btn sm warn delalb">앨범 삭제</button>
           <span class="cnt">사진 ${a.photos.length}장</span>
         </div>
         <div class="ab">
@@ -239,6 +243,48 @@ async function start() {
         b.textContent = error ? "저장 실패" : "저장됨 ✓";
         if (!error) setTimeout(() => { b.textContent = "제목 저장"; }, 1500);
         else alert("제목 저장 실패: " + error.message);
+      });
+
+      // ── 앨범 통째로 지우기 ──
+      //   올린 사진은 저장소와 표에서 지우고, 기본 제공 사진은 숨깁니다.
+      //   (기본 사진은 홈페이지에 딸려 있는 것이라 지울 수 없습니다)
+      el.querySelector(".delalb").addEventListener("click", async (e) => {
+        const b = e.currentTarget;
+        const mine = album.photos.filter(p => p.kind === "db");
+        const base = album.photos.filter(p => p.kind !== "db");
+        const what = [mine.length ? `올린 사진 ${mine.length}장 삭제` : "",
+                      base.length ? `기본 사진 ${base.length}장 숨김` : ""].filter(Boolean).join(" · ");
+        if (!confirm(`「${album.title}」 앨범을 통째로 지웁니다.\n\n` +
+                     `${what}\n\n되돌릴 수 없습니다. 계속할까요?`)) return;
+        if (!confirm("정말 지울까요? 마지막 확인입니다.")) return;
+
+        b.disabled = true; b.textContent = "지우는 중…";
+        try {
+          // ① 올린 사진 — 저장소 파일부터 지우고 표에서 지웁니다
+          const paths = mine.map(p => p.storage_path).filter(Boolean);
+          if (paths.length) await sb.storage.from("gallery").remove(paths);
+          if (mine.length) {
+            const { error } = await sb.from("gallery_photos").delete().in("id", mine.map(p => p.id));
+            if (error) throw error;
+          }
+          // ② 기본 제공 사진 — 숨김으로
+          if (base.length) {
+            const now = new Date().toISOString();
+            const { error } = await sb.from("gallery_overrides").upsert(
+              base.map(p => ({ photo_key: p.key, hidden: true, updated_by: user.id, updated_at: now })),
+              { onConflict: "photo_key" });
+            if (error) throw error;
+          }
+          // ③ 앨범 자체(제목·표지 등)도 지웁니다
+          const { error } = await sb.from("gallery_albums")
+            .delete().eq("album_key", album.key).eq("org", ORG);
+          if (error) throw error;
+        } catch (err) {
+          alert("앨범을 지우지 못했습니다: " + (err.message || err));
+          b.disabled = false; b.textContent = "앨범 삭제";
+          return;
+        }
+        await reload();
       });
 
       // 삭제 · 숨김
