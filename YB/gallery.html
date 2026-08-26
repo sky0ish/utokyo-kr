@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=80">
+<link rel="stylesheet" href="/YB/board/board.css?v=81">
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -74,7 +74,8 @@
     font-size:13px;color:#4a5a4f;}
   .movebar.on{display:flex;}
   .movebar b{color:#1e5230;}
-  .movebar select{padding:8px 12px;border:1px solid #cfe3d4;border-radius:7px;
+  .movebar select{flex:0 0 auto;min-width:170px;max-width:260px;
+    padding:8px 12px;border:1px solid #cfe3d4;border-radius:7px;
     font-family:inherit;font-size:13.5px;background:#fbfefb;color:#25322a;}
   .movebar .mvbtn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;
     font-family:inherit;border:1px solid #d8a12c;background:linear-gradient(#ffdc80,#f2ba43);
@@ -230,8 +231,8 @@
   </div>
   <div class="movebar" id="movebar">
     <b>선택한 앨범 <span id="mvCnt">0</span>개</b><span>를</span>
-    <select id="mvCat"></select><span>분류로</span>
-    <button class="mvbtn" id="mvGo">선택한 앨범 옮기기</button>
+    <select id="mvCat"></select>
+    <button class="mvbtn" id="mvGo">이 분류로 옮기기</button>
     <button class="rmbtn" id="mvRm">선택한 앨범 지우기</button>
     <span class="note">앨범 안의 사진이 모두 함께 옮겨집니다.</span>
   </div>
@@ -261,7 +262,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=80";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=81";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
@@ -464,17 +465,38 @@ function enableAdmin(list) {
     const now = new Date().toISOString();
     let err = null;
     for (const a of chosen) {
-      const r1 = await sb.from("gallery_albums").upsert({
-        album_key: a.key, category: to, org: "YB", updated_by: adminId, updated_at: now,
-      }, { onConflict: "album_key" });
+      // 연도별로 저절로 묶인 앨범은 이름표가 분류에 매여 있어(daily|2026),
+      // 그대로 옮기면 이름을 잃고 흩어집니다. 「사진첩」으로 굳혀 함께 데려갑니다.
+      const wasAuto = !String(a.key).startsWith("custom:");
+      const newKey = wasAuto
+        ? "custom:" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
+        : a.key;
+      const row = {
+        album_key: newKey, category: to, title: a.title, org: "YB",
+        event_date: a.date || null, updated_by: adminId, updated_at: now,
+      };
+      if (wasAuto) row.created_by = adminId;
+      const r1 = await sb.from("gallery_albums").upsert(row, { onConflict: "album_key" });
       if (r1.error) { err = r1.error; break; }
+      const statics = a.photos.filter(p => p.kind !== "db");
       const dbs = a.photos.filter(p => p.kind === "db");
-      if (dbs.length) {
-        const r2 = await sb.from("gallery_photos").update({ category: to }).in("id", dbs.map(p => p.id));
+      if (statics.length) {
+        const r2 = await sb.from("gallery_overrides").upsert(
+          statics.map(p => ({ photo_key: p.key, category: to, album_key: newKey,
+                              updated_by: adminId, updated_at: now })),
+          { onConflict: "photo_key" });
         if (r2.error) { err = r2.error; break; }
       }
+      if (dbs.length) {
+        const r3 = await sb.from("gallery_photos")
+                     .update({ category: to, album_key: newKey }).in("id", dbs.map(p => p.id));
+        if (r3.error) { err = r3.error; break; }
+      }
+      // 비어버린 옛 이름표는 치운다 (안 되어도 그만입니다)
+      if (wasAuto) await sb.from("gallery_albums").delete()
+                     .eq("album_key", a.key).eq("org", "YB");
     }
-    go.disabled = false; go.textContent = "선택한 앨범 옮기기";
+    go.disabled = false; go.textContent = "이 분류로 옮기기";
     if (err) { alert("옮기기 실패: " + err.message +
       " — YB/board/sql/gallery_setup.sql 과 gallery_cats_2026.sql 을 실행하셨는지 확인해주세요."); return; }
     location.href = "gallery.html?cat=" + to;
