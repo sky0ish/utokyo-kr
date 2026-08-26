@@ -11,6 +11,8 @@ create table if not exists public.profiles (
   member_type text check (member_type in ('YB','OB')),
   faculty text,
   grad_year text,
+  company text,          -- 현재 직장명
+  job_title text,        -- 직급
   phone text,
   approved boolean not null default false,
   is_admin boolean not null default false,
@@ -19,6 +21,8 @@ create table if not exists public.profiles (
 
 -- 1-1) 이미 테이블을 만든 뒤 다시 실행해도 안전하도록 (전화번호 컬럼 추가)
 alter table public.profiles add column if not exists phone text;
+alter table public.profiles add column if not exists company text;
+alter table public.profiles add column if not exists job_title text;
 
 -- 2) 행 단위 보안(RLS): 본인 것만 읽기/수정 가능
 alter table public.profiles enable row level security;
@@ -42,7 +46,7 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, name, member_type, faculty, grad_year, phone)
+  insert into public.profiles (id, email, name, member_type, faculty, grad_year, company, job_title, phone)
   values (
     new.id,
     new.email,
@@ -50,6 +54,8 @@ begin
     nullif(new.raw_user_meta_data->>'member_type', ''),
     coalesce(new.raw_user_meta_data->>'faculty', ''),
     coalesce(new.raw_user_meta_data->>'grad_year', ''),
+    coalesce(new.raw_user_meta_data->>'company', ''),
+    coalesce(new.raw_user_meta_data->>'job_title', ''),
     coalesce(new.raw_user_meta_data->>'phone', '')
   );
   return new;

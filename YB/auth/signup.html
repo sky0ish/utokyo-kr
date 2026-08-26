@@ -47,6 +47,16 @@
       </div>
     </div>
 
+    <label style="margin-bottom:2px;">현재 직장 <span style="font-weight:300;color:#9a947f;">(재학생은 비워두셔도 됩니다)</span></label>
+    <div class="row2">
+      <div>
+        <input type="text" id="company" placeholder="직장명 — 예: ○○상사 도쿄지점">
+      </div>
+      <div>
+        <input type="text" id="position" placeholder="직급 — 예: 과장">
+      </div>
+    </div>
+
     <label>전화번호</label>
     <input type="tel" id="phone" placeholder="010-0000-0000">
 
@@ -83,6 +93,8 @@ form.addEventListener("submit", async (e) => {
         member_type: document.getElementById("member_type").value,
         faculty: document.getElementById("faculty").value.trim(),
         grad_year: document.getElementById("grad_year").value.trim(),
+        company: document.getElementById("company").value.trim(),
+        job_title: document.getElementById("position").value.trim(),
         phone: document.getElementById("phone").value.trim(),
       },
       emailRedirectTo: "https://u-tokyo.kr/auth/login.html",

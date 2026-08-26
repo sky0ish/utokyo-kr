@@ -254,7 +254,7 @@ async function start() {
 
   async function load() {
     // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
-    const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at,roster_dept,roster_year,roster_belong,roster_email";
+    const COLS = "id,email,phone,name,member_type,faculty,grad_year,company,job_title,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at,roster_dept,roster_year,roster_belong,roster_email";
     let { data, error } = await sb.from("profiles")
       .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
     if (error && /welcome_sent_at/.test(error.message || "")) {
@@ -361,6 +361,7 @@ async function start() {
       phone:   r => String(r.phone || "").replace(/[^0-9]/g, ""),
       org:     r => r.member_type || "",
       faculty: r => ((r.faculty || "") + " " + (r.grad_year || "")).trim(),
+      company: r => ((r.company || "") + " " + (r.job_title || "")).trim(),
       joined:  r => r.created_at || "",
       grade:   r => r.grade || "",
       state:   r => (r.approved ? (isRegrant(r) ? 1 : 0) : 2),
@@ -403,7 +404,7 @@ async function start() {
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty","전공 · 연도"],["joined","가입일"],["grade","등급"],["state","상태"]]
+       ["faculty","전공 · 연도"],["company","직장 · 직급"],["joined","가입일"],["grade","등급"],["state","상태"]]
         .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
           `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
       "<th></th></tr></thead><tbody>" +
@@ -414,6 +415,7 @@ async function start() {
         <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
+        <td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
         <td>${r.approved
@@ -748,7 +750,7 @@ async function start() {
   });
 
   const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
-  const HEADER = "이름,이메일,연락처,구분,전공,졸업연도,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
+  const HEADER = "이름,이메일,연락처,구분,전공,졸업연도,직장,직급,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
   /** 전화번호를 010-1234-5678 꼴로 (엑셀이 숫자로 바꿔 앞 0 이 사라지는 것도 막습니다) */
   function phoneText(v) {
     const d = String(v || "").replace(/[^0-9]/g, "");
@@ -760,7 +762,7 @@ async function start() {
     return String(v);
   }
 
-  const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year,
+  const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year, r.company, r.job_title,
                           isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
                           r.approved ? (isRegrant(r) ? "재승인" : "승인") : "대기",
                           (r.created_at || "").slice(0, 10),

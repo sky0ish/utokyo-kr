@@ -34,6 +34,12 @@
       </div>
     </div>
 
+    <label style="margin-bottom:2px;">현재 직장</label>
+    <div class="row2">
+      <div><input type="text" id="f_company" placeholder="직장명"></div>
+      <div><input type="text" id="f_position" placeholder="직급"></div>
+    </div>
+
     <label>전화번호</label>
     <input type="tel" id="f_phone" placeholder="010-0000-0000">
 
@@ -71,6 +77,8 @@ if (!user) {
     document.getElementById("f_type").value = p.member_type === "YB" ? "YB" : "OB";
     document.getElementById("f_faculty").value = p.faculty || "";
     document.getElementById("f_grad").value = p.grad_year || "";
+    document.getElementById("f_company").value = p.company || "";
+    document.getElementById("f_position").value = p.job_title || "";
     document.getElementById("f_phone").value = p.phone || "";
     document.getElementById("f_email").value = p.email || user.email;
     document.getElementById("f_status").innerHTML = p.approved
@@ -97,6 +105,8 @@ if (!user) {
         member_type: document.getElementById("f_type").value,
         faculty: document.getElementById("f_faculty").value.trim(),
         grad_year: document.getElementById("f_grad").value.trim(),
+        company: document.getElementById("f_company").value.trim(),
+        job_title: document.getElementById("f_position").value.trim(),
         phone: document.getElementById("f_phone").value.trim(),
       }).eq("id", user.id);
       btn.disabled = false;
