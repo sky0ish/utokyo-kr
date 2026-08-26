@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>중복 사진 정리 | 재한 도쿄대학 총동문회</title>
+<link rel="icon" href="/OB/images/ob_emblem.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f6f3ec;color:#2f2a1d;font-size:15px;line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .top{background:#101d33;color:#f3ede0;padding:22px 0;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px;}
+  .top h1{font-size:22px;font-weight:500;}
+  .top p{font-size:13px;color:#a9b2c4;margin-top:4px;}
+  .top .links{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;}
+  .top .links a{color:#e8c876;border-bottom:1px solid transparent;}
+  .top .links a:hover{border-color:#e8c876;}
+
+  .card{background:#fff;border:1px solid #e6dfcb;border-radius:10px;padding:22px 24px;margin:24px 0;}
+  h2{font-size:17px;font-weight:500;color:#4a3c14;margin-bottom:4px;}
+  .sub{font-size:13px;color:#a09a86;margin-bottom:16px;}
+  select{padding:9px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
+  .btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddd6c4;background:#fff;color:#4a3c14;}
+  .btn:hover{border-color:#c9a961;}
+  .btn.dark{background:#101d33;border-color:#101d33;color:#f3ede0;}
+  .btn.go{background:#b3453b;border-color:#9c3a31;color:#fff;font-weight:600;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+
+  .bar{height:8px;border-radius:5px;background:#efe9db;overflow:hidden;margin-top:14px;display:none;}
+  .bar.on{display:block;}
+  .bar i{display:block;height:100%;width:0;background:#c9a961;transition:width .15s;}
+  .msg{margin-top:12px;font-size:13.5px;color:#7d7768;min-height:20px;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+
+  .grp{border:1px solid #e6dfcb;border-radius:10px;padding:14px 16px;margin-bottom:14px;background:#fff;}
+  .grp .gh{display:flex;align-items:center;gap:10px;font-size:13px;color:#7d7768;margin-bottom:10px;}
+  .grp .gh b{color:#4a3c14;}
+  .grp .gh .same{margin-left:auto;font-size:12px;color:#a09a86;}
+  .shots{display:flex;gap:12px;flex-wrap:wrap;}
+  .shot{width:170px;border:2px solid #eee6d2;border-radius:8px;overflow:hidden;background:#f3efe4;position:relative;}
+  .shot.keep{border-color:#2f7a45;}
+  .shot img{width:100%;height:150px;object-fit:cover;display:block;}
+  .shot .cap{padding:7px 8px;font-size:11px;color:#7d7768;line-height:1.5;}
+  .shot .cap b{display:block;color:#3d4453;font-size:11.5px;}
+  .shot .tag{position:absolute;top:6px;left:6px;background:rgba(20,24,34,.7);color:#fff;
+    border-radius:100px;padding:2px 8px;font-size:9.5px;}
+  .shot label{display:flex;align-items:center;gap:6px;padding:6px 8px;font-size:12px;
+    border-top:1px solid #f0ebe0;cursor:pointer;background:#fdfcfa;}
+  .shot.keep label{color:#2f7a45;font-weight:600;}
+  .empty{padding:34px 0;text-align:center;color:#a09a86;font-size:14px;}
+  .note{background:#f9f5ea;border:1px solid #eee6d2;border-radius:8px;padding:12px 15px;
+    font-size:13px;color:#6f6a5c;margin-top:14px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <h1>중복 사진 정리</h1>
+    <p>같은 사진이 두 장 이상 올라가 있는 것을 찾아, 한 장만 남기고 지웁니다 (운영진 전용)</p>
+    <div class="links">
+      <a href="/OB/gallery.html">갤러리</a>
+      <a href="gallery.html">갤러리 관리</a>
+      <a href="bulk.html">폴더째 올리기</a>
+      <a href="/OB/index.html">총동문회 홈</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+    <div class="card">
+      <h2>어디를 살펴볼까요?</h2>
+      <p class="sub">사진을 한 장씩 내려받아 견주므로 사진이 많으면 시간이 걸립니다.</p>
+      <div class="row">
+        <select id="cat"></select>
+        <select id="tol">
+          <option value="2">똑같은 사진만 (엄격)</option>
+          <option value="5" selected>거의 같은 사진까지 (권장)</option>
+          <option value="9">비슷한 장면까지 (느슨)</option>
+        </select>
+        <button class="btn dark" id="scan">중복 찾기</button>
+      </div>
+      <div class="bar" id="bar"><i></i></div>
+      <div class="msg" id="msg"></div>
+      <div class="note">
+        <b>연사로 찍은 다른 컷</b>도 「느슨」에서는 같은 것으로 잡힐 수 있습니다.
+        지우기 전에 사진을 눈으로 확인해주세요. 초록 테두리가 <b>남길 사진</b>입니다.
+      </div>
+    </div>
+
+    <div class="card" id="resCard" style="display:none;">
+      <h2>찾은 묶음</h2>
+      <p class="sub">묶음마다 남길 사진을 고르시면, 나머지는 지웁니다.</p>
+      <div id="groups"></div>
+      <div class="row" style="margin-top:16px;">
+        <button class="btn go" id="del">고른 것만 남기고 지우기</button>
+        <span class="msg" id="delMsg" style="margin:0;"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/OB/gallery-data.js?v=90"></script>
+<script type="module">
+import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=90";
+
+const ORG = "OB";
+const esc = (s) => String(s || "").replace(/[&<>"]/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+if (!me || !me.is_admin) {
+  document.getElementById("gate").innerHTML =
+    '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="/OB/auth/login.html">로그인</a></div>';
+} else {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  start();
+}
+
+async function start() {
+  const catSel = document.getElementById("cat");
+  catSel.innerHTML = '<option value="__all__">갤러리 전체</option>' +
+    CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+
+  let groups = [];
+
+  /**
+   * 사진의 「지문」을 만든다 (dHash).
+   * 가로로 이웃한 밝기를 견주어 0/1 로 적어두면
+   * 크기를 줄이거나 다시 저장해도 거의 같은 값이 나옵니다.
+   */
+  const N = 12;
+  const cv = document.createElement("canvas");
+  cv.width = N + 1; cv.height = N;
+  const ctx = cv.getContext("2d", { willReadFrequently: true });
+
+  function fingerprint(img) {
+    ctx.drawImage(img, 0, 0, N + 1, N);
+    const d = ctx.getImageData(0, 0, N + 1, N).data;
+    const g = [];
+    for (let i = 0; i < d.length; i += 4) g.push((d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000);
+    const bits = [];
+    for (let y = 0; y < N; y++)
+      for (let x = 0; x < N; x++)
+        bits.push(g[y * (N + 1) + x] < g[y * (N + 1) + x + 1] ? 1 : 0);
+    return bits;
+  }
+  const gap = (a, b) => {
+    let n = 0;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) n++;
+    return n;
+  };
+
+  function load(url) {
+    return new Promise((done) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => done(img);
+      img.onerror = () => done(null);
+      img.src = url;
+    });
+  }
+
+  document.getElementById("scan").addEventListener("click", async () => {
+    const btn = document.getElementById("scan");
+    const bar = document.getElementById("bar");
+    const fill = bar.querySelector("i");
+    const msg = document.getElementById("msg");
+    btn.disabled = true; bar.classList.add("on");
+    msg.className = "msg"; msg.textContent = "사진 목록을 읽는 중…";
+
+    const { albums } = await loadGallery();
+    const want = catSel.value;
+    const shots = [];
+    albums.forEach(a => {
+      if (want !== "__all__" && a.cat !== want) return;
+      a.photos.forEach(p => shots.push({ p, album: a }));
+    });
+    if (!shots.length) {
+      msg.className = "msg err"; msg.textContent = "살펴볼 사진이 없습니다.";
+      btn.disabled = false; bar.classList.remove("on"); return;
+    }
+
+    // 지문 만들기 (넷씩 나란히)
+    const list = shots.slice();
+    let done = 0;
+    const lanes = Array.from({ length: 4 }, async () => {
+      while (list.length) {
+        const s = list.shift();
+        if (!s) break;
+        const img = await load(s.p.thumb);
+        s.fp = img ? fingerprint(img) : null;
+        done++;
+        fill.style.width = Math.round(done / shots.length * 100) + "%";
+        msg.textContent = `사진을 견주는 중… ${done}/${shots.length}장`;
+      }
+    });
+    await Promise.all(lanes);
+
+    // 묶기
+    const tol = +document.getElementById("tol").value;
+    const ok = shots.filter(s => s.fp);
+    const used = new Set();
+    groups = [];
+    for (let i = 0; i < ok.length; i++) {
+      if (used.has(i)) continue;
+      const grp = [ok[i]];
+      for (let j = i + 1; j < ok.length; j++) {
+        if (used.has(j)) continue;
+        if (gap(ok[i].fp, ok[j].fp) <= tol) { grp.push(ok[j]); used.add(j); }
+      }
+      if (grp.length > 1) { used.add(i); groups.push(grp); }
+    }
+
+    btn.disabled = false;
+    bar.classList.remove("on");
+    const extra = groups.reduce((n, g) => n + g.length - 1, 0);
+    msg.className = "msg " + (groups.length ? "" : "ok");
+    msg.textContent = groups.length
+      ? `사진 ${ok.length}장 가운데 겹치는 묶음 ${groups.length}개 · 지울 수 있는 여분 ${extra}장`
+      : `사진 ${ok.length}장을 살펴봤습니다. 겹치는 사진이 없습니다.`;
+    draw();
+  });
+
+  function draw() {
+    const card = document.getElementById("resCard");
+    if (!groups.length) { card.style.display = "none"; return; }
+    card.style.display = "block";
+    document.getElementById("groups").innerHTML = groups.map((g, gi) => {
+      // 기본 제공 사진을 먼저, 그다음 오래된 것을 남깁니다
+      const order = g.map((s, i) => i).sort((a, b) => {
+        const A = g[a].p, B = g[b].p;
+        if ((A.kind !== "db") !== (B.kind !== "db")) return A.kind !== "db" ? -1 : 1;
+        return String(A.date || "").localeCompare(String(B.date || ""));
+      });
+      const keep = order[0];
+      return `<div class="grp" data-g="${gi}">
+        <div class="gh"><b>묶음 ${gi + 1}</b> · 같은 사진 ${g.length}장
+          <span class="same">남길 사진을 고르세요</span></div>
+        <div class="shots">
+          ${g.map((s, i) => `
+            <div class="shot${i === keep ? " keep" : ""}" data-i="${i}">
+              <span class="tag">${s.p.kind === "db" ? "올린 사진" : "기본 제공"}</span>
+              <img src="${s.p.thumb}" alt="" loading="lazy">
+              <div class="cap"><b>${esc(s.album.title)}</b>
+                ${esc(CAT_NAME[s.p.cat] || s.p.cat)} · ${(s.p.date || "").replace(/-/g, ".")}</div>
+              <label><input type="radio" name="k${gi}" value="${i}"${i === keep ? " checked" : ""}>
+                이 사진을 남김</label>
+            </div>`).join("")}
+        </div>
+      </div>`;
+    }).join("");
+
+    document.querySelectorAll(".grp").forEach(el => {
+      el.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener("change", () => {
+        el.querySelectorAll(".shot").forEach(s =>
+          s.classList.toggle("keep", s.dataset.i === r.value));
+      }));
+    });
+  }
+
+  document.getElementById("del").addEventListener("click", async () => {
+    const drop = [];
+    document.querySelectorAll(".grp").forEach(el => {
+      const gi = +el.dataset.g;
+      const keep = +el.querySelector('input[type=radio]:checked').value;
+      groups[gi].forEach((s, i) => { if (i !== keep) drop.push(s.p); });
+    });
+    if (!drop.length) { alert("지울 사진이 없습니다."); return; }
+    const mine = drop.filter(p => p.kind === "db");
+    const base = drop.filter(p => p.kind !== "db");
+    if (!confirm(`여분 ${drop.length}장을 지웁니다.\n\n` +
+                 (mine.length ? `올린 사진 ${mine.length}장 삭제\n` : "") +
+                 (base.length ? `기본 사진 ${base.length}장 숨김\n` : "") +
+                 `\n되돌릴 수 없습니다. 계속할까요?`)) return;
+    if (!confirm("정말 지울까요? 마지막 확인입니다.")) return;
+
+    const btn = document.getElementById("del");
+    const m = document.getElementById("delMsg");
+    btn.disabled = true; m.className = "msg"; m.textContent = "지우는 중…";
+    try {
+      const paths = mine.map(p => p.storage_path).filter(Boolean);
+      if (paths.length) { try { await sb.storage.from("gallery").remove(paths); } catch (e) {} }
+      if (mine.length) {
+        const r = await sb.from("gallery_photos").delete().in("id", mine.map(p => p.id));
+        if (r.error) throw r.error;
+      }
+      if (base.length) {
+        const now = new Date().toISOString();
+        const r = await sb.from("gallery_overrides").upsert(
+          base.map(p => ({ photo_key: p.key, hidden: true, updated_by: user.id, updated_at: now })),
+          { onConflict: "photo_key" });
+        if (r.error) throw r.error;
+      }
+    } catch (err) {
+      m.className = "msg err"; m.textContent = "지우지 못했습니다: " + (err.message || err);
+      btn.disabled = false; return;
+    }
+    m.className = "msg ok"; m.textContent = `${drop.length}장을 정리했습니다.`;
+    btn.disabled = false;
+    groups = []; draw();
+    document.getElementById("msg").textContent = "다시 「중복 찾기」를 눌러 남은 것을 확인해주세요.";
+  });
+}
+</script>
+
+</body>
+</html>

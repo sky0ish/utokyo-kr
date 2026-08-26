@@ -95,6 +95,7 @@
     <div class="sub">사진 추가 · 삭제 · 앨범 제목과 배치 수정 (운영진 전용)</div>
     <div class="links">
       <a href="/OB/gallery.html">갤러리 보기</a>
+      <a href="dedup.html">중복 사진 정리</a>
       <a href="bulk.html">사진 폴더째 올리기</a>
       <a href="/OB/index.html">총동문회 홈</a>
       <a href="members.html">회원 관리</a>
@@ -173,10 +174,10 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=89"></script>
+<script src="/OB/gallery-data.js?v=90"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=89";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=90";
 
 const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 document.getElementById("fCat").innerHTML = optHtml;
