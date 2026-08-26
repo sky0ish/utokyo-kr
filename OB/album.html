@@ -49,6 +49,15 @@
   .addbox .btn{padding:9px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;
     font-family:inherit;border:1px solid #ddcb9e;background:linear-gradient(#fdf6e6,#f2e6c9);color:#4a3c14;}
   .addbox .btn:disabled{opacity:.5;cursor:default;}
+  .addbox .dropzone{margin-top:12px;padding:20px 16px;text-align:center;cursor:pointer;
+    border:2px dashed #ddd6c4;border-radius:10px;background:#fdfaf2;transition:.15s;}
+  .addbox .dropzone:hover,.addbox .dropzone:focus{border-color:#c9a961;outline:none;}
+  .addbox .dropzone b{display:block;font-size:14px;font-weight:500;color:#4a3c14;}
+  .addbox .dropzone small{display:block;margin-top:6px;font-size:12.5px;color:#7d7768;}
+  .addbox .dropzone kbd{font-family:inherit;font-size:11.5px;padding:1px 6px;border-radius:4px;
+    border:1px solid #ddd6c4;background:#fff;color:#4a3c14;}
+  .addbox.drop .dropzone{border-color:#c9a961;border-style:solid;background:#fff;}
+  .addbox .dropzone.ready{border-color:#c9a961;border-style:solid;}
   .addbox .amsg{margin-top:10px;font-size:12.5px;color:#7d7768;}
   .addbox .amsg.err{color:#b3453b;} .addbox .amsg.ok{color:#2f7a45;}
   .ph .rm{position:absolute;top:5px;right:5px;border:none;border-radius:6px;padding:3px 8px;
@@ -140,7 +149,11 @@
       <input type="text" id="aCap" maxlength="80" placeholder="설명 (선택)">
       <button class="btn" id="aUp">올리기</button>
     </div>
-    <div class="drophint" id="dropHint">사진을 이 칸에 끌어다 놓아도 됩니다 (여러 장 한꺼번에 가능).</div>
+    <div class="dropzone" id="dropZone" tabindex="0" role="button"
+         title="눌러서 사진 고르기 · 끌어다 놓기 · Ctrl+V 로 붙여넣기">
+      <b id="dropHint">사진을 여기에 끌어다 놓으세요</b>
+      <small>또는 여기를 한 번 누른 뒤 <kbd>Ctrl</kbd>+<kbd>V</kbd> 로 붙여넣기 · 여러 장 한꺼번에 가능</small>
+    </div>
     <div class="amsg" id="aMsg"></div>
   </div>
 
@@ -166,9 +179,9 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=84"></script>
+<script src="gallery-data.js?v=85"></script>
 <script type="module">
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=84";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=85";
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
@@ -228,11 +241,27 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
     const drop = document.getElementById("addbox");
     const files = document.getElementById("aFiles");
     const hint = document.getElementById("dropHint");
+    const zone = document.getElementById("dropZone");
     const show = () => {
       const n = files.files.length;
       hint.textContent = n
-        ? `사진 ${n}장이 준비됐습니다. 오른쪽 ［올리기］ 를 눌러주세요.`
-        : "사진을 이 칸에 끌어다 놓아도 됩니다 (여러 장 한꺼번에 가능).";
+        ? `사진 ${n}장이 준비됐습니다. 위의 ［올리기］ 를 눌러주세요.`
+        : "사진을 여기에 끌어다 놓으세요";
+      if (zone) zone.classList.toggle("ready", !!n);
+    };
+    // 칸을 누르면 파일 고르기 (붙여넣기를 받을 수 있게 여기에 초점도 둡니다)
+    if (zone) zone.addEventListener("click", () => { zone.focus(); files.click(); });
+
+    /** 이미 고른 것에 더한다 */
+    const addFiles = (list) => {
+      const pics = [...list].filter(f => /^image\//.test(f.type));
+      if (!pics.length) return 0;
+      const dt = new DataTransfer();
+      [...files.files].forEach(f => dt.items.add(f));
+      pics.forEach(f => dt.items.add(f));
+      files.files = dt.files;
+      show();
+      return pics.length;
     };
     files.addEventListener("change", show);
     show();
@@ -248,27 +277,23 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
       show();
     }));
     drop.addEventListener("drop", (e) => {
-      const dropped = [...(e.dataTransfer?.files || [])].filter(f => /^image\//.test(f.type));
-      if (!dropped.length) {
-        hint.textContent = "사진 파일만 올릴 수 있습니다.";
-        return;
-      }
-      const dt = new DataTransfer();
-      [...files.files].forEach(f => dt.items.add(f));      // 이미 고른 것에 더한다
-      dropped.forEach(f => dt.items.add(f));
-      files.files = dt.files;
-      show();
+      if (!addFiles(e.dataTransfer?.files || [])) hint.textContent = "사진 파일만 올릴 수 있습니다.";
     });
-    // 붙여넣기(Ctrl+V) 로도 사진을 넣을 수 있게
+
+    // 붙여넣기(Ctrl+V) — 화면 어디서 눌러도 이 칸으로 들어옵니다.
+    //   · 그림을 복사한 경우      → clipboardData.items
+    //   · 파일을 복사한 경우      → clipboardData.files
     window.addEventListener("paste", (e) => {
-      const items = [...(e.clipboardData?.items || [])]
-        .filter(x => x.kind === "file" && /^image\//.test(x.type));
-      if (!items.length) return;
-      const dt = new DataTransfer();
-      [...files.files].forEach(f => dt.items.add(f));
-      items.forEach(x => { const f = x.getAsFile(); if (f) dt.items.add(f); });
-      files.files = dt.files;
-      show();
+      const cd = e.clipboardData;
+      if (!cd) return;
+      let got = addFiles(cd.files || []);
+      if (!got) {
+        const picked = [...(cd.items || [])]
+          .filter(x => x.kind === "file" && /^image\//.test(x.type))
+          .map(x => x.getAsFile()).filter(Boolean);
+        got = addFiles(picked);
+      }
+      if (!got) return;
       drop.scrollIntoView({ behavior: "smooth", block: "center" });
       e.preventDefault();
     });
