@@ -253,17 +253,32 @@ async function start() {
   const other = (o) => (o === "OB" ? "YB" : "OB");
 
   async function load() {
-    // welcome_sent_at 칸이 아직 없으면(그 SQL 미실행) 그 칸만 빼고 다시 불러온다
-    const COLS = "id,email,phone,name,member_type,faculty,grad_year,company,job_title,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at,roster_dept,roster_year,roster_belong,roster_email";
-    let { data, error } = await sb.from("profiles")
-      .select(COLS + ",welcome_sent_at").order("created_at", { ascending: false });
-    if (error && /welcome_sent_at/.test(error.message || "")) {
-      const again = await sb.from("profiles").select(COLS).order("created_at", { ascending: false });
-      data = again.data; error = again.error;
+    // 아직 안 만든 칸이 있어도 명단은 그대로 나오게 한다.
+    // (없는 칸만 하나씩 빼고 다시 불러온 뒤, 무엇을 실행하면 되는지 알려준다)
+    const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at,roster_dept,roster_year,roster_belong,roster_email";
+    const LATER = [
+      { col: "welcome_sent_at", sql: "auth/admin_members.sql", what: "‘아직 안 보낸 회원’ 골라 보내기" },
+      { col: "company",         sql: "auth/add_company.sql",   what: "직장명" },
+      { col: "job_title",       sql: "auth/add_company.sql",   what: "직급" },
+    ];
+    let have = LATER.map(x => x.col), missing = [], data, error;
+    for (let n = 0; n <= LATER.length; n++) {
+      const r = await sb.from("profiles")
+        .select([COLS].concat(have).join(",")).order("created_at", { ascending: false });
+      data = r.data; error = r.error;
+      if (!error) break;
+      const gone = have.find(c => (error.message || "").indexOf(c) > -1);
+      if (!gone) break;                       // 다른 까닭이면 아래에서 알린다
+      missing.push(gone);
+      have = have.filter(c => c !== gone);
+    }
+    if (!error && missing.length) {
+      const sqls = [...new Set(missing.map(c => LATER.find(x => x.col === c).sql))];
+      const what = missing.map(c => LATER.find(x => x.col === c).what).join(" · ");
       const m = document.getElementById("listMsg");
       m.className = "msg";
-      m.textContent = "메일 발송 기록 칸이 아직 없습니다 — auth/admin_members.sql 을 한 번 실행하시면 " +
-                      "‘아직 안 보낸 회원’ 기능까지 쓰실 수 있습니다.";
+      m.textContent = what + " 칸이 아직 없습니다 — " + sqls.join(", ") +
+                      " 을 한 번 실행하시면 그 기능까지 쓰실 수 있습니다.";
     }
     if (error) {
       document.getElementById("listMsg").className = "msg err";
