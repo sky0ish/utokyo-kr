@@ -207,10 +207,13 @@ function monthGrid(year, month, map, todayKey, titles) {
   const start = new Date(year, month, 1 - first.getDay());
   let html = '<div class="cal-wd">' + WD.map((w, i) =>
     `<span class="${i === 0 ? "sun" : i === 6 ? "sat" : ""}">${w}</span>`).join("") + "</div>";
+  // 주 단위로 딱 떨어지게 그립니다.
+  // (남는 자리를 비워두면 격자 바탕이 드러나 진한 덩어리처럼 보입니다)
+  const last = new Date(year, month + 1, 0).getDate();
+  const cells = Math.ceil((first.getDay() + last) / 7) * 7;
   html += '<div class="cal-days">';
-  for (let i = 0; i < 42; i++) {
+  for (let i = 0; i < cells; i++) {
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
-    if (i >= 35 && d.getMonth() !== month) break;         // 마지막 줄이 다 남의 달이면 접습니다
     const k = key(d);
     const ev = map.get(k) || [];
     const cls = ["cd"];
