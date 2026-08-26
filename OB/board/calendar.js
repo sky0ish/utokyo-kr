@@ -8,7 +8,7 @@
 //     경조사는 상 당한 날(가장 이른 날)로 잡습니다.
 //   · 따로 적어 넣는 곳은 없습니다. 글만 올리면 알아서 실립니다.
 //
-//   쓰는 법:  initCalendar("#calFull", { mode: "full" });
+//   쓰는 법:  initCalendar("#calBox",  { mode: "mini", upcoming: false });
 //             initCalendar("#calMini", { mode: "mini", link: "#join" });
 // ═══════════════════════════════════════════════════════════
 import { sb } from "/OB/auth/auth.js";
@@ -233,6 +233,8 @@ export async function initCalendar(sel, opts) {
   const box = document.querySelector(sel);
   if (!box) return;
   const mode = (opts && opts.mode) || "full";
+  // 달력 아래 「다가오는 일정」 목록을 붙일지 (날짜를 누르면 그날 일정은 늘 펼쳐집니다)
+  const showUpcoming = !(opts && opts.upcoming === false);
   box.classList.add("cal", mode === "mini" ? "cal-mini" : "cal-full");
   box.innerHTML = '<div class="cal-loading">일정을 불러오는 중…</div>';
 
@@ -268,6 +270,7 @@ export async function initCalendar(sel, opts) {
                <button class="cal-x" title="닫기">✕</button></div>
              ${dayList.map(evCard).join("") || '<div class="cal-none">이 날은 일정이 없습니다.</div>'}
            </div>`
+        : !showUpcoming ? ""
         : `<div class="cal-list">
              <div class="cal-lh">다가오는 일정</div>
              ${upcoming.map(evLine).join("") ||
