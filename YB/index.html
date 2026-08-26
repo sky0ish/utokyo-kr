@@ -1157,7 +1157,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
   try {
     const { data } = await sb.from("posts")
       .select("id,title,category,created_at").eq("org", "YB")
-      .order("created_at", { ascending: false }).limit(6);
+      .order("created_at", { ascending: false }).limit(12);
     if (!data || !data.length) {
       el.innerHTML = '<li><a href="/YB/board.html"><span class="tt">아직 등록된 글이 없습니다. 첫 글을 남겨보세요 →</span></a></li>';
       return;
