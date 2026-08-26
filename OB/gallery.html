@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=62">
+<link rel="stylesheet" href="/OB/board/board.css?v=63">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -285,10 +285,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=62"></script>
+<script src="gallery-data.js?v=63"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=62";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=63";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";

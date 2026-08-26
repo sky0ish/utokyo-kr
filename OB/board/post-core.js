@@ -209,6 +209,24 @@ ${url}`;
   }
 
 function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/** 글 안의 주소를 눌러서 갈 수 있게 바꾼다.
+ *  글자는 먼저 안전하게 감싼 뒤에 주소만 골라 잇는다. */
+function linkify(s) {
+  const t = escapeHtml(s || "");
+  return t.replace(
+    /(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+|[\w.+-]+@[\w-]+\.[\w.-]+)/g,
+    (m) => {
+      // 문장 끝의 마침표·괄호는 주소에서 뺀다
+      let tail = "";
+      const cut = m.match(/[.,;:)\]}>]+$/);
+      if (cut) { tail = cut[0]; m = m.slice(0, -tail.length); }
+      if (!m) return tail;
+      if (m.indexOf("@") > -1 && m.indexOf("/") === -1)
+        return `<a href="mailto:${m}">${m}</a>` + tail;
+      const href = m.startsWith("http") ? m : "https://" + m;
+      return `<a href="${href}" target="_blank" rel="noopener">${m}</a>` + tail;
+    });
+}
 
   const { data: p, error } = await sb.from("posts").select("*").eq("id", id).single();
   if (p && typeof p.images === "string") { try { p.images = JSON.parse(p.images); } catch (e) { p.images = null; } }
@@ -227,7 +245,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
       </div>
       <h2>${escapeHtml(p.title)}</h2>
       <div class="pmeta">${escapeHtml(p.author_name || "")} · ${p.created_at.slice(0,16).replace("T"," ")}</div>
-      <div class="body">${escapeHtml(p.content)}</div>
+      <div class="body">${linkify(p.content)}</div>
       ${(p.images && p.images.length)
           ? `<div class="pgal">${p.images.map(s => `<a href="${s}" target="_blank"><img src="${s}" alt=""></a>`).join("")}</div>`
           : (p.image_url ? `<div class="pgal"><a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt=""></a></div>` : "")}
@@ -329,7 +347,7 @@ function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<
         <div class="cmt">
           ${user && (c.author_id === user.id || (meProfile && meProfile.is_admin)) ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
           <div class="who">${escapeHtml(c.author_name || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
-          <div class="body">${escapeHtml(c.content)}</div>
+          <div class="body">${linkify(c.content)}</div>
         </div>`).join("");
       listEl.querySelectorAll(".del").forEach(b => b.addEventListener("click", async () => {
         if (!confirm("댓글을 삭제할까요?")) return;

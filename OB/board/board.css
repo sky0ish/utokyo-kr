@@ -248,3 +248,7 @@ body.yb .sec-head .t h2,
 .btn.movecat{border:1px solid #c9a24b;background:#fdf6e4;color:#7a6428;font-weight:600;
   padding:9px 14px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:13.5px;}
 .btn.movecat:hover{filter:brightness(.97);}
+
+/* 글 안의 주소 */
+.post .body a, .cmt .body a{color:#8a6d2b;border-bottom:1px solid #e0d3ae;word-break:break-all;}
+.post .body a:hover, .cmt .body a:hover{border-bottom-color:#8a6d2b;}

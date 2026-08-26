@@ -313,3 +313,7 @@ body.yb .pager a.off{opacity:.38;pointer-events:none;}
 .btn.movecat{border:1px solid #4f9d5d;background:#eef7f0;color:#2a6b40;font-weight:600;
   padding:9px 14px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:13.5px;}
 .btn.movecat:hover{filter:brightness(.97);}
+
+/* 글 안의 주소 */
+.post .body a, .cmt .body a{color:#2a6b40;border-bottom:1px solid #bfe0c8;word-break:break-all;}
+.post .body a:hover, .cmt .body a:hover{border-bottom-color:#2a6b40;}
