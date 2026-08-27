@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=122">
+<link rel="stylesheet" href="/OB/board/board.css?v=123">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -84,6 +84,9 @@
   .myrank{margin:-14px 0 26px;font-size:13.5px;color:#7d7768;}
   .myrank b{color:#4a3c14;font-size:15px;}
   @media(max-width:820px){ .stattop{flex:1 1 auto;max-width:none;} }
+
+  .mine dt em{font-style:normal;color:#8a6d2b;font-weight:600;}
+  .mine .wnote{font-size:12px;color:#a09a86;margin:-18px 0 26px;}
 </style>
 </head>
 <body>
@@ -127,7 +130,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=122";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=123";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -161,10 +164,15 @@ async function start() {
   document.getElementById("sTitle").textContent =
     (ORG_NAME[org] || "") + " 사용통계";
 
-  const [b, m] = await Promise.all([
+  const [b, m, w] = await Promise.all([
     sb.from("activity_board").select("*"),
     sb.from("activity_month").select("*"),
+    sb.from("activity_weights").select("kind,weight"),
   ]);
+  // 활동마다 몇 점으로 세는지 (운영진이 정합니다)
+  const WEIGHT = {};
+  (w.data || []).forEach(r => { WEIGHT[r.kind] = Number(r.weight); });
+  const wOf = (k) => (WEIGHT[k] == null ? 1 : WEIGHT[k]);
 
   if (b.error || m.error) {
     const err = b.error || m.error;
@@ -201,9 +209,12 @@ async function start() {
         <small>내가 홈페이지를 얼마나 썼는지</small></div>
       <dl class="mine">
         ${KIND.map(([k, t]) =>
-          `<div><dt>${t}</dt><dd>${mine[k + "_n"] || 0}</dd></div>`).join("")}
+          `<div><dt>${t} <em>(${wOf(k)})</em></dt>` +
+          `<dd>${mine[k + "_n"] || 0}</dd></div>`).join("")}
         <div class="tot"><dt>내 점수</dt><dd>${Math.round(mine.score)}</dd></div>
       </dl>
+      <p class="wnote">칸 이름 옆의 괄호는 <b>가중치</b>입니다 — 그 활동 한 번을 몇 점으로 세는지입니다.
+        ${KIND.map(([k, t]) => `${t}×${wOf(k)}`).join(" · ")} 를 모두 더한 것이 내 점수입니다.</p>
       <p class="myrank">${me.is_admin
           ? "운영진 계정이라 아래 순위에는 넣지 않습니다."
           : `참여하신 ${rows.length}분 가운데 <b>${myRank}위</b>입니다.`}</p>`
