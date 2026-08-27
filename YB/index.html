@@ -450,6 +450,90 @@
     background:url('/YB/images/yb_mark.png') left center/contain no-repeat;
     filter:brightness(0) invert(1);opacity:.9;}
   @media (max-width:700px){ .ksamark{width:30px;height:15px;margin-left:8px;} }
+
+  /* ── 일정 달력 ── */
+  .cal{--cal-line:#e3ede6;--cal-ink:#3d4a43;}
+  .cal-loading{padding:30px 0;text-align:center;color:#98a89d;font-size:13px;}
+  .cal-head{display:flex;align-items:center;gap:8px;padding:2px 0 12px;}
+  .cal-head .cal-title{font-family:'Vitro Core','Do Hyeon','Noto Serif KR',serif;
+    font-size:15px;color:#123524;letter-spacing:.02em;min-width:82px;}
+  .cal-nav,.cal-now{border:1px solid var(--cal-line);background:#fff;border-radius:4px;
+    color:#5f6f65;font-family:inherit;cursor:pointer;}
+  .cal-nav{width:26px;height:26px;font-size:16px;line-height:1;}
+  .cal-now{padding:4px 10px;font-size:12px;}
+  .cal-nav:hover,.cal-now:hover{border-color:#4f9d5d;color:#1e5230;}
+  .cal-more{margin-left:auto;font-size:12px;color:#98a89d;letter-spacing:.08em;}
+  .cal-more:hover{color:#1e5230;}
+
+  .cal-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;margin-bottom:1px;}
+  .cal-wd span{text-align:center;font-size:10.5px;color:#98a89d;padding:3px 0;letter-spacing:.05em;}
+  .cal-wd .sun{color:#c07b7b;} .cal-wd .sat{color:#7b8fc0;}
+  .cal-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;
+    background:var(--cal-line);border:1px solid var(--cal-line);border-radius:4px;overflow:hidden;}
+  .cd{background:#fff;min-height:25px;position:relative;text-align:center;padding:3px 2px;}
+  .cd .n{font-size:11.5px;color:var(--cal-ink);}
+  .cd.sun .n{color:#c07b7b;} .cd.sat .n{color:#7b8fc0;}
+  .cd.off{background:#fbfdfc;} .cd.off .n{color:#d5e0d9;}
+  .cd.today{background:#eef6f0;box-shadow:inset 0 0 0 1.5px #4f9d5d;}
+  .cd.today .n{font-weight:700;color:#1e5230;}
+  .cd.has{cursor:pointer;} .cd.has:hover{background:#f3faf5;}
+  .cd .dot{display:block;margin:2px auto 0;width:5px;height:5px;border-radius:50%;
+    background:#4f9d5d;font-size:9px;line-height:5px;color:transparent;}
+  .cd .dot:not(:empty){width:auto;height:auto;border-radius:8px;padding:0 5px;
+    line-height:13px;color:#fff;font-size:9.5px;}
+
+  /* 날짜 오른쪽에 행사명 */
+  .cal-titles .cd{display:grid;grid-template-columns:17px minmax(0,1fr);
+    column-gap:5px;row-gap:2px;align-content:start;
+    min-height:36px;text-align:left;padding:5px 6px 6px;}
+  .cal-titles .cd .n{grid-column:1;grid-row:1;line-height:1.5;}
+  .cal-titles .chip{grid-column:2;display:block;font-style:normal;font-size:10.5px;
+    line-height:1.5;padding:0 4px;border-radius:2px;background:#eaf2ec;color:#2f5c40;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cal-titles .chip.c-club{background:#e8f1ea;color:#2f5c40;}
+  .cal-titles .chip.c-mentoring{background:#f2f0e4;color:#6b5a2c;}
+  .cal-titles .chip.c-forum{background:#eef1f8;color:#3d4a7a;}
+  .cal-titles .chip.c-notice{background:#f5eeec;color:#7a4a3c;}
+  .cal-titles .chip.c-ob{background:#f8f2e2;color:#7a5f1c;}   /* 총동문회에서 온 것 */
+  .cal-titles .chip.more{background:none;color:#98a89d;padding-left:0;}
+
+  .cal-list{margin-top:12px;}
+  .cal-lh{display:flex;align-items:center;font-size:12px;color:#98a89d;letter-spacing:.08em;
+    padding-bottom:6px;border-bottom:1px solid var(--cal-line);}
+  .cal-x{margin-left:auto;border:none;background:none;color:#a9bbaf;cursor:pointer;font-size:12px;}
+  .cal-x:hover{color:#1e5230;}
+  .cev{display:flex;align-items:center;gap:10px;padding:9px 2px;font-size:13.5px;
+    color:var(--cal-ink);border-bottom:1px solid #f0f6f2;}
+  .cev:last-child{border-bottom:none;}
+  .cev:hover{color:#1e5230;}
+  .cev-d{flex:none;font-size:12px;color:#1e5230;font-weight:600;min-width:44px;}
+  .cev-d b{font-weight:500;color:#98a89d;}
+  .cev-t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cev-c{flex:none;font-size:11px;color:#98a89d;}
+  .cal-none{padding:18px 2px;font-size:13px;color:#98a89d;text-align:center;line-height:1.7;}
+  .cal-none a{color:#1e5230;border-bottom:1px solid #bfe0c8;}
+
+  .cev-card{display:block;padding:11px 12px;margin-top:8px;border:1px solid var(--cal-line);
+    border-radius:4px;background:#fbfdfc;}
+  .cev-card:hover{border-color:#4f9d5d;background:#f3faf5;}
+  .cev-card .cc-top b{display:block;font-size:13.5px;font-weight:600;color:var(--cal-ink);line-height:1.5;}
+  .cev-card:hover .cc-top b{color:#1e5230;}
+  .cev-card .cc-meta{display:block;margin-top:3px;font-size:11.5px;color:#98a89d;}
+  .cev-card .cc-meta em{font-style:normal;color:#1e5230;font-weight:600;}
+  .cev-card .cc-line{display:block;margin-top:6px;font-size:12px;color:#5f6f65;line-height:1.65;
+    padding-left:8px;border-left:2px solid #e3ede6;}
+  .cev-card .cc-go{display:block;margin-top:7px;font-size:11.5px;color:#a9bbaf;letter-spacing:.04em;}
+  .cev-card:hover .cc-go{color:#1e5230;}
+
+  /* 한눈에 보기 제목 오른쪽 자리 */
+  .dash .sec-head{align-items:flex-start;gap:34px;}
+  .dash .sec-head .t{flex:none;}
+  .cal-side{flex:1 1 auto;min-width:0;background:#fff;border:1px solid #dfe9e1;
+    border-radius:6px;padding:14px 18px 16px;}
+  @media(max-width:860px){
+    .dash .sec-head{flex-direction:column;gap:20px;}
+    .cal-side{width:100%;}
+  }
 </style>
 </head>
 <body>
@@ -573,6 +657,7 @@
   <div class="container">
     <div class="sec-head">
       <div class="t"><span class="en">At a Glance</span><h2>한눈에 보기</h2></div>
+      <div class="cal-side"><div id="calTop"></div></div>
     </div>
     <div class="dash-grid">
 
@@ -1147,6 +1232,11 @@
 </footer>
 
 <script type="module">
+
+import { initCalendar } from "/YB/board/calendar.js?v=112";
+
+// ─── 일정 달력 ───
+initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 
 // 최근 게시글 (학생회)
@@ -1213,7 +1303,7 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=111");
+  const { initCouncil } = await import("/YB/council.js?v=112");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
