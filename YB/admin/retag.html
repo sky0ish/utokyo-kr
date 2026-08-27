@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>말머리 정리 | 도쿄대학 한국인학생회</title>
+<link rel="icon" href="/YB/images/yb_emblem.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f6f3ec;color:#2f2a1d;font-size:15px;line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+  .top{background:#123524;color:#f3ede0;padding:22px 0;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px;}
+  .top h1{font-size:22px;font-weight:500;}
+  .top p{font-size:13px;color:#a9b2c4;margin-top:4px;}
+  .top .links{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;}
+  .top .links a{color:#bfe8c2;border-bottom:1px solid transparent;}
+  .top .links a:hover{border-color:#bfe8c2;}
+
+  .card{background:#fff;border:1px solid #e6dfcb;border-radius:10px;padding:22px 24px;margin:24px 0;}
+  h2{font-size:17px;font-weight:500;color:#4a3c14;margin-bottom:4px;}
+  .sub{font-size:13px;color:#a09a86;margin-bottom:16px;}
+  select{padding:9px 12px;border:1px solid #ddd6c4;border-radius:7px;
+    font-family:inherit;font-size:14px;background:#fffdf8;color:#2f2a1d;}
+  .btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #ddd6c4;background:#fff;color:#4a3c14;}
+  .btn:hover{border-color:#c9a961;}
+  .btn.dark{background:#123524;border-color:#123524;color:#f3ede0;}
+  .btn.go{background:#c9a961;border-color:#b5934a;color:#2f2a1d;font-weight:600;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .msg{margin-top:12px;font-size:13.5px;color:#7d7768;min-height:20px;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+  .note{background:#f9f5ea;border:1px solid #eee6d2;border-radius:8px;padding:12px 15px;
+    font-size:13px;color:#6f6a5c;margin-top:14px;}
+  .empty{padding:34px 0;text-align:center;color:#a09a86;font-size:14px;}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{text-align:left;font-weight:500;font-size:12px;color:#a09a86;
+    border-bottom:1px solid #e6dfcb;padding:0 8px 8px;}
+  td{border-bottom:1px solid #f4f0e8;padding:9px 8px;vertical-align:middle;}
+  tr.hit{background:#fdf6e6;}
+  td.tt{max-width:520px;}
+  td.tt b{font-weight:400;}
+  td.tt small{display:block;color:#a8a291;font-size:11.5px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:520px;}
+  .cur{display:inline-block;background:#eef1f6;color:#3d4453;border-radius:100px;
+    padding:1px 10px;font-size:12px;}
+  .arrow{color:#c3bca8;padding:0 2px;}
+  td select{padding:5px 8px;font-size:13px;}
+  .why{font-size:11.5px;color:#8a6d2b;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <h1>말머리 정리</h1>
+    <p>말머리가 잘못 붙은 글을 찾아 제자리로 옮깁니다 (운영진 전용)</p>
+    <div class="links">
+      <a href="/YB/board.html">게시판</a>
+      <a href="members.html">회원 관리</a>
+      <a href="gallery.html">갤러리 관리</a>
+      <a href="/YB/index.html">학생회 홈</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+    <div class="card">
+      <h2>어느 게시판을 살펴볼까요?</h2>
+      <p class="sub">글의 제목과 내용을 훑어 더 어울리는 말머리를 골라 보여드립니다.</p>
+      <div class="row">
+        <select id="cat"></select>
+        <select id="tag"></select>
+        <button class="btn dark" id="scan">찾아보기</button>
+      </div>
+      <div class="msg" id="msg"></div>
+      <div class="note">
+        고른 말머리를 단 글만 보여드립니다. <b>바꿀 말머리는 사람이 마지막으로 정합니다</b> —
+        기계가 고른 것은 어디까지나 제안이니 목록을 한 번 훑어보시고 저장해주세요.
+      </div>
+    </div>
+
+    <div class="card" id="resCard" style="display:none;">
+      <h2>옮길 글</h2>
+      <p class="sub">체크한 글만 바뀝니다. 말머리는 칸을 눌러 직접 고르실 수 있습니다.</p>
+      <div class="row" style="margin-bottom:12px;">
+        <button class="btn" id="all">제안된 것 모두 고르기</button>
+        <button class="btn" id="none">모두 풀기</button>
+      </div>
+      <table id="tbl"></table>
+      <div class="row" style="margin-top:18px;">
+        <button class="btn go" id="save">고른 글 말머리 바꾸기</button>
+        <span class="msg" id="saveMsg" style="margin:0;"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
+
+const ORG = "YB";
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// 게시판 이름 — 위 메뉴와 같은 말로
+const CAT_OB = { notice:"공지사항", free:"자유게시판", club:"소모임",
+                 mentoring:"멘토멘티(OB/YB)", promo:"홍보·채용", condolence:"경조사",
+                 forum:"포럼·세미나", suggest:"동문회에 바란다" };
+const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보",
+                 parttime:"아르바이트", market:"벼룩시장",
+                 mentoring:"멘토멘티(OB/YB)", suggest:"동문회에 바란다" };
+
+// 말머리 — 글쓰기 화면과 똑같이
+const TAGS_OB = {
+  free: ["일상", "질문", "정보공유", "후기", "기타"],
+  club: ["운영진", "골프", "등산", "전공별", "친목", "기타"],
+  mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
+              "만남의 광장", "유학", "운영관리", "기타"],
+  promo: ["저서", "논문·연구", "상품", "기업", "채용", "행사", "기타"],
+  condolence: ["부고", "결혼", "출산", "축하", "기타"],
+  notice: ["총회", "회비", "행사", "안내", "기타"],
+  forum: ["건축학", "농학생명", "공학", "인문사회", "약학", "의학",
+          "세미나", "학술", "산업", "한일교류", "기타"],
+  suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"],
+};
+const TAGS_YB = {
+  notice: ["학생회", "행사", "장학", "안내"],
+  free: ["일상", "질문", "정보공유", "후기"],
+  qna: ["입학", "비자·체류", "생활", "학업", "기타"],
+  jobs: ["신입", "경력", "인턴", "설명회"],
+  parttime: ["단기", "장기", "과외", "번역·통역"],
+  market: ["삽니다", "팝니다", "나눔", "구합니다"],
+  mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"],
+  suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"],
+};
+const CAT  = ORG === "YB" ? CAT_YB  : CAT_OB;
+const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
+
+// 말머리를 알아보는 낱말 — 앞에 있는 것일수록 힘이 셉니다
+const HINT = {
+  "골프":   ["골프", "라운딩", "라운드", "은행회", "필드", "홀인원", "티업", "cc "],
+  "등산":   ["등산", "산행", "북악산", "관악산", "인왕산", "청계산", "둘레길", "트레킹", "산악"],
+  "전공별": ["전공", "학과", "학부", "연구과", "의약생명", "공학", "인문", "농학", "약학"],
+  "운영진": ["임원", "운영진", "이사회", "간사", "총무", "회칙", "정관"],
+  "친목":   ["친목", "식사", "회식", "나들이", "번개", "송년", "신년회"],
+  "부고":   ["부고", "별세", "빈소", "발인", "조문", "상"],
+  "결혼":   ["결혼", "혼인", "예식", "청첩"],
+  "출산":   ["출산", "득남", "득녀", "돌잔치"],
+  "총회":   ["총회", "정기총회"],
+  "회비":   ["회비", "납부", "입금"],
+  "행사":   ["행사", "기념", "축제"],
+  "채용":   ["채용", "구인", "모집", "지원자"],
+  "논문·연구": ["논문", "연구", "학술지", "게재"],
+  "저서":   ["저서", "출간", "책", "출판"],
+  "세미나": ["세미나", "심포지엄", "강연"],
+  "학술":   ["학술", "포럼", "학회"],
+  "한일교류": ["한일", "교류", "일본대사관"],
+  "질문":   ["질문", "여쭙", "궁금"],
+  "후기":   ["후기", "다녀왔", "참석했"],
+  "정보공유": ["공유", "안내드립니다", "정보"],
+};
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+if (!me || !me.is_admin) {
+  document.getElementById("gate").innerHTML =
+    '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="/YB/auth/login.html">로그인</a></div>';
+} else {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  start();
+}
+
+function start() {
+  const catSel = document.getElementById("cat");
+  const tagSel = document.getElementById("tag");
+  const msg    = document.getElementById("msg");
+  const tbl    = document.getElementById("tbl");
+  const card   = document.getElementById("resCard");
+  let rows = [];
+
+  catSel.innerHTML = Object.keys(TAGS).filter(c => CAT[c])
+    .map(c => `<option value="${c}"${c === "free" ? " selected" : ""}>${CAT[c]}</option>`).join("");
+
+  const fillTags = () => {
+    const list = TAGS[catSel.value] || [];
+    tagSel.innerHTML = '<option value="">말머리 — 전체</option>' +
+      list.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
+    if (catSel.value === "club") tagSel.value = "친목";
+  };
+  fillTags();
+  catSel.addEventListener("change", () => { fillTags(); card.style.display = "none"; });
+
+  /** 제목 앞의 [말머리] 를 떼어낸다 */
+  const headOf = (t) => {
+    const m = String(t || "").match(/^\s*\[([^\]]+)\]/);
+    return m ? m[1].trim() : "";
+  };
+  const bodyOf = (t) => String(t || "").replace(/^\s*\[[^\]]*\]\s*/, "");
+
+  /** 제목·내용을 훑어 더 어울리는 말머리를 고른다 */
+  function guess(p, list, cur) {
+    const text = (bodyOf(p.title) + " " + String(p.content || "")
+      .replace(/<[^>]*>/g, " ")).toLowerCase().slice(0, 1200);
+    let best = "", score = 0, hit = "";
+    list.forEach(t => {
+      if (t === cur || t === "기타") return;
+      const words = HINT[t] || [t];
+      let n = 0, first = "";
+      words.forEach(w => {
+        const k = text.split(w.toLowerCase()).length - 1;
+        if (k > 0 && !first) first = w;
+        n += k;
+      });
+      // 제목에 있으면 한 번 더 쳐준다
+      const inTitle = words.some(w => bodyOf(p.title).toLowerCase().indexOf(w.toLowerCase()) > -1);
+      if (inTitle) n += 2;
+      if (n > score) { score = n; best = t; hit = first; }
+    });
+    return score >= 2 ? { tag: best, why: hit } : { tag: "", why: "" };
+  }
+
+  document.getElementById("scan").addEventListener("click", async () => {
+    const cat = catSel.value, tag = tagSel.value;
+    msg.className = "msg"; msg.textContent = "찾는 중…";
+    card.style.display = "none";
+
+    const r = await sb.from("posts")
+      .select("id,title,content,created_at,author_name")
+      .eq("org", ORG).eq("category", cat)
+      .order("created_at", { ascending: false }).limit(1000);
+    if (r.error) { msg.className = "msg err"; msg.textContent = "불러오지 못했습니다: " + r.error.message; return; }
+
+    const list = TAGS[cat] || [];
+    rows = (r.data || [])
+      .filter(p => !tag || headOf(p.title) === tag)
+      .map(p => ({ ...p, cur: headOf(p.title), g: guess(p, list, headOf(p.title)) }));
+
+    const n = rows.filter(p => p.g.tag).length;
+    msg.className = "msg ok";
+    msg.textContent = `${rows.length}건 가운데 ${n}건이 다른 말머리에 어울려 보입니다.`;
+    draw();
+    card.style.display = "block";
+  });
+
+  function draw() {
+    const list = TAGS[catSel.value] || [];
+    tbl.innerHTML = "<thead><tr><th style='width:34px;'></th><th>글</th>" +
+      "<th style='width:230px;'>말머리</th><th style='width:96px;'>쓴 날</th></tr></thead><tbody>" +
+      rows.map((p, i) => {
+        const to = p.g.tag || p.cur;
+        return `<tr class="${p.g.tag ? "hit" : ""}">
+          <td><input type="checkbox" data-i="${i}"${p.g.tag ? " checked" : ""}></td>
+          <td class="tt"><b>${esc(bodyOf(p.title))}</b>
+            <small>${esc(String(p.content || "").replace(/<[^>]*>/g, " ")
+                       .replace(/\s+/g, " ").slice(0, 90))}</small></td>
+          <td><span class="cur">${esc(p.cur || "없음")}</span><span class="arrow">→</span>
+            <select data-t="${i}">${list.map(t =>
+              `<option value="${esc(t)}"${t === to ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+            ${p.g.why ? `<div class="why">「${esc(p.g.why)}」 때문에</div>` : ""}</td>
+          <td style="color:#a8a291;font-size:12px;">${(p.created_at || "").slice(0, 10)}</td>
+        </tr>`;
+      }).join("") + "</tbody>";
+  }
+
+  const boxes = () => [...tbl.querySelectorAll("input[type=checkbox]")];
+  document.getElementById("all").addEventListener("click", () =>
+    boxes().forEach(b => { b.checked = !!rows[+b.dataset.i].g.tag; }));
+  document.getElementById("none").addEventListener("click", () =>
+    boxes().forEach(b => { b.checked = false; }));
+
+  document.getElementById("save").addEventListener("click", async () => {
+    const btn = document.getElementById("save");
+    const out = document.getElementById("saveMsg");
+    const jobs = boxes().filter(b => b.checked).map(b => {
+      const i = +b.dataset.i;
+      const to = tbl.querySelector(`select[data-t="${i}"]`).value;
+      return { p: rows[i], to };
+    }).filter(j => j.to && j.to !== j.p.cur);
+
+    if (!jobs.length) { out.className = "msg err"; out.textContent = "바꿀 글을 골라주세요."; return; }
+    if (!confirm(`${jobs.length}건의 말머리를 바꿉니다. 계속할까요?`)) return;
+
+    btn.disabled = true;
+    let ok = 0, err = null;
+    for (const j of jobs) {
+      const title = "[" + j.to + "] " + bodyOf(j.p.title);
+      const u = await sb.from("posts").update({ title }).eq("id", j.p.id);
+      if (u.error) { err = u.error; break; }
+      j.p.title = title; j.p.cur = j.to; j.p.g = { tag: "", why: "" };
+      ok++;
+      out.className = "msg"; out.textContent = `바꾸는 중… ${ok}/${jobs.length}`;
+    }
+    btn.disabled = false;
+    if (err) { out.className = "msg err"; out.textContent = `${ok}건까지 바꾸고 멈췄습니다: ${err.message}`; }
+    else { out.className = "msg ok"; out.textContent = `${ok}건을 옮겼습니다.`; }
+    draw();
+  });
+}
+</script>
+</body>
+</html>

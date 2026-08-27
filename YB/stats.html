@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=136">
+<link rel="stylesheet" href="/YB/board/board.css?v=137">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -170,7 +170,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=136";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=137";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -598,6 +598,27 @@ async function start() {
 
   drawYears();
   draw(); drawTop(); drawRank();
+
+  // 운영진에게는 회원 관리 화면과 같은 「활동 통계」 칸을 아래에 함께 보여드립니다
+  if (me.is_admin) {
+    const sec = document.createElement("div");
+    sec.innerHTML =
+      '<div class="sec2"><h3>활동 통계 <span style="font-size:12px;color:#a09a86;">운영진</span></h3>' +
+      '<small>소속을 눌러 OB · YB 를 따로 봅니다 · 가중치도 여기서 고치실 수 있습니다</small></div>' +
+      '<div class="acthost"></div>';
+    box.appendChild(sec);
+    try {
+      const [mod, pr] = await Promise.all([
+        import("/YB/admin/activity-card.js?v=137"),
+        sb.from("profiles").select("id,name,is_admin,member_type"),
+      ]);
+      mod.mountActivity(sec.querySelector(".acthost"),
+                        { org, members: pr.data || [] });
+    } catch (e) {
+      sec.querySelector(".acthost").innerHTML =
+        '<p class="myrank">활동 통계를 불러오지 못했습니다.</p>';
+    }
+  }
 }
 </script>
 
