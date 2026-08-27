@@ -10,7 +10,7 @@ export async function initBoard(ORG) {
 
 
   // ── 조직별 게시판 구성 ──
-  const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티(OB/YB)", promo:"홍보·채용", condolence:"경조사",
+  const CAT_OB = { notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", promo:"홍보·채용", condolence:"경조사",
                    forum:"포럼·세미나",
                    jobs:"구인", faculty:"단과대별", news:"소식", market:"장터",
                    suggest:"동문회에 바란다" };
@@ -35,10 +35,8 @@ export async function initBoard(ORG) {
   // ── 큰 제목 : 지금 보고 있는 게시판 이름으로 (참여마당에서 들어와도 「소모임 게시판」임이 한눈에) ──
   const bannerH1 = document.querySelector(".banner h1");
   const baseTitle = ORG === "YB" ? " | 도쿄대학 한국인학생회" : " | 재한 도쿄대학 총동문회";
-  const boardName = (c) => {
-    const n = CAT[c] || "";
-    return !n ? "게시판" : (/게시판$/.test(n) ? n : n + " 게시판");
-  };
+  // 큰 제목은 갈래 이름 그대로 (위 메뉴와 같은 말이 보이도록)
+  const boardName = (c) => CAT[c] || "게시판";
   const purposeEl = document.getElementById("boardPurpose");
   /** 설명 줄 — 말머리를 고르면 게시판이 아니라 그 말머리를 설명합니다 */
   function sayPurpose() {
