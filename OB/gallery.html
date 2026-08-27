@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=138">
+<link rel="stylesheet" href="/OB/board/board.css?v=139">
 <style>
   /* 상단바·메뉴·배너를 사진 열과 같은 폭으로 (기본 960px → 1180px) */
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
@@ -145,7 +145,7 @@
        (cover 로 하면 좁은 화면에서 옆으로 당겨져 사람 다리가 잘렸습니다) */
     /* 게시판 배너와 같은 5.66:1 — 좌우로 넓힌 그림이라 한 점도 안 잘린다 */
     background:linear-gradient(rgba(8,14,24,.44),rgba(8,14,24,.08) 52%,rgba(8,14,24,.18)),
-               url('/OB/images/ob_gallery_wide.jpg?v=138') center/contain no-repeat,
+               url('/OB/images/ob_gallery_wide.jpg?v=139') center/contain no-repeat,
                #16212e;
     aspect-ratio:3804/576;height:auto;min-height:88px;
     display:flex;flex-direction:column;justify-content:flex-start;
@@ -296,10 +296,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=138"></script>
+<script src="gallery-data.js?v=139"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=138";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=139";
 
 let cur = new URLSearchParams(location.search).get("cat") || "assembly";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";
@@ -307,10 +307,14 @@ if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "assembly";
 // ── 회원만 볼 수 있는 분류 ──
 const MEMBER_ONLY = ["staff", "club", "faculty", "forum", "old", "daily"];
 let isMember = false;
+let otherOrg = false;              // 다른 쪽 단체 회원이신가
 try {
   const u0 = await currentUser();
   const p0 = u0 ? await myProfile() : null;
-  isMember = !!(p0 && (p0.approved || p0.is_admin));
+  // 제 쪽 회원만 — 다른 단체 회원께는 누구나 보는 갈래만 보여드립니다
+  const side0 = (p0 && p0.member_type) === "YB" ? "YB" : "OB";
+  otherOrg = !!(p0 && !p0.is_admin && side0 !== "OB");
+  isMember = !!(p0 && (p0.approved || p0.is_admin) && !otherOrg);
 } catch (e) {}
 const locked = (c) => !isMember && MEMBER_ONLY.includes(c);
 const OPEN = CATS.filter(([k]) => !locked(k));
@@ -319,7 +323,11 @@ const lockedNow = locked(cur);
 if (!isMember) {
   const n = document.getElementById("memnote");
   n.className = "memnote on";
-  n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
+  n.innerHTML = otherOrg
+    ? '<b>재한 도쿄대학 총동문회 회원 전용 갤러리입니다.</b> ' +
+      '도쿄대학 한국인학생회 회원께는 누구나 보실 수 있는 갈래만 보여드립니다. ' +
+      '<a href="/YB/gallery.html">도쿄대학 한국인학생회 갤러리로</a>'
+    : '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
     ' <a href="/OB/auth/login.html">로그인</a> · <a href="/OB/auth/signup.html">회원가입</a>';
 }
 
@@ -800,7 +808,7 @@ function setupNewAlbum(user, me) {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=138";
+  import { applyMenu } from "/OB/board/nav.js?v=139";
   applyMenu("OB");
 </script>
 </body>

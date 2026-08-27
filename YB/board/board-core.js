@@ -161,12 +161,20 @@ export async function initBoard(ORG) {
   drawTagTabs();
   sayPurpose();
 
+  const HOME_NAME  = "도쿄대학 한국인학생회";
+  const OTHER_NAME = "재한 도쿄대학 총동문회";
+  const OTHER_HOME = "/OB";
+
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
   const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다
   let memberOnlyBlocked = null;
+  let otherOrg = false;              // 다른 쪽 단체 회원이신가
   const user = await currentUser();
   if (user) {
     const p = await myProfile();
+    // 제 쪽 사람만 회원 전용 게시판을 봅니다 (운영진은 양쪽 모두)
+    const side = (p && p.member_type) === "YB" ? "YB" : "OB";
+    otherOrg = !!(p && !p.is_admin && side !== ORG);
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
     const st = document.createElement("span");
@@ -194,12 +202,16 @@ export async function initBoard(ORG) {
                 mk("/YB/admin/gallery.html", "⚙ 갤러리 관리"));
       el.append(mk("/YB/admin/index.html", "⚙ 글 가져오기"));
     }
-  } else {
+  }
+
+  if (!user || otherOrg) {
     const ln = document.getElementById("loginNotice");
     ln.className = "on";
     document.getElementById("catTabs").appendChild(ln);
-    ln.innerHTML =
-      `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b> ` +
+    ln.innerHTML = otherOrg
+      ? `<b>${HOME_NAME} 회원 전용 게시판입니다.</b> ` +
+        `${OTHER_NAME} 회원께는 누구나 보실 수 있는 게시판만 보여드립니다.`
+      : `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b> ` +
       '<a href="/YB/auth/login.html">로그인</a> · <a href="/YB/auth/signup.html">회원가입</a>';
     // 회원 전용 탭과 「전체」 탭 숨기기
     document.querySelectorAll("#catTabs a[data-cat]").forEach(a => {
@@ -233,6 +245,15 @@ export async function initBoard(ORG) {
 
   async function load(append = false, keepTotal = false) {
     if (memberOnlyBlocked) {   // 비로그인 상태에서 회원 전용 게시판 요청
+      if (otherOrg) {
+        listEl.innerHTML = `<div class="empty"><b>${memberOnlyBlocked}</b> 게시판은 ` +
+          `${HOME_NAME} 회원 전용입니다.<br>` +
+          `${OTHER_NAME} 회원께는 열려 있지 않습니다.<br><br>` +
+          `<a class="btn dark" href="${OTHER_HOME}/board.html">${OTHER_NAME} 게시판으로</a></div>`;
+        moreBox.style.display = "none";
+        document.getElementById("statBox").innerHTML = "";
+        return;
+      }
       listEl.innerHTML = `<div class="empty"><b>${memberOnlyBlocked}</b> 게시판은 회원 전용입니다.<br><br>` +
         '<a class="btn dark" href="/YB/auth/login.html">로그인</a> ' +
         '<a class="btn line" href="/YB/auth/signup.html">회원가입</a></div>';

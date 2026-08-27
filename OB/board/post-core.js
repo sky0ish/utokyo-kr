@@ -241,6 +241,16 @@ function linkify(s) {
   // 학생회 글이면 화면을 학생회 것으로 (초록 화면에 총동문회 메뉴가 남지 않도록)
   applyNav(ORG, ORG === "YB" ? "게시글 | 도쿄대학 한국인학생회"
                                : "게시글 | 재한 도쿄대학 총동문회");
+  // 제 쪽 회원만 — 다른 단체 회원께는 누구나 보는 글만 보여드립니다
+  const meP = user ? await myProfile() : null;
+  const side = (meP && meP.member_type) === "YB" ? "YB" : "OB";
+  const otherOrg = !!(meP && !meP.is_admin && side !== ORG);
+  if (p && otherOrg && p.visibility !== "public") {
+    box.innerHTML = '<div class="empty"><b>재한 도쿄대학 총동문회</b> 회원 전용 글입니다.<br>' +
+      '도쿄대학 한국인학생회 회원께는 열려 있지 않습니다.<br><br>' +
+      '<a class="btn dark" href="/YB/board.html">도쿄대학 한국인학생회 게시판으로</a></div>';
+    return;
+  }
   if (error || !p) {
     box.innerHTML = '<div class="empty">글을 찾을 수 없거나 열람 권한이 없습니다.<br><br><a class="btn line" href="' + HOME + '/board.html">목록으로</a>' +
       (user ? "" : ' <a class="btn dark" href="/OB/auth/login.html">로그인</a>') + '</div>';

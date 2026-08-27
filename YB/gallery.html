@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=138">
+<link rel="stylesheet" href="/YB/board/board.css?v=139">
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -266,22 +266,30 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=138";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=139";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
 
 const G = await loadGallery();
 let isMember = false;
+let otherOrg = false;              // 다른 쪽 단체 회원이신가
 try {
   const u0 = await currentUser();
   const p0 = u0 ? await myProfile() : null;
-  isMember = !!(p0 && (p0.approved || p0.is_admin));
+  // 제 쪽 회원만 — 다른 단체 회원께는 누구나 보는 갈래만 보여드립니다
+  const side0 = (p0 && p0.member_type) === "YB" ? "YB" : "OB";
+  otherOrg = !!(p0 && !p0.is_admin && side0 !== "YB");
+  isMember = !!(p0 && (p0.approved || p0.is_admin) && !otherOrg);
 } catch (e) {}
 if (!isMember) {
   const n = document.getElementById("memnote");
   n.className = "memnote on";
-  n.innerHTML = '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
+  n.innerHTML = otherOrg
+    ? '<b>도쿄대학 한국인학생회 회원 전용 갤러리입니다.</b> ' +
+      '재한 도쿄대학 총동문회 회원께는 누구나 보실 수 있는 갈래만 보여드립니다. ' +
+      '<a href="/OB/gallery.html">재한 도쿄대학 총동문회 갤러리로</a>'
+    : '<b>회원으로 가입하셔야 나머지 갤러리 정보를 보실 수 있습니다.</b>' +
     ' <a href="/YB/auth/login.html">로그인</a> · <a href="/YB/auth/signup.html">회원가입</a>';
   if (cur === "all") cur = "assembly";        // 비회원은 「전체」 대신 총회부터
 }
@@ -615,7 +623,7 @@ function setupNewAlbum(user, me) {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=138";
+  import { applyMenu } from "/YB/board/nav.js?v=139";
   applyMenu("YB");
 </script>
 </body>
