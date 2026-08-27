@@ -264,3 +264,14 @@ body.yb .sec-head .t h2,
 .cmt-edit textarea:focus{border-color:#8a6d2b;}
 .cmt-edit-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
 .cmt-edit-row .btn.sm{padding:7px 16px;font-size:13px;}
+
+  /* 이 게시판·말머리가 무엇을 받는 곳인지 */
+  .whatfor{margin:8px 0 0;padding:9px 14px;border-radius:8px;font-size:13px;line-height:1.7;
+    background:#fdfaf2;border:1px solid #e6dfcb;color:#7d7768;}
+  .whatfor b{color:#4a3c14;font-weight:600;}
+  .whatfor:empty{display:none;}
+
+  /* 이 게시판이 무엇을 올리는 곳인가 */
+  .banner .bpurpose{margin:8px 0 0;font-size:14px;line-height:1.7;color:#6f6a5c;
+    max-width:56ch;text-shadow:0 1px 3px rgba(255,255,255,.7);}
+  .banner .bpurpose:empty{display:none;}

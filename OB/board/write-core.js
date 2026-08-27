@@ -2,6 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
+import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=96";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -57,7 +58,8 @@ export async function initWrite(ORG) {
     const TAGS_OB = {
       free: ["일상", "질문", "정보공유", "후기", "기타"],
       club: ["운영진", "골프", "등산", "전공별", "친목", "기타"],
-      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학", "운영관리", "기타"],
+      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
+                  "만남의 광장", "유학", "운영관리", "기타"],
       promo: ["저서", "논문·연구", "상품", "기업", "채용", "행사", "기타"],
       condolence: ["부고", "결혼", "출산", "축하", "기타"],
       notice: ["총회", "회비", "행사", "안내", "기타"],
@@ -84,8 +86,19 @@ export async function initWrite(ORG) {
     const catPick = document.getElementById("catPick");
     const tagPick = document.getElementById("tagPick");
 
+    /** 이 게시판·말머리가 무엇을 받는 곳인지 알려준다 */
+    function sayWhatFor() {
+      const el = document.getElementById("whatFor");
+      if (!el) return;
+      const bd = boardInfo(category);
+      const tg = headTag ? tagInfo(category, headTag) : "";
+      el.innerHTML = (bd ? `<b>${CATS[category] || ""}</b> — ${bd}` : "") +
+        (tg ? `<br><b>[${headTag}]</b> ${tg}` : "");
+    }
+
     function renderTags() {
       const list = TAGS[category] || [];
+      sayWhatFor();
       tagPick.classList.toggle("need", !headTag);   // 미선택 시 연초록 강조
       tagPick.innerHTML = list.map(t => `<a href="#" data-v="${t}"${t === headTag ? ' class="on"' : ''}>${t}</a>`).join("");
       tagPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => {

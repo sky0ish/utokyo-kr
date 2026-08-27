@@ -2,6 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 import { applyNav } from "/YB/board/nav.js?v=10";
+import { boardInfo, tagInfo } from "/YB/board/board-info.js?v=96";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -57,7 +58,8 @@ export async function initWrite(ORG) {
     const TAGS_OB = {
       free: ["일상", "질문", "정보공유", "후기"],
       club: ["골프", "등산", "전공별", "친목", "기타"],
-      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"],
+      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
+                  "만남의 광장", "유학", "기타"],
       promo: ["저서", "논문·연구", "상품", "기업", "채용", "행사"],
       condolence: ["부고", "결혼", "출산", "축하"],
       notice: ["총회", "회비", "행사", "안내"],
@@ -65,13 +67,14 @@ export async function initWrite(ORG) {
       seminar: ["학술", "산업", "한일교류", "기타"]
     };
     const TAGS_YB = {
-      notice: ["학생회", "행사", "장학", "안내"],
-      free: ["일상", "질문", "정보공유", "후기"],
+      notice: ["학생회", "행사", "장학", "안내", "기타"],
+      free: ["일상", "질문", "정보공유", "후기", "기타"],
       qna: ["입학", "비자·체류", "생활", "학업", "기타"],
-      jobs: ["신입", "경력", "인턴", "설명회"],
-      parttime: ["단기", "장기", "과외", "번역·통역"],
-      market: ["삽니다", "팝니다", "나눔", "구합니다"],
-      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"]
+      jobs: ["신입", "경력", "인턴", "설명회", "기타"],
+      parttime: ["단기", "장기", "과외", "번역·통역", "기타"],
+      market: ["삽니다", "팝니다", "나눔", "구합니다", "기타"],
+      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
+                  "만남의 광장", "유학", "기타"]
     };
     const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
 
@@ -84,8 +87,19 @@ export async function initWrite(ORG) {
     const catPick = document.getElementById("catPick");
     const tagPick = document.getElementById("tagPick");
 
+    /** 이 게시판·말머리가 무엇을 받는 곳인지 알려준다 */
+    function sayWhatFor() {
+      const el = document.getElementById("whatFor");
+      if (!el) return;
+      const bd = boardInfo(category);
+      const tg = headTag ? tagInfo(category, headTag) : "";
+      el.innerHTML = (bd ? `<b>${CATS[category] || ""}</b> — ${bd}` : "") +
+        (tg ? `<br><b>[${headTag}]</b> ${tg}` : "");
+    }
+
     function renderTags() {
       const list = TAGS[category] || [];
+      sayWhatFor();
       tagPick.classList.toggle("need", !headTag);   // 미선택 시 연초록 강조
       tagPick.innerHTML = list.map(t => `<a href="#" data-v="${t}"${t === headTag ? ' class="on"' : ''}>${t}</a>`).join("");
       tagPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => {

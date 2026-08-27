@@ -3,6 +3,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/YB/board/nav.js?v=10";
+import { boardInfo } from "/YB/board/board-info.js?v=96";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -37,9 +38,12 @@ export async function initBoard(ORG) {
     const n = CAT[c] || "";
     return !n ? "게시판" : (/게시판$/.test(n) ? n : n + " 게시판");
   };
+  const purposeEl = document.getElementById("boardPurpose");
   function setBoardTitle(c) {
     if (bannerH1) bannerH1.textContent = boardName(c);
     document.title = boardName(c) + baseTitle;
+    // 「전체」를 볼 때는 갈래가 여럿이라 안내를 비웁니다
+    if (purposeEl) purposeEl.textContent = c ? boardInfo(c) : "";
   }
 
   const SRC = {

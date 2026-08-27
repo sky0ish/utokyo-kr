@@ -329,3 +329,14 @@ body.yb .pager a.off{opacity:.38;pointer-events:none;}
 .cmt-edit textarea:focus{border-color:#2a6b40;}
 .cmt-edit-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
 .cmt-edit-row .btn.sm{padding:7px 16px;font-size:13px;}
+
+  /* 이 게시판·말머리가 무엇을 받는 곳인지 */
+  .whatfor{margin:8px 0 0;padding:9px 14px;border-radius:8px;font-size:13px;line-height:1.7;
+    background:#f4faf5;border:1px solid #dfe9e1;color:#6f7d73;}
+  .whatfor b{color:#1e5230;font-weight:600;}
+  .whatfor:empty{display:none;}
+
+  /* 이 게시판이 무엇을 올리는 곳인가 */
+  .banner .bpurpose{margin:8px 0 0;font-size:14px;line-height:1.7;color:#5f6f65;
+    max-width:56ch;text-shadow:0 1px 3px rgba(255,255,255,.7);}
+  .banner .bpurpose:empty{display:none;}
