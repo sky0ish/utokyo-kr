@@ -21,6 +21,7 @@
     <select id="f_type">
       <option value="YB">YB — 재학생 (한국인학생회)</option>
       <option value="OB">OB — 졸업생 (재한 도쿄대학 총동문회)</option>
+      <option value="GUEST">비동문 — 준회원 (도쿄대학 출신이 아닌 분)</option>
     </select>
 
     <div class="row2">
@@ -76,7 +77,8 @@ if (!user) {
   } else {
     st.textContent = (p.name || "회원") + "님, 가입 정보를 확인하고 수정하실 수 있습니다.";
     document.getElementById("f_name").value = p.name || "";
-    document.getElementById("f_type").value = p.member_type === "YB" ? "YB" : "OB";
+    document.getElementById("f_type").value =
+      ["YB", "OB", "GUEST"].includes(p.member_type) ? p.member_type : "OB";
     document.getElementById("f_faculty").value = p.faculty || "";
     document.getElementById("f_grad").value = p.grad_year || "";
     document.getElementById("f_company").value = p.company || "";

@@ -399,13 +399,15 @@ async function start() {
     document.getElementById("listMsg").textContent =
       (() => {
         const inOrg = rows.filter(byOrg);
-        const who = orgF === "OB" ? "재한 도쿄대학 총동문회(OB)" : orgF === "YB" ? "도쿄대학 한국인학생회(YB)" : "도쿄대학 한국인 총동문회(전체)";
+        const who = orgF === "OB" ? "재한 도쿄대학 총동문회(OB)" : orgF === "YB" ? "도쿄대학 한국인학생회(YB)" : orgF === "GUEST" ? "비동문 준회원" : "도쿄대학 한국인 총동문회(전체)";
         const ob = rows.filter(r => r.member_type === "OB").length;
         const yb = rows.filter(r => r.member_type === "YB").length;
+        const gu = rows.filter(r => r.member_type === "GUEST").length;
         return `${who} ${inOrg.length}명 · 승인 ${inOrg.filter(r=>r.approved).length}명 · ` +
                `대기 ${inOrg.filter(r=>!r.approved).length}명` +
                (filter === "all" ? "" : ` (표시 ${list.length}명)`) +
-               `　—　명부 전체 ${rows.length}명 (총동문회 ${ob} · 학생회 ${yb})`;
+               `　—　명부 전체 ${rows.length}명 (총동문회 ${ob} · 학생회 ${yb}` +
+               (gu ? ` · 비동문 ${gu}` : "") + `)`;
       })();
     const showJob = orgF !== "YB";      // 재학생 명단에는 직장·직급을 두지 않는다
     const t = document.getElementById("tbl");
@@ -430,7 +432,7 @@ async function start() {
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
         <td class="em">${esc(r.email) || "-"}</td>
         <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
-        <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : "ob"}">${r.member_type}</span>` : "-"}</td>
+        <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : r.member_type === "GUEST" ? "wait" : "ob"}">${r.member_type === "GUEST" ? "비동문" : r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         ${showJob ? `<td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>` : ""}
         <td>${(r.created_at || "").slice(0, 10)}</td>
