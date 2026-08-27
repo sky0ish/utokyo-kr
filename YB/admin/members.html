@@ -564,7 +564,8 @@ async function start() {
             ${r.grade_checked_at
                 ? '<button class="btn sm chk2 done" title="다시 확인">확인</button>'
                 : '<button class="btn sm chk2">회원여부 확인</button>'}
-            <button class="btn sm rm" title="회원 정보와 로그인 계정을 지웁니다">명단에서 삭제</button></td>
+            ${r.approved ? "" :
+                '<button class="btn sm rm" title="회원 정보와 로그인 계정을 지웁니다">명단에서 빼기</button>'}</td>
       </tr>`).join("") + "</tbody>";
 
     // ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
@@ -659,12 +660,10 @@ async function start() {
     t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
       const id = b.closest("tr").dataset.id;
       const r = rows.find(x => x.id === id);
-      // 승인 취소는 명단에서 아예 빼는 것으로 (대기로 남겨두지 않습니다)
-      if (r.approved) { await removeMember(r, b); return; }
       b.disabled = true;
-      const { error } = await sb.from("profiles").update({ approved: true }).eq("id", id);
+      const { error } = await sb.from("profiles").update({ approved: !r.approved }).eq("id", id);
       if (error) { alert("변경 실패: " + error.message); b.disabled = false; return; }
-      r.approved = true;
+      r.approved = !r.approved;
       render(); refreshEmails();
     }));
 
