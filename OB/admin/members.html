@@ -127,6 +127,22 @@
   .stat .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;
     margin-right:6px;vertical-align:-1px;}
   .stat .none{padding:26px 0;text-align:center;color:#a8a291;font-size:13.5px;}
+
+  /* 활동 점수 기준 */
+  .wbox{margin-top:18px;padding-top:16px;border-top:1px solid #f0ebe0;}
+  .wbox h3{font-size:14px;font-weight:500;color:#4a3c14;margin-bottom:2px;}
+  .wbox p{font-size:12.5px;color:#7d7768;margin-bottom:10px;}
+  .wrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .wrow label{display:flex;align-items:center;gap:6px;font-size:13px;color:#4a3c14;
+    background:#fff;border:1px solid #ddd6c4;border-radius:8px;padding:6px 10px;}
+  .wrow input{width:56px;padding:5px 7px;border:1px solid #ddd6c4;border-radius:6px;
+    font-family:inherit;font-size:13px;text-align:right;}
+  .wrow .save{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:inherit;border:1px solid #c9a961;background:#c9a961;color:#2b2410;}
+  .wrow .save:disabled{opacity:.5;cursor:default;}
+  .act{white-space:nowrap;font-size:12px;line-height:1.6;}
+  .act b{font-size:14px;color:#4a3c14;}
+  .act span{color:#a8a291;}
 </style>
 </head>
 <body>
@@ -244,16 +260,22 @@
     <!-- 로그인 통계 -->
     <div class="card stat" id="statCard">
       <div class="sh">
-        <h2>로그인 통계</h2>
+        <h2>활동 통계</h2>
         <span class="seg" id="statSeg">
           <a data-m="month" class="on">월별</a><a data-m="year">연별</a>
         </span>
         <span class="cap" id="statCap"></span>
       </div>
+      <span class="seg" id="kindSeg" style="margin-top:6px;"></span>
       <div class="chart" id="statChart"><div class="none">불러오는 중…</div></div>
       <div class="legend">
-        <span><i style="background:#c9a961;"></i>로그인 횟수</span>
-        <span><i style="background:#8fa6c9;"></i>들어온 사람 수</span>
+        <span><i style="background:#c9a961;"></i>활동 수</span>
+        <span><i style="background:#8fa6c9;"></i>사람 수</span>
+      </div>
+      <div class="wbox">
+        <h3>활동 점수 기준</h3>
+        <p>활동마다 몇 점으로 셀지 정합니다. 고치시면 위의 총점과 그래프가 바로 따라옵니다.</p>
+        <div class="wrow" id="wrow"><span style="color:#a8a291;font-size:13px;">불러오는 중…</span></div>
       </div>
     </div>
   </div>
@@ -412,7 +434,7 @@ async function start() {
       org:     r => r.member_type || "",
       faculty: r => ((r.faculty || "") + " " + (r.grad_year || "")).trim(),
       company: r => ((r.company || "") + " " + (r.job_title || "")).trim(),
-      login:   r => (r.login_count || 0),
+      login:   r => scoreOf(ACT.get(r.id)),
       joined:  r => r.created_at || "",
       grade:   r => r.grade || "",
       state:   r => (r.approved ? (isRegrant(r) ? 1 : 0) : 2),
@@ -458,7 +480,7 @@ async function start() {
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty","전공 · 연도"],["company","직장 · 직급"],["login","로그인"],["joined","가입일"],["grade","등급"],["state","상태"]]
+       ["faculty","전공 · 연도"],["company","직장 · 직급"],["login","활동"],["joined","가입일"],["grade","등급"],["state","상태"]]
         .filter(([k]) => k !== "company" || showJob)
         .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
           `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
@@ -471,7 +493,7 @@ async function start() {
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : r.member_type === "GUEST" ? "wait" : "ob"}">${r.member_type === "GUEST" ? "비동문" : r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         ${showJob ? `<td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>` : ""}
-        <td class="em">${r.login_count == null ? "-" : r.login_count + "회"}${r.last_login_at ? `<br><span style="color:#a8a291;font-size:11px;">${String(r.last_login_at).slice(0, 10)}</span>` : ""}</td>
+        <td>${actCell(r.id)}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
         <td>${r.approved
@@ -809,7 +831,7 @@ async function start() {
   const jobCols = () => orgF !== "YB";     // 재학생 명단에는 직장·직급을 넣지 않는다
   const HEADER = () => "이름,이메일,연락처,구분,전공,졸업연도," +
                        (jobCols() ? "직장,직급," : "") +
-                       "로그인,마지막로그인,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
+                       "활동점수,로그인,방문,글읽기,댓글,글쓰기,사진,마지막로그인,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
   /** 전화번호를 010-1234-5678 꼴로 (엑셀이 숫자로 바꿔 앞 0 이 사라지는 것도 막습니다) */
   function phoneText(v) {
     const d = String(v || "").replace(/[^0-9]/g, "");
@@ -823,8 +845,10 @@ async function start() {
 
   const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year]
     .concat(jobCols() ? [r.company, r.job_title] : [])
-    .concat([r.login_count == null ? "" : String(r.login_count),
-             (r.last_login_at || "").slice(0, 10)])
+    .concat((() => { const a = ACT.get(r.id) || {};
+      return [String(Math.round(scoreOf(a))), a.login || 0, a.visit || 0, a.read || 0,
+              a.comment || 0, a.post || 0, a.photo || 0,
+              (r.last_login_at || "").slice(0, 10)].map(String); })())
     .concat([isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
              r.approved ? (isRegrant(r) ? "재승인" : "승인") : "대기",
              (r.created_at || "").slice(0, 10),
@@ -888,13 +912,96 @@ async function start() {
   document.getElementById("csvPick").addEventListener("click", saveCsvPicked);
 
 
+  // ── 활동 기록 (로그인 · 방문 · 글읽기 · 글쓰기 · 댓글 · 사진) ──
+  //   activity_events 를 읽어 사람마다 세고, activity_weights 로 총점을 냅니다.
+  //   가중치는 나중에 정하실 수 있게 표로 빼두었습니다.
+  let ACT = new Map();       // user_id → {login, visit, read, post, comment, photo}
+  let WEIGHT = [];           // [{kind,label,weight,sort}]
+  let EVENTS = null;         // 원본 기록 (그래프용)
+
+  const KIND_NAME = { login: "로그인", visit: "방문", read: "글읽기",
+                      comment: "댓글", post: "글쓰기", photo: "사진" };
+
+  const scoreOf = (a) => WEIGHT.reduce((n, w) => n + (a && a[w.kind] || 0) * (+w.weight || 0), 0);
+
+  async function loadActivity() {
+    const w = await sb.from("activity_weights").select("kind,label,weight,sort").order("sort");
+    WEIGHT = w.error ? [] : (w.data || []);
+
+    const r = await sb.from("activity_events").select("user_id,kind,amount,at").order("at");
+    if (r.error) { EVENTS = null; return r.error; }
+    EVENTS = r.data || [];
+    ACT = new Map();
+    EVENTS.forEach(e => {
+      if (!ACT.has(e.user_id)) ACT.set(e.user_id, {});
+      const a = ACT.get(e.user_id);
+      a[e.kind] = (a[e.kind] || 0) + (e.amount || 1);
+    });
+    return null;
+  }
+
+  function actCell(id) {
+    const a = ACT.get(id);
+    if (!a) return '<span style="color:#c3bca8;">-</span>';
+    const parts = WEIGHT.filter(w => a[w.kind])
+      .map(w => `${KIND_NAME[w.kind] || w.label} ${a[w.kind]}`);
+    return `<div class="act"><b>${Math.round(scoreOf(a))}점</b><br>` +
+           `<span>${parts.join(" · ") || "-"}</span></div>`;
+  }
+
+  function drawWeights() {
+    const box = document.getElementById("wrow");
+    if (!box) return;
+    if (!WEIGHT.length) {
+      box.innerHTML = '<span style="color:#b3453b;font-size:13px;">' +
+        '아직 준비 전입니다 — <b>auth/activity_stats.sql</b> 을 한 번 실행해주세요.</span>';
+      return;
+    }
+    box.innerHTML = WEIGHT.map(w =>
+      `<label>${KIND_NAME[w.kind] || w.label}
+         <input type="number" step="0.5" min="0" data-k="${w.kind}" value="${w.weight}"></label>`).join("") +
+      '<button class="save" id="wSave">점수 기준 저장</button>';
+
+    document.getElementById("wSave").addEventListener("click", async () => {
+      const btn = document.getElementById("wSave");
+      btn.disabled = true; btn.textContent = "저장 중…";
+      const rows = [...box.querySelectorAll("input[data-k]")].map(i => ({
+        kind: i.dataset.k, weight: +i.value || 0,
+      }));
+      let err = null;
+      for (const r of rows) {
+        const u = await sb.from("activity_weights").update({ weight: r.weight }).eq("kind", r.kind);
+        if (u.error) { err = u.error; break; }
+      }
+      btn.disabled = false; btn.textContent = err ? "저장 실패" : "저장됨 ✓";
+      if (err) { alert("점수 기준을 저장하지 못했습니다: " + err.message); return; }
+      rows.forEach(r => { const w = WEIGHT.find(x => x.kind === r.kind); if (w) w.weight = r.weight; });
+      render(); drawStat();
+      setTimeout(() => { btn.textContent = "점수 기준 저장"; }, 1500);
+    });
+  }
+
   // ── 로그인 통계 그래프 ──
   //   login_events 를 월/연으로 묶어 막대그래프로 그립니다. (그림 파일 없이 SVG 로 그립니다)
   {
-    let mode = "month";
+    let mode = "month", kind = "all";
     const chart = document.getElementById("statChart");
     const cap = document.getElementById("statCap");
     let rows = null;
+
+    // 어떤 활동을 볼지 고르는 줄
+    {
+      const box = document.getElementById("kindSeg");
+      const kinds = [["all", "전체"]].concat(
+        ["login", "visit", "read", "comment", "post", "photo"].map(k => [k, KIND_NAME[k]]));
+      box.innerHTML = kinds.map(([k, t]) =>
+        `<a data-k="${k}"${k === "all" ? ' class="on"' : ""}>${t}</a>`).join("");
+      box.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+        kind = a.dataset.k;
+        box.querySelectorAll("a").forEach(x => x.classList.toggle("on", x === a));
+        drawStat();
+      }));
+    }
 
     document.querySelectorAll("#statSeg a").forEach(a => a.addEventListener("click", () => {
       mode = a.dataset.m;
@@ -903,24 +1010,25 @@ async function start() {
     }));
 
     async function loadStat() {
-      const r = await sb.from("login_events").select("at,org").order("at");
-      if (r.error) {
+      const err = await loadActivity();
+      if (err) {
         chart.innerHTML = '<div class="none">' +
-          (/login_events|schema cache/i.test(r.error.message || "")
-            ? "아직 준비 전입니다 — <b>auth/login_stats.sql</b> 을 한 번 실행해주세요."
-            : "통계를 불러오지 못했습니다: " + esc(r.error.message)) + "</div>";
+          (/activity_events|schema cache/i.test(err.message || "")
+            ? "아직 준비 전입니다 — <b>auth/activity_stats.sql</b> 을 한 번 실행해주세요."
+            : "통계를 불러오지 못했습니다: " + esc(err.message)) + "</div>";
         return null;
       }
-      return r.data || [];
+      drawWeights();
+      return EVENTS;
     }
 
     function bucket(list) {
       const m = new Map();
-      list.forEach(e => {
+      list.filter(e => kind === "all" || e.kind === kind).forEach(e => {
         const k = mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
         if (!m.has(k)) m.set(k, { n: 0, who: new Set() });
         const b = m.get(k);
-        b.n++; b.who.add(e.user_id || e.at);
+        b.n += (e.amount || 1); b.who.add(e.user_id || e.at);
       });
       return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]))
         .map(([k, v]) => ({ k, n: v.n, p: v.who.size }));

@@ -209,10 +209,10 @@
   </div>
 </div>
 
-<script src="gallery-data.js?v=98"></script>
+<script src="gallery-data.js?v=99"></script>
 <script type="module">
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=98";
-import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=99";
+import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
@@ -404,6 +404,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
         btn.disabled = false;
         msg.className = "amsg " + (fail ? "err" : "ok");
         msg.textContent = `완료 — 성공 ${ok}장` + (fail ? ` · 실패 ${fail}장 (${last})` : "");
+        if (ok) noteActivity("photo", ok);   // 올린 장수만큼
         if (ok) setTimeout(() => location.reload(), 700);
       });
 

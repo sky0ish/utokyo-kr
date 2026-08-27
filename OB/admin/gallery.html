@@ -174,10 +174,10 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=98"></script>
+<script src="/OB/gallery-data.js?v=99"></script>
 <script type="module">
-import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=98";
+import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=99";
 
 const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 document.getElementById("fCat").innerHTML = optHtml;
@@ -415,6 +415,7 @@ async function start() {
     document.getElementById("fFiles").value = "";
     msg.className = "msg " + (fail ? "err" : "ok");
     msg.textContent = `업로드 완료 — 성공 ${ok}장` + (fail ? ` · 실패 ${fail}장 (${lastErr})` : "");
+    if (ok) noteActivity("photo", ok);   // 올린 장수만큼
     cur = cat;
     await reload();
   });

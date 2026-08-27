@@ -1,6 +1,6 @@
 // ─── 게시판 글보기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
-import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
@@ -314,6 +314,8 @@ function linkify(s) {
       });
     }
 
+    noteActivity("read", 1, p.id);      // 이 글을 읽은 것으로 (같은 글은 하루 한 번)
+
     // ─── 댓글 ───
     const wrap = document.getElementById("cmtWrap");
     const listEl = document.getElementById("cmtList");
@@ -415,7 +417,8 @@ function linkify(s) {
             ? "댓글 기능이 아직 켜지지 않았습니다 — 운영진이 OB/board/sql/comments_setup.sql 을 한 번 실행해주세요."
             : "등록 실패: " + error.message;
         }
-        else { input.value = ""; msg.className = "msg"; msg.textContent = ""; loadComments(); }
+        else { input.value = ""; msg.className = "msg"; msg.textContent = ""; noteActivity("comment", 1, p.id);
+        loadComments(); }
       });
     }
   }

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사용통계 | 재한 도쿄대학 총동문회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/OB/board/board.css?v=99">
+<style>
+  .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
+  .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
+  .stop h2{font-family:'Noto Serif KR',serif;font-size:26px;color:#101d33;font-weight:600;}
+  .stop .cnt{font-size:13.5px;color:#8a8574;}
+  .snote{background:#f9f5ea;border:1px solid #eee6d2;border-radius:9px;padding:12px 16px;
+    font-size:13px;color:#6f6a5c;margin-bottom:22px;line-height:1.7;}
+
+  .mine{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;
+    background:#e6dfcb;border:1px solid #e6dfcb;border-radius:10px;overflow:hidden;margin-bottom:26px;}
+  .mine div{background:#fff;padding:14px 12px;text-align:center;}
+  .mine dt{font-size:12px;color:#a09a86;margin-bottom:4px;}
+  .mine dd{margin:0;font-size:20px;font-weight:600;color:#101d33;font-variant-numeric:tabular-nums;}
+  .mine div.tot{background:#fdf6e6;}
+  .mine div.tot dd{color:#8a6d2b;}
+
+  .card2{background:#fff;border:1px solid #e6dfcb;border-radius:10px;padding:20px 22px;margin-bottom:22px;}
+  .card2 h3{font-size:16px;font-weight:500;color:#4a3c14;margin-bottom:3px;}
+  .card2 .sub{font-size:12.5px;color:#a09a86;margin-bottom:14px;}
+  .segs{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  .seg{display:inline-flex;border:1px solid #ddd6c4;border-radius:8px;overflow:hidden;}
+  .seg a{padding:7px 15px;font-size:13px;font-weight:600;color:#6b6350;cursor:pointer;
+    border-right:1px solid #ddd6c4;background:#fff;}
+  .seg a:last-child{border-right:none;}
+  .seg a.on{background:#c9a961;color:#2b2410;}
+  .chart{overflow-x:auto;}
+  .chart svg{display:block;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:#7d7768;}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px;}
+
+  table.rank{width:100%;border-collapse:collapse;font-size:14.5px;}
+  .rank th,.rank td{padding:11px 12px;text-align:left;border-bottom:1px solid #f2ede2;}
+  .rank th{font-size:12.5px;color:#a09a86;font-weight:400;border-bottom:1px solid #e6dfcb;}
+  .rank td.no{width:44px;color:#a09a86;font-variant-numeric:tabular-nums;}
+  .rank td.nm{font-weight:600;color:#101d33;white-space:nowrap;}
+  .rank td.n{text-align:right;font-variant-numeric:tabular-nums;color:#4a4636;white-space:nowrap;}
+  .rank td.sc{text-align:right;font-weight:700;color:#8a6d2b;font-variant-numeric:tabular-nums;}
+  .rank tr.me{background:#fdf6e6;}
+  .rank tr.me td.nm::after{content:" (나)";color:#8a6d2b;font-weight:400;font-size:12px;}
+  .rank td.medal{width:34px;font-size:16px;}
+  .sempty{padding:44px 20px;text-align:center;color:#8a8574;font-size:15px;line-height:1.9;}
+  .sempty a{color:#8a6d2b;border-bottom:1px solid #d8cba8;}
+  @media (max-width:700px){ .rank th:nth-child(n+4),.rank td:nth-child(n+4){display:none;}
+    .rank th:last-child,.rank td:last-child{display:table-cell;} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="/index.html">⌂ 통합 홈</a>
+      <a href="https://www.u-tokyo.ac.jp/en/" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
+      <a href="/YB/index.html">한국인학생회</a>
+      <a href="https://alumni.tokyoksa.com/" target="_blank" rel="noopener">총동문회 홈페이지(기존)</a>
+    </div>
+    <div class="links" id="authLinks">
+      <a href="/OB/auth/login.html">로그인</a>
+      <a href="/OB/auth/signup.html">회원가입</a>
+      <a href="/OB/auth/find.html">아이디·비번 찾기</a>
+    </div>
+  </div>
+</div>
+
+<header class="mhead">
+  <div class="inner">
+    <a class="mlogo" href="/OB/index.html">재한 도쿄대학 총동문회<small>在韓東京大学総同門会 · EST. 2011</small></a>
+    <nav></nav>
+    <div class="mpills"></div>
+  </div>
+</header>
+
+<div class="swrap">
+  <div class="stop">
+    <h2 id="sTitle">사용통계</h2>
+    <span class="cnt" id="sCnt"></span>
+  </div>
+  <div class="snote" id="sNote">
+    홈페이지를 얼마나 함께 쓰고 있는지 보여드립니다.
+    <b>같은 소속 동문</b>의 기록만 보이고, 이름 말고 다른 개인정보는 담기지 않습니다.
+  </div>
+
+  <div id="box"><div class="sempty">불러오는 중…</div></div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=99";
+
+applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
+applyAuthLinks("OB");
+
+const ORG_NAME = { OB: "재한 도쿄대학 총동문회", YB: "도쿄대학 한국인학생회", GUEST: "비동문 준회원" };
+const KIND = [["login", "로그인"], ["visit", "방문"], ["read", "글읽기"],
+              ["comment", "댓글"], ["post", "글쓰기"], ["photo", "사진"]];
+const KNAME = Object.fromEntries(KIND);
+const esc = (s) => String(s == null ? "" : s)
+  .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const box = document.getElementById("box");
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+
+if (!me || !(me.approved || me.is_admin)) {
+  box.innerHTML = '<div class="sempty">' + (user
+    ? "사용통계는 <b>운영진 승인이 끝난 회원</b>만 보실 수 있습니다.<br>(현재: 승인 대기중)"
+    : "사용통계는 회원 전용입니다.<br><br>" +
+      '<a href="/OB/auth/login.html">로그인</a> · <a href="/OB/auth/signup.html">회원가입</a>') +
+    "</div>";
+} else {
+  start();
+}
+
+async function start() {
+  const org = me.member_type || "OB";
+  document.getElementById("sTitle").textContent =
+    (ORG_NAME[org] || "") + " 사용통계";
+
+  const [b, m] = await Promise.all([
+    sb.from("activity_board").select("*"),
+    sb.from("activity_month").select("*"),
+  ]);
+
+  if (b.error || m.error) {
+    const err = b.error || m.error;
+    box.innerHTML = '<div class="sempty">통계를 불러오지 못했습니다.<br><br>' +
+      (/activity_|schema cache/i.test(err.message || "")
+        ? "운영진이 <b>auth/activity_stats.sql</b> 을 한 번 실행하면 바로 보실 수 있습니다."
+        : esc(err.message)) + "</div>";
+    return;
+  }
+
+  // 운영진은 양쪽이 다 오므로 제 소속만 골라 봅니다
+  const rows = (b.data || []).filter(r => !me.is_admin || r.org === org);
+  const months = (m.data || []).filter(r => !me.is_admin || r.org === org);
+
+  if (!rows.length) {
+    box.innerHTML = '<div class="sempty">아직 쌓인 기록이 없습니다.<br>' +
+      '홈페이지를 쓰실 때마다 하나씩 쌓입니다.</div>';
+    return;
+  }
+
+  rows.sort((x, y) => (y.score || 0) - (x.score || 0));
+  const mine = rows.find(r => r.is_me);
+
+  document.getElementById("sCnt").textContent =
+    `참여하신 분 ${rows.length}명` + (mine ? ` · 나의 점수 ${Math.round(mine.score)}점` : "");
+
+  box.innerHTML =
+    (mine ? `<dl class="mine">
+        ${KIND.map(([k, t]) =>
+          `<div><dt>${t}</dt><dd>${mine[k + "_n"] || 0}</dd></div>`).join("")}
+        <div class="tot"><dt>나의 점수</dt><dd>${Math.round(mine.score)}</dd></div>
+      </dl>` : "") +
+    `<div class="card2">
+       <h3>달마다 · 해마다</h3>
+       <p class="sub">우리 쪽 동문이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
+       <div class="segs">
+         <span class="seg" id="modeSeg"><a data-v="month" class="on">월별</a><a data-v="year">연별</a></span>
+         <span class="seg" id="kindSeg"></span>
+       </div>
+       <div class="chart" id="chart"></div>
+       <div class="legend">
+         <span><i style="background:#c9a961;"></i>활동 수</span>
+         <span><i style="background:#8fa6c9;"></i>사람 수</span>
+       </div>
+     </div>
+     <div class="card2">
+       <h3>많이 참여하신 분</h3>
+       <p class="sub">활동을 점수로 더한 순서입니다. 점수 기준은 운영진이 정합니다.</p>
+       <div style="overflow-x:auto;"><table class="rank" id="rank"></table></div>
+     </div>`;
+
+  // ── 순위 ──
+  document.getElementById("rank").innerHTML =
+    "<thead><tr><th></th><th>이름</th>" +
+    KIND.map(([, t]) => `<th style="text-align:right;">${t}</th>`).join("") +
+    '<th style="text-align:right;">점수</th></tr></thead><tbody>' +
+    rows.map((r, i) => `<tr class="${r.is_me ? "me" : ""}">
+      <td class="${i < 3 ? "medal" : "no"}">${i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}</td>
+      <td class="nm">${esc(r.name)}</td>
+      ${KIND.map(([k]) => `<td class="n">${r[k + "_n"] || 0}</td>`).join("")}
+      <td class="sc">${Math.round(r.score)}</td>
+    </tr>`).join("") + "</tbody>";
+
+  // ── 그래프 ──
+  let mode = "month", kind = "all";
+  const kindSeg = document.getElementById("kindSeg");
+  kindSeg.innerHTML = '<a data-v="all" class="on">전체</a>' +
+    KIND.map(([k, t]) => `<a data-v="${k}">${t}</a>`).join("");
+
+  document.querySelectorAll("#modeSeg a").forEach(a => a.addEventListener("click", () => {
+    mode = a.dataset.v;
+    document.querySelectorAll("#modeSeg a").forEach(x => x.classList.toggle("on", x === a));
+    draw();
+  }));
+  kindSeg.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    kind = a.dataset.v;
+    kindSeg.querySelectorAll("a").forEach(x => x.classList.toggle("on", x === a));
+    draw();
+  }));
+
+  function bucket() {
+    const g = new Map();
+    months.filter(r => kind === "all" || r.kind === kind).forEach(r => {
+      const k = mode === "month" ? r.ym : String(r.ym).slice(0, 4);
+      if (!g.has(k)) g.set(k, { n: 0, p: 0 });
+      const b2 = g.get(k);
+      b2.n += Number(r.n || 0);
+      b2.p = Math.max(b2.p, Number(r.people || 0));   // 달마다 센 사람 수 가운데 가장 많은 달
+    });
+    return [...g.entries()].sort((a, b2) => a[0].localeCompare(b2[0]))
+      .map(([k, v]) => ({ k, n: v.n, p: v.p }));
+  }
+
+  function draw() {
+    const data = bucket().slice(mode === "month" ? -24 : -12);
+    const el = document.getElementById("chart");
+    if (!data.length) { el.innerHTML = '<div class="sempty">이 활동은 아직 기록이 없습니다.</div>'; return; }
+    const W = Math.max(560, data.length * (mode === "month" ? 46 : 78));
+    const H = 230, PAD = 36, BOT = 34;
+    const top = Math.max(1, ...data.map(d => d.n));
+    const step = (W - PAD * 2) / data.length;
+    const bw = Math.min(26, step * 0.42);
+    const y = (v) => H - BOT - (v / top) * (H - BOT - 18);
+
+    const grid = [0, 0.5, 1].map(f => {
+      const v = Math.round(top * f), yy = y(v);
+      return `<line x1="${PAD}" y1="${yy}" x2="${W - PAD}" y2="${yy}" stroke="#efe9db"/>` +
+             `<text x="${PAD - 8}" y="${yy + 4}" text-anchor="end" font-size="10" fill="#a09a86">${v}</text>`;
+    }).join("");
+
+    const bars = data.map((d, i) => {
+      const cx = PAD + step * i + step / 2;
+      const label = mode === "month" ? d.k.slice(2).replace("-", ".") : d.k;
+      return `<rect x="${cx - bw}" y="${y(d.n)}" width="${bw}" height="${H - BOT - y(d.n)}"
+                fill="#c9a961" rx="2"><title>${d.k} · ${d.n}회</title></rect>` +
+             `<rect x="${cx}" y="${y(d.p)}" width="${bw}" height="${H - BOT - y(d.p)}"
+                fill="#8fa6c9" rx="2"><title>${d.k} · ${d.p}명</title></rect>` +
+             `<text x="${cx}" y="${H - BOT + 15}" text-anchor="middle" font-size="10.5"
+                fill="#a09a86">${label}</text>`;
+    }).join("");
+
+    el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="${mode === "month" ? "월별" : "연별"} 사용통계 막대그래프">${grid}
+      <line x1="${PAD}" y1="${H - BOT}" x2="${W - PAD}" y2="${H - BOT}" stroke="#efe9db"/>
+      ${bars}</svg>`;
+  }
+  draw();
+}
+</script>
+
+</body>
+</html>

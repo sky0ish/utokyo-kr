@@ -24,17 +24,36 @@ try {
   sessionStorage.setItem("utokyo-live", "1");
 } catch (e) { /* 저장소를 못 쓰는 환경은 무시 */ }
 
-/** 로그인 한 번을 기록한다 (횟수 세기 · 월별 통계용).
- *  자료방 쪽에서 10분 안의 중복은 걸러 주므로 여러 번 불러도 괜찮습니다.
- *  기록이 실패해도 로그인 자체는 그대로 진행됩니다. */
-export async function noteLogin() {
-  try { await sb.rpc("note_login"); } catch (e) { /* 아직 준비 전이면 조용히 넘어감 */ }
-}
-
 // 현재 로그인 세션 (없으면 null)
 export async function currentUser() {
   const { data: { session } } = await sb.auth.getSession();
   return session ? session.user : null;
+}
+
+/** 활동 한 건을 기록한다 (로그인·방문·글읽기·글쓰기·댓글·사진).
+ *  겹쳐 세는 것은 자료방 쪽에서 걸러 주므로 마음 놓고 부르셔도 됩니다.
+ *  기록이 안 되어도 화면은 그대로 돌아갑니다. */
+export async function noteActivity(kind, amount, ref) {
+  try {
+    await sb.rpc("note_activity", {
+      p_kind: kind, p_amount: amount || 1, p_ref: ref || null,
+    });
+  } catch (e) { /* 아직 준비 전이면 조용히 넘어감 */ }
+}
+
+/** 로그인 한 번 */
+export const noteLogin = () => noteActivity("login", 1);
+
+/** 홈페이지에 들른 것 — 하루 한 번만 세어집니다 */
+export async function noteVisit() {
+  try {
+    if (!(await currentUser())) return;            // 로그인한 분만
+    const key = "utokyo-visit";
+    const today = new Date().toISOString().slice(0, 10);
+    if (localStorage.getItem(key) === today) return;   // 이 기기에서 오늘 이미 셌음
+    localStorage.setItem(key, today);
+    await noteActivity("visit", 1);
+  } catch (e) { /* 저장소를 못 쓰는 환경은 그냥 넘어감 */ }
 }
 
 // 내 프로필 (profiles 테이블)

@@ -145,7 +145,8 @@ export function applyNav(org, title) {
 export async function applyAuthLinks(org) {
   const el = document.getElementById("authLinks");
   if (!el) return;
-  const { sb, currentUser, myProfile } = await import("/OB/auth/auth.js");
+  const { sb, currentUser, myProfile, noteVisit } = await import("/OB/auth/auth.js");
+  noteVisit();                       // 오늘 처음 들르신 것이면 한 번 세어둔다
   let user = null, p = null;
   try {
     user = await currentUser();
@@ -168,16 +169,20 @@ export async function applyAuthLinks(org) {
   });
   el.append(st, my, out);
 
+  const mk = (href, text, gold) => {
+    const a = document.createElement("a");
+    a.href = href; a.textContent = text;
+    a.style.color = gold ? "#e8c876" : "inherit";
+    a.style.fontWeight = "600";
+    return a;
+  };
+  // 승인된 회원이면 누구나 — 제 소속의 사용통계를 봅니다
+  if (p && (p.approved || p.is_admin)) el.append(mk("/OB/stats.html", "사용통계"));
+
   if (p && p.is_admin) {
-    const mk = (href, text) => {
-      const a = document.createElement("a");
-      a.href = href; a.textContent = text;
-      a.style.color = "#e8c876"; a.style.fontWeight = "600";
-      return a;
-    };
-    el.append(mk("/OB/admin/members.html?org=" + org, "⚙ 회원 승인"),
-              mk("/OB/admin/gallery.html?org=" + org, "⚙ 갤러리 관리"),
-              mk("/OB/admin/index.html", "⚙ 글 가져오기"));
+    el.append(mk("/OB/admin/members.html?org=" + org, "⚙ 회원 승인", 1),
+              mk("/OB/admin/gallery.html?org=" + org, "⚙ 갤러리 관리", 1),
+              mk("/OB/admin/index.html", "⚙ 글 가져오기", 1));
   }
 }
 

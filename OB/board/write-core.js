@@ -1,6 +1,6 @@
 // ─── 게시판 글쓰기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
-import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
+import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
 import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=98";
 
@@ -283,6 +283,7 @@ export async function initWrite(ORG) {
         res = await sb.from("posts").update({ ...row, updated_at: new Date().toISOString() }).eq("id", editId).select("id").single();
       } else {
         res = await sb.from("posts").insert({ ...row, author_id: user.id, author_name: profile.name || "" }).select("id").single();
+        if (!res.error) noteActivity("post", 1, res.data && res.data.id);
       }
       btn.disabled = false;
       if (res.error) {
