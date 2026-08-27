@@ -166,6 +166,7 @@ select count(*) as "쌓인 활동 기록" from public.activity_events;
 --   · 자기 소속 사람들만 보입니다 (OB 회원은 OB, YB 회원은 YB).
 --   · 이름 · 활동 수 · 점수만 나갑니다. 이메일·전화번호는 담기지 않습니다.
 --   · 운영진은 양쪽 모두 봅니다.
+--   · 운영진 계정의 활동은 세지 않습니다 (관리하느라 드나든 것은 참여가 아니므로).
 -- ═══════════════════════════════════════════════════════════
 
 -- ── 사람별 순위 ──
@@ -186,6 +187,7 @@ select p.name                                           as name,
   left join public.activity_weights w on w.kind = e.kind
  where p.approved = true
    and coalesce(p.name, '') <> ''
+   and p.is_admin = false                      -- 운영진 계정은 통계에서 뺍니다
    and public.is_approved()
    and (public.is_admin() or p.member_type = public.my_org())
  group by p.id, p.name, p.member_type;
@@ -200,7 +202,8 @@ select to_char(date_trunc('month', e.at), 'YYYY-MM') as ym,
        count(distinct e.user_id)                     as people
   from public.activity_events e
   join public.profiles p on p.id = e.user_id
- where public.is_approved()
+ where p.is_admin = false                     -- 운영진 계정은 통계에서 뺍니다
+   and public.is_approved()
    and (public.is_admin() or p.member_type = public.my_org())
  group by 1, 2, 3;
 

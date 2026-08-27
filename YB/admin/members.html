@@ -1024,7 +1024,10 @@ async function start() {
 
     function bucket(list) {
       const m = new Map();
-      list.filter(e => kind === "all" || e.kind === kind).forEach(e => {
+      // 운영진 계정은 통계에서 뺍니다 (관리하느라 드나든 것은 참여가 아니므로)
+      const staff = new Set(rows.filter(r => r.is_admin).map(r => r.id));
+      list.filter(e => !staff.has(e.user_id))
+          .filter(e => kind === "all" || e.kind === kind).forEach(e => {
         const k = mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
         if (!m.has(k)) m.set(k, { n: 0, who: new Set() });
         const b = m.get(k);
