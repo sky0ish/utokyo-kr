@@ -171,6 +171,11 @@
   #yearSeg a{color:#4a5568;border-right-color:#b6c2d6;}
   #yearSeg a:hover{background:#eef2f8;color:#22304d;}
   #yearSeg a.on{background:#2a3f66;color:#fff;}
+
+  #orgSeg{border-color:#d9cfae;}
+  #orgSeg a{color:#7d7768;border-right-color:#d9cfae;}
+  #orgSeg a:hover{background:#fdf6e6;color:#8a6d2b;}
+  #orgSeg a.on{background:#8a6d2b;color:#fff;}
 </style>
 </head>
 <body>
@@ -292,6 +297,7 @@
         <span class="seg" id="statSeg">
           <a data-m="month" class="on">월별</a><a data-m="year">연별</a>
         </span>
+        <span class="seg" id="orgSeg"></span>
         <span class="seg" id="yearSeg" style="display:none;"></span>
         <span class="cap" id="statCap"></span>
       </div>
@@ -1023,7 +1029,8 @@ async function start() {
     const chart = document.getElementById("statChart");
     const cap = document.getElementById("statCap");
     const legend = document.querySelector(".stat .legend");
-    let rows = null;
+    let EV = null;                 // 활동 기록 (바깥 rows 는 회원 명단입니다)
+    let statOrg = HOME;            // 점수는 OB · YB 따로 셉니다
 
     // 어떤 활동을 볼지 고르는 줄
     {
@@ -1060,11 +1067,18 @@ async function start() {
       return EVENTS;
     }
 
+    /** 고른 소속의 일반 회원 기록만 — 운영진 계정과 다른 소속은 뺍니다 */
+    function useEv() {
+      const who = new Map(rows.map(r => [r.id, r]));
+      return (EV || []).filter(e => {
+        const p = who.get(e.user_id);
+        return p && !p.is_admin && (p.member_type || "") === statOrg;
+      });
+    }
+
     function bucket(list) {
       const m = new Map();
-      // 운영진 계정은 통계에서 뺍니다 (관리하느라 드나든 것은 참여가 아니므로)
-      const staff = new Set(rows.filter(r => r.is_admin).map(r => r.id));
-      list.filter(e => !staff.has(e.user_id)).forEach(e => {
+      list.forEach(e => {
         const k = mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
         if (!m.has(k)) m.set(k, { n: 0, who: new Set(), by: {} });
         const b = m.get(k);
@@ -1081,15 +1095,13 @@ async function start() {
     function drawTop() {
       const el = document.getElementById("statTop");
       if (!el || !EVENTS) return;
-      const staff = new Set(rows.filter(r => r.is_admin).map(r => r.id));
       const name = new Map(rows.map(r => [r.id, r.name || "이름없음"]));
       const keyOf = (e) => mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
       const one = kind !== "all" && kind !== "each" ? kind : "";
 
-      // 사람마다 활동을 모은다 (고른 기간 · 고른 활동만)
+      // 사람마다 활동을 모은다 (고른 소속 · 고른 기간 · 고른 활동만)
       const sum = new Map();
-      EVENTS.forEach(e => {
-        if (staff.has(e.user_id) || !name.has(e.user_id)) return;
+      useEv().forEach(e => {
         if (one && e.kind !== one) return;
         if (pick && keyOf(e) !== pick) return;
         if (!sum.has(e.user_id)) sum.set(e.user_id, {});
@@ -1108,13 +1120,14 @@ async function start() {
         ? (mode === "month" ? pick.replace("-", ".") : pick + "년")
         : (mode === "month" ? year + "년" : "해마다");
       const top = list.length ? list[0].n : 1;
-      el.innerHTML = `<h4>${when} · ${label} Top 10` +
+      el.innerHTML = `<h4>${statOrg} · ${when} · ${label} Top 10` +
         (pick ? ' <button class="clr" id="topClr" title="기간 풀기">✕</button>' : "") + "</h4>" +
         (list.length
           ? "<ol>" + list.map(x => `<li><span class="nm">${esc(x.nm)}</span>` +
               `<span class="bar"><i style="width:${Math.round(x.n / top * 100)}%;"></i></span>` +
               `<span class="n">${x.n}</span></li>`).join("") + "</ol>"
-          : '<div class="none">이 기간에는 기록이 없습니다.</div>');
+          : `<div class="none">이 기간에는 ${statOrg} 일반 회원의 기록이 없습니다.` +
+            "<br><small>운영진 계정의 활동은 세지 않습니다.</small></div>");
 
       const clr = document.getElementById("topClr");
       if (clr) clr.addEventListener("click", () => { pick = ""; drawStat(); });
@@ -1148,8 +1161,9 @@ async function start() {
       box.style.display = mode === "month" ? "inline-flex" : "none";
       if (mode !== "month") return;
       const now = new Date().getFullYear();
-      const first = EVENTS && EVENTS.length
-        ? Math.min(...EVENTS.map(e => +String(e.at).slice(0, 4))) : now;
+      const use = useEv();
+      const first = use.length
+        ? Math.min(...use.map(e => +String(e.at).slice(0, 4))) : now;
       const ys = [];
       for (let y = first; y <= now; y++) ys.push(String(y));
       box.innerHTML = ys.map(y =>
@@ -1160,17 +1174,20 @@ async function start() {
     }
 
     function drawStat() {
-      if (!rows) { drawTop(); return; }
-      if (!rows.length) {
-        chart.innerHTML = '<div class="none">아직 쌓인 활동 기록이 없습니다. ' +
-          '회원이 홈페이지를 쓰실 때마다 하나씩 쌓입니다.</div>';
+      if (!EV) { drawTop(); return; }
+      const use = useEv();
+      if (!use.length) {
+        chart.innerHTML = `<div class="none">아직 ${statOrg} 일반 회원의 활동 기록이 없습니다.` +
+          "<br>회원이 홈페이지를 쓰실 때마다 하나씩 쌓입니다." +
+          "<br><small>운영진 계정의 활동은 세지 않습니다.</small></div>";
         cap.textContent = "";
         legend.innerHTML = "";
+        drawTop();
         return;
       }
 
       const wide = kind === "all" || kind === "each";     // 여섯 갈래를 한 그림에
-      const data = fillGaps(bucket(rows)).slice(mode === "month" ? -24 : -12);
+      const data = fillGaps(bucket(use)).slice(mode === "month" ? -24 : -12);
       const W = Math.max(560, data.length * (mode === "month" ? (kind === "each" ? 62 : 44) : 78));
       const H = 230, PAD = 38, BOT = 34, TOP = 14;
       const step = (W - PAD * 2) / data.length;
@@ -1270,13 +1287,25 @@ async function start() {
 
       drawTop();
 
-      const all = bucket(rows);
-      cap.textContent = `모두 ${rows.length}건 · ` +
+      const all = bucket(use);
+      cap.textContent = `${statOrg} 모두 ${use.length}건 · ` +
         (mode === "month" ? year + "년 1월~12월" : "해마다 쌓은 것") +
         ` (기록 시작 ${all[0].k})`;
     }
 
-    loadStat().then(d => { rows = d; if (rows) { drawYears(); drawStat(); } });
+    // 소속 고르기 — 점수는 OB · YB 따로 셉니다
+    {
+      const box = document.getElementById("orgSeg");
+      box.innerHTML = [HOME, HOME === "OB" ? "YB" : "OB"].map(o =>
+        `<a data-o="${o}"${o === statOrg ? ' class="on"' : ""}>${o}</a>`).join("");
+      box.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+        statOrg = a.dataset.o; pick = "";
+        box.querySelectorAll("a").forEach(x => x.classList.toggle("on", x === a));
+        drawYears(); drawStat();
+      }));
+    }
+
+    loadStat().then(d => { EV = d; if (EV) { drawYears(); drawStat(); } });
   }
 
   load();
