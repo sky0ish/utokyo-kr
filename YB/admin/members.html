@@ -564,7 +564,7 @@ async function start() {
             ${r.grade_checked_at
                 ? '<button class="btn sm chk2 done" title="다시 확인">확인</button>'
                 : '<button class="btn sm chk2">회원여부 확인</button>'}
-            <button class="btn sm rm" title="계정까지 지워 명단에서 뺍니다">명단에서 빼기</button></td>
+            <button class="btn sm rm" title="회원 정보와 로그인 계정을 지웁니다">명단에서 삭제</button></td>
       </tr>`).join("") + "</tbody>";
 
     // ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
@@ -659,39 +659,19 @@ async function start() {
     t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
       const id = b.closest("tr").dataset.id;
       const r = rows.find(x => x.id === id);
+      // 승인 취소는 명단에서 아예 빼는 것으로 (대기로 남겨두지 않습니다)
+      if (r.approved) { await removeMember(r, b); return; }
       b.disabled = true;
-      const { error } = await sb.from("profiles").update({ approved: !r.approved }).eq("id", id);
+      const { error } = await sb.from("profiles").update({ approved: true }).eq("id", id);
       if (error) { alert("변경 실패: " + error.message); b.disabled = false; return; }
-      r.approved = !r.approved;
+      r.approved = true;
       render(); refreshEmails();
     }));
 
     // ── 명단에서 아예 빼기 (계정까지) ──
-    t.querySelectorAll(".rm").forEach(b => b.addEventListener("click", async () => {
-      const id = b.closest("tr").dataset.id;
-      const r = rows.find(x => x.id === id);
-      if (!r) return;
-      if (!confirm(`${r.name || r.email || "이 분"} 님을 명단에서 아예 뺍니다.\n\n· 회원 정보와 로그인 계정이 지워집니다\n· 쓰신 글과 사진은 그대로 남습니다\n· 되돌릴 수 없습니다 (다시 가입하셔야 합니다)\n\n계속할까요?`)) return;
-      b.disabled = true;
-      const msg = document.getElementById("listMsg");
-      const rp = await sb.rpc("remove_member", { p_id: id });
-      let err = rp.error;
-      if (err && /remove_member|schema cache|function/i.test(err.message || "")) {
-        const d = await sb.from("profiles").delete().eq("id", id);   // 문이 아직 없으면 회원 정보만
-        err = d.error;
-      }
-      if (err) {
-        msg.className = "msg err";
-        msg.textContent = "빼지 못했습니다: " + err.message +
-          " — auth/remove_member.sql 을 한 번 실행해주세요.";
-        b.disabled = false;
-        return;
-      }
-      rows = rows.filter(x => x.id !== id);
-      render(); refreshEmails();
-      msg.className = "msg ok";
-      msg.textContent = (typeof rp.data === "string" && rp.data) ||
-        `${r.name || r.email} 님을 명단에서 뺐습니다.`;
+    t.querySelectorAll(".rm").forEach(b => b.addEventListener("click", () => {
+      const r = rows.find(x => x.id === b.closest("tr").dataset.id);
+      if (r) removeMember(r, b);
     }));
 
     // 체크박스 (한꺼번에 선택)
@@ -703,6 +683,32 @@ async function start() {
     }));
     count();
   }
+
+  /** 회원을 명단에서 아예 뺍니다 (회원 정보 + 로그인 계정) */
+  async function removeMember(r, b) {
+    if (!r) return;
+      if (!confirm(`${r.name || r.email || "이 분"} 님을 명단에서 아예 뺍니다.\n\n· 회원 정보와 로그인 계정이 지워집니다\n· 쓰신 글과 사진은 그대로 남습니다\n· 되돌릴 수 없습니다 (다시 가입하셔야 합니다)\n\n계속할까요?`)) return;
+      b.disabled = true;
+      const msg = document.getElementById("listMsg");
+      const rp = await sb.rpc("remove_member", { p_id: r.id });
+      let err = rp.error;
+      if (err && /remove_member|schema cache|function/i.test(err.message || "")) {
+        const d = await sb.from("profiles").delete().eq("id", r.id);  // 문이 아직 없으면 회원 정보만
+        err = d.error;
+      }
+      if (err) {
+        msg.className = "msg err";
+        msg.textContent = "빼지 못했습니다: " + err.message +
+          " — auth/remove_member.sql 을 한 번 실행해주세요.";
+        b.disabled = false;
+        return;
+      }
+      rows = rows.filter(x => x.id !== r.id);
+      render(); refreshEmails();
+      msg.className = "msg ok";
+      msg.textContent = (typeof rp.data === "string" && rp.data) ||
+        `${r.name || r.email} 님을 명단에서 뺐습니다.`;
+      }
 
   /** 선택된 회원 id 목록 */
   function selected() {
