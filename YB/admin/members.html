@@ -128,7 +128,7 @@
     margin-right:6px;vertical-align:-1px;}
   .stat .none{padding:26px 0;text-align:center;color:#a8a291;font-size:13.5px;}
 
-  /* 활동 점수 기준 */
+  /* 활동 점수 가중치 */
   .wbox{margin-top:18px;padding-top:16px;border-top:1px solid #f0ebe0;}
   .wbox h3{font-size:14px;font-weight:500;color:#1e5230;margin-bottom:2px;}
   .wbox p{font-size:12.5px;color:#6f7d73;margin-bottom:10px;}
@@ -295,7 +295,7 @@
       </div>
       <div class="legend"></div>
       <div class="wbox">
-        <h3>활동 점수 기준</h3>
+        <h3>활동 점수 가중치</h3>
         <p>활동마다 몇 점으로 셀지 정합니다. 고치시면 위의 총점과 그래프가 바로 따라옵니다.</p>
         <div class="wrow" id="wrow"><span style="color:#a8a291;font-size:13px;">불러오는 중…</span></div>
       </div>
@@ -987,7 +987,7 @@ async function start() {
     box.innerHTML = WEIGHT.map(w =>
       `<label>${KIND_NAME[w.kind] || w.label}
          <input type="number" step="0.5" min="0" data-k="${w.kind}" value="${w.weight}"></label>`).join("") +
-      '<button class="save" id="wSave">점수 기준 저장</button>';
+      '<button class="save" id="wSave">가중치 저장</button>';
 
     document.getElementById("wSave").addEventListener("click", async () => {
       const btn = document.getElementById("wSave");
@@ -1001,10 +1001,10 @@ async function start() {
         if (u.error) { err = u.error; break; }
       }
       btn.disabled = false; btn.textContent = err ? "저장 실패" : "저장됨 ✓";
-      if (err) { alert("점수 기준을 저장하지 못했습니다: " + err.message); return; }
+      if (err) { alert("가중치를 저장하지 못했습니다: " + err.message); return; }
       rows.forEach(r => { const w = WEIGHT.find(x => x.kind === r.kind); if (w) w.weight = r.weight; });
       render(); drawStat();
-      setTimeout(() => { btn.textContent = "점수 기준 저장"; }, 1500);
+      setTimeout(() => { btn.textContent = "가중치 저장"; }, 1500);
     });
   }
 
