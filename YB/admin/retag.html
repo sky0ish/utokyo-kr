@@ -356,8 +356,7 @@ function start() {
     if (p && (p.approved || p.is_admin)) el.append(mk("/YB/stats.html", "사용통계"));
     if (p && p.is_admin) {
       el.append(mk("/YB/admin/members.html", "⚙ 회원관리", 1),
-                mk("/YB/admin/gallery.html", "⚙ 갤러리 관리", 1),
-                mk("/YB/admin/retag.html", "⚙ 말머리 정리", 1));
+                mk("/YB/admin/gallery.html", "⚙ 갤러리 관리", 1));
     }
   }
 </script>

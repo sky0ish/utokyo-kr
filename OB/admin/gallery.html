@@ -116,7 +116,6 @@
     <h1>갤러리 관리</h1>
     <div class="sub">사진 추가 · 삭제 · 앨범 제목과 배치 수정 (운영진 전용)</div>
     <div class="links">
-      <a href="retag.html">말머리 정리</a>
       <a href="/OB/gallery.html">갤러리 보기</a>
       <a href="dedup.html">중복 사진 정리</a>
       <a href="bulk.html">사진 폴더째 올리기</a>
@@ -197,10 +196,10 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=144"></script>
+<script src="/OB/gallery-data.js?v=145"></script>
 <script type="module">
 import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=144";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=145";
 
 const optHtml = CATS.map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 document.getElementById("fCat").innerHTML = optHtml;
@@ -473,8 +472,7 @@ async function start() {
     if (p && (p.approved || p.is_admin)) el.append(mk("/OB/stats.html", "사용통계"));
     if (p && p.is_admin) {
       el.append(mk("/OB/admin/members.html", "⚙ 회원관리", 1),
-                mk("/OB/admin/gallery.html", "⚙ 갤러리 관리", 1),
-                mk("/OB/admin/retag.html", "⚙ 말머리 정리", 1));
+                mk("/OB/admin/gallery.html", "⚙ 갤러리 관리", 1));
     }
   }
 </script>

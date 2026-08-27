@@ -96,7 +96,6 @@
     <h1>사진 폴더째 올리기</h1>
     <p>파일 이름에 적힌 날짜로 알아서 나눠 앨범에 담습니다 (운영진 전용)</p>
     <div class="links">
-      <a href="retag.html">말머리 정리</a>
       <a href="/OB/index.html">총동문회 홈</a>
       <a href="/OB/gallery.html">갤러리</a>
       <a href="/OB/admin/gallery.html">갤러리 관리</a>
@@ -160,10 +159,10 @@
   </div>
 </div>
 
-<script src="/OB/gallery-data.js?v=144"></script>
+<script src="/OB/gallery-data.js?v=145"></script>
 <script type="module">
 import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=144";
+import { CATS, CAT_NAME, loadGallery } from "/OB/gallery-lib.js?v=145";
 
 const ORG = "OB";
 const esc = (s) => (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -477,8 +476,7 @@ async function start() {
     if (p && (p.approved || p.is_admin)) el.append(mk("/OB/stats.html", "사용통계"));
     if (p && p.is_admin) {
       el.append(mk("/OB/admin/members.html", "⚙ 회원관리", 1),
-                mk("/OB/admin/gallery.html", "⚙ 갤러리 관리", 1),
-                mk("/OB/admin/retag.html", "⚙ 말머리 정리", 1));
+                mk("/OB/admin/gallery.html", "⚙ 갤러리 관리", 1));
     }
   }
 </script>
