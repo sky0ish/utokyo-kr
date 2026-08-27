@@ -243,7 +243,7 @@ function monthGrid(year, month, map, todayKey, titles) {
       html += titles
         ? ev.slice(0, 2).map((e) =>
             `<i class="chip c-${esc(e.cat)}${e.org === "OB" ? " c-ob" : ""}" ` +
-            `title="${esc(e.title)}">${e.org === "OB" ? "[동문회] " : ""}` +
+            `title="${esc(e.title)}">${e.org === "OB" ? "(OB) " : ""}` +
             `${esc(shortTitle(e.title))}</i>`).join("") +
           (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "")
         : `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
@@ -258,7 +258,7 @@ function evCard(e) {
   return `<a class="cev cev-card" href="/YB/post.html?id=${e.id}">
     <span class="cc-top"><b>${esc(e.title)}</b></span>
     <span class="cc-meta">${e.time ? `<em>${e.time}</em> · ` : ""}` +
-      `${e.org === "OB" ? "총동문회 · " : ""}${esc(CATNAME[e.cat] || e.cat)}</span>
+      `${e.org === "OB" ? "(OB) " : ""}${esc(CATNAME[e.cat] || e.cat)}</span>
     ${e.line ? `<span class="cc-line">${esc(e.line)}</span>` : ""}
     <span class="cc-go">글 열어보기 →</span></a>`;
 }
@@ -267,7 +267,7 @@ function evLine(e) {
   return `<a class="cev" href="/YB/post.html?id=${e.id}">
     <span class="cev-d">${e.key.slice(5).replace("-", ".")}${e.time ? ` <b>${e.time}</b>` : ""}</span>
     <span class="cev-t">${esc(e.title)}</span>
-    <span class="cev-c">${e.org === "OB" ? "총동문회 · " : ""}` +
+    <span class="cev-c">${e.org === "OB" ? "(OB) " : ""}` +
     `${esc(CATNAME[e.cat] || e.cat)}</span></a>`;
 }
 
