@@ -2,7 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=98";
+import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=101";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";

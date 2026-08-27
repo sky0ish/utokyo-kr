@@ -336,10 +336,12 @@ body.yb .pager a.off{opacity:.38;pointer-events:none;}
   .whatfor b{color:#1e5230;font-weight:600;}
   .whatfor:empty{display:none;}
 
-  /* 이 게시판이 무엇을 올리는 곳인가 */
-  .banner .bpurpose{margin:8px 0 0;font-size:14px;line-height:1.7;color:#5f6f65;
-    max-width:56ch;text-shadow:0 1px 3px rgba(255,255,255,.7);}
-  .banner .bpurpose:empty{display:none;}
+  /* 이 게시판이 무엇을 올리는 곳인가 — 검색칸 바로 위 */
+  .bpurpose{margin:0 0 16px;padding:12px 18px;border-radius:9px;
+    background:#f4faf5;border:1px solid #dfe9e1;
+    font-size:14px;line-height:1.75;color:#5f6f65;}
+  .bpurpose b{color:#1e5230;font-weight:600;}
+  .bpurpose:empty{display:none;}
 
 /* 말머리로 골라 보기 */
 .tagtabs{display:none;gap:8px;flex-wrap:wrap;align-items:center;margin:-8px 0 20px;}
