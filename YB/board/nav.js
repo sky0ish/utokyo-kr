@@ -182,6 +182,7 @@ export async function applyAuthLinks(org) {
 
   if (p && p.is_admin) {
     el.append(mk("/YB/admin/members.html?org=" + org, "⚙ 회원 승인", 1),
+              mk("/YB/admin/members.html?org=" + org + "#statCard", "⚙ 사용통계", 1),
               mk("/YB/admin/gallery.html?org=" + org, "⚙ 갤러리 관리", 1),
               mk("/YB/admin/index.html", "⚙ 글 가져오기", 1));
   }
