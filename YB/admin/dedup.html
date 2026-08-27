@@ -57,9 +57,31 @@
   .empty{padding:34px 0;text-align:center;color:#a09a86;font-size:14px;}
   .note{background:#f9f5ea;border:1px solid #eee6d2;border-radius:8px;padding:12px 15px;
     font-size:13px;color:#6f6a5c;margin-top:14px;}
+
+  /* 맨 위 얇은 줄 — 어느 화면에서든 똑같이 */
+  .topbar{background:#0d2214;color:rgba(255,255,255,.75);font-size:12.5px;
+    position:sticky;top:0;z-index:1300;}
+  .topbar .inner{max-width:1180px;margin:0 auto;padding:9px 22px;
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .topbar a{color:inherit;}
+  .topbar a:hover{color:#e8c876;}
+  .topbar .links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="/index.html">⌂ 통합 홈</a>
+      <a href="https://www.u-tokyo.ac.jp/en/" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
+      <a href="/OB/index.html">재한 도쿄대학 총동문회</a>
+      <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener">한국인학생회(기존)</a>
+    </div>
+    <div class="links" id="authLinks"><a href="/YB/auth/login.html">로그인</a><a href="/YB/auth/signup.html">회원가입</a><a href="/YB/auth/find.html">아이디·비번 찾기</a></div>
+  </div>
+</div>
+
 
 <div class="top">
   <div class="wrap">
@@ -110,10 +132,10 @@
   </div>
 </div>
 
-<script src="/YB/gallery-data.js?v=137"></script>
+<script src="/YB/gallery-data.js?v=138"></script>
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "/YB/gallery-lib.js?v=137";
+import { CATS, CAT_NAME, loadGallery } from "/YB/gallery-lib.js?v=138";
 
 const ORG = "YB";
 const esc = (s) => String(s || "").replace(/[&<>"]/g,
@@ -318,5 +340,36 @@ async function start() {
 }
 </script>
 
+<script type="module">
+  // 맨 위 얇은 줄의 로그인 자리 — 게시판·갤러리와 같은 모습으로
+  import { sb, currentUser, myProfile, noteVisit } from "/YB/auth/auth.js";
+  noteVisit();
+  const u = await currentUser();
+  if (u) {
+    const p = await myProfile();
+    const el = document.getElementById("authLinks");
+    el.innerHTML = "";
+    const mk = (href, text, gold) => {
+      const a = document.createElement("a");
+      a.href = href; a.textContent = text;
+      if (gold) { a.style.color = "#e8c876"; a.style.fontWeight = "600"; }
+      return a;
+    };
+    const st = document.createElement("span");
+    st.textContent = "[로그인중]";
+    st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+    const out = mk("#", "로그아웃");
+    out.addEventListener("click", async (e) => {
+      e.preventDefault(); await sb.auth.signOut(); location.reload();
+    });
+    el.append(st, mk("/YB/auth/mypage.html", (p && p.name ? p.name + "님" : "내 정보")), out);
+    if (p && (p.approved || p.is_admin)) el.append(mk("/YB/stats.html", "사용통계"));
+    if (p && p.is_admin) {
+      el.append(mk("/YB/admin/members.html", "⚙ 회원관리", 1),
+                mk("/YB/admin/gallery.html", "⚙ 갤러리 관리", 1),
+                mk("/YB/admin/retag.html", "⚙ 말머리 정리", 1));
+    }
+  }
+</script>
 </body>
 </html>

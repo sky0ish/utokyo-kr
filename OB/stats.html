@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=137">
+<link rel="stylesheet" href="/OB/board/board.css?v=138">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -170,7 +170,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=137";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=138";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -240,8 +240,8 @@ async function start() {
   }
 
   document.getElementById("sCnt").textContent =
-    (mine ? `내 점수 ${Math.round(mine.score)}점 · ` : "") +
-    `참여하신 분 ${rows.length}명`;
+    (mine ? `내 점수 ${Math.round(mine.score)}점` : "") +
+    (me.is_admin ? "" : (mine ? " · " : "") + `참여하신 분 ${rows.length}명`);
 
   const myRank = mine ? rows.indexOf(mine) + 1 : 0;
 
@@ -271,7 +271,7 @@ async function start() {
       <div class="mylist" id="myList"></div>`
       : `<div class="sec2"><h3>내 사용통계</h3></div>
          <p class="myrank">아직 쌓인 내 기록이 없습니다. 홈페이지를 쓰시면 하나씩 쌓입니다.</p>`) +
-    `<div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
+    `<div id="allStats"><div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
        <small>우리 쪽 회원 ${rows.length}명이 함께 쓴 기록입니다</small></div>
      <div class="card2">
        <p class="sub">우리 쪽 동문이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
@@ -290,7 +290,7 @@ async function start() {
        <h3>많이 참여하신 분</h3>
        <p class="sub" id="rankSub">활동을 점수로 더한 순서입니다. 위 그래프에서 달·해를 누르면 그 기간만 봅니다.</p>
        <div style="overflow-x:auto;"><table class="rank" id="rank"></table></div>
-     </div>`;
+     </div></div>`;
 
   // ── 순위 ──
   //   기간을 고르지 않으면 지금까지 모두, 고르면 그 달·해만 봅니다.
@@ -603,13 +603,16 @@ async function start() {
   if (me.is_admin) {
     const sec = document.createElement("div");
     sec.innerHTML =
-      '<div class="sec2"><h3>활동 통계 <span style="font-size:12px;color:#a09a86;">운영진</span></h3>' +
+      '<div class="sec2"><h3>전체 사용통계</h3>' +
       '<small>소속을 눌러 OB · YB 를 따로 봅니다 · 가중치도 여기서 고치실 수 있습니다</small></div>' +
       '<div class="acthost"></div>';
     box.appendChild(sec);
+    // 운영진에게는 이 칸 하나로 충분합니다 (위의 회원용 칸은 운영진 기록을 빼고 세므로 비어 보입니다)
+    const oldBox = document.getElementById("allStats");
+    if (oldBox) oldBox.style.display = "none";
     try {
       const [mod, pr] = await Promise.all([
-        import("/OB/admin/activity-card.js?v=137"),
+        import("/OB/admin/activity-card.js?v=138"),
         sb.from("profiles").select("id,name,is_admin,member_type"),
       ]);
       mod.mountActivity(sec.querySelector(".acthost"),
