@@ -1068,6 +1068,49 @@ async function start() {
         .map(([k, v]) => ({ k, n: v.n, p: v.who.size, by: v.by }));
     }
 
+    /** 지금 보고 있는 기간·활동으로 많이 하신 분 열 분 */
+    function drawTop() {
+      const el = document.getElementById("statTop");
+      if (!el || !EVENTS) return;
+      const staff = new Set(rows.filter(r => r.is_admin).map(r => r.id));
+      const name = new Map(rows.map(r => [r.id, r.name || "이름없음"]));
+      const keyOf = (e) => mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
+      const one = kind !== "all" && kind !== "each" ? kind : "";
+
+      // 사람마다 활동을 모은다 (고른 기간 · 고른 활동만)
+      const sum = new Map();
+      EVENTS.forEach(e => {
+        if (staff.has(e.user_id) || !name.has(e.user_id)) return;
+        if (one && e.kind !== one) return;
+        if (pick && keyOf(e) !== pick) return;
+        if (!sum.has(e.user_id)) sum.set(e.user_id, {});
+        const a = sum.get(e.user_id);
+        a[e.kind] = (a[e.kind] || 0) + (e.amount || 1);
+      });
+
+      const list = [...sum.entries()]
+        .map(([id, a]) => ({ nm: name.get(id), n: one ? (a[one] || 0) : Math.round(scoreOf(a)) }))
+        .filter(x => x.n > 0)
+        .sort((x, y) => y.n - x.n)
+        .slice(0, 10);
+
+      const label = one ? (KIND_NAME[one] || "") : "총점";
+      const when = pick
+        ? (mode === "month" ? pick.replace("-", ".") : pick + "년")
+        : (mode === "month" ? "최근 24개월" : "최근 12년");
+      const top = list.length ? list[0].n : 1;
+      el.innerHTML = `<h4>${when} · ${label} Top 10` +
+        (pick ? ' <button class="clr" id="topClr" title="기간 풀기">✕</button>' : "") + "</h4>" +
+        (list.length
+          ? "<ol>" + list.map(x => `<li><span class="nm">${esc(x.nm)}</span>` +
+              `<span class="bar"><i style="width:${Math.round(x.n / top * 100)}%;"></i></span>` +
+              `<span class="n">${x.n}</span></li>`).join("") + "</ol>"
+          : '<div class="none">이 기간에는 기록이 없습니다.</div>');
+
+      const clr = document.getElementById("topClr");
+      if (clr) clr.addEventListener("click", () => { pick = ""; drawStat(); });
+    }
+
     function drawStat() {
       if (!rows) { drawTop(); return; }
       if (!rows.length) {
