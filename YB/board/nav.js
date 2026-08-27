@@ -38,12 +38,12 @@ const NAV = {
         <a href="/OB/gallery.html">갤러리</a>
         <div class="dd-menu">
           <a href="/OB/gallery.html?cat=assembly">총회</a>
+          <a href="/OB/gallery.html?cat=staff">운영진</a>
           <a href="/OB/gallery.html?cat=club">소모임</a>
           <a href="/OB/gallery.html?cat=faculty">단과대모임</a>
           <a href="/OB/gallery.html?cat=forum">포럼·세미나</a>
           <a href="/OB/gallery.html?cat=old">옛날사진</a>
           <a href="/OB/gallery.html?cat=daily">일상</a>
-          <a href="/OB/gallery.html?cat=etc">기타</a>
         </div>
       </div>
       <a href="/OB/map.html">MAP</a>
