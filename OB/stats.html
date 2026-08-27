@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=125">
+<link rel="stylesheet" href="/OB/board/board.css?v=126">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -87,6 +87,11 @@
 
   .mine dt em{font-style:normal;color:#8a6d2b;font-weight:600;}
   .mine .wnote{font-size:12px;color:#a09a86;margin:-18px 0 26px;}
+
+  .mine div.rank2{background:#eef2f8;}
+  .mine div.rank2 dd{color:#2a3f66;}
+  .mine div.rank2 dd small{display:block;font-size:11.5px;font-weight:400;
+    color:#2a3f66;opacity:.75;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -130,7 +135,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=125";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=126";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -212,12 +217,22 @@ async function start() {
           `<div><dt>${t} <em>(${wOf(k)})</em></dt>` +
           `<dd>${mine[k + "_n"] || 0}</dd></div>`).join("")}
         <div class="tot"><dt>내 점수</dt><dd>${Math.round(mine.score)}</dd></div>
+        ${(() => {
+          // 나를 뺀 회원들 사이에서 내가 몇 번째인지 (같은 점수는 같은 등수)
+          if (me.is_admin) return `<div class="rank2"><dt>내 순위</dt>
+            <dd>—<small>운영진 제외</small></dd></div>`;
+          const total = rows.length;
+          const rank = rows.findIndex(r => r.is_me) + 1;
+          if (!rank || !total) return "";
+          const pct = Math.max(1, Math.round(rank / total * 100));
+          return `<div class="rank2"><dt>내 순위</dt>
+            <dd>${rank}위<small>${total}명 중 상위 ${pct}%</small></dd></div>`;
+        })()}
       </dl>
       <p class="wnote">칸 이름 옆의 괄호는 <b>가중치</b>입니다 — 그 활동 한 번을 몇 점으로 세는지입니다.
         ${KIND.map(([k, t]) => `${t}×${wOf(k)}`).join(" · ")} 를 모두 더한 것이 내 점수입니다.</p>
-      <p class="myrank">${me.is_admin
-          ? "운영진 계정이라 아래 순위에는 넣지 않습니다."
-          : `참여하신 ${rows.length}분 가운데 <b>${myRank}위</b>입니다.`}</p>`
+      ${me.is_admin
+          ? '<p class="myrank">운영진 계정이라 아래 순위에는 넣지 않습니다.</p>' : ""}`
       : `<div class="sec2"><h3>내 사용통계</h3></div>
          <p class="myrank">아직 쌓인 내 기록이 없습니다. 홈페이지를 쓰시면 하나씩 쌓입니다.</p>`) +
     `<div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
