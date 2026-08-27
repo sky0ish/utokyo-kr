@@ -10,11 +10,11 @@ export async function initBoard(ORG) {
 
 
   // ── 조직별 게시판 구성 ──
-  const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사",
+  const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티(OB/YB)", promo:"홍보·채용", condolence:"경조사",
                    forum:"포럼·세미나",
                    jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
-                   mentoring:"멘토멘티" };
+                   mentoring:"멘토멘티(OB/YB)" };
   const TABS_OB = ["free","promo","forum","condolence","notice"];   // 소모임·멘토멘티는 참여마당에서 접근
   const TABS_YB = ["notice","free","qna","jobs","parttime","market","mentoring"];
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;

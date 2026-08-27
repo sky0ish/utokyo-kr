@@ -20,7 +20,7 @@ const NAV = {
         <div class="dd-menu">
           <a href="/OB/index.html#news">동문회 총회</a>
           <a href="/OB/board.html?cat=club">소모임</a>
-          <a href="/OB/board.html?cat=mentoring">멘토멘티</a>
+          <a href="/OB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
           <a href="/OB/board.html?cat=forum">포럼·세미나</a>
           <a href="/OB/members.html">회원 명부</a>
         </div>
@@ -79,7 +79,7 @@ const NAV = {
           <a href="/YB/board.html?cat=jobs">취업정보</a>
           <a href="/YB/board.html?cat=parttime">아르바이트</a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
-          <a href="/YB/board.html?cat=mentoring">멘토멘티</a>
+          <a href="/YB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
         </div>
       </div>
       <div class="dd">
