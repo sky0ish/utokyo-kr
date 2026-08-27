@@ -141,7 +141,10 @@ export function findDates(title, body, base, opts) {
   // 그 밖의 모임 — 제목에 적힌 날이 곧 모이는 날입니다.
   scan(title, true);
   if (out.length) return out.slice(0, 1);
-  scan(body, false);
+  // 제목에 날짜가 없으면 본문을 봅니다.
+  // 이미 모이는 게시판(소모임·멘토멘티 등)만 골라 왔으므로
+  // 본문에 적힌 날짜는 그대로 모이는 날로 봅니다.
+  scan(body, true);
   return out.slice(0, 1);
 }
 
