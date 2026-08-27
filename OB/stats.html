@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=107">
+<link rel="stylesheet" href="/OB/board/board.css?v=108">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -93,7 +93,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=107";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=108";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -242,8 +242,33 @@ async function start() {
       .map(([k, v]) => ({ k, n: v.n, p: v.p, by: v.by }));
   }
 
+  /** 기록이 없는 달·해도 자리를 비워 두고 늘어놓는다.
+   *  월별은 첫 기록이 있는 해의 1월부터 이달까지, 연별은 첫 해부터 올해까지. */
+  function fillGaps(arr) {
+    if (!arr.length) return arr;
+    const now = new Date();
+    const have = new Map(arr.map(d => [d.k, d]));
+    const out = [];
+    const blank = (k) => ({ k, n: 0, p: 0, by: {} });
+    if (mode === "month") {
+      let y = +arr[0].k.slice(0, 4), m = 1;
+      const ey = now.getFullYear(), em = now.getMonth() + 1;
+      while (y < ey || (y === ey && m <= em)) {
+        const k = y + "-" + String(m).padStart(2, "0");
+        out.push(have.get(k) || blank(k));
+        if (++m > 12) { m = 1; y++; }
+      }
+    } else {
+      for (let y = +arr[0].k.slice(0, 4); y <= now.getFullYear(); y++) {
+        const k = String(y);
+        out.push(have.get(k) || blank(k));
+      }
+    }
+    return out;
+  }
+
   function draw() {
-    const data = bucket().slice(mode === "month" ? -24 : -12);
+    const data = fillGaps(bucket()).slice(mode === "month" ? -24 : -12);
     const el = document.getElementById("chart");
     const lg = document.querySelector(".legend");
     if (!data.length) {

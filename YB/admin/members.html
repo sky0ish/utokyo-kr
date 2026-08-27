@@ -1111,6 +1111,31 @@ async function start() {
       if (clr) clr.addEventListener("click", () => { pick = ""; drawStat(); });
     }
 
+    /** 기록이 없는 달·해도 자리를 비워 두고 늘어놓는다.
+     *  월별은 첫 기록이 있는 해의 1월부터 이달까지, 연별은 첫 해부터 올해까지. */
+    function fillGaps(arr) {
+      if (!arr.length) return arr;
+      const now = new Date();
+      const have = new Map(arr.map(d => [d.k, d]));
+      const out = [];
+      const blank = (k) => ({ k, n: 0, p: 0, by: {} });
+      if (mode === "month") {
+        let y = +arr[0].k.slice(0, 4), m = 1;
+        const ey = now.getFullYear(), em = now.getMonth() + 1;
+        while (y < ey || (y === ey && m <= em)) {
+          const k = y + "-" + String(m).padStart(2, "0");
+          out.push(have.get(k) || blank(k));
+          if (++m > 12) { m = 1; y++; }
+        }
+      } else {
+        for (let y = +arr[0].k.slice(0, 4); y <= now.getFullYear(); y++) {
+          const k = String(y);
+          out.push(have.get(k) || blank(k));
+        }
+      }
+      return out;
+    }
+
     function drawStat() {
       if (!rows) { drawTop(); return; }
       if (!rows.length) {
@@ -1122,7 +1147,7 @@ async function start() {
       }
 
       const wide = kind === "all" || kind === "each";     // 여섯 갈래를 한 그림에
-      const data = bucket(rows).slice(mode === "month" ? -24 : -12);
+      const data = fillGaps(bucket(rows)).slice(mode === "month" ? -24 : -12);
       const W = Math.max(560, data.length * (mode === "month" ? (kind === "each" ? 62 : 44) : 78));
       const H = 230, PAD = 38, BOT = 34, TOP = 14;
       const step = (W - PAD * 2) / data.length;
