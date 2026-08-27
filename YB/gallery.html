@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=132">
+<link rel="stylesheet" href="/YB/board/board.css?v=133">
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -262,7 +262,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=132";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=133";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
@@ -535,6 +535,13 @@ try {
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
     el.append(st, my, out);
+    // 로그인한 회원에게 — 제 소속의 사용통계
+    {
+      const sa = document.createElement("a");
+      sa.href = "/YB/stats.html";
+      sa.textContent = "사용통계";
+      el.append(sa);
+    }
   }
 } catch (e) { /* 무시 */ }
 

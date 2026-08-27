@@ -1234,7 +1234,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=132";
+import { initCalendar } from "/YB/board/calendar.js?v=133";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1279,6 +1279,13 @@ try {
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
     el.append(st, my, out);
+    // 로그인한 회원에게 — 제 소속의 사용통계
+    {
+      const sa = document.createElement("a");
+      sa.href = "/YB/stats.html";
+      sa.textContent = "사용통계";
+      el.append(sa);
+    }
     if (p && p.is_admin) {                       // 운영진 관리 메뉴
       const mk = (href, text) => {
         const a = document.createElement("a");
@@ -1287,7 +1294,8 @@ try {
         return a;
       };
       const appr = mk("/YB/admin/members.html?org=YB", "⚙ 회원 승인");
-      el.append(appr, mk("/YB/admin/gallery.html?org=YB", "⚙ 갤러리 관리"));
+      el.append(appr, mk("/YB/admin/members.html?org=YB#statCard", "⚙ 사용통계"),
+                mk("/YB/admin/gallery.html?org=YB", "⚙ 갤러리 관리"));
       sb.from("profiles").select("id", { count: "exact", head: true }).eq("approved", false)
         .then(({ count }) => {
           if (count) {
@@ -1304,7 +1312,7 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=132");
+  const { initCouncil } = await import("/YB/council.js?v=133");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>

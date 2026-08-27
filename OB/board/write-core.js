@@ -30,6 +30,13 @@ export async function initWrite(ORG) {
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.href = HOME + "/board.html"; });
     el.append(st, my, out);
+    // 로그인한 회원에게 — 제 소속의 사용통계
+    {
+      const sa = document.createElement("a");
+      sa.href = "/OB/stats.html";
+      sa.textContent = "사용통계";
+      el.append(sa);
+    }
   }
 
   if (!profile || !profile.approved) {

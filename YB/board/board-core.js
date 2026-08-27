@@ -180,10 +180,18 @@ export async function initBoard(ORG) {
     out.href = "#"; out.textContent = "로그아웃";
     out.addEventListener("click", async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); });
     el.append(st, my, out);
+    // 로그인한 회원에게 — 제 소속의 사용통계
+    {
+      const sa = document.createElement("a");
+      sa.href = "/YB/stats.html";
+      sa.textContent = "사용통계";
+      el.append(sa);
+    }
     if (p && p.is_admin) {                      // 운영진 관리 메뉴
       const mk = (href, text) => { const a = document.createElement("a");
         a.href = href; a.textContent = text; a.style.color = "#e8c876"; a.style.fontWeight = "600"; return a; };
       el.append(mk("/YB/admin/members.html", "⚙ 회원 승인"),
+                mk("/YB/admin/members.html#statCard", "⚙ 사용통계"),
                 mk("/YB/admin/gallery.html", "⚙ 갤러리 관리"));
       el.append(mk("/YB/admin/index.html", "⚙ 글 가져오기"));
     }
