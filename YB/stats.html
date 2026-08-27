@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=135">
+<link rel="stylesheet" href="/YB/board/board.css?v=136">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -170,7 +170,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=135";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=136";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -268,18 +268,13 @@ async function start() {
             <dd>${rank}위<small>${total}명 중 상위 ${pct}%</small></dd></div>`;
         })()}
       </dl>
-      <p class="wnote">칸 이름 옆의 괄호는 <b>가중치</b>입니다 — 그 활동 한 번을 몇 점으로 세는지입니다.
-        ${KIND.map(([k, t]) => `${t}×${wOf(k)}`).join(" · ")} 를 모두 더한 것이 내 점수입니다.</p>
-      <div class="mylist" id="myList"></div>
-      ${me.is_admin
-          ? '<p class="myrank">운영진 계정이라 아래 순위에는 넣지 않습니다.</p>' : ""}`
+      <div class="mylist" id="myList"></div>`
       : `<div class="sec2"><h3>내 사용통계</h3></div>
          <p class="myrank">아직 쌓인 내 기록이 없습니다. 홈페이지를 쓰시면 하나씩 쌓입니다.</p>`) +
     `<div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
        <small>우리 쪽 회원 ${rows.length}명이 함께 쓴 기록입니다</small></div>
      <div class="card2">
-       <h3>달마다 · 해마다</h3>
-       <p class="sub">우리 쪽 동문이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
+       <p class="sub">우리 쪽 회원이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
        <div class="segs">
          <span class="seg" id="modeSeg"><a data-v="month" class="on">월별</a><a data-v="year">연별</a></span>
          <span class="seg" id="yearSeg" style="display:none;"></span>
