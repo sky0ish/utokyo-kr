@@ -257,7 +257,7 @@ function monthGrid(year, month, map, todayKey, titles) {
  *  멘토멘티는 두 단체가 함께 쓰는 게시판이라 게시판 이름을 그대로 씁니다. */
 function fromMark(e) {
   if (e.org !== "OB") return "";
-  return e.cat === "mentoring" ? "[멘토멘티] " : "(OB) ";
+  return e.cat === "mentoring" ? "(멘토멘티) " : "(OB) ";
 }
 
 /** 날짜를 눌렀을 때 — 제목과 함께 글 속의 그 줄을 그대로 보여줍니다 */
