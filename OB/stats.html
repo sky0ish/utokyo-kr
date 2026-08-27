@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=126">
+<link rel="stylesheet" href="/OB/board/board.css?v=127">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -92,6 +92,41 @@
   .mine div.rank2 dd{color:#2a3f66;}
   .mine div.rank2 dd small{display:block;font-size:11.5px;font-weight:400;
     color:#2a3f66;opacity:.75;margin-top:2px;}
+
+  /* 눌러서 펼쳐 보는 칸 */
+  .mine div.tap{cursor:pointer;transition:.15s;}
+  .mine div.tap:hover{background:#fdf6e6;}
+  .mine div.tap.on{background:#fdf6e6;box-shadow:inset 0 -3px 0 #c9a961;}
+  .mine div.tap dt::after{content:" ▾";font-size:10px;color:#c9a961;}
+  .mine div.tap.on dt::after{content:" ▴";}
+
+  .mylist{display:none;background:#fff;border:1px solid #e6dfcb;border-radius:10px;
+    padding:16px 18px;margin:-14px 0 26px;}
+  .mylist.on{display:block;}
+  .mylist h4{font-size:14px;font-weight:600;color:#4a3c14;margin-bottom:10px;
+    display:flex;align-items:center;gap:8px;}
+  .mylist h4 .x{margin-left:auto;border:none;background:none;cursor:pointer;
+    color:#b0a98f;font-family:inherit;font-size:12px;}
+  .mylist h4 .x:hover{color:#8a6d2b;}
+  .mylist ul{list-style:none;}
+  .mylist li{border-bottom:1px solid #f4f0e8;}
+  .mylist li:last-child{border-bottom:none;}
+  .mylist li a{display:flex;align-items:baseline;gap:10px;padding:9px 2px;
+    font-size:14px;color:#4a3c14;}
+  .mylist li a:hover{color:#8a6d2b;}
+  .mylist li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .mylist li .cg{flex:none;font-size:11.5px;color:#7d7768;}
+  .mylist li .dt{flex:none;font-size:11.5px;color:#b0a98f;font-variant-numeric:tabular-nums;}
+  .mylist .none{padding:18px 2px;text-align:center;color:#a8a291;font-size:13.5px;}
+  .myshots{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;}
+  .myshots a{display:block;border-radius:6px;overflow:hidden;border:1px solid #e6dfcb;}
+  .myshots img{width:100%;height:80px;object-fit:cover;display:block;}
+  .myshots a:hover{border-color:#c9a961;}
+
+  .stattop .gift{margin-top:10px;padding:8px 10px;border-radius:6px;
+    background:#fdf6e6;border:1px solid #e6dfcb;
+    font-size:12px;line-height:1.55;color:#4a3c14;}
+  .stattop .gift b{color:#8a6d2b;}
 </style>
 </head>
 <body>
@@ -135,7 +170,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=126";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=127";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -146,6 +181,7 @@ const KIND = [["login", "로그인"], ["visit", "방문"], ["read", "글읽기"]
 const KNAME = Object.fromEntries(KIND);
 const KCOLOR = { login: "#2a78d6", visit: "#eb6834", read: "#1baf7a",
                  comment: "#eda100", post: "#e87ba4", photo: "#008300" };
+const CATN = { notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", forum:"포럼·세미나", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장", history:"활동 이력", suggest:"동문회에 바란다" };
 const KORDER = ["login", "visit", "read", "comment", "post", "photo"];
 const esc = (s) => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -213,9 +249,12 @@ async function start() {
     (mine ? `<div class="sec2"><h3>내 사용통계</h3>
         <small>내가 홈페이지를 얼마나 썼는지 (가중치 반영)</small></div>
       <dl class="mine">
-        ${KIND.map(([k, t]) =>
-          `<div><dt>${t} <em>(${wOf(k)})</em></dt>` +
-          `<dd>${mine[k + "_n"] || 0}</dd></div>`).join("")}
+        ${KIND.map(([k, t]) => {
+          const tap = (k === "comment" || k === "post" || k === "photo") && (mine[k + "_n"] || 0) > 0;
+          return `<div${tap ? ` class="tap" data-k="${k}"` : ""}>` +
+                 `<dt>${t} <em>(${wOf(k)})</em></dt>` +
+                 `<dd>${mine[k + "_n"] || 0}</dd></div>`;
+        }).join("")}
         <div class="tot"><dt>내 점수</dt><dd>${Math.round(mine.score)}</dd></div>
         ${(() => {
           // 나를 뺀 회원들 사이에서 내가 몇 번째인지 (같은 점수는 같은 등수)
@@ -231,6 +270,7 @@ async function start() {
       </dl>
       <p class="wnote">칸 이름 옆의 괄호는 <b>가중치</b>입니다 — 그 활동 한 번을 몇 점으로 세는지입니다.
         ${KIND.map(([k, t]) => `${t}×${wOf(k)}`).join(" · ")} 를 모두 더한 것이 내 점수입니다.</p>
+      <div class="mylist" id="myList"></div>
       ${me.is_admin
           ? '<p class="myrank">운영진 계정이라 아래 순위에는 넣지 않습니다.</p>' : ""}`
       : `<div class="sec2"><h3>내 사용통계</h3></div>
@@ -278,7 +318,8 @@ async function start() {
             `<span class="nm">${esc(x.nm)}</span>` +
             `<span class="bar"><i style="width:${Math.round(x.n / top * 100)}%;"></i></span>` +
             `<span class="n">${x.n}</span></li>`).join("") + "</ol>"
-        : '<div class="none">아직 기록이 없습니다.</div>');
+        : '<div class="none">아직 기록이 없습니다.</div>') +
+      '<p class="gift">분야별 <b>1등</b>에게는 <b>총회 때 선물을 드립니다.</b></p>';
   }
 
   function drawRank() {
@@ -473,6 +514,90 @@ async function start() {
     el.querySelectorAll(".pickbar").forEach(r => r.addEventListener("click", () => {
       pick = (pick === r.dataset.k) ? "" : r.dataset.k;
       draw(); drawRank();
+    }));
+  }
+
+
+  // ── 내가 쓴 댓글 · 글 · 올린 사진 펼쳐 보기 ──
+  {
+    const TAPS = { comment: "내가 쓴 댓글", post: "내가 쓴 글", photo: "내가 올린 사진" };
+    const listEl = document.getElementById("myList");
+    let open = "";
+    const cache = {};
+
+    const paint = () => document.querySelectorAll(".mine div.tap")
+      .forEach(d => d.classList.toggle("on", d.dataset.k === open));
+
+    async function fetchMine(kind) {
+      if (cache[kind]) return cache[kind];
+      if (kind === "post") {
+        const r = await sb.from("posts")
+          .select("id,title,category,created_at")
+          .eq("author_id", user.id).order("created_at", { ascending: false }).limit(200);
+        cache[kind] = r.error ? { err: r.error } : { rows: r.data || [] };
+      } else if (kind === "comment") {
+        const r = await sb.from("comments")
+          .select("id,post_id,content,created_at")
+          .eq("author_id", user.id).order("created_at", { ascending: false }).limit(200);
+        if (r.error) { cache[kind] = { err: r.error }; }
+        else {
+          const rows = r.data || [];
+          // 어느 글에 단 댓글인지 제목을 함께 가져옵니다
+          const ids = [...new Set(rows.map(x => x.post_id))].filter(Boolean);
+          let title = {};
+          if (ids.length) {
+            const t = await sb.from("posts").select("id,title").in("id", ids);
+            (t.data || []).forEach(p => { title[p.id] = p.title; });
+          }
+          cache[kind] = { rows: rows.map(x => ({ ...x, ptitle: title[x.post_id] || "" })) };
+        }
+      } else {
+        const r = await sb.from("gallery_photos")
+          .select("id,image_url,category,taken_at,album_key")
+          .eq("created_by", user.id).order("taken_at", { ascending: false }).limit(300);
+        cache[kind] = r.error ? { err: r.error } : { rows: r.data || [] };
+      }
+      return cache[kind];
+    }
+
+    function draw(kind, got) {
+      const head = `<h4>${TAPS[kind]} <span style="font-weight:400;color:#a8a291;">` +
+                   `${got.rows ? got.rows.length + "건" : ""}</span>` +
+                   '<button class="x" id="myClose">닫기 ✕</button></h4>';
+      if (got.err) {
+        listEl.innerHTML = head + '<div class="none">불러오지 못했습니다: ' + esc(got.err.message) + "</div>";
+      } else if (!got.rows.length) {
+        listEl.innerHTML = head + '<div class="none">아직 없습니다.</div>';
+      } else if (kind === "photo") {
+        listEl.innerHTML = head + '<div class="myshots">' + got.rows.map(p =>
+          `<a href="/OB/album.html?cat=${esc(p.category)}` +
+          `&id=${encodeURIComponent(p.album_key || "")}" title="${(p.taken_at || "").slice(0, 10)}">` +
+          `<img src="${esc(p.image_url)}" alt="" loading="lazy"></a>`).join("") + "</div>";
+      } else if (kind === "post") {
+        listEl.innerHTML = head + "<ul>" + got.rows.map(p =>
+          `<li><a href="/OB/post.html?id=${p.id}">` +
+          `<span class="tt">${esc(p.title)}</span>` +
+          `<span class="cg">${esc(CATN[p.category] || p.category)}</span>` +
+          `<span class="dt">${(p.created_at || "").slice(0, 10)}</span></a></li>`).join("") + "</ul>";
+      } else {
+        listEl.innerHTML = head + "<ul>" + got.rows.map(c =>
+          `<li><a href="/OB/post.html?id=${c.post_id}">` +
+          `<span class="tt">${esc((c.content || "").replace(/\s+/g, " ").slice(0, 60))}</span>` +
+          `<span class="cg">${esc((c.ptitle || "").slice(0, 20))}</span>` +
+          `<span class="dt">${(c.created_at || "").slice(0, 10)}</span></a></li>`).join("") + "</ul>";
+      }
+      const x = document.getElementById("myClose");
+      if (x) x.addEventListener("click", () => { open = ""; paint(); listEl.classList.remove("on"); });
+    }
+
+    document.querySelectorAll(".mine div.tap").forEach(d => d.addEventListener("click", async () => {
+      const kind = d.dataset.k;
+      if (open === kind) { open = ""; paint(); listEl.classList.remove("on"); return; }
+      open = kind; paint();
+      listEl.classList.add("on");
+      listEl.innerHTML = '<div class="none">불러오는 중…</div>';
+      draw(kind, await fetchMine(kind));
+      listEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }));
   }
 
