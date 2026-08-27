@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=104">
+<link rel="stylesheet" href="/OB/board/board.css?v=105">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -93,7 +93,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=104";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=105";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -102,6 +102,9 @@ const ORG_NAME = { OB: "재한 도쿄대학 총동문회", YB: "도쿄대학 한
 const KIND = [["login", "로그인"], ["visit", "방문"], ["read", "글읽기"],
               ["comment", "댓글"], ["post", "글쓰기"], ["photo", "사진"]];
 const KNAME = Object.fromEntries(KIND);
+const KCOLOR = { login: "#2a78d6", visit: "#eb6834", read: "#1baf7a",
+                 comment: "#eda100", post: "#e87ba4", photo: "#008300" };
+const KORDER = ["login", "visit", "read", "comment", "post", "photo"];
 const esc = (s) => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const box = document.getElementById("box");
@@ -168,10 +171,7 @@ async function start() {
          <span class="seg" id="kindSeg"></span>
        </div>
        <div class="chart" id="chart"></div>
-       <div class="legend">
-         <span><i style="background:#c9a961;"></i>활동 수</span>
-         <span><i style="background:#8fa6c9;"></i>사람 수</span>
-       </div>
+       <div class="legend"></div>
      </div>
      <div class="card2">
        <h3>많이 참여하신 분</h3>
@@ -210,7 +210,7 @@ async function start() {
   // ── 그래프 ──
   let mode = "month", kind = "all", pick = "";
   const kindSeg = document.getElementById("kindSeg");
-  kindSeg.innerHTML = '<a data-v="all" class="on">전체</a>' +
+  kindSeg.innerHTML = '<a data-v="all" class="on">전체(쌓기)</a><a data-v="each">분야별</a>' +
     KIND.map(([k, t]) => `<a data-v="${k}">${t}</a>`).join("");
 
   document.querySelectorAll("#modeSeg a").forEach(a => a.addEventListener("click", () => {
@@ -228,59 +228,117 @@ async function start() {
 
   function bucket() {
     const g = new Map();
-    months.filter(r => kind === "all" || r.kind === kind).forEach(r => {
+    months.forEach(r => {
       const k = mode === "month" ? r.ym : String(r.ym).slice(0, 4);
-      if (!g.has(k)) g.set(k, { n: 0, p: 0 });
-      const b2 = g.get(k);
-      b2.n += Number(r.n || 0);
-      b2.p = Math.max(b2.p, Number(r.people || 0));   // 달마다 센 사람 수 가운데 가장 많은 달
+      if (!g.has(k)) g.set(k, { n: 0, p: 0, by: {} });
+      const b = g.get(k);
+      b.by[r.kind] = (b.by[r.kind] || 0) + Number(r.n || 0);
+      if (kind === "all" || kind === "each" || r.kind === kind) {
+        b.n += Number(r.n || 0);
+        b.p = Math.max(b.p, Number(r.people || 0));
+      }
     });
     return [...g.entries()].sort((a, b2) => a[0].localeCompare(b2[0]))
-      .map(([k, v]) => ({ k, n: v.n, p: v.p }));
+      .map(([k, v]) => ({ k, n: v.n, p: v.p, by: v.by }));
   }
 
   function draw() {
     const data = bucket().slice(mode === "month" ? -24 : -12);
     const el = document.getElementById("chart");
-    if (!data.length) { el.innerHTML = '<div class="sempty">이 활동은 아직 기록이 없습니다.</div>'; return; }
-    const W = Math.max(560, data.length * (mode === "month" ? 46 : 78));
-    const H = 230, PAD = 36, BOT = 34;
-    const top = Math.max(1, ...data.map(d => d.n));
+    const lg = document.querySelector(".legend");
+    if (!data.length) {
+      el.innerHTML = '<div class="sempty">이 활동은 아직 기록이 없습니다.</div>';
+      if (lg) lg.innerHTML = "";
+      return;
+    }
+    const wide = kind === "all" || kind === "each";
+    const W = Math.max(560, data.length * (mode === "month" ? (kind === "each" ? 62 : 46) : 80));
+    const H = 240, PAD = 38, BOT = 34, TOP = 14;
     const step = (W - PAD * 2) / data.length;
-    const bw = Math.min(26, step * 0.42);
-    const y = (v) => H - BOT - (v / top) * (H - BOT - 18);
+    const zero = H - BOT;
+
+    const heightOf = (d) =>
+      kind === "all"  ? KORDER.reduce((n, k) => n + (d.by[k] || 0), 0)
+    : kind === "each" ? Math.max(...KORDER.map(k => d.by[k] || 0), 0)
+    :                   Math.max(d.n, d.p);
+    const top = Math.max(1, ...data.map(heightOf));
+    const y = (v) => zero - (v / top) * (zero - TOP);
 
     const grid = [0, 0.5, 1].map(f => {
       const v = Math.round(top * f), yy = y(v);
       return `<line x1="${PAD}" y1="${yy}" x2="${W - PAD}" y2="${yy}" stroke="#efe9db"/>` +
-             `<text x="${PAD - 8}" y="${yy + 4}" text-anchor="end" font-size="10" fill="#a09a86">${v}</text>`;
+             `<text x="${PAD - 8}" y="${yy + 4}" text-anchor="end" font-size="10"
+                fill="#a09a86">${v}</text>`;
     }).join("");
 
+    const bar = (x, w, v, fill, title, dim) => {
+      if (!v) return "";
+      const h = zero - y(v), r = Math.min(4, w / 2, h), yy = y(v);
+      return `<path d="M${x} ${zero} L${x} ${yy + r} Q${x} ${yy} ${x + r} ${yy}` +
+             ` L${x + w - r} ${yy} Q${x + w} ${yy} ${x + w} ${yy + r} L${x + w} ${zero} Z"` +
+             ` fill="${fill}" opacity="${dim ? .4 : 1}"><title>${title}</title></path>`;
+    };
+
     const bars = data.map((d, i) => {
-      const cx = PAD + step * i + step / 2;
+      const x0 = PAD + step * i;
       const label = mode === "month" ? d.k.slice(2).replace("-", ".") : d.k;
-      const on = pick === d.k;
-      return `<rect class="pickbar" data-k="${d.k}" x="${PAD + step * i}" y="0"
-                width="${step}" height="${H - BOT}" fill="transparent" style="cursor:pointer;"/>` +
-             `<rect x="${cx - bw}" y="${y(d.n)}" width="${bw}" height="${H - BOT - y(d.n)}"
-                fill="#c9a961" rx="2" opacity="${!pick || on ? 1 : .45}"><title>${d.k} · ${d.n}회</title></rect>` +
-             `<rect x="${cx}" y="${y(d.p)}" width="${bw}" height="${H - BOT - y(d.p)}"
-                fill="#8fa6c9" rx="2"><title>${d.k} · ${d.p}명</title></rect>` +
-             `<text x="${cx}" y="${H - BOT + 15}" text-anchor="middle" font-size="10.5"
-                fill="#a09a86">${label}</text>`;
+      const dim = pick && pick !== d.k;
+      let body = "";
+
+      if (kind === "all") {
+        const bw = Math.min(30, step * 0.5);
+        const x = x0 + (step - bw) / 2;
+        let acc = 0;
+        body = KORDER.map(k => {
+          const v = d.by[k] || 0;
+          if (!v) return "";
+          const yTop = y(acc + v), yBot = y(acc);
+          acc += v;
+          return `<rect x="${x}" y="${yTop}" width="${bw}" height="${Math.max(1, yBot - yTop - 2)}"
+                    rx="2" fill="${KCOLOR[k]}" opacity="${dim ? .4 : 1}">
+                    <title>${d.k} · ${KNAME[k]} ${v}</title></rect>`;
+        }).join("");
+
+      } else if (kind === "each") {
+        const gap = 2;
+        const bw = Math.max(3, (step * 0.86 - gap * 5) / 6);
+        const x = x0 + (step - (bw * 6 + gap * 5)) / 2;
+        body = KORDER.map((k, n) =>
+          bar(x + n * (bw + gap), bw, d.by[k] || 0, KCOLOR[k],
+              `${d.k} · ${KNAME[k]} ${d.by[k] || 0}`, dim)).join("");
+
+      } else {
+        const bw = Math.min(24, step * 0.36);
+        const cx = x0 + step / 2;
+        body = bar(cx - bw - 1, bw, d.n, KCOLOR[kind] || "#2a78d6",
+                   `${d.k} · ${KNAME[kind] || ""} ${d.n}`, dim) +
+               bar(cx + 1, bw, d.p, "#9aa3ad", `${d.k} · ${d.p}명`, dim);
+      }
+
+      return `<rect class="pickbar" data-k="${d.k}" x="${x0}" y="0" width="${step}"
+                height="${zero}" fill="${pick === d.k ? "rgba(0,0,0,.045)" : "transparent"}"
+                style="cursor:pointer;"/>` + body +
+             `<text x="${x0 + step / 2}" y="${zero + 15}" text-anchor="middle"
+                font-size="10.5" fill="#a09a86">${label}</text>`;
     }).join("");
 
     el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img"
       aria-label="${mode === "month" ? "월별" : "연별"} 사용통계 막대그래프">${grid}
-      <line x1="${PAD}" y1="${H - BOT}" x2="${W - PAD}" y2="${H - BOT}" stroke="#efe9db"/>
+      <line x1="${PAD}" y1="${zero}" x2="${W - PAD}" y2="${zero}" stroke="#efe9db"/>
       ${bars}</svg>`;
+
+    if (lg) lg.innerHTML = wide
+      ? KORDER.map(k => `<span><i style="background:${KCOLOR[k]};"></i>${KNAME[k]}</span>`).join("")
+      : `<span><i style="background:${KCOLOR[kind] || "#2a78d6"};"></i>${KNAME[kind] || ""} 수</span>` +
+        '<span><i style="background:#9aa3ad;"></i>사람 수</span>';
 
     el.querySelectorAll(".pickbar").forEach(r => r.addEventListener("click", () => {
       pick = (pick === r.dataset.k) ? "" : r.dataset.k;
       draw(); drawRank();
     }));
   }
-  draw();
+
+  draw(); drawRank();
 }
 </script>
 

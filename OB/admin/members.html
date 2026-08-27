@@ -293,10 +293,7 @@
         <div class="chart" id="statChart"><div class="none">불러오는 중…</div></div>
         <div class="stattop" id="statTop"></div>
       </div>
-      <div class="legend">
-        <span><i style="background:#c9a961;"></i>활동 수</span>
-        <span><i style="background:#8fa6c9;"></i>사람 수</span>
-      </div>
+      <div class="legend"></div>
       <div class="wbox">
         <h3>활동 점수 기준</h3>
         <p>활동마다 몇 점으로 셀지 정합니다. 고치시면 위의 총점과 그래프가 바로 따라옵니다.</p>
@@ -944,6 +941,11 @@ async function start() {
   let WEIGHT = [];           // [{kind,label,weight,sort}]
   let EVENTS = null;         // 원본 기록 (그래프용)
 
+  // 활동 갈래 빛깔 — 색맹 구분까지 검증한 여섯 자리
+  const KCOLOR = { login: "#2a78d6", visit: "#eb6834", read: "#1baf7a",
+                   comment: "#eda100", post: "#e87ba4", photo: "#008300" };
+  const KORDER = ["login", "visit", "read", "comment", "post", "photo"];
+
   const KIND_NAME = { login: "로그인", visit: "방문", read: "글읽기",
                       comment: "댓글", post: "글쓰기", photo: "사진" };
 
@@ -1012,13 +1014,14 @@ async function start() {
     let mode = "month", kind = "all", pick = "";   // pick : 눌러서 고른 달·해
     const chart = document.getElementById("statChart");
     const cap = document.getElementById("statCap");
+    const legend = document.querySelector(".stat .legend");
     let rows = null;
 
     // 어떤 활동을 볼지 고르는 줄
     {
       const box = document.getElementById("kindSeg");
-      const kinds = [["all", "전체"]].concat(
-        ["login", "visit", "read", "comment", "post", "photo"].map(k => [k, KIND_NAME[k]]));
+      const kinds = [["all", "전체(쌓기)"], ["each", "분야별"]].concat(
+        KORDER.map(k => [k, KIND_NAME[k]]));
       box.innerHTML = kinds.map(([k, t]) =>
         `<a data-k="${k}"${k === "all" ? ' class="on"' : ""}>${t}</a>`).join("");
       box.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
@@ -1052,102 +1055,119 @@ async function start() {
       const m = new Map();
       // 운영진 계정은 통계에서 뺍니다 (관리하느라 드나든 것은 참여가 아니므로)
       const staff = new Set(rows.filter(r => r.is_admin).map(r => r.id));
-      list.filter(e => !staff.has(e.user_id))
-          .filter(e => kind === "all" || e.kind === kind).forEach(e => {
+      list.filter(e => !staff.has(e.user_id)).forEach(e => {
         const k = mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
-        if (!m.has(k)) m.set(k, { n: 0, who: new Set() });
+        if (!m.has(k)) m.set(k, { n: 0, who: new Set(), by: {} });
         const b = m.get(k);
-        b.n += (e.amount || 1); b.who.add(e.user_id || e.at);
+        b.by[e.kind] = (b.by[e.kind] || 0) + (e.amount || 1);
+        if (kind === "all" || kind === "each" || e.kind === kind) {
+          b.n += (e.amount || 1); b.who.add(e.user_id || e.at);
+        }
       });
       return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-        .map(([k, v]) => ({ k, n: v.n, p: v.who.size }));
-    }
-
-    /** 지금 보고 있는 기간·활동으로 많이 하신 분 열 분 */
-    function drawTop() {
-      const el = document.getElementById("statTop");
-      if (!el || !EVENTS) return;
-      const staff = new Set(window.__rowsAll.filter(r => r.is_admin).map(r => r.id));
-      const name = new Map(window.__rowsAll.map(r => [r.id, r.name || "이름없음"]));
-      const keyOf = (e) => mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
-
-      // 사람마다 활동을 모은다 (고른 기간 · 고른 활동만)
-      const sum = new Map();
-      EVENTS.forEach(e => {
-        if (staff.has(e.user_id) || !name.has(e.user_id)) return;
-        if (kind !== "all" && e.kind !== kind) return;
-        if (pick && keyOf(e) !== pick) return;
-        if (!sum.has(e.user_id)) sum.set(e.user_id, {});
-        const a = sum.get(e.user_id);
-        a[e.kind] = (a[e.kind] || 0) + (e.amount || 1);
-      });
-
-      const list = [...sum.entries()].map(([id, a]) => ({
-          nm: name.get(id),
-          n: kind === "all" ? Math.round(scoreOf(a)) : (a[kind] || 0),
-        }))
-        .filter(x => x.n > 0)
-        .sort((x, y) => y.n - x.n)
-        .slice(0, 10);
-
-      const label = kind === "all" ? "총점" : (KIND_NAME[kind] || "");
-      const when = pick
-        ? (mode === "month" ? pick.replace("-", ".") : pick + "년")
-        : (mode === "month" ? "최근 24개월" : "최근 12년");
-      const top = list.length ? list[0].n : 1;
-      el.innerHTML = `<h4>${when} · ${label} Top 10` +
-        (pick ? ' <button class="clr" id="topClr" title="기간 풀기">✕</button>' : "") + "</h4>" +
-        (list.length
-          ? "<ol>" + list.map(x => `<li><span class="nm">${esc(x.nm)}</span>` +
-              `<span class="bar"><i style="width:${Math.round(x.n / top * 100)}%;"></i></span>` +
-              `<span class="n">${x.n}</span></li>`).join("") + "</ol>"
-          : '<div class="none">이 기간에는 기록이 없습니다.</div>');
-
-      const clr = document.getElementById("topClr");
-      if (clr) clr.addEventListener("click", () => { pick = ""; drawStat(); });
+        .map(([k, v]) => ({ k, n: v.n, p: v.who.size, by: v.by }));
     }
 
     function drawStat() {
       if (!rows) { drawTop(); return; }
       if (!rows.length) {
-        chart.innerHTML = '<div class="none">아직 쌓인 로그인 기록이 없습니다. ' +
-          '이제부터 로그인하실 때마다 하나씩 쌓입니다.</div>';
+        chart.innerHTML = '<div class="none">아직 쌓인 활동 기록이 없습니다. ' +
+          '회원이 홈페이지를 쓰실 때마다 하나씩 쌓입니다.</div>';
         cap.textContent = "";
+        legend.innerHTML = "";
         return;
       }
+
+      const wide = kind === "all" || kind === "each";     // 여섯 갈래를 한 그림에
       const data = bucket(rows).slice(mode === "month" ? -24 : -12);
-      const W = Math.max(560, data.length * (mode === "month" ? 44 : 74));
-      const H = 220, PAD = 34, BOT = 34;
-      const top = Math.max(1, ...data.map(d => d.n));
+      const W = Math.max(560, data.length * (mode === "month" ? (kind === "each" ? 62 : 44) : 78));
+      const H = 230, PAD = 38, BOT = 34, TOP = 14;
       const step = (W - PAD * 2) / data.length;
-      const bw = Math.min(26, step * 0.42);
-      const y = (v) => H - BOT - (v / top) * (H - BOT - 16);
+      const zero = H - BOT;
+
+      // 높이를 재는 값 : 띠는 합계, 나란히는 가장 큰 하나, 하나만 볼 때는 그 갈래
+      const heightOf = (d) =>
+        kind === "all"  ? KORDER.reduce((n, k) => n + (d.by[k] || 0), 0)
+      : kind === "each" ? Math.max(...KORDER.map(k => d.by[k] || 0), 0)
+      :                   Math.max(d.n, d.p);
+      const top = Math.max(1, ...data.map(heightOf));
+      const y = (v) => zero - (v / top) * (zero - TOP);
 
       const grid = [0, 0.5, 1].map(f => {
         const v = Math.round(top * f), yy = y(v);
         return `<line x1="${PAD}" y1="${yy}" x2="${W - PAD}" y2="${yy}" stroke="#efe9db"/>` +
-               `<text x="${PAD - 8}" y="${yy + 4}" text-anchor="end" font-size="10" fill="#7d7768">${v}</text>`;
+               `<text x="${PAD - 8}" y="${yy + 4}" text-anchor="end" font-size="10"
+                  fill="#7d7768">${v}</text>`;
       }).join("");
 
+      /** 데이터가 끝나는 쪽만 둥글게, 바닥은 각지게 */
+      const bar = (x, w, v, fill, title, dim) => {
+        if (!v) return "";
+        const h = zero - y(v), r = Math.min(4, w / 2, h);
+        const yy = y(v);
+        return `<path d="M${x} ${zero} L${x} ${yy + r} Q${x} ${yy} ${x + r} ${yy}` +
+               ` L${x + w - r} ${yy} Q${x + w} ${yy} ${x + w} ${yy + r} L${x + w} ${zero} Z"` +
+               ` fill="${fill}" opacity="${dim ? .4 : 1}"><title>${title}</title></path>`;
+      };
+
       const bars = data.map((d, i) => {
-        const cx = PAD + step * i + step / 2;
+        const x0 = PAD + step * i;
         const label = mode === "month" ? d.k.slice(2).replace("-", ".") : d.k;
-        const on = pick === d.k;
-        return `<rect class="pickbar" data-k="${d.k}" x="${PAD + step * i}" y="0"
-                  width="${step}" height="${H - BOT}" fill="${on ? "#c9a96122" : "transparent"}"/>` +
-               `<rect x="${cx - bw}" y="${y(d.n)}" width="${bw}" height="${H - BOT - y(d.n)}"
-                  fill="#c9a961" rx="2" opacity="${!pick || on ? 1 : .45}"><title>${d.k} · ${d.n}</title></rect>` +
-               `<rect x="${cx}" y="${y(d.p)}" width="${bw}" height="${H - BOT - y(d.p)}"
-                  fill="#8fa6c9" rx="2" opacity="${!pick || pick === d.k ? 1 : .45}">
-                  <title>${d.k} · ${d.p}명</title></rect>` +
-               `<text x="${cx}" y="${H - BOT + 15}" text-anchor="middle" font-size="10.5"
-                  fill="#7d7768">${label}</text>`;
+        const dim = pick && pick !== d.k;
+        let body = "";
+
+        if (kind === "all") {
+          // ── 띠 : 여섯 갈래를 한 막대에 쌓는다 (사이는 2px 띄운다) ──
+          const bw = Math.min(30, step * 0.5);
+          const x = x0 + (step - bw) / 2;
+          let acc = 0;
+          body = KORDER.map(k => {
+            const v = d.by[k] || 0;
+            if (!v) return "";
+            const yTop = y(acc + v), yBot = y(acc);
+            acc += v;
+            const h = Math.max(1, yBot - yTop - 2);
+            return `<rect x="${x}" y="${yTop}" width="${bw}" height="${h}" rx="2"
+                      fill="${KCOLOR[k]}" opacity="${dim ? .4 : 1}">
+                      <title>${d.k} · ${KIND_NAME[k]} ${v}</title></rect>`;
+          }).join("");
+
+        } else if (kind === "each") {
+          // ── 나란히 : 여섯 갈래를 옆으로 세운다 ──
+          const gap = 2;
+          const bw = Math.max(3, (step * 0.86 - gap * 5) / 6);
+          const x = x0 + (step - (bw * 6 + gap * 5)) / 2;
+          body = KORDER.map((k, n) =>
+            bar(x + n * (bw + gap), bw, d.by[k] || 0,
+                KCOLOR[k], `${d.k} · ${KIND_NAME[k]} ${d.by[k] || 0}`, dim)).join("");
+
+        } else {
+          // ── 갈래 하나 : 활동 수와 사람 수 ──
+          const bw = Math.min(24, step * 0.36);
+          const cx = x0 + step / 2;
+          body = bar(cx - bw - 1, bw, d.n, KCOLOR[kind] || "#2a78d6",
+                     `${d.k} · ${KIND_NAME[kind] || ""} ${d.n}`, dim) +
+                 bar(cx + 1, bw, d.p, "#9aa3ad", `${d.k} · ${d.p}명`, dim);
+        }
+
+        return `<rect class="pickbar" data-k="${d.k}" x="${x0}" y="0" width="${step}"
+                  height="${zero}" fill="${pick === d.k ? "rgba(0,0,0,.045)" : "transparent"}"/>` +
+               body +
+               `<text x="${x0 + step / 2}" y="${zero + 15}" text-anchor="middle"
+                  font-size="10.5" fill="#7d7768">${label}</text>`;
       }).join("");
 
       chart.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img"
-        aria-label="로그인 통계 막대그래프">${grid}
-        <line x1="${PAD}" y1="${H - BOT}" x2="${W - PAD}" y2="${H - BOT}" stroke="#efe9db"/>
+        aria-label="${mode === "month" ? "월별" : "연별"} 활동 통계 막대그래프">${grid}
+        <line x1="${PAD}" y1="${zero}" x2="${W - PAD}" y2="${zero}" stroke="#efe9db"/>
         ${bars}</svg>`;
+
+      // 이름표 — 여러 갈래를 함께 볼 때는 여섯 개, 하나만 볼 때는 둘
+      legend.innerHTML = wide
+        ? KORDER.map(k =>
+            `<span><i style="background:${KCOLOR[k]};"></i>${KIND_NAME[k]}</span>`).join("")
+        : `<span><i style="background:${KCOLOR[kind] || "#2a78d6"};"></i>${KIND_NAME[kind] || ""} 수</span>` +
+          '<span><i style="background:#9aa3ad;"></i>사람 수</span>';
 
       chart.querySelectorAll(".pickbar").forEach(r => {
         r.style.cursor = "pointer";
@@ -1160,7 +1180,7 @@ async function start() {
       drawTop();
 
       const all = bucket(rows);
-      cap.textContent = `모두 ${rows.length}회 · ${mode === "month" ? "최근 24개월" : "최근 12년"}` +
+      cap.textContent = `모두 ${rows.length}건 · ${mode === "month" ? "최근 24개월" : "최근 12년"}` +
                         ` (기록 시작 ${all[0].k})`;
     }
 
