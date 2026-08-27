@@ -80,3 +80,9 @@ export const TAG_INFO = {
 export const boardInfo = (cat) => BOARD_INFO[cat] || "";
 /** 말머리 안내 한 줄 */
 export const tagInfo = (cat, tag) => TAG_INFO[cat + "/" + tag] || "";
+
+/** 이 게시판이 쓰는 말머리 차례대로 */
+export const boardTags = (cat) =>
+  Object.keys(TAG_INFO)
+    .filter((k) => k.slice(0, cat.length + 1) === cat + "/")
+    .map((k) => k.slice(cat.length + 1));

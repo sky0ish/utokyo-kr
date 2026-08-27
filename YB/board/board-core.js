@@ -3,7 +3,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/YB/board/nav.js?v=10";
-import { boardInfo } from "/YB/board/board-info.js?v=96";
+import { boardInfo, boardTags } from "/YB/board/board-info.js?v=98";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -57,6 +57,38 @@ export async function initBoard(ORG) {
   let cat = params.get("cat") || "";
   if (!CAT[cat]) cat = "";
   let kw = (params.get("q") || "").trim();          // 키워드 검색어
+  let tag = (params.get("tag") || "").trim();      // 말머리로 좁혀 보기
+
+  /** 말머리로 좁힌다 — 제목이 [말머리] 로 시작하는 글만 */
+  function applyTag(q) {
+    return tag ? q.ilike("title", "[" + tag + "]%") : q;
+  }
+
+  /** 지금 게시판의 말머리 줄을 다시 그린다 */
+  function drawTagTabs() {
+    const box = document.getElementById("tagTabs");
+    if (!box) return;
+    const list = cat ? boardTags(cat) : [];
+    if (!list.length) { box.className = "tagtabs"; box.innerHTML = ""; return; }
+    box.className = "tagtabs on";
+    box.innerHTML = '<span class="lb">말머리</span>' +
+      `<a data-t=""${tag ? "" : ' class="on"'}>전체</a>` +
+      list.map(t => `<a data-t="${t}"${t === tag ? ' class="on"' : ""}>${t}</a>`).join("");
+    box.querySelectorAll("a[data-t]").forEach(a => a.addEventListener("click", () => {
+      tag = a.dataset.t || "";
+      drawTagTabs();
+      keepUrl();
+      load();
+    }));
+  }
+
+  /** 주소에도 남겨두어 새로고침해도 그대로 보이게 */
+  function keepUrl() {
+    const u = new URLSearchParams(location.search);
+    if (cat) u.set("cat", cat); else u.delete("cat");
+    if (tag) u.set("tag", tag); else u.delete("tag");
+    history.replaceState(null, "", location.pathname + (u.toString() ? "?" + u : ""));
+  }
 
   /** 검색어를 PostgREST 조건문에 넣을 수 있는 형태로 다듬는다 */
   function likeOf(s) {
@@ -96,7 +128,10 @@ export async function initBoard(ORG) {
     a.addEventListener("click", (e) => {
       e.preventDefault();
       cat = a.dataset.cat || "";
+      tag = "";                                   // 게시판을 바꾸면 말머리는 푼다
       setBoardTitle(cat);
+      drawTagTabs();
+      keepUrl();
       if (typeof memberOnlyBlocked !== "undefined") memberOnlyBlocked = null;
       document.querySelectorAll("#catTabs a[data-cat]").forEach(x => x.classList.remove("on"));
       a.classList.add("on");
@@ -106,6 +141,7 @@ export async function initBoard(ORG) {
   (document.querySelector('#catTabs a[data-cat="' + cat + '"]') || document.querySelector('#catTabs a[data-cat=""]')).classList.add("on");
 
   setBoardTitle(cat);   // 주소로 들어온 분류 기준 (비회원 안내로 바뀌기 전의 값)
+  drawTagTabs();
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
   const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다
@@ -187,6 +223,7 @@ export async function initBoard(ORG) {
       pageNo = 1;
       let cq = onlyMyOrg(sb.from("posts").select("id", { count: "exact", head: true }));
       if (cat) cq = cq.eq("category", cat);
+      cq = applyTag(cq);
       cq = applySearch(cq);
       const { count } = await cq;
       total = count || 0;
@@ -200,6 +237,7 @@ export async function initBoard(ORG) {
         .eq("pinned", true))
         .order("pinned_at", { ascending: false });
       if (cat) pq = pq.eq("category", cat);
+      pq = applyTag(pq);
       const pr = await pq;
       pins = pr.data || [];          // 표에 pinned 칸이 없으면 조용히 넘어간다
     }
@@ -210,6 +248,7 @@ export async function initBoard(ORG) {
       .range(PAGED ? (pageNo - 1) * PAGE : loaded.length,
              (PAGED ? (pageNo - 1) * PAGE : loaded.length) + PAGE - 1);
     if (cat) q = q.eq("category", cat);
+    q = applyTag(q);
     q = applySearch(q);
     const { data, error } = await q;
 
@@ -221,7 +260,10 @@ export async function initBoard(ORG) {
       listEl.innerHTML = kw
         ? `<div class="empty"><b>‘${kw}’</b> 에 해당하는 글이 없습니다.<br><br>` +
           '다른 낱말로 찾아보시거나, 위의 ✕ 검색 해제를 눌러주세요.</div>'
-        : '<div class="empty">아직 게시글이 없습니다.</div>';
+        : tag
+          ? `<div class="empty"><b>[${tag}]</b> 로 쓴 글이 아직 없습니다.<br><br>` +
+            '위의 <b>전체</b> 를 누르면 이 게시판의 글을 모두 보실 수 있습니다.</div>'
+          : '<div class="empty">아직 게시글이 없습니다.</div>';
       drawStat([]); return;
     }
 
