@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=133">
+<link rel="stylesheet" href="/YB/board/board.css?v=134">
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -184,6 +184,8 @@
           <a href="/YB/board.html?cat=jobs">취업정보</a>
           <a href="/YB/board.html?cat=parttime">아르바이트</a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
+          <a href="/YB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
+          <a href="/YB/board.html?cat=suggest">동문회에 바란다</a>
         </div>
       </div>
       <div class="dd">
@@ -262,7 +264,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=133";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=134";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
