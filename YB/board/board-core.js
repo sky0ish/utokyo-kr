@@ -3,7 +3,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/YB/board/nav.js?v=10";
-import { boardInfo, boardTags } from "/YB/board/board-info.js?v=101";
+import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=103";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -39,15 +39,27 @@ export async function initBoard(ORG) {
     return !n ? "게시판" : (/게시판$/.test(n) ? n : n + " 게시판");
   };
   const purposeEl = document.getElementById("boardPurpose");
+  /** 설명 줄 — 말머리를 고르면 게시판이 아니라 그 말머리를 설명합니다 */
+  function sayPurpose() {
+    if (!purposeEl) return;
+    if (!cat) {
+      purposeEl.textContent =
+        "모든 게시판의 글을 한자리에서 봅니다. 위의 게시판을 고르시면 그곳 글만 보입니다.";
+      return;
+    }
+    if (tag) {
+      const t = tagInfo(cat, tag);
+      purposeEl.innerHTML = `<b>[${CAT[cat] || cat}/${tag}]</b>` + (t ? ` — ${t}` : "");
+      return;
+    }
+    const info = boardInfo(cat);
+    purposeEl.innerHTML = info ? `<b>${boardName(cat)}</b> — ${info}` : "";
+  }
+
   function setBoardTitle(c) {
     if (bannerH1) bannerH1.textContent = boardName(c);
     document.title = boardName(c) + baseTitle;
-    if (purposeEl) {
-      const info = c ? boardInfo(c) : "";
-      purposeEl.innerHTML = info
-        ? `<b>${boardName(c)}</b> — ${info}`
-        : "모든 게시판의 글을 한자리에서 봅니다. 위의 게시판을 고르시면 그곳 글만 보입니다.";
-    }
+    sayPurpose();
   }
 
   const SRC = {
@@ -81,6 +93,7 @@ export async function initBoard(ORG) {
     box.querySelectorAll("a[data-t]").forEach(a => a.addEventListener("click", () => {
       tag = a.dataset.t || "";
       drawTagTabs();
+      sayPurpose();
       keepUrl();
       load();
     }));
@@ -146,6 +159,7 @@ export async function initBoard(ORG) {
 
   setBoardTitle(cat);   // 주소로 들어온 분류 기준 (비회원 안내로 바뀌기 전의 값)
   drawTagTabs();
+  sayPurpose();
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
   const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다
