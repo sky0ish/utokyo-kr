@@ -187,7 +187,7 @@ select p.name                                           as name,
   left join public.activity_weights w on w.kind = e.kind
  where p.approved = true
    and coalesce(p.name, '') <> ''
-   and p.is_admin = false                      -- 운영진 계정은 통계에서 뺍니다
+   and (p.is_admin = false or p.id = auth.uid())  -- 운영진은 순위에서 빼되, 제 기록은 봅니다
    and public.is_approved()
    and (public.is_admin() or p.member_type = public.my_org())
  group by p.id, p.name, p.member_type;

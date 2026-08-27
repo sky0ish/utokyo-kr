@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=121">
+<link rel="stylesheet" href="/OB/board/board.css?v=122">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -127,7 +127,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=121";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=122";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -176,20 +176,23 @@ async function start() {
   }
 
   // 운영진은 양쪽이 다 오므로 제 소속만 골라 봅니다
-  const rows = (b.data || []).filter(r => !me.is_admin || r.org === org);
+  const all = (b.data || []).filter(r => !me.is_admin || r.org === org);
   const months = (m.data || []).filter(r => !me.is_admin || r.org === org);
 
-  if (!rows.length) {
+  // 내 기록은 따로 챙기고, 순위에서는 운영진인 나를 뺍니다
+  const mine = all.find(r => r.is_me);
+  const rows = all.filter(r => !(me.is_admin && r.is_me));
+  rows.sort((x, y) => (y.score || 0) - (x.score || 0));
+
+  if (!all.length) {
     box.innerHTML = '<div class="sempty">아직 쌓인 기록이 없습니다.<br>' +
       '홈페이지를 쓰실 때마다 하나씩 쌓입니다.</div>';
     return;
   }
 
-  rows.sort((x, y) => (y.score || 0) - (x.score || 0));
-  const mine = rows.find(r => r.is_me);
-
   document.getElementById("sCnt").textContent =
-    `참여하신 분 ${rows.length}명` + (mine ? ` · 나의 점수 ${Math.round(mine.score)}점` : "");
+    (mine ? `내 점수 ${Math.round(mine.score)}점 · ` : "") +
+    `참여하신 분 ${rows.length}명`;
 
   const myRank = mine ? rows.indexOf(mine) + 1 : 0;
 
@@ -201,7 +204,9 @@ async function start() {
           `<div><dt>${t}</dt><dd>${mine[k + "_n"] || 0}</dd></div>`).join("")}
         <div class="tot"><dt>내 점수</dt><dd>${Math.round(mine.score)}</dd></div>
       </dl>
-      <p class="myrank">참여하신 ${rows.length}분 가운데 <b>${myRank}위</b>입니다.</p>`
+      <p class="myrank">${me.is_admin
+          ? "운영진 계정이라 아래 순위에는 넣지 않습니다."
+          : `참여하신 ${rows.length}분 가운데 <b>${myRank}위</b>입니다.`}</p>`
       : `<div class="sec2"><h3>내 사용통계</h3></div>
          <p class="myrank">아직 쌓인 내 기록이 없습니다. 홈페이지를 쓰시면 하나씩 쌓입니다.</p>`) +
     `<div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
