@@ -243,7 +243,7 @@ function monthGrid(year, month, map, todayKey, titles) {
       html += titles
         ? ev.slice(0, 2).map((e) =>
             `<i class="chip c-${esc(e.cat)}${e.org === "OB" ? " c-ob" : ""}" ` +
-            `title="${esc(e.title)}">${e.org === "OB" ? "(OB) " : ""}` +
+            `title="${esc(e.title)}">${fromMark(e)}` +
             `${esc(shortTitle(e.title))}</i>`).join("") +
           (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "")
         : `<span class="dot">${ev.length > 1 ? ev.length : ""}</span>`;
@@ -253,12 +253,20 @@ function monthGrid(year, month, map, todayKey, titles) {
   return html + "</div>";
 }
 
+/** 총동문회에서 온 일정에 붙일 앞말.
+ *  멘토멘티는 두 단체가 함께 쓰는 게시판이라 게시판 이름을 그대로 씁니다. */
+function fromMark(e) {
+  if (e.org !== "OB") return "";
+  return e.cat === "mentoring" ? "[멘토멘티] " : "(OB) ";
+}
+
 /** 날짜를 눌렀을 때 — 제목과 함께 글 속의 그 줄을 그대로 보여줍니다 */
 function evCard(e) {
   return `<a class="cev cev-card" href="/YB/post.html?id=${e.id}">
     <span class="cc-top"><b>${esc(e.title)}</b></span>
     <span class="cc-meta">${e.time ? `<em>${e.time}</em> · ` : ""}` +
-      `${e.org === "OB" ? "(OB) " : ""}${esc(CATNAME[e.cat] || e.cat)}</span>
+      `${e.org === "OB" && e.cat !== "mentoring" ? "(OB) " : ""}` +
+      `${esc(CATNAME[e.cat] || e.cat)}</span>
     ${e.line ? `<span class="cc-line">${esc(e.line)}</span>` : ""}
     <span class="cc-go">글 열어보기 →</span></a>`;
 }
@@ -267,7 +275,7 @@ function evLine(e) {
   return `<a class="cev" href="/YB/post.html?id=${e.id}">
     <span class="cev-d">${e.key.slice(5).replace("-", ".")}${e.time ? ` <b>${e.time}</b>` : ""}</span>
     <span class="cev-t">${esc(e.title)}</span>
-    <span class="cev-c">${e.org === "OB" ? "(OB) " : ""}` +
+    <span class="cev-c">${e.org === "OB" && e.cat !== "mentoring" ? "(OB) " : ""}` +
     `${esc(CATNAME[e.cat] || e.cat)}</span></a>`;
 }
 
