@@ -145,11 +145,25 @@ Deno.serve(async (req) => {
       (gUser ? `도쿄대학 한국인 총동문회 <${gUser}>` : "도쿄대학 한국인 총동문회 <no-reply@u-tokyo.kr>");
     const { name: fromName, addr: fromAddr } = splitFrom(from);
 
-    // 줄바꿈을 살린 간단한 HTML 본문
+    // ── 줄바꿈을 살린 HTML 본문 ──────────────────────────────
+    // 웹메일 상당수(네이버·다음·사내메일·아웃룩 등)는 style 의 white-space 를
+    // 지워버립니다. 그래서 CSS 에 기대지 않고 줄바꿈을 <br> 로 직접 넣습니다.
     const esc = (s: string) =>
       s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]!));
-    const html = `<div style="font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;` +
-      `font-size:15px;line-height:1.8;color:#2f2a1d;white-space:pre-wrap;">${esc(text)}</div>`;
+    const linkify = (s: string) =>
+      s.replace(/(https?:\/\/[^\s<]+)/g,
+        `<a href="$1" style="color:#8a6d2b;text-decoration:underline;">$1</a>`);
+    const bodyHtml = esc(String(text))
+      .replace(/\r\n?/g, "\n")
+      .split("\n")
+      .map((ln) =>
+        // 줄 앞 띄어쓰기(회비 안내처럼 들여 쓴 줄)도 그대로 살린다.
+        // 빈 줄은 &nbsp; 로 채워야 아웃룩에서 줄이 사라지지 않습니다.
+        linkify(ln.replace(/^ +/, (sp) => "&nbsp;".repeat(sp.length))) || "&nbsp;")
+      .join("<br>");
+    const html =
+      `<div style="font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-serif;` +
+      `font-size:15px;line-height:1.9;color:#2f2a1d;word-break:keep-all;">${bodyHtml}</div>`;
 
     const sent: string[] = [];
     const failed: { emails: string[]; reason: string }[] = [];
@@ -171,7 +185,7 @@ Deno.serve(async (req) => {
         `Content-Type: text/plain; charset=UTF-8`,
         `Content-Transfer-Encoding: base64`,
         ``,
-        b64Body(String(text)),
+        b64Body(String(text).replace(/\r\n?|\n/g, "\r\n")),   // 메일 규격의 줄끝(CRLF)
         `--${bd}`,
         `Content-Type: text/html; charset=UTF-8`,
         `Content-Transfer-Encoding: base64`,
