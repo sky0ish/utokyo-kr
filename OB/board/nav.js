@@ -11,6 +11,7 @@ const NAV = {
         <div class="dd-menu">
           <a href="/OB/index.html#greeting">인사말</a>
           <a href="/OB/index.html#org">조직도</a>
+          <a href="/OB/index.html#roster">임원진 명단</a>
           <a href="/OB/index.html#history">연혁</a>
           <a href="/OB/rules.html">정관</a>
         </div>
@@ -116,6 +117,27 @@ const PILLS = {
  * @param {"OB"|"YB"} org
  * @param {string} [title] 브라우저 탭 제목
  */
+/**
+ * 상단 메뉴만 이 파일의 것으로 다시 그린다.
+ * 첫 화면·갤러리·정관처럼 제 머리글을 따로 가진 화면에서 씁니다.
+ * 메뉴 모양(css)은 그 화면 것을 그대로 쓰고 항목만 하나로 맞춥니다.
+ * @param {"OB"|"YB"} org
+ */
+export function applyMenu(org) {
+  const key = org === "YB" ? "YB" : "OB";
+  const nav = document.querySelector(".mhead nav") ||
+              document.querySelector("header nav") ||
+              document.querySelector("nav");
+  if (!nav) return;
+  nav.innerHTML = NAV[key];
+  // 지금 보고 있는 화면을 가리키는 링크는 새로 열지 말고 자리만 옮기도록
+  const here = location.pathname.replace(/index\.html$/, "");
+  nav.querySelectorAll("a[href*='#']").forEach(a => {
+    const u = new URL(a.getAttribute("href"), location.href);
+    if (u.hash && u.pathname.replace(/index\.html$/, "") === here) a.setAttribute("href", u.hash);
+  });
+}
+
 export function applyNav(org, title) {
   const key = org === "YB" ? "YB" : "OB";
   document.body.classList.toggle("yb", key === "YB");
@@ -181,8 +203,7 @@ export async function applyAuthLinks(org) {
   if (p && (p.approved || p.is_admin)) el.append(mk("/OB/stats.html", "사용통계"));
 
   if (p && p.is_admin) {
-    el.append(mk("/OB/admin/members.html?org=" + org, "⚙ 회원 승인", 1),
-              mk("/OB/admin/members.html?org=" + org + "#statCard", "⚙ 사용통계", 1),
+    el.append(mk("/OB/admin/members.html?org=" + org, "⚙ 회원관리", 1),
               mk("/OB/admin/gallery.html?org=" + org, "⚙ 갤러리 관리", 1),
               mk("/OB/admin/index.html", "⚙ 글 가져오기", 1));
   }

@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>갤러리 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=134">
+<link rel="stylesheet" href="/YB/board/board.css?v=135">
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -158,21 +158,23 @@
     <a class="mlogo" href="index.html"><span class="hmark"></span><span class="hname">도쿄대학 한국인학생회<span class="ksamark" role="img" aria-label="도쿄대학 한국인학생회 마크"></span><small>東京大学韓国人学生会 · UT-KSA</small></span></a>
     <nav>
       <div class="dd">
-        <a href="index.html#school">학교안내</a>
+        <a href="/YB/index.html#school">학교안내</a>
         <div class="dd-menu">
-          <a href="index.html#school">학교 소개</a>
-          <a href="index.html#school">오시는 길</a>
-          <a href="index.html#school">캠퍼스 안내</a>
-          <a href="index.html#school">FAQ</a>
+          <a href="/YB/index.html#intro">학교 소개</a>
+          <a href="/YB/index.html#access">오시는 길</a>
+          <a href="/YB/index.html#access">캠퍼스 안내</a>
+          <a href="/YB/index.html#faq">FAQ</a>
         </div>
       </div>
       <div class="dd">
-        <a href="index.html#council">학생회</a>
+        <a href="/YB/index.html#council">학생회</a>
         <div class="dd-menu">
-          <a href="index.html#council">인사말</a>
-          <a href="index.html#council">임원진</a>
-          <a href="index.html#council">활동 이력</a>
-          <a href="index.html#council">회칙</a>
+          <a href="/YB/index.html#greeting">인사말</a>
+          <a href="/YB/index.html#officers">임원진</a>
+          <a href="/YB/index.html#past">역대 회장 및 임원진</a>
+          <a href="/YB/index.html#history">활동 이력</a>
+          <a href="/YB/index.html#clubs">소모임</a>
+          <a href="/YB/index.html#rules">회칙</a>
         </div>
       </div>
       <div class="dd">
@@ -189,18 +191,18 @@
         </div>
       </div>
       <div class="dd">
-        <a href="gallery.html">갤러리</a>
+        <a href="/YB/gallery.html">갤러리</a>
         <div class="dd-menu">
-          <a href="gallery.html?cat=all">전체</a>
-          <a href="gallery.html?cat=assembly">총회</a>
-          <a href="gallery.html?cat=event">행사·소모임</a>
-          <a href="gallery.html?cat=jobs">인재채용</a>
-          <a href="gallery.html?cat=daily">일상</a>
-          <a href="gallery.html?cat=etc">기타</a>
+          <a href="/YB/gallery.html?cat=all">전체</a>
+          <a href="/YB/gallery.html?cat=assembly">총회</a>
+          <a href="/YB/gallery.html?cat=event">행사·소모임</a>
+          <a href="/YB/gallery.html?cat=jobs">인재채용</a>
+          <a href="/YB/gallery.html?cat=daily">일상</a>
+          <a href="/YB/gallery.html?cat=etc">기타</a>
         </div>
       </div>
-      <a href="map.html">MAP</a>
-      <a href="index.html#sponsor">후원</a>
+      <a href="/YB/map.html">MAP</a>
+      <a href="/YB/index.html#sponsor">후원</a>
     </nav>
     <div class="mpills">
       <a class="band" href="https://www.tokyoksa.com/" target="_blank" rel="noopener">학생회 홈 →</a>
@@ -264,7 +266,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=134";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=135";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
@@ -611,5 +613,10 @@ function setupNewAlbum(user, me) {
 }
 </script>
 
+<script type="module">
+  // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
+  import { applyMenu } from "/YB/board/nav.js?v=135";
+  applyMenu("YB");
+</script>
 </body>
 </html>

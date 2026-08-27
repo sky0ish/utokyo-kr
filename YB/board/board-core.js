@@ -190,8 +190,7 @@ export async function initBoard(ORG) {
     if (p && p.is_admin) {                      // 운영진 관리 메뉴
       const mk = (href, text) => { const a = document.createElement("a");
         a.href = href; a.textContent = text; a.style.color = "#e8c876"; a.style.fontWeight = "600"; return a; };
-      el.append(mk("/YB/admin/members.html", "⚙ 회원 승인"),
-                mk("/YB/admin/members.html#statCard", "⚙ 사용통계"),
+      el.append(mk("/YB/admin/members.html", "⚙ 회원관리"),
                 mk("/YB/admin/gallery.html", "⚙ 갤러리 관리"));
       el.append(mk("/YB/admin/index.html", "⚙ 글 가져오기"));
     }

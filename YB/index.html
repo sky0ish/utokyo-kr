@@ -567,24 +567,23 @@
     </a>
     <nav class="gnb">
       <div class="dd">
-        <a href="#school">학교안내</a>
+        <a href="/YB/index.html#school">학교안내</a>
         <div class="dd-menu">
-          <a href="#introtx">학교 소개</a>
-          <a href="#access">오시는 길</a>
-          <a href="#campus">캠퍼스 안내</a>
-          <a href="#faq">FAQ</a>
-          <a href="#usage">홈페이지 이용안내</a>
+          <a href="/YB/index.html#intro">학교 소개</a>
+          <a href="/YB/index.html#access">오시는 길</a>
+          <a href="/YB/index.html#access">캠퍼스 안내</a>
+          <a href="/YB/index.html#faq">FAQ</a>
         </div>
       </div>
       <div class="dd">
-        <a href="#council">학생회</a>
+        <a href="/YB/index.html#council">학생회</a>
         <div class="dd-menu">
-          <a href="#greeting">인사말</a>
-          <a href="#officers">임원진</a>
-          <a href="#past">역대 회장 및 임원진</a>
-          <a href="/YB/board.html?cat=history">활동 이력</a>
-          <a href="/YB/board.html?cat=club">소모임</a>
-          <a href="#rules">회칙</a>
+          <a href="/YB/index.html#greeting">인사말</a>
+          <a href="/YB/index.html#officers">임원진</a>
+          <a href="/YB/index.html#past">역대 회장 및 임원진</a>
+          <a href="/YB/index.html#history">활동 이력</a>
+          <a href="/YB/index.html#clubs">소모임</a>
+          <a href="/YB/index.html#rules">회칙</a>
         </div>
       </div>
       <div class="dd">
@@ -601,18 +600,18 @@
         </div>
       </div>
       <div class="dd">
-        <a href="gallery.html">갤러리</a>
+        <a href="/YB/gallery.html">갤러리</a>
         <div class="dd-menu">
-          <a href="gallery.html?cat=all">전체</a>
-          <a href="gallery.html?cat=assembly">총회</a>
-          <a href="gallery.html?cat=event">행사·소모임</a>
-          <a href="gallery.html?cat=jobs">인재채용</a>
-          <a href="gallery.html?cat=daily">일상</a>
-          <a href="gallery.html?cat=etc">기타</a>
+          <a href="/YB/gallery.html?cat=all">전체</a>
+          <a href="/YB/gallery.html?cat=assembly">총회</a>
+          <a href="/YB/gallery.html?cat=event">행사·소모임</a>
+          <a href="/YB/gallery.html?cat=jobs">인재채용</a>
+          <a href="/YB/gallery.html?cat=daily">일상</a>
+          <a href="/YB/gallery.html?cat=etc">기타</a>
         </div>
       </div>
-      <a href="map.html">MAP</a>
-      <a href="#sponsor">후원</a>
+      <a href="/YB/map.html">MAP</a>
+      <a href="/YB/index.html#sponsor">후원</a>
     </nav>
     <div class="sns-btns">
       <a class="pill fb" href="https://www.facebook.com/tokyoksa" target="_blank" rel="noopener">페이스북</a>
@@ -1234,7 +1233,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=134";
+import { initCalendar } from "/YB/board/calendar.js?v=135";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1293,13 +1292,12 @@ try {
         a.style.color = "#ffdc80"; a.style.fontWeight = "600";
         return a;
       };
-      const appr = mk("/YB/admin/members.html?org=YB", "⚙ 회원 승인");
-      el.append(appr, mk("/YB/admin/members.html?org=YB#statCard", "⚙ 사용통계"),
-                mk("/YB/admin/gallery.html?org=YB", "⚙ 갤러리 관리"));
+      const appr = mk("/YB/admin/members.html?org=YB", "⚙ 회원관리");
+      el.append(appr, mk("/YB/admin/gallery.html?org=YB", "⚙ 갤러리 관리"));
       sb.from("profiles").select("id", { count: "exact", head: true }).eq("approved", false)
         .then(({ count }) => {
           if (count) {
-            appr.textContent = `⚙ 회원 승인 ${count}명 대기`;
+            appr.textContent = `⚙ 회원관리 ${count}명 대기`;
             appr.style.background = "#b3453b"; appr.style.color = "#fff";
             appr.style.padding = "2px 9px"; appr.style.borderRadius = "100px";
           }
@@ -1312,10 +1310,15 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=134");
+  const { initCouncil } = await import("/YB/council.js?v=135");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
+<script type="module">
+  // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
+  import { applyMenu } from "/YB/board/nav.js?v=135";
+  applyMenu("YB");
+</script>
 </body>
 </html>
