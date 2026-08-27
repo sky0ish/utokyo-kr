@@ -200,7 +200,7 @@
 </div>
 
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=91";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=92";
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 {
   const q = new URLSearchParams(location.search);
@@ -372,11 +372,6 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
         const capv = document.getElementById("aCap").value.trim();
         if (!files.length) { msg.className = "amsg err"; msg.textContent = "사진을 선택해주세요."; return; }
         if (!date) { msg.className = "amsg err"; msg.textContent = "촬영일을 입력해주세요."; return; }
-        if (!album.custom && date.slice(0, 4) !== album.year) {
-          msg.className = "amsg err";
-          msg.textContent = `촬영일은 ${album.year}년이어야 이 앨범에 들어갑니다.`;
-          return;
-        }
         btn.disabled = true;
         let ok = 0, fail = 0, last = "";
         for (const [n, f] of files.entries()) {
@@ -388,7 +383,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
           const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
           const ins = await sb.from("gallery_photos").insert({
             category: cat, taken_at: date, caption: capv || null, org: "YB",
-            album_key: album.custom ? album.key : null,
+            album_key: album.key,          // 지금 열어 놓은 앨범에 그대로 붙입니다
             image_url: pub.publicUrl, storage_path: path,
             sort: album.photos.length + n, created_by: user.id,
             owner_name: isAdmin ? "" : (myName || ""),
