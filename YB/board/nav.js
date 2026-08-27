@@ -177,6 +177,8 @@ export async function applyAuthLinks(org) {
     a.style.fontWeight = "600";
     return a;
   };
+  // 승인된 회원이면 누구나 — 제 소속의 사용통계를 봅니다
+  if (p && (p.approved || p.is_admin)) el.append(mk("/YB/stats.html", "사용통계"));
 
   if (p && p.is_admin) {
     el.append(mk("/YB/admin/members.html?org=" + org, "⚙ 회원 승인", 1),
