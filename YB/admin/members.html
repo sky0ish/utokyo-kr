@@ -143,6 +143,28 @@
   .act{white-space:nowrap;font-size:12px;line-height:1.6;}
   .act b{font-size:14px;color:#1e5230;}
   .act span{color:#a8a291;}
+
+  /* 그래프 옆 Top 10 */
+  .statrow{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;}
+  .statrow .chart{flex:1;min-width:320px;}
+  .stattop{flex:0 0 250px;max-width:250px;}
+  .stattop h4{font-size:13px;font-weight:600;color:#1e5230;margin-bottom:8px;}
+  .stattop ol{list-style:none;counter-reset:t;}
+  .stattop li{counter-increment:t;display:flex;align-items:center;gap:8px;
+    padding:6px 8px;border-radius:6px;font-size:13px;color:#1e5230;}
+  .stattop li:nth-child(odd){background:#eef6f0;}
+  .stattop li::before{content:counter(t);flex:none;width:18px;text-align:right;
+    color:#6f7d73;font-size:11.5px;font-variant-numeric:tabular-nums;}
+  .stattop li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .stattop li .n{flex:none;font-weight:700;font-variant-numeric:tabular-nums;}
+  .stattop li .bar{flex:0 0 44px;height:5px;border-radius:3px;background:#e6efe9;overflow:hidden;}
+  .stattop li .bar i{display:block;height:100%;background:#4f9d5d;}
+  .stattop .none{font-size:12.5px;color:#a8a291;padding:10px 2px;}
+  @media(max-width:820px){ .stattop{flex:1 1 auto;max-width:none;} }
+
+  .stattop h4 .clr{margin-left:6px;border:none;background:none;cursor:pointer;
+    color:#b0a98f;font-family:inherit;font-size:12px;}
+  .stattop h4 .clr:hover{color:#1e5230;}
 </style>
 </head>
 <body>
@@ -267,7 +289,10 @@
         <span class="cap" id="statCap"></span>
       </div>
       <span class="seg" id="kindSeg" style="margin-top:6px;"></span>
-      <div class="chart" id="statChart"><div class="none">불러오는 중…</div></div>
+      <div class="statrow">
+        <div class="chart" id="statChart"><div class="none">불러오는 중…</div></div>
+        <div class="stattop" id="statTop"></div>
+      </div>
       <div class="legend">
         <span><i style="background:#4f9d5d;"></i>활동 수</span>
         <span><i style="background:#8fb8a0;"></i>사람 수</span>
@@ -984,7 +1009,7 @@ async function start() {
   // ── 로그인 통계 그래프 ──
   //   login_events 를 월/연으로 묶어 막대그래프로 그립니다. (그림 파일 없이 SVG 로 그립니다)
   {
-    let mode = "month", kind = "all";
+    let mode = "month", kind = "all", pick = "";   // pick : 눌러서 고른 달·해
     const chart = document.getElementById("statChart");
     const cap = document.getElementById("statCap");
     let rows = null;
@@ -1005,6 +1030,7 @@ async function start() {
 
     document.querySelectorAll("#statSeg a").forEach(a => a.addEventListener("click", () => {
       mode = a.dataset.m;
+      pick = "";
       document.querySelectorAll("#statSeg a").forEach(x => x.classList.toggle("on", x === a));
       drawStat();
     }));
@@ -1037,8 +1063,52 @@ async function start() {
         .map(([k, v]) => ({ k, n: v.n, p: v.who.size }));
     }
 
+    /** 지금 보고 있는 기간·활동으로 많이 하신 분 열 분 */
+    function drawTop() {
+      const el = document.getElementById("statTop");
+      if (!el || !EVENTS) return;
+      const staff = new Set(window.__rowsAll.filter(r => r.is_admin).map(r => r.id));
+      const name = new Map(window.__rowsAll.map(r => [r.id, r.name || "이름없음"]));
+      const keyOf = (e) => mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
+
+      // 사람마다 활동을 모은다 (고른 기간 · 고른 활동만)
+      const sum = new Map();
+      EVENTS.forEach(e => {
+        if (staff.has(e.user_id) || !name.has(e.user_id)) return;
+        if (kind !== "all" && e.kind !== kind) return;
+        if (pick && keyOf(e) !== pick) return;
+        if (!sum.has(e.user_id)) sum.set(e.user_id, {});
+        const a = sum.get(e.user_id);
+        a[e.kind] = (a[e.kind] || 0) + (e.amount || 1);
+      });
+
+      const list = [...sum.entries()].map(([id, a]) => ({
+          nm: name.get(id),
+          n: kind === "all" ? Math.round(scoreOf(a)) : (a[kind] || 0),
+        }))
+        .filter(x => x.n > 0)
+        .sort((x, y) => y.n - x.n)
+        .slice(0, 10);
+
+      const label = kind === "all" ? "총점" : (KIND_NAME[kind] || "");
+      const when = pick
+        ? (mode === "month" ? pick.replace("-", ".") : pick + "년")
+        : (mode === "month" ? "최근 24개월" : "최근 12년");
+      const top = list.length ? list[0].n : 1;
+      el.innerHTML = `<h4>${when} · ${label} Top 10` +
+        (pick ? ' <button class="clr" id="topClr" title="기간 풀기">✕</button>' : "") + "</h4>" +
+        (list.length
+          ? "<ol>" + list.map(x => `<li><span class="nm">${esc(x.nm)}</span>` +
+              `<span class="bar"><i style="width:${Math.round(x.n / top * 100)}%;"></i></span>` +
+              `<span class="n">${x.n}</span></li>`).join("") + "</ol>"
+          : '<div class="none">이 기간에는 기록이 없습니다.</div>');
+
+      const clr = document.getElementById("topClr");
+      if (clr) clr.addEventListener("click", () => { pick = ""; drawStat(); });
+    }
+
     function drawStat() {
-      if (!rows) return;
+      if (!rows) { drawTop(); return; }
       if (!rows.length) {
         chart.innerHTML = '<div class="none">아직 쌓인 로그인 기록이 없습니다. ' +
           '이제부터 로그인하실 때마다 하나씩 쌓입니다.</div>';
@@ -1062,10 +1132,14 @@ async function start() {
       const bars = data.map((d, i) => {
         const cx = PAD + step * i + step / 2;
         const label = mode === "month" ? d.k.slice(2).replace("-", ".") : d.k;
-        return `<rect x="${cx - bw}" y="${y(d.n)}" width="${bw}" height="${H - BOT - y(d.n)}"
-                  fill="#4f9d5d" rx="2"><title>${d.k} · 로그인 ${d.n}회</title></rect>` +
+        const on = pick === d.k;
+        return `<rect class="pickbar" data-k="${d.k}" x="${PAD + step * i}" y="0"
+                  width="${step}" height="${H - BOT}" fill="${on ? "#4f9d5d22" : "transparent"}"/>` +
+               `<rect x="${cx - bw}" y="${y(d.n)}" width="${bw}" height="${H - BOT - y(d.n)}"
+                  fill="#4f9d5d" rx="2" opacity="${!pick || on ? 1 : .45}"><title>${d.k} · ${d.n}</title></rect>` +
                `<rect x="${cx}" y="${y(d.p)}" width="${bw}" height="${H - BOT - y(d.p)}"
-                  fill="#8fb8a0" rx="2"><title>${d.k} · ${d.p}명</title></rect>` +
+                  fill="#8fb8a0" rx="2" opacity="${!pick || pick === d.k ? 1 : .45}">
+                  <title>${d.k} · ${d.p}명</title></rect>` +
                `<text x="${cx}" y="${H - BOT + 15}" text-anchor="middle" font-size="10.5"
                   fill="#6f7d73">${label}</text>`;
       }).join("");
@@ -1074,6 +1148,16 @@ async function start() {
         aria-label="로그인 통계 막대그래프">${grid}
         <line x1="${PAD}" y1="${H - BOT}" x2="${W - PAD}" y2="${H - BOT}" stroke="#e6efe9"/>
         ${bars}</svg>`;
+
+      chart.querySelectorAll(".pickbar").forEach(r => {
+        r.style.cursor = "pointer";
+        r.addEventListener("click", () => {
+          pick = (pick === r.dataset.k) ? "" : r.dataset.k;
+          drawStat();
+        });
+      });
+
+      drawTop();
 
       const all = bucket(rows);
       cap.textContent = `모두 ${rows.length}회 · ${mode === "month" ? "최근 24개월" : "최근 12년"}` +
