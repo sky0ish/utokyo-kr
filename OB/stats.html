@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=108">
+<link rel="stylesheet" href="/OB/board/board.css?v=109">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -93,7 +93,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=108";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=109";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -168,6 +168,7 @@ async function start() {
        <p class="sub">우리 쪽 동문이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
        <div class="segs">
          <span class="seg" id="modeSeg"><a data-v="month" class="on">월별</a><a data-v="year">연별</a></span>
+         <span class="seg" id="yearSeg" style="display:none;"></span>
          <span class="seg" id="kindSeg"></span>
        </div>
        <div class="chart" id="chart"></div>
@@ -209,6 +210,7 @@ async function start() {
 
   // ── 그래프 ──
   let mode = "month", kind = "all", pick = "";
+  let year = String(new Date().getFullYear());   // 월별에서 보고 있는 해
   const kindSeg = document.getElementById("kindSeg");
   kindSeg.innerHTML = '<a data-v="all" class="on">전체(쌓기)</a><a data-v="each">분야별</a>' +
     KIND.map(([k, t]) => `<a data-v="${k}">${t}</a>`).join("");
@@ -217,6 +219,7 @@ async function start() {
     mode = a.dataset.v;
     pick = "";
     document.querySelectorAll("#modeSeg a").forEach(x => x.classList.toggle("on", x === a));
+    drawYears();
     draw();
   }));
   kindSeg.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
@@ -242,29 +245,40 @@ async function start() {
       .map(([k, v]) => ({ k, n: v.n, p: v.p, by: v.by }));
   }
 
-  /** 기록이 없는 달·해도 자리를 비워 두고 늘어놓는다.
-   *  월별은 첫 기록이 있는 해의 1월부터 이달까지, 연별은 첫 해부터 올해까지. */
+  /** 월별은 고른 해의 1월~12월 열두 칸, 연별은 첫 해부터 올해까지 */
   function fillGaps(arr) {
-    if (!arr.length) return arr;
     const now = new Date();
     const have = new Map(arr.map(d => [d.k, d]));
-    const out = [];
     const blank = (k) => ({ k, n: 0, p: 0, by: {} });
+    const out = [];
     if (mode === "month") {
-      let y = +arr[0].k.slice(0, 4), m = 1;
-      const ey = now.getFullYear(), em = now.getMonth() + 1;
-      while (y < ey || (y === ey && m <= em)) {
-        const k = y + "-" + String(m).padStart(2, "0");
+      for (let m = 1; m <= 12; m++) {
+        const k = year + "-" + String(m).padStart(2, "0");
         out.push(have.get(k) || blank(k));
-        if (++m > 12) { m = 1; y++; }
       }
     } else {
-      for (let y = +arr[0].k.slice(0, 4); y <= now.getFullYear(); y++) {
-        const k = String(y);
-        out.push(have.get(k) || blank(k));
-      }
+      const first = arr.length ? +arr[0].k.slice(0, 4) : now.getFullYear();
+      for (let y = first; y <= now.getFullYear(); y++) out.push(have.get(String(y)) || blank(String(y)));
     }
     return out;
+  }
+
+  /** 기록이 있는 해들 — 월별에서 고를 수 있게 */
+  function drawYears() {
+    const box = document.getElementById("yearSeg");
+    if (!box) return;
+    box.style.display = mode === "month" ? "inline-flex" : "none";
+    if (mode !== "month") return;
+    const now = new Date().getFullYear();
+    const first = months.length
+      ? Math.min(...months.map(r => +String(r.ym).slice(0, 4))) : now;
+    const ys = [];
+    for (let y = first; y <= now; y++) ys.push(String(y));
+    box.innerHTML = ys.map(y =>
+      `<a data-y="${y}"${y === year ? ' class="on"' : ""}>${y}년</a>`).join("");
+    box.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      year = a.dataset.y; pick = ""; drawYears(); draw(); drawRank();
+    }));
   }
 
   function draw() {
@@ -363,6 +377,7 @@ async function start() {
     }));
   }
 
+  drawYears();
   draw(); drawRank();
 }
 </script>
