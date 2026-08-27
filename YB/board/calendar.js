@@ -28,8 +28,9 @@ const CATNAME = {
 //   학생회(YB) 는 우리 모임을 모두 싣고,
 //   총동문회(OB) 것은 함께 참여할 수 있는 자리만 가져옵니다.
 const MEET_CATS = ["club", "mentoring", "notice", "history"];   // 학생회 것
-const OB_SHARED = ["forum", "mentoring"];                       // 총동문회에서 함께 보는 것
-//   (포럼·세미나 와 멘토멘티 — 선후배가 같은 자리에 모이는 일정입니다)
+const OB_SHARED = ["forum", "mentoring", "notice"];             // 총동문회에서 함께 보는 것
+//   포럼·세미나 · 멘토멘티 · 총회 — 선후배가 같은 자리에 모이는 일정입니다.
+//   (총동문회 공지는 총회 같은 모임 글만 골라 옵니다)
 
 // 공지는 모임 아닌 글도 많으므로 아래 말이 제목에 있을 때만 봅니다
 const MEET_WORDS = [
@@ -164,6 +165,9 @@ export async function loadEvents() {
           !MEET_WORDS.some((w) => (p.title || "").indexOf(w) > -1)) return;
     } else {
       if (OB_SHARED.indexOf(p.category) === -1) return;
+      // 총동문회 공지는 총회처럼 모이는 글만
+      if (p.category === "notice" &&
+          !MEET_WORDS.some((w) => (p.title || "").indexOf(w) > -1)) return;
     }
     const base = new Date(p.created_at);
     findDates(p.title, p.content, base,
