@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>회원 명부 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=94">
+<link rel="stylesheet" href="/OB/board/board.css?v=95">
 <style>
   .mwrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .mtop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 18px;}
@@ -13,6 +13,15 @@
   .mtop .cnt{font-size:13.5px;color:#8a8574;}
   .mnote{background:#f9f5ea;border:1px solid #eee6d2;border-radius:9px;padding:12px 16px;
     font-size:13px;color:#6f6a5c;margin-bottom:20px;line-height:1.7;}
+  .orgseg{display:inline-flex;border:1px solid #ddd6c6;border-radius:10px;overflow:hidden;
+    margin-bottom:16px;}
+  .orgseg a{padding:9px 18px;font-size:13.5px;font-weight:600;color:#6b6350;cursor:pointer;
+    border-right:1px solid #ddd6c6;background:#fff;}
+  .orgseg a:last-child{border-right:none;}
+  .orgseg a:hover{background:#faf7ef;color:#3f3a29;}
+  .orgseg a.on{background:#c9a961;color:#2b2410;}
+  .orgseg a.on.yb{background:#1e5230;color:#fff;}
+  #scopeNote{display:block;margin-top:6px;color:#8a8574;}
   .msrch{display:flex;gap:9px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
   .msrch input{flex:1;min-width:220px;padding:11px 16px;border:1px solid #ddd6c6;border-radius:100px;
     font-family:inherit;font-size:14.5px;background:#fff;color:#2f2a1d;outline:none;}
@@ -71,7 +80,10 @@
   <div class="mnote">
     동문 여러분끼리 보시는 명부입니다. <b>이름 · 전공 · 연도</b>만 담았고,
     <b>전화번호와 이메일은 담지 않습니다.</b> 연락이 필요하시면 운영진에게 말씀해주세요.
+    <span id="scopeNote"></span>
   </div>
+
+  <div class="orgseg" id="orgseg" style="display:none;"></div>
 
   <div class="msrch" id="srch" style="display:none;">
     <input type="text" id="q" placeholder="이름이나 전공으로 찾기">
@@ -83,7 +95,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=94";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=95";
 
 applyNav("OB", "회원 명부 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -102,9 +114,10 @@ if (!me || !(me.approved || me.is_admin)) {
       '<a href="/OB/auth/login.html">로그인</a> · <a href="/OB/auth/signup.html">회원가입</a>') +
     "</div>";
 } else {
+  // 명부는 자료방에서 이미 갈라 내보냅니다.
+  //   일반 회원 → 제 소속만 / 운영진 → 양쪽 모두
   const { data, error } = await sb.from("member_directory")
-    .select("name,member_type,faculty,grad_year")
-    .eq("member_type", "OB").order("name");
+    .select("name,member_type,faculty,grad_year").order("name");
 
   if (error) {
     box.innerHTML = '<div class="mempty">명부를 불러오지 못했습니다.<br><br>' +
@@ -112,18 +125,48 @@ if (!me || !(me.approved || me.is_admin)) {
         ? "운영진이 <b>auth/member_directory.sql</b> 을 한 번 실행하면 바로 보실 수 있습니다."
         : esc(error.message)) + "</div>";
   } else {
-    let rows = data || [];
+    const all = data || [];
     let key = "name", dir = 1, kw = "";
     document.getElementById("srch").style.display = "flex";
+
+    const NAME = { OB: "총동문회(OB)", YB: "학생회(YB)", GUEST: "비동문 준회원" };
+    const isAdmin = !!me.is_admin;
+    // 운영진만 양쪽을 오갑니다. 일반 회원에게는 단추가 아예 없습니다.
+    let scope = isAdmin ? "OB" : (me.member_type || "OB");
+    if (isAdmin) {
+      const seg = document.getElementById("orgseg");
+      seg.style.display = "inline-flex";
+      const kinds = ["OB", "YB"].concat(all.some(r => r.member_type === "GUEST") ? ["GUEST"] : []);
+      seg.innerHTML = kinds.map(k =>
+        `<a data-o="${k}"${k === "YB" ? ' class="yb"' : ""}>${NAME[k]}</a>`).join("") +
+        '<a data-o="all">전체</a>';
+      seg.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+        scope = a.dataset.o; paintSeg(); draw();
+      }));
+      document.getElementById("scopeNote").textContent =
+        "운영진이시라 양쪽을 모두 보실 수 있습니다. 일반 회원에게는 제 소속만 보입니다.";
+    } else {
+      document.getElementById("scopeNote").textContent =
+        `${NAME[scope] || "소속"} 동문만 보입니다.`;
+    }
+    function paintSeg() {
+      document.querySelectorAll("#orgseg a").forEach(a =>
+        a.classList.toggle("on", a.dataset.o === scope));
+    }
+    paintSeg();
+
+    const rowsNow = () => scope === "all" ? all : all.filter(r => r.member_type === scope);
 
     const val = {
       name: r => (r.name || "").trim(),
       faculty: r => (r.faculty || "").trim(),
       grad: r => (r.grad_year || "").trim(),
+      org: r => (r.member_type || "").trim(),
     };
 
     function draw() {
       const q = kw.toLowerCase();
+      const rows = rowsNow();
       const list = rows.filter(r => !q ||
         (r.name || "").toLowerCase().includes(q) ||
         (r.faculty || "").toLowerCase().includes(q) ||
@@ -145,11 +188,14 @@ if (!me || !(me.approved || me.is_admin)) {
         return;
       }
       const th = (k, t) => `<th data-k="${k}">${t}<span class="arr">${key === k ? (dir > 0 ? "▲" : "▼") : "⇅"}</span></th>`;
+      const wide = scope === "all";
       box.innerHTML = '<table class="mlist"><thead><tr>' +
-        th("name", "이름") + th("faculty", "학부 · 연구과") + th("grad", "졸업(예정)연도") +
+        th("name", "이름") + (wide ? th("org", "구분") : "") +
+        th("faculty", "학부 · 연구과") + th("grad", "졸업(예정)연도") +
         "</tr></thead><tbody>" +
         list.map(r => `<tr>
           <td class="nm">${esc(r.name) || '<span class="no">-</span>'}</td>
+          ${wide ? `<td class="yr">${esc(NAME[r.member_type] || r.member_type || "-")}</td>` : ""}
           <td class="fa">${esc(r.faculty) || '<span class="no">-</span>'}</td>
           <td class="yr">${esc(r.grad_year) || '<span class="no">-</span>'}</td>
         </tr>`).join("") + "</tbody></table>";
