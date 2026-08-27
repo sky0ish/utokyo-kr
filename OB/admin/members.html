@@ -683,7 +683,7 @@ async function start() {
     count();
   }
 
-  /** 회원을 명단에서 아예 뺍니다 (회원 정보 + 로그인 계정) */
+      if (!confirm(`${r.name || r.email || "이 분"} 님을 명단에서 아예 뺍니다.\n\n· 회원 정보와 로그인 계정이 지워집니다\n· 쓰신 글과 사진은 그대로 남습니다\n${r.is_admin ? "· 운영진이셨으므로 같은 메일로 다시 가입하실 수 있습니다" : "· 같은 메일로는 다시 가입할 수 없습니다"}\n\n계속할까요?`)) return;
   async function removeMember(r, b) {
     if (!r) return;
       if (!confirm(`${r.name || r.email || "이 분"} 님을 명단에서 아예 뺍니다.\n\n· 회원 정보와 로그인 계정이 지워집니다\n· 쓰신 글과 사진은 그대로 남습니다\n· 되돌릴 수 없습니다 (다시 가입하셔야 합니다)\n\n계속할까요?`)) return;

@@ -99,8 +99,20 @@ const msg = document.getElementById("msg");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   btn.disabled = true;
+  const mail = document.getElementById("email").value.trim();
+
+  // 명단에서 빠진 뒤 다시 가입할 수 없게 막아둔 메일인지 먼저 봅니다
+  try {
+    const blk = await sb.rpc("email_blocked", { p_email: mail });
+    if (blk.data === true) {
+      btn.disabled = false;
+      showMsg(msg, "이 메일 주소로는 다시 가입하실 수 없습니다. 운영진에게 문의해주세요.");
+      return;
+    }
+  } catch (e) { /* 아직 준비 전이면 그냥 넘어갑니다 */ }
+
   const { error } = await sb.auth.signUp({
-    email: document.getElementById("email").value.trim(),
+    email: mail,
     password: document.getElementById("password").value,
     options: {
       data: {
@@ -117,7 +129,9 @@ form.addEventListener("submit", async (e) => {
   });
   btn.disabled = false;
   if (error) {
-    showMsg(msg, "가입 실패: " + error.message);
+    showMsg(msg, /다시 가입|blocked_emails|Database error saving/i.test(error.message || "")
+      ? "이 메일 주소로는 다시 가입하실 수 없습니다. 운영진에게 문의해주세요."
+      : "가입 실패: " + error.message);
   } else {
     showMsg(msg, "가입 신청 완료! 입력하신 이메일로 인증 메일을 보냈습니다. 메일의 링크를 눌러 인증을 마친 뒤 로그인해주세요.", true);
     form.reset();
