@@ -44,6 +44,7 @@
 
 <script type="module">
 import { sb, showMsg, currentUser } from "./auth.js";
+import { noteLogin } from "./auth.js";
 
 // 로그인 뒤에 돌아갈 곳 — ?next= 가 있으면 그곳, 없으면 보던 화면, 그것도 없으면 통합 홈
 function backTo() {
@@ -86,6 +87,7 @@ form.addEventListener("submit", async (e) => {
       : "로그인 실패: " + error.message;
     showMsg(msg, m);
   } else {
+    await noteLogin();         // 로그인 횟수·월별 통계에 한 줄 남긴다
     location.href = NEXT;      // 내 정보는 위 메뉴의 [내 정보] 에서 언제든 고칠 수 있습니다
   }
 });

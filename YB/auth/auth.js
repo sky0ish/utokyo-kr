@@ -24,6 +24,13 @@ try {
   sessionStorage.setItem("utokyo-live", "1");
 } catch (e) { /* 저장소를 못 쓰는 환경은 무시 */ }
 
+/** 로그인 한 번을 기록한다 (횟수 세기 · 월별 통계용).
+ *  자료방 쪽에서 10분 안의 중복은 걸러 주므로 여러 번 불러도 괜찮습니다.
+ *  기록이 실패해도 로그인 자체는 그대로 진행됩니다. */
+export async function noteLogin() {
+  try { await sb.rpc("note_login"); } catch (e) { /* 아직 준비 전이면 조용히 넘어감 */ }
+}
+
 // 현재 로그인 세션 (없으면 null)
 export async function currentUser() {
   const { data: { session } } = await sb.auth.getSession();

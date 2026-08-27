@@ -110,6 +110,23 @@
   .btn.csvtop{padding:8px 16px;font-size:13px;background:#fff;border:1px solid #ddcb9e;color:#4a3c14;
     border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;}
   .btn.csvtop:hover{background:#fdf6e6;}
+
+  /* 로그인 통계 */
+  .stat{margin-top:26px;}
+  .stat .sh{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+  .stat .sh h2{font-size:16px;font-weight:500;color:#4a3c14;}
+  .stat .seg{display:inline-flex;border:1px solid #ddd6c4;border-radius:8px;overflow:hidden;}
+  .stat .seg a{padding:6px 14px;font-size:12.5px;font-weight:600;color:#6b6350;cursor:pointer;
+    border-right:1px solid #ddd6c4;background:#fff;}
+  .stat .seg a:last-child{border-right:none;}
+  .stat .seg a.on{background:#c9a961;color:#2b2410;}
+  .stat .cap{font-size:12.5px;color:#7d7768;margin-left:auto;}
+  .stat .chart{margin-top:10px;overflow-x:auto;}
+  .stat svg{display:block;}
+  .stat .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:#7d7768;}
+  .stat .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;
+    margin-right:6px;vertical-align:-1px;}
+  .stat .none{padding:26px 0;text-align:center;color:#a8a291;font-size:13.5px;}
 </style>
 </head>
 <body>
@@ -223,6 +240,22 @@
       <textarea id="emails" readonly style="min-height:80px;background:#f7f5ee;font-size:12.5px;"></textarea>
     </div>
 
+
+    <!-- 로그인 통계 -->
+    <div class="card stat" id="statCard">
+      <div class="sh">
+        <h2>로그인 통계</h2>
+        <span class="seg" id="statSeg">
+          <a data-m="month" class="on">월별</a><a data-m="year">연별</a>
+        </span>
+        <span class="cap" id="statCap"></span>
+      </div>
+      <div class="chart" id="statChart"><div class="none">불러오는 중…</div></div>
+      <div class="legend">
+        <span><i style="background:#c9a961;"></i>로그인 횟수</span>
+        <span><i style="background:#8fa6c9;"></i>들어온 사람 수</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -257,6 +290,8 @@ async function start() {
     // (없는 칸만 하나씩 빼고 다시 불러온 뒤, 무엇을 실행하면 되는지 알려준다)
     const COLS = "id,email,phone,name,member_type,faculty,grad_year,approved,is_admin,created_at,grade,grade_checked_at,grade_manual_at,roster_dept,roster_year,roster_belong,roster_email";
     const LATER = [
+      { col: "login_count",  sql: "auth/login_stats.sql", what: "로그인 횟수" },
+      { col: "last_login_at", sql: "auth/login_stats.sql", what: "마지막 로그인" },
       { col: "welcome_sent_at", sql: "auth/admin_members.sql", what: "‘아직 안 보낸 회원’ 골라 보내기" },
       { col: "company",         sql: "auth/add_company.sql",   what: "직장명" },
       { col: "job_title",       sql: "auth/add_company.sql",   what: "직급" },
@@ -377,6 +412,7 @@ async function start() {
       org:     r => r.member_type || "",
       faculty: r => ((r.faculty || "") + " " + (r.grad_year || "")).trim(),
       company: r => ((r.company || "") + " " + (r.job_title || "")).trim(),
+      login:   r => (r.login_count || 0),
       joined:  r => r.created_at || "",
       grade:   r => r.grade || "",
       state:   r => (r.approved ? (isRegrant(r) ? 1 : 0) : 2),
@@ -422,7 +458,7 @@ async function start() {
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty","전공 · 연도"],["company","직장 · 직급"],["joined","가입일"],["grade","등급"],["state","상태"]]
+       ["faculty","전공 · 연도"],["company","직장 · 직급"],["login","로그인"],["joined","가입일"],["grade","등급"],["state","상태"]]
         .filter(([k]) => k !== "company" || showJob)
         .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
           `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
@@ -435,6 +471,7 @@ async function start() {
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : r.member_type === "GUEST" ? "wait" : "ob"}">${r.member_type === "GUEST" ? "비동문" : r.member_type}</span>` : "-"}</td>
         <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
         ${showJob ? `<td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>` : ""}
+        <td class="em">${r.login_count == null ? "-" : r.login_count + "회"}${r.last_login_at ? `<br><span style="color:#a8a291;font-size:11px;">${String(r.last_login_at).slice(0, 10)}</span>` : ""}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
         <td>${r.approved
@@ -772,7 +809,7 @@ async function start() {
   const jobCols = () => orgF !== "YB";     // 재학생 명단에는 직장·직급을 넣지 않는다
   const HEADER = () => "이름,이메일,연락처,구분,전공,졸업연도," +
                        (jobCols() ? "직장,직급," : "") +
-                       "등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
+                       "로그인,마지막로그인,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
   /** 전화번호를 010-1234-5678 꼴로 (엑셀이 숫자로 바꿔 앞 0 이 사라지는 것도 막습니다) */
   function phoneText(v) {
     const d = String(v || "").replace(/[^0-9]/g, "");
@@ -786,6 +823,8 @@ async function start() {
 
   const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year]
     .concat(jobCols() ? [r.company, r.job_title] : [])
+    .concat([r.login_count == null ? "" : String(r.login_count),
+             (r.last_login_at || "").slice(0, 10)])
     .concat([isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
              r.approved ? (isRegrant(r) ? "재승인" : "승인") : "대기",
              (r.created_at || "").slice(0, 10),
@@ -847,6 +886,91 @@ async function start() {
   document.getElementById("csvTop").addEventListener("click", saveCsvAll);
   document.getElementById("csvGuest").addEventListener("click", saveCsvGuest);
   document.getElementById("csvPick").addEventListener("click", saveCsvPicked);
+
+
+  // ── 로그인 통계 그래프 ──
+  //   login_events 를 월/연으로 묶어 막대그래프로 그립니다. (그림 파일 없이 SVG 로 그립니다)
+  {
+    let mode = "month";
+    const chart = document.getElementById("statChart");
+    const cap = document.getElementById("statCap");
+    let rows = null;
+
+    document.querySelectorAll("#statSeg a").forEach(a => a.addEventListener("click", () => {
+      mode = a.dataset.m;
+      document.querySelectorAll("#statSeg a").forEach(x => x.classList.toggle("on", x === a));
+      drawStat();
+    }));
+
+    async function loadStat() {
+      const r = await sb.from("login_events").select("at,org").order("at");
+      if (r.error) {
+        chart.innerHTML = '<div class="none">' +
+          (/login_events|schema cache/i.test(r.error.message || "")
+            ? "아직 준비 전입니다 — <b>auth/login_stats.sql</b> 을 한 번 실행해주세요."
+            : "통계를 불러오지 못했습니다: " + esc(r.error.message)) + "</div>";
+        return null;
+      }
+      return r.data || [];
+    }
+
+    function bucket(list) {
+      const m = new Map();
+      list.forEach(e => {
+        const k = mode === "month" ? String(e.at).slice(0, 7) : String(e.at).slice(0, 4);
+        if (!m.has(k)) m.set(k, { n: 0, who: new Set() });
+        const b = m.get(k);
+        b.n++; b.who.add(e.user_id || e.at);
+      });
+      return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([k, v]) => ({ k, n: v.n, p: v.who.size }));
+    }
+
+    function drawStat() {
+      if (!rows) return;
+      if (!rows.length) {
+        chart.innerHTML = '<div class="none">아직 쌓인 로그인 기록이 없습니다. ' +
+          '이제부터 로그인하실 때마다 하나씩 쌓입니다.</div>';
+        cap.textContent = "";
+        return;
+      }
+      const data = bucket(rows).slice(mode === "month" ? -24 : -12);
+      const W = Math.max(560, data.length * (mode === "month" ? 44 : 74));
+      const H = 220, PAD = 34, BOT = 34;
+      const top = Math.max(1, ...data.map(d => d.n));
+      const step = (W - PAD * 2) / data.length;
+      const bw = Math.min(26, step * 0.42);
+      const y = (v) => H - BOT - (v / top) * (H - BOT - 16);
+
+      const grid = [0, 0.5, 1].map(f => {
+        const v = Math.round(top * f), yy = y(v);
+        return `<line x1="${PAD}" y1="${yy}" x2="${W - PAD}" y2="${yy}" stroke="#efe9db"/>` +
+               `<text x="${PAD - 8}" y="${yy + 4}" text-anchor="end" font-size="10" fill="#7d7768">${v}</text>`;
+      }).join("");
+
+      const bars = data.map((d, i) => {
+        const cx = PAD + step * i + step / 2;
+        const label = mode === "month" ? d.k.slice(2).replace("-", ".") : d.k;
+        return `<rect x="${cx - bw}" y="${y(d.n)}" width="${bw}" height="${H - BOT - y(d.n)}"
+                  fill="#c9a961" rx="2"><title>${d.k} · 로그인 ${d.n}회</title></rect>` +
+               `<rect x="${cx}" y="${y(d.p)}" width="${bw}" height="${H - BOT - y(d.p)}"
+                  fill="#8fa6c9" rx="2"><title>${d.k} · ${d.p}명</title></rect>` +
+               `<text x="${cx}" y="${H - BOT + 15}" text-anchor="middle" font-size="10.5"
+                  fill="#7d7768">${label}</text>`;
+      }).join("");
+
+      chart.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img"
+        aria-label="로그인 통계 막대그래프">${grid}
+        <line x1="${PAD}" y1="${H - BOT}" x2="${W - PAD}" y2="${H - BOT}" stroke="#efe9db"/>
+        ${bars}</svg>`;
+
+      const all = bucket(rows);
+      cap.textContent = `모두 ${rows.length}회 · ${mode === "month" ? "최근 24개월" : "최근 12년"}` +
+                        ` (기록 시작 ${all[0].k})`;
+    }
+
+    loadStat().then(d => { rows = d; if (rows) drawStat(); });
+  }
 
   load();
 }
