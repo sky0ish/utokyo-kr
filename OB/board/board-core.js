@@ -3,7 +3,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=103";
+import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=120";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -12,11 +12,12 @@ export async function initBoard(ORG) {
   // ── 조직별 게시판 구성 ──
   const CAT_OB = { notice:"공지", free:"자유", club:"소모임", mentoring:"멘토멘티(OB/YB)", promo:"홍보·채용", condolence:"경조사",
                    forum:"포럼·세미나",
-                   jobs:"구인", faculty:"단과대별", news:"소식", market:"장터" };
+                   jobs:"구인", faculty:"단과대별", news:"소식", market:"장터",
+                   suggest:"동문회에 바란다" };
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
-                   mentoring:"멘토멘티(OB/YB)" };
-  const TABS_OB = ["free","promo","forum","condolence","notice"];   // 소모임·멘토멘티는 참여마당에서 접근
-  const TABS_YB = ["notice","free","qna","jobs","parttime","market","mentoring"];
+                   mentoring:"멘토멘티(OB/YB)", suggest:"동문회에 바란다" };
+  const TABS_OB = ["free","promo","forum","condolence","notice","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
+  const TABS_YB = ["notice","free","qna","jobs","parttime","market","mentoring","suggest"];
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
   // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
   const SHARED = ["mentoring"];

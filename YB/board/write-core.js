@@ -2,7 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/YB/auth/auth.js";
 import { applyNav } from "/YB/board/nav.js?v=10";
-import { boardInfo, tagInfo } from "/YB/board/board-info.js?v=103";
+import { boardInfo, tagInfo } from "/YB/board/board-info.js?v=120";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -50,9 +50,9 @@ export async function initWrite(ORG) {
     orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
     // 게시판 분류 · 말머리 선택 (조직별)
-    const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항" };
+    const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", suggest:"동문회에 바란다" };
     const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
-                      mentoring:"멘토멘티(OB/YB)" };
+                      mentoring:"멘토멘티(OB/YB)", suggest:"동문회에 바란다" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
@@ -64,7 +64,8 @@ export async function initWrite(ORG) {
       condolence: ["부고", "결혼", "출산", "축하"],
       notice: ["총회", "회비", "행사", "안내"],
       forum: ["건축학", "농학생명", "공학", "인문사회", "약학", "의학", "기타"],
-      seminar: ["학술", "산업", "한일교류", "기타"]
+      seminar: ["학술", "산업", "한일교류", "기타"],
+      suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"]
     };
     const TAGS_YB = {
       notice: ["학생회", "행사", "장학", "안내", "기타"],
@@ -74,7 +75,8 @@ export async function initWrite(ORG) {
       parttime: ["단기", "장기", "과외", "번역·통역", "기타"],
       market: ["삽니다", "팝니다", "나눔", "구합니다", "기타"],
       mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
-                  "만남의 광장", "유학", "기타"]
+                  "만남의 광장", "유학", "기타"],
+      suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"]
     };
     const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
 
