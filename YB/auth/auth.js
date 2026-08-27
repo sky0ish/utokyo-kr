@@ -75,3 +75,20 @@ export function showMsg(el, text, ok = false) {
   el.className = "msg " + (ok ? "ok" : "err");
   el.style.display = "block";
 }
+
+/** 여러 줄 입력칸에서 한글 조합 중 엔터가 줄을 못 바꾸는 것을 바로잡는다.
+ *  브라우저가 이미 줄을 바꿨으면 아무 일도 하지 않습니다. */
+export function fixEnter(el) {
+  if (!el || el.dataset.enterFixed) return;
+  el.dataset.enterFixed = "1";
+  el.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!e.isComposing) return;            // 조합 중이 아니면 브라우저가 알아서 합니다
+    setTimeout(() => {
+      const p = el.selectionStart;
+      if (el.value.charAt(p - 1) === "\n") return;   // 이미 바뀌었으면 그대로
+      el.setRangeText("\n", p, p, "end");
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    }, 0);
+  });
+}

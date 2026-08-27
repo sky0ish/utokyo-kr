@@ -1,6 +1,6 @@
 // ─── 게시판 글보기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
-import { sb, currentUser, myProfile, noteActivity } from "/OB/auth/auth.js";
+import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
@@ -320,6 +320,7 @@ function linkify(s) {
     const wrap = document.getElementById("cmtWrap");
     const listEl = document.getElementById("cmtList");
     const formBox = document.getElementById("cmtFormBox");
+    fixEnter(document.getElementById("cmtInput"));   // 한글 엔터 바로잡기
     wrap.style.display = "block";
 
     const profile = meProfile;
@@ -372,6 +373,7 @@ function linkify(s) {
         wrapEd.className = "cmt-edit";
         const ta = document.createElement("textarea");
         ta.value = c.content;
+        fixEnter(ta);
         const row = document.createElement("div");
         row.className = "cmt-edit-row";
         const save = document.createElement("button");

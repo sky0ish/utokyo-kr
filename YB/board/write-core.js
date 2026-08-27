@@ -1,6 +1,6 @@
 // ─── 게시판 글쓰기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
-import { sb, currentUser, myProfile, noteActivity } from "/YB/auth/auth.js";
+import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/YB/auth/auth.js";
 import { applyNav } from "/YB/board/nav.js?v=10";
 import { boardInfo, tagInfo } from "/YB/board/board-info.js?v=103";
 
@@ -83,6 +83,7 @@ export async function initWrite(ORG) {
       Object.entries(CATS).map(([k, v]) => `<a href="#" data-v="${k}">${v}</a>`).join("");
     applyNav(ORG, ORG === "YB" ? "글쓰기 | 도쿄대학 한국인학생회"
                               : "글쓰기 | 재한 도쿄대학 총동문회");
+    fixEnter(document.getElementById("content"));   // 한글 엔터 바로잡기
     let category = "free", headTag = "";
     const catPick = document.getElementById("catPick");
     const tagPick = document.getElementById("tagPick");
