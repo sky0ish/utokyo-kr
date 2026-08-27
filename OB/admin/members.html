@@ -574,6 +574,15 @@ async function start() {
       const to = sel.value;
       sel.disabled = true;
       const now = new Date().toISOString();
+      // 등급을 내리면 운영진 권한도 함께 내립니다
+      // (그러지 않으면 준회원인데 관리 메뉴가 계속 보입니다)
+      if (r.is_admin && to !== "admin") {
+        const off = await sb.rpc("set_admin", { p_id: r.id, p_on: false });
+        if (off.error) {
+          const d = await sb.from("profiles").update({ is_admin: false }).eq("id", r.id);
+          if (!d.error) r.is_admin = false;
+        } else r.is_admin = false;
+      }
       const { error } = await sb.from("profiles")
         .update({ grade: to, grade_manual_at: now }).eq("id", r.id);
       sel.disabled = false;
