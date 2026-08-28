@@ -1,9 +1,10 @@
 -- ═══════════════════════════════════════════════════════════
--- 학생회에 새로 생긴 게시판 세 곳
+-- 학생회에 새로 생긴 게시판 네 곳
 --
---   참여마당 > 진로상담      (counsel) — 진학·취업·연구실 선택 고민
---   참여마당 > 진학/취업 후기 (career)  — 지나온 과정을 남겨 후배가 읽도록
---   게시판   > 수험생 게시판  (exam)    — 준회원(비동문)도 보고 쓸 수 있는 곳
+--   참여마당 > 진로상담      (counsel)     — 진학·취업·연구실 선택 고민
+--   참여마당 > 진학/취업 후기 (career)      — 지나온 과정을 남겨 후배가 읽도록
+--   게시판   > 장학정보      (scholarship) — 유학생이 넣을 수 있는 장학금
+--   게시판   > 수험생 게시판  (exam)        — 준회원(비동문)도 보고 쓸 수 있는 곳
 --
 --   ※ 앞서 exam_board.sql 을 돌리셨어도 이 파일을 그대로 돌리시면 됩니다.
 --     그 내용까지 함께 들어 있고, 두 번 돌려도 탈이 없습니다.
@@ -23,7 +24,7 @@ alter table public.posts add constraint posts_category_check
     -- 양쪽에 있는 것
     'suggest',
     -- 이번에 생긴 것
-    'exam','career','counsel'
+    'exam','career','counsel','scholarship'
   ));
 
 -- ── 수험생 게시판 첫 글 ──
@@ -68,9 +69,25 @@ select '도쿄대학 한국인학생회', 'YB', 'career',
        'members'
  where not exists (select 1 from public.posts where org = 'YB' and category = 'career');
 
--- ── 확인 — 세 줄이 나오면 성공입니다 ──
+-- ── 장학정보 첫 글 ──
+insert into public.posts (author_name, org, category, title, content, visibility)
+select '도쿄대학 한국인학생회', 'YB', 'scholarship',
+       '[기타] 장학정보 게시판을 엽니다',
+       '유학생이 넣을 수 있는 장학금을 한곳에 모아둡니다.' || chr(10) ||
+       '받으신 분, 떨어지신 분 모두 겪은 이야기를 남겨주시면 다음 사람에게 큰 도움이 됩니다.' || chr(10) || chr(10) ||
+       '말머리는 교내 · 일본정부 · 한국정부 · 민간재단 · 기타 다섯 가지입니다.' || chr(10) || chr(10) ||
+       '글을 쓰실 때 이 세 가지만 적어주셔도 충분합니다.' || chr(10) ||
+       '  · 지원 자격 (학년·국적·성적 조건)' || chr(10) ||
+       '  · 마감일과 신청 방법' || chr(10) ||
+       '  · 금액과 기간' || chr(10) || chr(10) ||
+       '※ 마감이 지난 글도 지우지 말아주세요. 이듬해 같은 시기에 다시 열리는 장학금이 많습니다.' || chr(10) ||
+       '   신청 전에는 반드시 주관 기관의 공식 요강을 확인해 주세요.',
+       'members'
+ where not exists (select 1 from public.posts where org = 'YB' and category = 'scholarship');
+
+-- ── 확인 — 네 줄이 나오면 성공입니다 ──
 select category as "게시판", count(*) as "글수"
   from public.posts
- where org = 'YB' and category in ('exam','career','counsel')
+ where org = 'YB' and category in ('exam','career','counsel','scholarship')
  group by category
  order by category;
