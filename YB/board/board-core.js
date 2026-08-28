@@ -17,7 +17,8 @@ export async function initBoard(ORG) {
                    suggest:"동문회에 바란다" };
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                    club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력", mentoring:"멘토멘티(OB/YB)",
-                   suggest:"학생회에 바란다", exam:"수험생 게시판" };
+                   suggest:"학생회에 바란다", exam:"수험생 게시판",
+                   career:"진학/취업 후기", counsel:"진로상담" };
   const TABS_OB = ["notice","free","promo","condolence","research","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
   const TABS_YB = ["notice","free","qna","jobs","parttime","market","exam"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
@@ -29,7 +30,7 @@ export async function initBoard(ORG) {
                             : "게시판 | 재한 도쿄대학 총동문회");
   // 참여마당 식구 — 위 메뉴의 참여마당 드롭다운과 같은 차례입니다
   const JOIN_OB = ["club", "mentoring", "forum"];
-  const JOIN_YB = ["mentoring", "event", "club", "major", "suggest"];
+  const JOIN_YB = ["mentoring", "counsel", "career", "event", "club", "major", "suggest"];
   const JOIN = ORG === "YB" ? JOIN_YB : JOIN_OB;
 
   // 분류 탭 다시 그리기 — 위 메뉴에서 들어온 자리에 맞춰

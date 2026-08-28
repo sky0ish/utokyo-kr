@@ -162,7 +162,7 @@ export async function initPost(ORG) {
                 parttime:"아르바이트", market:"벼룩시장",
                 club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력",
                 mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다",
-                exam:"수험생 게시판" };
+                exam:"수험생 게시판", career:"진학/취업 후기", counsel:"진로상담" };
 
   // ── 큰 제목 : 지금 보고 있는 글이 속한 게시판 이름으로 ──
   // 글을 열면 "게시판"으로만 나와서 어디에 있는지 알 수 없던 것을 고칩니다
