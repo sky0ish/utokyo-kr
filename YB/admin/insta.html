@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram 가져오기 | 도쿄대학 한국인학생회</title>
+<link rel="icon" href="/YB/images/yb_emblem.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:#f4f7f5;color:#222b25;font-size:15px;line-height:1.7;}
+  a{color:inherit;text-decoration:none;}
+
+  /* 맨 위 얇은 줄 — 어느 화면에서든 똑같이 */
+  .topbar{background:#0d2214;color:rgba(255,255,255,.75);font-size:12.5px;
+    position:sticky;top:0;z-index:1300;}
+  .topbar .inner{max-width:1180px;margin:0 auto;padding:9px 22px;
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .topbar a{color:inherit;}
+  .topbar a:hover{color:#e8c876;}
+  .topbar .links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+
+  .top{background:#123524;color:#eaf4ec;padding:22px 0;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px;}
+  .top h1{font-size:22px;font-weight:500;}
+  .top p{font-size:13px;color:#a9c4b2;margin-top:4px;}
+  .top .links{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;}
+  .top .links a{color:#bfe8c2;border-bottom:1px solid transparent;}
+  .top .links a:hover{border-color:#bfe8c2;}
+
+  .card{background:#fff;border:1px solid #dfe9e1;border-radius:10px;padding:22px 24px;margin:24px 0;}
+  h2{font-size:17px;font-weight:500;color:#1e5230;margin-bottom:4px;}
+  .sub{font-size:13px;color:#8a9a90;margin-bottom:16px;}
+  .step{display:inline-block;background:#123524;color:#fff;border-radius:100px;
+    padding:1px 11px;font-size:12px;font-weight:600;margin-right:8px;}
+  ol.how{margin:10px 0 0 20px;font-size:14px;color:#4a5f52;}
+  ol.how li{margin:7px 0;}
+  .bm{display:inline-block;background:linear-gradient(45deg,#f9ce34,#ee2a7b 45%,#6228d7);
+    color:#fff;font-weight:700;font-size:14px;padding:10px 20px;border-radius:8px;
+    box-shadow:0 3px 10px rgba(238,42,123,.3);cursor:grab;}
+  .drop{border:2px dashed #bfd6c6;border-radius:10px;padding:30px;text-align:center;
+    color:#6f8578;background:#f8fbf9;cursor:pointer;font-size:14px;}
+  .drop.on{border-color:#4f9d5d;background:#eef6f0;color:#1e5230;}
+  .btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;
+    font-family:inherit;border:1px solid #cfe0d4;background:#fff;color:#1e5230;}
+  .btn:hover{border-color:#4f9d5d;}
+  .btn.go{background:#123524;border-color:#123524;color:#fff;font-weight:600;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  select{padding:6px 9px;border:1px solid #cfe0d4;border-radius:6px;
+    font-family:inherit;font-size:13px;background:#fbfefb;color:#222b25;}
+  .msg{margin-top:12px;font-size:13.5px;color:#6f8578;min-height:20px;white-space:pre-wrap;}
+  .msg.err{color:#b3453b;} .msg.ok{color:#2f7a45;}
+  .note{background:#f2f8f4;border:1px solid #dfe9e1;border-radius:8px;padding:12px 15px;
+    font-size:13px;color:#5c6b61;margin-top:14px;}
+  .empty{padding:34px 0;text-align:center;color:#8a9a90;font-size:14px;}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{text-align:left;font-weight:500;font-size:12px;color:#8a9a90;
+    border-bottom:1px solid #dfe9e1;padding:0 8px 8px;}
+  td{border-bottom:1px solid #eef3ef;padding:9px 8px;vertical-align:middle;}
+  td.tt{max-width:430px;}
+  td.tt b{font-weight:400;}
+  td.tt small{display:block;color:#a4b0a8;font-size:11.5px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:430px;}
+  .thumbs{display:flex;gap:4px;}
+  .thumbs img{width:34px;height:34px;object-fit:cover;border-radius:4px;border:1px solid #dfe9e1;}
+  .kind{display:inline-block;border-radius:100px;padding:1px 10px;font-size:12px;font-weight:600;}
+  .kind.post{background:#e7f0fa;color:#2f4b8f;}
+  .kind.album{background:#fdf1e7;color:#8a5a2b;}
+  .kind.skip{background:#eef1ef;color:#8a9a90;}
+  .bar{height:8px;border-radius:5px;background:#e6efe9;overflow:hidden;margin-top:14px;display:none;}
+  .bar.on{display:block;}
+  .bar i{display:block;height:100%;width:0;background:#4f9d5d;transition:width .15s;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="links">
+      <a href="/index.html">⌂ 통합 홈</a>
+      <a href="https://www.u-tokyo.ac.jp/en/" target="_blank" rel="noopener">도쿄대학 홈페이지</a>
+      <a href="/OB/index.html">재한 도쿄대학 총동문회</a>
+      <a href="https://www.tokyoksa.com/" target="_blank" rel="noopener">한국인학생회(기존)</a>
+    </div>
+    <div class="links" id="authLinks"><a href="/YB/auth/login.html">로그인</a><a href="/YB/auth/signup.html">회원가입</a><a href="/YB/auth/find.html">아이디·비번 찾기</a></div>
+  </div>
+</div>
+
+<div class="top">
+  <div class="wrap">
+    <h1>Instagram 가져오기</h1>
+    <p>학생회 인스타그램의 글과 사진을 게시판·사진첩으로 나누어 담습니다 (운영진 전용)</p>
+    <div class="links">
+      <a href="https://www.instagram.com/tokyoksa/" target="_blank" rel="noopener">학생회 Instagram</a>
+      <a href="index.html">게시글 수집 관리</a>
+      <a href="members.html">회원 관리</a>
+      <a href="gallery.html">갤러리 관리</a>
+      <a href="/YB/index.html">학생회 홈</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="card"><div class="empty">권한을 확인하는 중…</div></div>
+
+  <div id="panel" style="display:none;">
+
+    <div class="card">
+      <h2><span class="step">1</span>인스타그램에서 긁어오기</h2>
+      <p class="sub">비밀번호는 쓰지 않습니다. 지금 브라우저에 로그인된 상태 그대로 읽어옵니다.</p>
+      <p><a class="bm" id="bmLink" href="#">📥 Instagram 수집</a></p>
+      <ol class="how">
+        <li>위 단추를 <b>즐겨찾기 막대에 끌어다 놓으세요</b> (한 번만 하시면 됩니다).</li>
+        <li><a href="https://www.instagram.com/tokyoksa/" target="_blank" rel="noopener"><b>instagram.com/tokyoksa</b></a> 를 열고 로그인하세요.</li>
+        <li>즐겨찾기의 <b>Instagram 수집</b>을 누르면 스스로 내려가며 글을 모읍니다.</li>
+        <li>끝나면 <b>instagram_collected.json</b> 이 내려받아집니다.</li>
+      </ol>
+      <div class="note">
+        글 본문까지 온전히 담으시려면, 프로필에서 <b>글을 하나씩 열어 둔 채로</b> 수집을 누르시면
+        그 글의 본문과 큰 사진까지 함께 담깁니다. 목록만 훑을 때는 사진과 짧은 설명만 담깁니다.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="step">2</span>파일 올리고 나누기</h2>
+      <p class="sub">글자가 많은 것은 <b>게시판</b>으로, 사진이 많은 것은 <b>사진첩</b>으로 자동으로 갈라 드립니다.</p>
+      <div class="drop" id="drop">
+        내려받은 <b>instagram_collected.json</b> 을 여기에 끌어다 놓으세요
+        <br><small>또는 눌러서 고르기</small>
+        <input type="file" id="file" accept=".json,application/json" hidden>
+      </div>
+      <div class="row" style="margin-top:14px;">
+        <label style="font-size:13px;color:#6f8578;">게시판으로 보낼 글자 수
+          <select id="minText">
+            <option value="40">40자 넘으면</option>
+            <option value="60" selected>60자 넘으면</option>
+            <option value="100">100자 넘으면</option>
+          </select>
+        </label>
+        <label style="font-size:13px;color:#6f8578;">사진첩 갈래
+          <select id="albCat"></select>
+        </label>
+        <label style="font-size:13px;color:#6f8578;">게시판
+          <select id="boardCat"></select>
+        </label>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="card" id="prevCard" style="display:none;">
+      <h2><span class="step">3</span>확인하고 담기</h2>
+      <p class="sub">한 줄씩 어디로 갈지 바꾸실 수 있습니다. 이미 담은 글은 자동으로 건너뜁니다.</p>
+      <div style="overflow-x:auto;"><table id="tbl"></table></div>
+      <div class="row" style="margin-top:18px;">
+        <button class="btn go" id="save">고른 것 담기</button>
+        <span class="msg" id="saveMsg" style="margin:0;"></span>
+      </div>
+      <div class="bar" id="bar"><i></i></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
+import { CATS } from "/YB/gallery-lib.js?v=165";
+
+const ORG = "YB";
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// 학생회 게시판 — 글쓰기 화면과 같은 이름
+const BOARDS = { free:"자유게시판", notice:"공지사항", qna:"Q&A", jobs:"취업정보",
+                 parttime:"아르바이트", market:"벼룩시장", mentoring:"멘토멘티(OB/YB)",
+                 history:"활동 이력" };
+const TAGS = { notice:["학생회","행사","장학","안내"],
+               free:["일상","질문","정보공유","후기"],
+               qna:["입학","비자·체류","생활","학업","기타"],
+               jobs:["신입","경력","인턴","설명회"],
+               parttime:["단기","장기","과외","번역·통역"],
+               market:["삽니다","팝니다","나눔","구합니다"],
+               mentoring:["멘토 모집","멘티 모집","진로상담","유학"],
+               history:["활동"] };
+
+/** 글을 읽어 어느 게시판 · 어느 말머리가 어울리는지 고릅니다 */
+function classify(text) {
+  const s = (text || "").replace(/\s/g, "");
+  const has = (...ws) => ws.some(w => s.includes(w.replace(/\s/g, "")));
+  if (has("장학","장학금","지원금")) return ["notice", "장학"];
+  if (has("총회","정기총회","임원","학생회비","회칙","선거")) return ["notice", "학생회"];
+  if (has("공지","안내드립니다","신청하세요","모집합니다","마감")) return ["notice", "안내"];
+  if (has("행사","환영회","체육대회","MT","엠티","축제","송년","신년회","야유회")) return ["notice", "행사"];
+  if (has("설명회","리크루팅","리쿠르팅","취업설명회","잡페어")) return ["jobs", "설명회"];
+  if (has("인턴","인턴십")) return ["jobs", "인턴"];
+  if (has("경력","중途","중도채용")) return ["jobs", "경력"];
+  if (has("채용","구인","신입","입사","취업")) return ["jobs", "신입"];
+  if (has("아르바이트","알바","단기","일당")) return ["parttime", "단기"];
+  if (has("과외","튜터")) return ["parttime", "과외"];
+  if (has("번역","통역")) return ["parttime", "번역·통역"];
+  if (has("나눔","드립니다","무료로")) return ["market", "나눔"];
+  if (has("팝니다","판매","양도")) return ["market", "팝니다"];
+  if (has("삽니다","구합니다","구해요")) return ["market", "구합니다"];
+  if (has("멘토","멘티","선배","진로","상담")) return ["mentoring", "진로상담"];
+  if (has("유학","입시","진학","대학원")) return ["mentoring", "유학"];
+  if (has("비자","재류","체류","국민건강보험","주민등록")) return ["qna", "비자·체류"];
+  if (has("입학","합격","원서")) return ["qna", "입학"];
+  if (has("수업","학점","시험","연구실","졸업")) return ["qna", "학업"];
+  if (has("자취","집구하기","기숙사","생활","맛집")) return ["qna", "생활"];
+  if (has("후기","다녀왔","참석했","마쳤습니다")) return ["free", "후기"];
+  if (has("질문","궁금","문의")) return ["free", "질문"];
+  if (has("공유","기사","소식","정보")) return ["free", "정보공유"];
+  return ["free", "일상"];
+}
+
+const user = await currentUser();
+const me = user ? await myProfile() : null;
+if (!me || !me.is_admin) {
+  document.getElementById("gate").innerHTML =
+    '<div class="empty">운영진(관리자) 계정으로 로그인해야 이용할 수 있습니다.<br><br>' +
+    '<a class="btn" href="/YB/auth/login.html">로그인</a></div>';
+} else {
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  start();
+}
+
+async function start() {
+  // ── 1) 수집기 북마클릿 (게시글 수집 화면의 것을 그대로 가져옵니다) ──
+  try {
+    const src = await fetch("/YB/admin/collector.js?" + Date.now()).then(r => r.text());
+    document.getElementById("bmLink").setAttribute("href",
+      "javascript:" + encodeURIComponent(src));
+  } catch (e) {
+    document.getElementById("bmLink").textContent = "수집기를 불러오지 못했습니다";
+  }
+
+  // ── 2) 고르는 줄 ──
+  const albSel = document.getElementById("albCat");
+  albSel.innerHTML = CATS.map(([k, v]) =>
+    `<option value="${k}"${k === "event" ? " selected" : ""}>${v}</option>`).join("");
+  const bdSel = document.getElementById("boardCat");
+  bdSel.innerHTML = Object.entries(BOARDS).map(([k, v]) =>
+    `<option value="${k}"${k === "free" ? " selected" : ""}>${v}</option>`).join("");
+
+  const drop = document.getElementById("drop");
+  const file = document.getElementById("file");
+  const msg  = document.getElementById("msg");
+  const tbl  = document.getElementById("tbl");
+  const card = document.getElementById("prevCard");
+  let rows = [];
+
+  drop.addEventListener("click", () => file.click());
+  drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("on"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("on"));
+  drop.addEventListener("drop", (e) => {
+    e.preventDefault(); drop.classList.remove("on");
+    if (e.dataTransfer.files[0]) read(e.dataTransfer.files[0]);
+  });
+  file.addEventListener("change", () => { if (file.files[0]) read(file.files[0]); });
+  [albSel, bdSel, document.getElementById("minText")]
+    .forEach(s => s.addEventListener("change", () => { if (rows.length) { decide(); draw(); } }));
+
+  /** 글자가 많으면 게시판, 사진이 많으면 사진첩, 둘 다면 양쪽에 */
+  function decide() {
+    const min = +document.getElementById("minText").value;
+    rows.forEach(r => {
+      const t = (r.text || "").trim().length;
+      const n = (r.imgs || []).length;
+      const wordy = t >= min, photoy = n >= 2;
+      r.kind = wordy && photoy ? "both"
+             : wordy ? "post"
+             : photoy ? "album"
+             : t >= 20 ? "post" : (n ? "album" : "skip");
+      const [c, g] = classify(r.text);
+      if (!r.cat) { r.cat = c; r.tag = g; }
+    });
+  }
+
+  function read(f) {
+    const rd = new FileReader();
+    rd.onload = () => {
+      let arr;
+      try { arr = JSON.parse(rd.result); } catch (e) {
+        msg.className = "msg err"; msg.textContent = "JSON 파일을 읽을 수 없습니다."; return;
+      }
+      if (!Array.isArray(arr) || !arr.length) {
+        msg.className = "msg err"; msg.textContent = "수집된 글이 없습니다."; return;
+      }
+      rows = arr.filter(a => a && (a.text || (a.imgs || []).length))
+                .map(a => ({ ...a, imgs: a.imgs || [] }));
+      decide();
+      const p = rows.filter(r => r.kind === "post").length;
+      const g = rows.filter(r => r.kind === "album").length;
+      msg.className = "msg ok";
+      msg.textContent = `${f.name} — 모두 ${rows.length}건 · 게시판 ${p}건 · 사진첩 ${g}건`;
+      draw();
+      card.style.display = "block";
+    };
+    rd.readAsText(f, "utf-8");
+  }
+
+  function draw() {
+    tbl.innerHTML = "<thead><tr><th style='width:96px;'>어디로</th><th>내용</th>" +
+      "<th style='width:150px;'>사진</th><th style='width:96px;'>날짜</th></tr></thead><tbody>" +
+      rows.map((r, i) => {
+        const t = (r.text || "").replace(/\s+/g, " ").trim();
+        return `<tr>
+          <td><select data-k="${i}">
+                <option value="post"${r.kind === "post" ? " selected" : ""}>게시판</option>
+                <option value="album"${r.kind === "album" ? " selected" : ""}>사진첩</option>
+                <option value="skip"${r.kind === "skip" ? " selected" : ""}>건너뛰기</option>
+              </select></td>
+          <td class="tt"><b>${esc(t.slice(0, 60)) || "<i style='color:#a4b0a8;'>글 없음</i>"}</b>
+            <small>${esc(t.slice(60, 190))}</small></td>
+          <td><div class="thumbs">${(r.imgs || []).slice(0, 3)
+                .map(u => `<img src="${esc(u)}" alt="" loading="lazy"
+                   onerror="this.style.visibility='hidden'">`).join("")}
+            ${(r.imgs || []).length > 3 ? `<span style="font-size:11.5px;color:#a4b0a8;">+${r.imgs.length - 3}</span>` : ""}</div></td>
+          <td style="color:#a4b0a8;font-size:12px;">${(r.time || "").slice(0, 10)}</td>
+        </tr>`;
+      }).join("") + "</tbody>";
+
+    tbl.querySelectorAll("select[data-k]").forEach(s => s.addEventListener("change", () => {
+      rows[+s.dataset.k].kind = s.value;
+    }));
+  }
+
+  // ── 3) 담기 ──
+  document.getElementById("save").addEventListener("click", async () => {
+    const btn = document.getElementById("save");
+    const out = document.getElementById("saveMsg");
+    const bar = document.getElementById("bar");
+    const fill = bar.querySelector("i");
+
+    const posts  = rows.filter(r => r.kind === "post");
+    const albums = rows.filter(r => r.kind === "album");
+    if (!posts.length && !albums.length) {
+      out.className = "msg err"; out.textContent = "담을 것을 골라주세요."; return;
+    }
+    if (!confirm(`게시판 ${posts.length}건 · 사진첩 ${albums.length}건을 담습니다. 계속할까요?`)) return;
+
+    btn.disabled = true; bar.classList.add("on");
+    out.className = "msg"; out.textContent = "이미 담은 것이 있는지 살펴보는 중…";
+
+    // 같은 글을 두 번 담지 않도록
+    const urls = rows.map(r => r.url).filter(Boolean);
+    const have = new Set();
+    for (let i = 0; i < urls.length; i += 100) {
+      const { data } = await sb.from("posts").select("source_url")
+        .eq("org", ORG).in("source_url", urls.slice(i, i + 100));
+      (data || []).forEach(d => have.add(d.source_url));
+    }
+
+    let okPost = 0, okAlb = 0, okPhoto = 0, failPhoto = 0, err = null;
+    let done = 0;
+    const total = posts.length + albums.length;
+    const tick = () => { done++; fill.style.width = Math.round(done / total * 100) + "%"; };
+
+    // ── 게시판 ──
+    const fresh = posts.filter(r => !have.has(r.url));
+    for (let i = 0; i < fresh.length; i += 20) {
+      const chunk = fresh.slice(i, i + 20).map(r => {
+        const t = (r.text || "").trim();
+        const first = (t.split("\n").find(x => x.trim()) || t).replace(/^\s*#+\s*/, "").slice(0, 58);
+        return {
+          author_name: "학생회 인스타그램", org: ORG, category: r.cat || "free",
+          title: (r.tag ? `[${r.tag}] ` : "") + (first || "인스타그램 글"),
+          content: t, visibility: "members", source: "instagram",
+          image_url: null, images: null,
+          source_url: r.url, created_at: r.time || null,
+        };
+      });
+      const ins = await sb.from("posts").insert(chunk);
+      if (ins.error) { err = ins.error; break; }
+      okPost += chunk.length;
+      chunk.forEach(tick);
+      out.textContent = `게시판 ${okPost}/${fresh.length}건…`;
+    }
+
+    // ── 사진첩 ──
+    if (!err) {
+      for (const r of albums) {
+        const when = (r.time || "").slice(0, 10) || new Date().toISOString().slice(0, 10);
+        const title = ((r.text || "").replace(/\s+/g, " ").trim().slice(0, 30)
+                       || "인스타그램") + " " + when;
+        const key = "custom:insta-" + (r.id || Math.random().toString(36).slice(2, 10));
+
+        const a1 = await sb.from("gallery_albums").upsert({
+          album_key: key, title, category: albSel.value, event_date: when, org: ORG,
+          created_by: user.id, updated_by: user.id,
+          owner_name: "", owner_admin: true,
+        }, { onConflict: "album_key" });
+        if (a1.error) { err = a1.error; break; }
+        okAlb++;
+
+        let sortNo = 0;
+        for (const src of (r.imgs || [])) {
+          let blob = null;
+          try {
+            const res = await fetch(src, { mode: "cors" });
+            if (res.ok) blob = await res.blob();
+          } catch (e) { /* 인스타그램이 막으면 여기로 옵니다 */ }
+          if (!blob) { failPhoto++; continue; }
+
+          const ext = (blob.type.split("/")[1] || "jpg").replace(/[^a-z0-9]/g, "") || "jpg";
+          const path = `${albSel.value}/${when}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+          const up = await sb.storage.from("gallery").upload(path, blob, { cacheControl: "3600" });
+          if (up.error) { failPhoto++; continue; }
+          const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
+          const ins = await sb.from("gallery_photos").insert({
+            category: albSel.value, taken_at: when, caption: null, org: ORG,
+            album_key: key, image_url: pub.publicUrl, storage_path: path,
+            sort: sortNo++, created_by: user.id,
+          });
+          if (ins.error) { failPhoto++; continue; }
+          okPhoto++;
+        }
+        tick();
+        out.textContent = `사진첩 ${okAlb}/${albums.length}개 · 사진 ${okPhoto}장…`;
+      }
+    }
+
+    btn.disabled = false;
+    if (err) {
+      out.className = "msg err";
+      out.textContent = "담다가 멈췄습니다: " + err.message;
+      return;
+    }
+    out.className = "msg ok";
+    out.textContent =
+      `게시판 ${okPost}건 · 사진첩 ${okAlb}개 · 사진 ${okPhoto}장을 담았습니다.` +
+      (have.size ? `\n이미 있던 ${have.size}건은 건너뛰었습니다.` : "") +
+      (failPhoto ? `\n\n사진 ${failPhoto}장은 인스타그램이 내려받기를 막아 담지 못했습니다.` +
+        `\n그 사진들은 인스타그램에서 저장하신 뒤, 갤러리 화면에서 끌어다 놓으시면 됩니다.` : "");
+  });
+}
+</script>
+
+<script type="module">
+  // 맨 위 얇은 줄의 로그인 자리 — 게시판·갤러리와 같은 모습으로
+  import { sb, currentUser, myProfile, noteVisit } from "/YB/auth/auth.js";
+  noteVisit();
+  const u = await currentUser();
+  if (u) {
+    const p = await myProfile();
+    const el = document.getElementById("authLinks");
+    el.innerHTML = "";
+    const mk = (href, text, gold) => {
+      const a = document.createElement("a");
+      a.href = href; a.textContent = text;
+      if (gold) { a.style.color = "#e8c876"; a.style.fontWeight = "600"; }
+      return a;
+    };
+    const st = document.createElement("span");
+    st.textContent = "[로그인중]";
+    st.style.color = "#7fc48a"; st.style.fontWeight = "700";
+    const out = mk("#", "로그아웃");
+    out.addEventListener("click", async (e) => {
+      e.preventDefault(); await sb.auth.signOut(); location.reload();
+    });
+    el.append(st, mk("/YB/auth/mypage.html", (p && p.name ? p.name + "님" : "내 정보")), out);
+    if (p && (p.approved || p.is_admin)) el.append(mk("/YB/stats.html", "사용통계"));
+    if (p && p.is_admin) {
+      el.append(mk("/YB/admin/members.html", "⚙ 회원관리", 1),
+                mk("/YB/admin/gallery.html", "⚙ 갤러리 관리", 1));
+    }
+  }
+</script>
+</body>
+</html>
