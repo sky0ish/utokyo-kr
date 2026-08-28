@@ -74,11 +74,12 @@ const NAV = {
         </div>
       </div>
       <div class="dd">
-        <a href="/YB/board.html?cat=club">참여마당</a>
+        <a href="/YB/board.html?cat=mentoring">참여마당</a>
         <div class="dd-menu">
-          <a href="/YB/board.html?cat=club">소모임</a>
-          <a href="/YB/board.html?cat=event">행사</a>
           <a href="/YB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
+          <a href="/YB/board.html?cat=event">행사</a>
+          <a href="/YB/board.html?cat=club">소모임</a>
+          <a href="/YB/board.html?cat=major">전공별모임</a>
           <a href="/YB/board.html?cat=suggest">동문회에 바란다</a>
         </div>
       </div>
