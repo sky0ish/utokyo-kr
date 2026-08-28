@@ -1,6 +1,7 @@
 // ─── 게시판 글보기 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/YB/auth/auth.js";
+import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js";
 import { applyNav } from "/YB/board/nav.js?v=10";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
@@ -196,10 +197,11 @@ ${plain}${plain.length >= 300 ? "…" : ""}
 ${url}`;
     const msg = document.getElementById("shMsg");
 
-    document.getElementById("shBand").addEventListener("click", () => {
-      window.open("https://band.us/plugin/share?body=" + encodeURIComponent(body)
-                  + "&route=" + encodeURIComponent(url),
-                  "bandShare", "width=500,height=640");
+    document.getElementById("shInsta").addEventListener("click", () => {
+      // 인스타그램은 글을 미리 채워 보낼 수 없어, 내용을 복사해 드립니다
+      navigator.clipboard && navigator.clipboard.writeText(body).catch(() => {});
+      msg.textContent = "글 내용을 복사했습니다. 인스타그램에서 붙여넣기(Ctrl+V) 하세요.";
+      window.open("https://www.instagram.com/", "instaShare", "noopener");
     });
     document.getElementById("shFb").addEventListener("click", () => {
       // 페이스북은 본문을 미리 채울 수 없어, 주소를 함께 복사해 드립니다
@@ -328,6 +330,34 @@ function linkify(s) {
         if (!confirm("이 글을 삭제할까요?")) return;
         const { error: e } = await sb.from("posts").delete().eq("id", p.id);
         if (e) alert("삭제 실패: " + e.message); else location.href = HOME + "/board.html";
+      });
+    }
+
+    // ─── 좋아요 ───
+    {
+      const bar = document.getElementById("share") || document.getElementById("actions");
+      const btn = document.createElement("button");
+      btn.className = "likebtn";
+      btn.type = "button";
+      let on = false, n = 0;
+      const paint = () => {
+        btn.innerHTML = heart(on) + "<span>좋아요</span>" +
+                        (n ? `<span class="n">${n}</span>` : "");
+        btn.classList.toggle("on", on);
+      };
+      paint();
+      if (bar) bar.appendChild(btn);          // 공유 줄 오른쪽 끝에
+      loadLikes("post", [p.id]).then(r => {
+        n = r.n[String(p.id)] || 0;
+        on = r.mine.has(String(p.id));
+        paint();
+      });
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        const r = await toggleLike("post", p.id, on);
+        btn.disabled = false;
+        if (!r) return;
+        on = r.on; n = r.n; paint();
       });
     }
 

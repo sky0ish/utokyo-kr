@@ -131,6 +131,16 @@
   @media (max-width:980px){ .agrid{grid-template-columns:repeat(2,1fr);} }
   @media (max-width:680px){ .agrid{grid-template-columns:repeat(2,1fr);gap:10px;} .ahead h1{font-size:20px;}
     .lb .nav{width:40px;height:40px;font-size:18px;} .lb .prev{left:8px;} .lb .next{right:8px;} }
+
+  /* 사진마다 좋아요 */
+  .ph .like{position:absolute;left:8px;bottom:8px;z-index:4;
+    display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+    border:none;border-radius:100px;background:rgba(20,24,34,.55);color:#fff;
+    font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;
+    backdrop-filter:blur(2px);transition:.15s;}
+  .ph .like:hover{background:rgba(20,24,34,.75);}
+  .ph .like.on{background:rgba(179,69,59,.85);}
+  .ph .like .n{font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
@@ -200,8 +210,9 @@
 </div>
 
 <script type="module">
-import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=162";
+import { CAT_NAME, loadGallery } from "./gallery-lib.js?v=163";
 import { sb, currentUser, myProfile, noteActivity } from "/YB/auth/auth.js";
+import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js";
 {
   const q = new URLSearchParams(location.search);
   const cat = q.get("cat") || "assembly";
@@ -236,6 +247,26 @@ import { sb, currentUser, myProfile, noteActivity } from "/YB/auth/auth.js";
   const esc = s => String(s == null ? "" : s)
     .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const grid = document.getElementById("agrid");
+
+  /** 사진마다 좋아요 */
+  function wireLikes() {
+    const btns = [...grid.querySelectorAll("button.like")];
+    if (!btns.length) return;
+    const paint = (b, on, n) => {
+      b.innerHTML = heart(on) + (n ? `<span class="n">${n}</span>` : "");
+      b.classList.toggle("on", on);
+    };
+    loadLikes("photo", btns.map(b => b.dataset.ref)).then(r => {
+      btns.forEach(b => paint(b, r.mine.has(b.dataset.ref), r.n[b.dataset.ref] || 0));
+    });
+    btns.forEach(b => b.addEventListener("click", async (e) => {
+      e.preventDefault(); e.stopPropagation();      // 사진이 크게 열리지 않도록
+      b.disabled = true;
+      const res = await toggleLike("photo", b.dataset.ref, b.classList.contains("on"));
+      b.disabled = false;
+      if (res) paint(b, res.on, res.n);
+    }));
+  }
   const draw = () => {
     grid.innerHTML = album.photos.length
       ? album.photos.map((p, i) =>
@@ -247,8 +278,10 @@ import { sb, currentUser, myProfile, noteActivity } from "/YB/auth/auth.js";
            ${p.ownerAdmin ? '<span class="own">관리자</span>'
           : (p.ownerName ? `<span class="own">공유자(${esc(p.ownerName)})</span>` : "")}
        <span class="dt">${(p.date || "").replace(/-/g, ".")}</span>
+           ${p.id ? `<button class="like" type="button" data-ref="${p.id}">${heart(false)}<span class="n"></span></button>` : ""}
          </div>`).join("")
       : '<div class="aempty" style="grid-column:1/-1;">아직 사진이 없습니다.<br>위에서 사진을 올려주세요.</div>';
+    wireLikes();
   };
   draw();
 
