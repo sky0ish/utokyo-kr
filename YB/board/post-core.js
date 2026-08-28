@@ -157,9 +157,22 @@ export async function initPost(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
 
 
+  // 게시판 이름 — board-core.js 의 CAT_YB 와 같게 맞춰 둡니다 (한쪽만 어긋나지 않도록)
   const CAT = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보",
-                parttime:"아르바이트", market:"벼룩시장", club:"소모임",
-                history:"활동 이력", mentoring:"멘토멘티" };
+                parttime:"아르바이트", market:"벼룩시장",
+                club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력",
+                mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다" };
+
+  // ── 큰 제목 : 지금 보고 있는 글이 속한 게시판 이름으로 ──
+  // 글을 열면 "게시판"으로만 나와서 어디에 있는지 알 수 없던 것을 고칩니다
+  const baseTitle = ORG === "YB" ? " | 도쿄대학 한국인학생회" : " | 재한 도쿄대학 총동문회";
+  function setBoardTitle(c) {
+    const n = CAT[c] || "";
+    const name = !n ? "게시판" : (/게시판$/.test(n) ? n : n + " 게시판");
+    const h1 = document.querySelector(".banner h1");
+    if (h1) h1.textContent = name;
+    document.title = name + baseTitle;
+  }
   const id = new URLSearchParams(location.search).get("id");
   const box = document.getElementById("postBox");
   const user = await currentUser();
@@ -243,6 +256,7 @@ function linkify(s) {
   // 학생회 글이면 화면을 학생회 것으로 (초록 화면에 총동문회 메뉴가 남지 않도록)
   applyNav(ORG, ORG === "YB" ? "게시글 | 도쿄대학 한국인학생회"
                                : "게시글 | 재한 도쿄대학 총동문회");
+  if (p && p.category) setBoardTitle(p.category);   // applyNav 다음에 불러야 제목이 덮이지 않습니다
   // 제 쪽 회원만 — 다른 단체 회원께는 누구나 보는 글만 보여드립니다
   const meP = user ? await myProfile() : null;
   const side = (meP && meP.member_type) === "YB" ? "YB" : "OB";
