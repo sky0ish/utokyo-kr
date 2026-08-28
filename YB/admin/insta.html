@@ -166,7 +166,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=174";
+import { CATS } from "/YB/gallery-lib.js?v=175";
 
 const ORG = "YB";
 
@@ -359,59 +359,87 @@ async function start() {
     const bar = document.getElementById("bar");
     const fill = bar.querySelector("i");
 
-    const posts  = rows.filter(r => r.kind === "post");
-    const albums = rows.filter(r => r.kind === "album");
-    if (!posts.length && !albums.length) {
-      out.className = "msg err"; out.textContent = "담을 것을 골라주세요."; return;
-    }
-    if (!confirm(`게시판 ${posts.length}건 · 사진첩 ${albums.length}건을 담습니다. 계속할까요?`)) return;
+    const work = rows.filter(r => r.kind && r.kind !== "skip");
+    if (!work.length) { out.className = "msg err"; out.textContent = "담을 것을 골라주세요."; return; }
+
+    const nPost = work.filter(r => r.kind === "post" || r.kind === "both").length;
+    const nAlb  = work.filter(r => r.kind === "album" || r.kind === "both").length;
+    if (!confirm(`게시판 ${nPost}건 · 사진첩 ${nAlb}개를 담습니다. 계속할까요?`)) return;
 
     btn.disabled = true; bar.classList.add("on");
     out.className = "msg"; out.textContent = "이미 담은 것이 있는지 살펴보는 중…";
 
-    // 같은 글을 두 번 담지 않도록
-    const urls = rows.map(r => r.url).filter(Boolean);
+    // 같은 글을 두 번 담지 않도록 (사진첩은 겹쳐 담아도 됩니다)
+    const links = work.map(r => r.url).filter(Boolean);
     const have = new Set();
-    for (let i = 0; i < urls.length; i += 100) {
+    for (let i = 0; i < links.length; i += 100) {
       const { data } = await sb.from("posts").select("source_url")
-        .eq("org", ORG).in("source_url", urls.slice(i, i + 100));
+        .eq("org", ORG).in("source_url", links.slice(i, i + 100));
       (data || []).forEach(d => have.add(d.source_url));
     }
 
-    let okPost = 0, okAlb = 0, okPhoto = 0, failPhoto = 0, err = null;
+    let okPost = 0, okAlb = 0, okPhoto = 0, failPhoto = 0, skipPost = 0, err = null;
     let done = 0;
-    const total = posts.length + albums.length;
-    const tick = () => { done++; fill.style.width = Math.round(done / total * 100) + "%"; };
+    const tick = () => { done++; fill.style.width = Math.round(done / work.length * 100) + "%"; };
 
-    // ── 게시판 ──
-    const fresh = posts.filter(r => !have.has(r.url));
-    for (let i = 0; i < fresh.length; i += 20) {
-      const chunk = fresh.slice(i, i + 20).map(r => {
-        const t = (r.text || "").trim();
-        const first = (t.split("\n").find(x => x.trim()) || t).replace(/^\s*#+\s*/, "").slice(0, 58);
-        return {
-          author_name: "학생회 인스타그램", org: ORG, category: r.cat || "free",
-          title: (r.tag ? `[${r.tag}] ` : "") + (first || "인스타그램 글"),
-          content: t, visibility: "members", source: "instagram",
-          image_url: null, images: null,
-          source_url: r.url, created_at: when(r.time),
-        };
-      });
-      const ins = await sb.from("posts").insert(chunk);
-      if (ins.error) { err = ins.error; break; }
-      okPost += chunk.length;
-      chunk.forEach(tick);
-      out.textContent = `게시판 ${okPost}/${fresh.length}건…`;
+    /** 사진을 저장소에 올리고 주소를 돌려줍니다 (한 번만 올립니다) */
+    async function putPhotos(r, day) {
+      const outUrls = [];
+      for (const src of (r.imgs || [])) {
+        let blob = null;
+        try {
+          const res = await fetch(src);           // 담아 온 사진(data:)이면 바로 됩니다
+          if (res.ok) blob = await res.blob();
+        } catch (e) { /* 주소만 있고 막힌 경우 */ }
+        if (!blob) { failPhoto++; continue; }
+
+        const ext = ((blob.type || "").split("/")[1] || "jpg").replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${albSel.value}/${day}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+        const up = await sb.storage.from("gallery").upload(path, blob, { cacheControl: "3600" });
+        if (up.error) { failPhoto++; continue; }
+        const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
+        outUrls.push({ url: pub.publicUrl, path });
+      }
+      return outUrls;
     }
 
-    // ── 사진첩 ──
-    if (!err) {
-      for (const r of albums) {
-        const day = when(r.time).slice(0, 10);
-        const title = ((r.text || "").replace(/\s+/g, " ").trim().slice(0, 30)
-                       || "인스타그램") + " " + day;
-        const key = "custom:insta-" + (r.id || Math.random().toString(36).slice(2, 10));
+    for (const r of work) {
+      const day = when(r.time).slice(0, 10);
+      const toPost  = (r.kind === "post"  || r.kind === "both") && !!(r.text || "").trim();
+      const toAlbum = (r.kind === "album" || r.kind === "both") && (r.imgs || []).length > 0;
 
+      // ── 사진 먼저 (게시판·사진첩이 같은 사진을 함께 씁니다) ──
+      let pics = [];
+      if ((r.imgs || []).length && (toAlbum || toPost)) {
+        out.textContent = `사진 올리는 중… (${done + 1}/${work.length})`;
+        pics = await putPhotos(r, day);
+        okPhoto += pics.length;
+      }
+
+      // ── 게시판 ──
+      if (toPost && !have.has(r.url)) {
+        const t = (r.text || "").trim();
+        const first = (t.split("\n").map(x => x.trim()).find(x => x.replace(/^[\[【][^\]】]*[\]】]/, "").trim())
+                       || t).replace(/^\s*#+\s*/, "").slice(0, 58);
+        const ins = await sb.from("posts").insert({
+          author_name: "학생회 인스타그램", org: ORG, category: r.cat || "free",
+          title: (r.tag ? `[${r.tag}] ` : "") + (first || t.slice(0, 40) || "인스타그램 글"),
+          content: t, visibility: "members", source: "instagram",
+          image_url: pics.length ? pics[0].url : null,
+          images: pics.length ? pics.map(x => x.url) : null,
+          source_url: r.url, created_at: when(r.time),
+        });
+        if (ins.error) { err = ins.error; break; }
+        okPost++;
+      } else if (toPost) {
+        skipPost++;
+      }
+
+      // ── 사진첩 ──
+      if (toAlbum && pics.length) {
+        const title = ((r.text || "").replace(/\s+/g, " ").replace(/^[\[【][^\]】]*[\]】]\s*/, "")
+                       .trim().slice(0, 30) || "인스타그램") + " " + day;
+        const key = "custom:insta-" + (r.id || Math.random().toString(36).slice(2, 10));
         const a1 = await sb.from("gallery_albums").upsert({
           album_key: key, title, category: albSel.value, event_date: day, org: ORG,
           created_by: user.id, updated_by: user.id,
@@ -421,30 +449,18 @@ async function start() {
         okAlb++;
 
         let sortNo = 0;
-        for (const src of (r.imgs || [])) {
-          let blob = null;
-          try {
-            const res = await fetch(src, { mode: "cors" });
-            if (res.ok) blob = await res.blob();
-          } catch (e) { /* 인스타그램이 막으면 여기로 옵니다 */ }
-          if (!blob) { failPhoto++; continue; }
-
-          const ext = (blob.type.split("/")[1] || "jpg").replace(/[^a-z0-9]/g, "") || "jpg";
-          const path = `${albSel.value}/${day}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
-          const up = await sb.storage.from("gallery").upload(path, blob, { cacheControl: "3600" });
-          if (up.error) { failPhoto++; continue; }
-          const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
+        for (const pic of pics) {
           const ins = await sb.from("gallery_photos").insert({
             category: albSel.value, taken_at: day, caption: null, org: ORG,
-            album_key: key, image_url: pub.publicUrl, storage_path: path,
+            album_key: key, image_url: pic.url, storage_path: pic.path,
             sort: sortNo++, created_by: user.id,
           });
-          if (ins.error) { failPhoto++; continue; }
-          okPhoto++;
+          if (ins.error) failPhoto++;
         }
-        tick();
-        out.textContent = `사진첩 ${okAlb}/${albums.length}개 · 사진 ${okPhoto}장…`;
       }
+
+      tick();
+      out.textContent = `게시판 ${okPost}건 · 사진첩 ${okAlb}개 · 사진 ${okPhoto}장…`;
     }
 
     btn.disabled = false;
@@ -456,9 +472,8 @@ async function start() {
     out.className = "msg ok";
     out.textContent =
       `게시판 ${okPost}건 · 사진첩 ${okAlb}개 · 사진 ${okPhoto}장을 담았습니다.` +
-      (have.size ? `\n이미 있던 ${have.size}건은 건너뛰었습니다.` : "") +
-      (failPhoto ? `\n\n사진 ${failPhoto}장은 인스타그램이 내려받기를 막아 담지 못했습니다.` +
-        `\n그 사진들은 인스타그램에서 저장하신 뒤, 갤러리 화면에서 끌어다 놓으시면 됩니다.` : "");
+      (skipPost ? `\n이미 있던 글 ${skipPost}건은 건너뛰었습니다.` : "") +
+      (failPhoto ? `\n사진 ${failPhoto}장은 담지 못했습니다 (인스타그램이 막았거나 저장소 오류).` : "");
   });
 }
 </script>
