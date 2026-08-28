@@ -396,8 +396,10 @@
 
   /* ── 홈페이지 이용안내 ── */
   .usage ol{margin:0;padding:0;list-style:none;counter-reset:u;display:flex;flex-direction:column;gap:9px;}
-  .usage ol li{counter-increment:u;display:grid;grid-template-columns:26px 1fr;gap:12px;
+  .usage ol li{counter-increment:u;display:grid;grid-template-columns:26px minmax(0,1fr);gap:12px;
+    align-items:baseline;
     font-size:14.5px;line-height:1.7;color:#41504a;word-break:keep-all;}
+  .usage ol li > span{min-width:0;}
   .usage ol li::before{content:counter(u);width:26px;height:26px;border-radius:50%;
     background:#e2f0e5;color:#1e5230;font-size:12.5px;font-weight:700;
     display:flex;align-items:center;justify-content:center;}
@@ -1134,12 +1136,11 @@
       <div class="cbox wide usage" id="usage">
         <h3>홈페이지 이용안내</h3>
         <p style="margin-bottom:14px;">이 홈페이지는 <b>실명 회원등록</b>을 기본으로 합니다.
-          가입하지 않으시면 보실 수 있는 정보가 크게 제한됩니다. 등급은 네 단계입니다.</p>
+          가입하지 않으시면 보실 수 있는 정보가 크게 제한됩니다. 등급은 세 단계입니다.</p>
         <ol>
-          <li><b>준회원</b> — 기업 관계자, 유학 준비생</li>
-          <li><b>졸업생</b> — 도쿄대학에서 활동하셨던 연구생 · 연구원 · 교환교수와 그 가족</li>
-          <li><b>정회원</b> — 연구생, 학부 · 석사 · 박사과정, 졸업생, 연구원, 교환교수와 그 가족</li>
-          <li><b>운영진</b> — 현 도쿄대학 한국인학생회 임원</li>
+          <li><span><b>준회원</b> — 기업 관계자, 수험생, 기타</span></li>
+          <li><span><b>정회원</b> — 연구생, 학부생, 대학원생, 교환학생, 교수 및 그 가족</span></li>
+          <li><span><b>운영진</b> — 학생회 및 동문회 임원진</span></li>
         </ol>
       </div>
       <div class="cbox wide" id="rules">
