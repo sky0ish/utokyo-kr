@@ -161,7 +161,8 @@ export async function initPost(ORG) {
   const CAT = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보",
                 parttime:"아르바이트", market:"벼룩시장",
                 club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력",
-                mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다" };
+                mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다",
+                exam:"수험생 게시판" };
 
   // ── 큰 제목 : 지금 보고 있는 글이 속한 게시판 이름으로 ──
   // 글을 열면 "게시판"으로만 나와서 어디에 있는지 알 수 없던 것을 고칩니다
@@ -259,8 +260,13 @@ function linkify(s) {
   if (p && p.category) setBoardTitle(p.category);   // applyNav 다음에 불러야 제목이 덮이지 않습니다
   // 제 쪽 회원만 — 다른 단체 회원께는 누구나 보는 글만 보여드립니다
   const meP = user ? await myProfile() : null;
-  const side = (meP && meP.member_type) === "YB" ? "YB" : "OB";
-  const otherOrg = !!(meP && !meP.is_admin && side !== ORG);
+  const mtype = (meP && meP.member_type) || "";
+  const isGuest = mtype === "GUEST";                 // 도쿄대 출신이 아닌 준회원
+  const GUEST_CATS = ["notice", "exam"];             // 준회원께 열어드리는 곳
+  const side = mtype === "YB" ? "YB" : "OB";
+  // 준회원은 공지사항·수험생 게시판만, 그 밖의 분은 제 단체 글만
+  const otherOrg = !!(meP && !meP.is_admin &&
+    (isGuest ? !GUEST_CATS.includes((p && p.category) || "") : side !== ORG));
   if (p && otherOrg && p.visibility !== "public") {
     box.innerHTML = '<div class="empty"><b>도쿄대학 한국인학생회</b> 회원 전용 글입니다.<br>' +
       '재한 도쿄대학 총동문회 회원께는 열려 있지 않습니다.<br><br>' +

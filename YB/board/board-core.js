@@ -17,9 +17,9 @@ export async function initBoard(ORG) {
                    suggest:"동문회에 바란다" };
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                    club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력", mentoring:"멘토멘티(OB/YB)",
-                   suggest:"학생회에 바란다" };
+                   suggest:"학생회에 바란다", exam:"수험생 게시판" };
   const TABS_OB = ["notice","free","promo","condolence","research","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
-  const TABS_YB = ["notice","free","qna","jobs","parttime","market"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
+  const TABS_YB = ["notice","free","qna","jobs","parttime","market","exam"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
   // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
   const SHARED = ["mentoring"];
@@ -175,16 +175,22 @@ export async function initBoard(ORG) {
   const OTHER_HOME = "/OB";
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
-  const PUBLIC_CATS = ["notice"];   // 양쪽 모두 공지사항만 누구나 볼 수 있습니다
+  const PUBLIC_CATS = ["notice"];             // 로그인 없이 볼 수 있는 곳
+  const GUEST_CATS  = ["notice", "exam"];     // 비동문 준회원께도 열어드리는 곳
+  let openCats = PUBLIC_CATS;                 // 지금 보시는 분께 열려 있는 곳
   let memberOnlyBlocked = null;
   let otherOrg = false;              // 다른 쪽 단체 회원이신가
+  let isGuest = false;               // 비동문 준회원이신가
   let isAdmin = false;               // 운영진이면 글을 지울 수 있습니다
   const user = await currentUser();
   if (user) {
     const p = await myProfile();
     // 제 쪽 사람만 회원 전용 게시판을 봅니다 (운영진은 양쪽 모두)
-    const side = (p && p.member_type) === "YB" ? "YB" : "OB";
-    otherOrg = !!(p && !p.is_admin && side !== ORG);
+    const mtype = (p && p.member_type) || "";
+    isGuest = mtype === "GUEST";                // 도쿄대 출신이 아닌 준회원
+    const side = mtype === "YB" ? "YB" : "OB";
+    otherOrg = !!(p && !p.is_admin && (isGuest || side !== ORG));
+    if (isGuest) openCats = GUEST_CATS;         // 준회원은 공지사항과 수험생 게시판까지
     isAdmin = !!(p && p.is_admin);
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
@@ -219,7 +225,10 @@ export async function initBoard(ORG) {
     const ln = document.getElementById("loginNotice");
     ln.className = "on";
     document.getElementById("catTabs").appendChild(ln);
-    ln.innerHTML = otherOrg
+    ln.innerHTML = isGuest
+      ? `<b>비동문 준회원이십니다.</b> 공지사항과 수험생 게시판을 보실 수 있습니다. ` +
+        `그 밖의 게시판은 ${HOME_NAME} 회원 전용입니다.`
+      : otherOrg
       ? `<b>${HOME_NAME} 회원 전용 게시판입니다.</b> ` +
         `${OTHER_NAME} 회원께는 누구나 보실 수 있는 게시판만 보여드립니다.`
       : `<b>회원으로 가입하셔야 나머지 게시판 정보를 보실 수 있습니다.</b> ` +
@@ -227,10 +236,10 @@ export async function initBoard(ORG) {
     // 회원 전용 탭과 「전체」 탭 숨기기
     document.querySelectorAll("#catTabs a[data-cat]").forEach(a => {
       const c = a.dataset.cat || "";
-      if (!c || !PUBLIC_CATS.includes(c)) a.style.display = "none";
+      if (!c || !openCats.includes(c)) a.style.display = "none";
     });
-    if (!cat) cat = PUBLIC_CATS[0];            // 비회원은 「전체」 대신 공개 게시판부터
-    if (cat && !PUBLIC_CATS.includes(cat)) {   // 회원 전용 게시판으로 바로 들어온 경우
+    if (!cat) cat = openCats[0];               // 비회원은 「전체」 대신 공개 게시판부터
+    if (cat && !openCats.includes(cat)) {      // 회원 전용 게시판으로 바로 들어온 경우
       memberOnlyBlocked = CAT[cat] || cat;
     }
   }

@@ -46,6 +46,7 @@
       <option value="GUEST">비동문 — 준회원 (도쿄대학 출신이 아닌 분)</option>
     </select>
 
+    <div id="schoolBox">
     <label>학부 / 연구과 *</label>
     <select id="faculty" required>
       <option value="">선택하세요</option>
@@ -92,6 +93,26 @@
 
     <label>졸업(예정)연도</label>
     <input type="text" id="grad_year" placeholder="예: 박2012">
+    </div>
+
+    <div id="guestBox" style="display:none;">
+      <label>어떤 자격으로 오셨나요? *</label>
+      <select id="guest_type">
+        <option value="">선택하세요</option>
+        <option>기업</option>
+        <option>수험생</option>
+        <option>기타 (학부모님 등)</option>
+      </select>
+
+      <label>소속 기관</label>
+      <input type="text" id="org_name" placeholder="예: ○○주식회사 / ○○고등학교">
+      <div class="hint">기업이시면 회사명을, 수험생이시면 재학 중인 학교를 적어주세요.
+        따로 없으시면 비워두셔도 됩니다.</div>
+
+      <label>기타</label>
+      <input type="text" id="guest_note" placeholder="예: 2027년 4월 학부 입학 준비 중입니다">
+      <div class="hint">문의하실 내용이나 알려주고 싶으신 점을 자유롭게 적어주세요.</div>
+    </div>
 
     <div id="jobBox">
       <label style="margin-bottom:2px;">현재 직장</label>
@@ -144,17 +165,32 @@ import { sb, showMsg } from "./auth.js";
 
 const form = document.getElementById("signupForm");
 
-// 재학생(YB)에게는 직장·직급을 묻지 않고, 학생증 안내는 재학생에게만 보여준다
-const jobBox = document.getElementById("jobBox");
-const idcardBox = document.getElementById("idcardBox");
-const typeSel = document.getElementById("member_type");
+// 구분에 따라 묻는 것이 달라집니다
+//   재학생(YB) — 학부·전공·졸업연도, 학생증 안내 (직장은 묻지 않음)
+//   졸업생(OB) — 학부·전공·졸업연도, 현재 직장
+//   비동문(GUEST) — 도쿄대 소속이 아니므로 학교 관련 칸 대신 오신 자격·소속 기관
+const $ = (id) => document.getElementById(id);
+const jobBox = $("jobBox"), idcardBox = $("idcardBox");
+const schoolBox = $("schoolBox"), guestBox = $("guestBox");
+const typeSel = $("member_type");
+
 function toggleByType() {
-  const yb = typeSel.value === "YB";
-  jobBox.style.display = yb ? "none" : "";
-  if (yb) { document.getElementById("company").value = ""; document.getElementById("position").value = ""; }
-  // 졸업생·비동문은 학생증이 없으므로 안내를 감춥니다
-  const grad = typeSel.value === "OB" || typeSel.value === "GUEST";
-  idcardBox.style.display = grad ? "none" : "";
+  const t = typeSel.value;
+  const yb = t === "YB", guest = t === "GUEST";
+
+  schoolBox.style.display = guest ? "none" : "";
+  guestBox.style.display  = guest ? "" : "none";
+  jobBox.style.display    = (yb || guest) ? "none" : "";
+  idcardBox.style.display = (t === "OB" || guest) ? "none" : "";
+
+  // 감춘 칸은 「필수」도 함께 풀어야 가입 단추가 먹습니다
+  $("faculty").required = $("major").required = !guest;
+  $("guest_type").required = guest;
+
+  // 감춘 칸에 남은 값은 지워 둡니다
+  if (guest) { $("faculty").value = ""; $("major").value = ""; $("grad_year").value = ""; }
+  else { $("guest_type").value = ""; $("org_name").value = ""; $("guest_note").value = ""; }
+  if (yb || guest) { $("company").value = ""; $("position").value = ""; }
 }
 typeSel.addEventListener("change", toggleByType);
 toggleByType();
@@ -188,6 +224,9 @@ form.addEventListener("submit", async (e) => {
         member_type: document.getElementById("member_type").value,
         faculty: document.getElementById("faculty").value.trim(),
         major: document.getElementById("major").value.trim(),
+        guest_type: document.getElementById("guest_type").value.trim(),
+        org_name: document.getElementById("org_name").value.trim(),
+        guest_note: document.getElementById("guest_note").value.trim(),
         grad_year: document.getElementById("grad_year").value.trim(),
         company: document.getElementById("company").value.trim(),
         job_title: document.getElementById("position").value.trim(),

@@ -60,7 +60,8 @@ export async function initWrite(ORG) {
     const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
     const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                       club:"소모임", major:"전공별모임", event:"행사",
-                      mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다" };
+                      mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다",
+                      exam:"수험생 게시판" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
@@ -88,7 +89,8 @@ export async function initWrite(ORG) {
       market: ["삽니다", "팝니다", "나눔", "구합니다", "기타"],
       mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
                   "만남의 광장", "유학", "기타"],
-      suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"]
+      suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"],
+      exam: ["입시", "유학준비", "학교생활", "기타"]
     };
     const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
 
