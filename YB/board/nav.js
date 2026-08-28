@@ -163,13 +163,9 @@ export function applyNav(org, title) {
   const pills = document.querySelector(".mpills");
   if (pills) pills.innerHTML = PILLS[key];
 
-  // 상단 얇은 줄의 마지막 링크를 그 단체 홈으로
-  const links = document.querySelectorAll(".topbar .links:first-child a");
-  const last = links[links.length - 1];
-  if (last) {
-    last.textContent = LOGO[key].name;
-    last.setAttribute("href", LOGO[key].href);
-  }
+  // (예전에는 여기서 윗줄 마지막 링크를 그 단체 홈으로 바꿔치기했습니다.
+  //  그 탓에 「한국인학생회(기존)」 자리가 학생회 홈으로 바뀌어, 옛 홈페이지로 갈 수 없고
+  //  같은 곳으로 가는 단추가 둘 생겼습니다. 이제 각 화면이 윗줄 네 개를 그대로 적습니다.)
 }
 
 /** 상단 얇은 줄의 로그인 자리를 지금 상태에 맞게 그린다.
