@@ -2,7 +2,8 @@
 -- 학생회(YB) 「참여마당」 — 행사 게시판 만들기
 --
 --   참여마당 = 소모임 · 행사 · 멘토멘티(OB/YB) · 동문회에 바란다
---   이 가운데 「행사(event)」가 새로 생깁니다.
+--   참여마당 = 소모임 · 전공별모임 · 행사 · 멘토멘티(OB/YB) · 동문회에 바란다
+--   이 가운데 「행사(event)」와 「전공별모임(major)」이 새로 생깁니다.
 --
 --   실행 : Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 --   ※ 여러 번 실행해도 안전합니다.
@@ -16,7 +17,7 @@ alter table public.posts add constraint posts_category_check
     'notice','free','club','mentoring','promo','condolence','forum','seminar',
     'jobs','faculty','news','market','research',
     -- 학생회(YB)
-    'qna','parttime','history','event',
+    'qna','parttime','history','event','major',
     -- 양쪽 공통
     'suggest'
   ));
