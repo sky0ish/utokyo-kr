@@ -200,6 +200,16 @@ if (!user) {
   drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("on"); if (e.dataTransfer.files[0]) read(e.dataTransfer.files[0]); });
   fileInput.addEventListener("change", () => { if (fileInput.files[0]) read(fileInput.files[0]); });
 
+  /** 인스타그램처럼 2026-08-27T…, 2026.08.27, 빈칸 등 여러 모양을 받아냅니다 */
+  function isoTime(t) {
+    const s = String(t || "").trim();
+    if (s) {
+      const d = new Date(s.replace(/\./g, "-"));
+      if (!isNaN(d.getTime())) return d.toISOString();
+    }
+    return new Date().toISOString();     // 알 수 없으면 오늘로
+  }
+
   function parseBandTime(t) {
     const m = (t || "").match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일\s*(오전|오후)?\s*(\d{1,2}):(\d{2})/);
     if (!m) return null;
@@ -275,7 +285,7 @@ if (!user) {
         } else {
           author = (a.author || "").replace(/\s+/g, " ").trim() || "동문";
           text = (a.text || "").replace(/\.\.\.더보기/g, "").trim();
-          when = parseBandTime(a.time);
+          when = parseBandTime(a.time) || isoTime(a.time);
         }
         if (!text || text.length < 20) return null;
         const [cat, tag] = classify(text);
@@ -303,10 +313,10 @@ if (!user) {
           <tr><td>넣을 게시판</td><td><b>${rows[0] ? (rows[0].org === "YB" ? "도쿄대학 한국인학생회 (YB)" : "재한 도쿄대학 총동문회 (OB)") : "-"}</b></td></tr>
           <tr><td>수집 파일</td><td>${f.name}</td></tr>
           <tr><td>읽은 글</td><td><b>${arr.length}건</b> → 등록 대상 <b>${rows.length}건</b> (짧은 글 제외)</td></tr>
-          <tr><td>출처</td><td>${rows[0] ? (rows[0].source === "band" ? "네이버 밴드" : "페이스북") : "-"}</td></tr>
+          <tr><td>출처</td><td>${rows[0] ? ({ band:"네이버 밴드", facebook:"페이스북", instagram:"인스타그램" }[rows[0].source] || rows[0].source) : "-"}</td></tr>
           <tr><td>가장 최근</td><td>${rows[0] ? (rows[0].created_at || "").slice(0,10) : "-"}</td></tr>
         </table>
-        <div class="warn">밴드/페이스북 사진은 로그인해야 열리는 주소라 이 방식으로는 <b>글 내용만</b> 등록됩니다. 사진은 밴드 API 승인 후 자동으로 채워집니다.</div>`;
+        <div class="warn">이 화면은 <b>글만</b> 게시판에 담습니다 (사진은 로그인해야 열리는 주소라 담기지 않습니다).<br>인스타그램 글을 <b>게시판과 사진첩 양쪽</b>에 담으시려면 <a href="insta.html" style="color:#b3453b;text-decoration:underline;font-weight:700;">Instagram 가져오기</a> 화면을 쓰세요.</div>`;
       goBtn.disabled = rows.length === 0;
     };
     r.readAsText(f, "utf-8");

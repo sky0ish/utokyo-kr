@@ -166,9 +166,19 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=169";
+import { CATS } from "/YB/gallery-lib.js?v=170";
 
 const ORG = "YB";
+
+/** 인스타그램은 날짜가 비어 오기도 합니다 — 알 수 없으면 오늘로 */
+function when(t) {
+  const x = String(t || "").trim();
+  if (x) {
+    const d = new Date(x.replace(/\./g, "-"));
+    if (!isNaN(d.getTime())) return d.toISOString();
+  }
+  return new Date().toISOString();
+}
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
   c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -370,7 +380,7 @@ async function start() {
           title: (r.tag ? `[${r.tag}] ` : "") + (first || "인스타그램 글"),
           content: t, visibility: "members", source: "instagram",
           image_url: null, images: null,
-          source_url: r.url, created_at: r.time || null,
+          source_url: r.url, created_at: when(r.time),
         };
       });
       const ins = await sb.from("posts").insert(chunk);
@@ -383,13 +393,13 @@ async function start() {
     // ── 사진첩 ──
     if (!err) {
       for (const r of albums) {
-        const when = (r.time || "").slice(0, 10) || new Date().toISOString().slice(0, 10);
+        const day = when(r.time).slice(0, 10);
         const title = ((r.text || "").replace(/\s+/g, " ").trim().slice(0, 30)
-                       || "인스타그램") + " " + when;
+                       || "인스타그램") + " " + day;
         const key = "custom:insta-" + (r.id || Math.random().toString(36).slice(2, 10));
 
         const a1 = await sb.from("gallery_albums").upsert({
-          album_key: key, title, category: albSel.value, event_date: when, org: ORG,
+          album_key: key, title, category: albSel.value, event_date: day, org: ORG,
           created_by: user.id, updated_by: user.id,
           owner_name: "", owner_admin: true,
         }, { onConflict: "album_key" });
@@ -406,12 +416,12 @@ async function start() {
           if (!blob) { failPhoto++; continue; }
 
           const ext = (blob.type.split("/")[1] || "jpg").replace(/[^a-z0-9]/g, "") || "jpg";
-          const path = `${albSel.value}/${when}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
+          const path = `${albSel.value}/${day}_${Math.random().toString(36).slice(2, 10)}.${ext}`;
           const up = await sb.storage.from("gallery").upload(path, blob, { cacheControl: "3600" });
           if (up.error) { failPhoto++; continue; }
           const { data: pub } = sb.storage.from("gallery").getPublicUrl(path);
           const ins = await sb.from("gallery_photos").insert({
-            category: albSel.value, taken_at: when, caption: null, org: ORG,
+            category: albSel.value, taken_at: day, caption: null, org: ORG,
             album_key: key, image_url: pub.publicUrl, storage_path: path,
             sort: sortNo++, created_by: user.id,
           });
