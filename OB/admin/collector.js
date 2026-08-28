@@ -56,54 +56,88 @@
 
 
   // ── 인스타그램 ───────────────────────────────────────────
-  //   프로필·피드 화면에서 글 주소(/p/…, /reel/…)와 사진을 모읍니다.
-  //   글보기 화면(한 글만 열었을 때)이면 본문까지 함께 담습니다.
-  function igCaption() {
-    var h = document.querySelector("article h1");
-    if (h) return text(h);
-    var m = document.querySelector('article [data-testid="post-comment-root"] span');
-    return m ? text(m) : "";
+  //   화면을 훑는 대신, 인스타그램이 제 화면을 그릴 때 쓰는 창구에서
+  //   글 하나하나의 본문·사진·날짜를 그대로 받아옵니다.
+  var IG_APP_ID = "936619743392459";
+
+  function igGet(url) {
+    return fetch(url, {
+      credentials: "include",
+      headers: { "x-ig-app-id": IG_APP_ID, "x-requested-with": "XMLHttpRequest" }
+    }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
   }
 
-  function harvestInsta() {
-    var vh = innerHeight;
-    var here = (location.pathname.match(/\/(?:p|reel)\/([\w-]+)/) || [])[1];
-    var cap = here ? igCaption() : "";
+  /** 사진을 그 자리에서 내려받아 글 안에 담습니다 (긴 변 1600px 로 줄여서) */
+  function igPack(url) {
+    return fetch(url, { mode: "cors" })
+      .then(function (r) { return r.ok ? r.blob() : null; })
+      .then(function (b) {
+        if (!b) return url;
+        return createImageBitmap(b).then(function (im) {
+          var s = Math.min(1, 1600 / Math.max(im.width, im.height));
+          var c = document.createElement("canvas");
+          c.width = Math.round(im.width * s); c.height = Math.round(im.height * s);
+          c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+          return c.toDataURL("image/jpeg", 0.85);
+        });
+      })
+      .catch(function () { return url; });     // 막히면 주소만이라도
+  }
 
-    [].forEach.call(document.querySelectorAll('a[href*="/p/"], a[href*="/reel/"]'), function (a) {
-      var r = a.getBoundingClientRect();
-      if (r.bottom < -1200 || r.top > vh + 1200) return;
-      var id = ((a.getAttribute("href") || "").match(/\/(?:p|reel)\/([\w-]+)/) || [])[1];
-      if (!id) return;
-      var img = a.querySelector("img");
-      var prev = data[id] || {};
-      var body = (img && (img.getAttribute("alt") || "")) || "";
-      data[id] = {
-        id: id, site: "instagram",
-        author: (location.pathname.split("/")[1] || "").replace(/^@/, "") || prev.author || "",
-        time: prev.time || "",
-        text: body.length > (prev.text || "").length ? body : (prev.text || ""),
-        imgs: uniq((prev.imgs || []).concat(img && img.src ? [img.src.split("?")[0]] : [])),
-        url: "https://www.instagram.com/p/" + id + "/"
-      };
-    });
+  function igPickImgs(item) {
+    var out = [];
+    var one = function (m) {
+      var v = m && m.image_versions2 && m.image_versions2.candidates;
+      if (v && v.length) out.push(v[0].url);
+    };
+    if (item.carousel_media && item.carousel_media.length) item.carousel_media.forEach(one);
+    else one(item);
+    return out.slice(0, 6);                    // 한 글에 여섯 장까지
+  }
 
-    // 한 글만 열어 두셨다면 그 글의 본문·사진을 더 담습니다
-    if (here) {
-      var prev = data[here] || {};
-      var imgs = [].filter.call(document.querySelectorAll("article img"), function (i) {
-        return (i.naturalWidth || i.width || 0) >= 240;
-      }).map(function (i) { return i.src.split("?")[0]; });
-      var t = document.querySelector("article time");
-      data[here] = {
-        id: here, site: "instagram",
-        author: (prev.author || (location.pathname.split("/")[1] || "")),
-        time: (t && (t.getAttribute("datetime") || text(t))) || prev.time || "",
-        text: cap.length > (prev.text || "").length ? cap : (prev.text || ""),
-        imgs: uniq((prev.imgs || []).concat(imgs)),
-        url: "https://www.instagram.com/p/" + here + "/"
-      };
+  async function igRun() {
+    var who = (location.pathname.split("/")[1] || "").replace(/^@/, "");
+    if (!who) { alert("인스타그램 계정 화면(예: instagram.com/tokyoksa)에서 눌러주세요."); save(); return; }
+
+    msg.textContent = "계정을 확인하는 중…";
+    var prof = await igGet("/api/v1/users/web_profile_info/?username=" + encodeURIComponent(who));
+    var uid = prof && prof.data && prof.data.user && prof.data.user.id;
+    if (!uid) {
+      msg.innerHTML = "계정을 읽지 못했습니다.<br>인스타그램에 로그인한 창에서<br>계정 화면을 열고 다시 눌러주세요.";
+      return;
     }
+
+    var maxId = "", page = 0;
+    while (!stopped && page < 40) {
+      var url = "/api/v1/feed/user/" + uid + "/?count=12" + (maxId ? "&max_id=" + maxId : "");
+      var res = await igGet(url);
+      var items = (res && res.items) || [];
+      if (!items.length) break;
+
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var code = it.code || it.id;
+        var cap = (it.caption && it.caption.text) || "";
+        var when = it.taken_at ? new Date(it.taken_at * 1000).toISOString() : "";
+        var srcs = igPickImgs(it);
+        var imgs = [];
+        for (var k = 0; k < srcs.length; k++) imgs.push(await igPack(srcs[k]));
+        data[code] = {
+          id: code, site: "instagram", author: who,
+          time: when, text: cap, imgs: imgs,
+          url: "https://www.instagram.com/p/" + code + "/"
+        };
+        msg.textContent = "글 " + Object.keys(data).length + "건 · 사진 " +
+          Object.keys(data).reduce(function (n, k2) { return n + data[k2].imgs.length; }, 0) + "장 …";
+      }
+
+      if (!res.more_available) break;
+      maxId = res.next_max_id || "";
+      if (!maxId) break;
+      page++;
+      await new Promise(function (r) { setTimeout(r, 900); });   // 너무 서두르지 않도록
+    }
+    save();
   }
 
   // ── 페이스북 ─────────────────────────────────────────────
@@ -206,7 +240,7 @@
   function step() {
     if (stopped) { save(); return; }
     clickMore();
-    (SITE === "band" ? harvestBand : SITE === "instagram" ? harvestInsta : harvestFb)();
+    (SITE === "band" ? harvestBand : harvestFb)();
     var n = Object.keys(data).length;
     msg.textContent = "수집 중… " + n + "건 (스크롤 " + Math.round(scrollY / 1000) + "k)";
     scrollBy(0, SITE === "band" ? 900 : 800);
@@ -217,5 +251,6 @@
   }
   msg.textContent = (SITE === "band" ? "네이버 밴드"
     : SITE === "instagram" ? "인스타그램" : "페이스북") + " 수집을 시작합니다…";
-  setTimeout(step, 800);
+  if (SITE === "instagram") igRun();          // 글 하나하나를 열어 읽습니다
+  else setTimeout(step, 800);
 })();
