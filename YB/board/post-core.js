@@ -263,7 +263,7 @@ function linkify(s) {
   const meP = user ? await myProfile() : null;
   const mtype = (meP && meP.member_type) || "";
   const isGuest = mtype === "GUEST";                 // 도쿄대 출신이 아닌 준회원
-  const GUEST_CATS = ["notice", "exam"];             // 준회원께 열어드리는 곳
+  const GUEST_CATS = ["notice", "exam", "scholarship"];   // 준회원께 열어드리는 곳
   const side = mtype === "YB" ? "YB" : "OB";
   // 준회원은 공지사항·수험생 게시판만, 그 밖의 분은 제 단체 글만
   const otherOrg = !!(meP && !meP.is_admin &&

@@ -176,8 +176,10 @@ export async function initBoard(ORG) {
   const OTHER_HOME = "/OB";
 
   // 로그인 상태 표시 + 비로그인 시 공개 게시판만 노출
-  const PUBLIC_CATS = ["notice"];             // 로그인 없이 볼 수 있는 곳
-  const GUEST_CATS  = ["notice", "exam"];     // 비동문 준회원께도 열어드리는 곳
+  // 수험생 게시판은 진학을 알아보는 분이 로그인 없이 읽을 수 있어야 뜻이 있습니다.
+  // 다만 글쓰기는 로그인·승인을 거쳐야 하므로 읽기만 열립니다.
+  const PUBLIC_CATS = ["notice", "exam"];                    // 로그인 없이 볼 수 있는 곳
+  const GUEST_CATS  = ["notice", "exam", "scholarship"];     // 비동문 준회원께도 열어드리는 곳
   let openCats = PUBLIC_CATS;                 // 지금 보시는 분께 열려 있는 곳
   let memberOnlyBlocked = null;
   let otherOrg = false;              // 다른 쪽 단체 회원이신가

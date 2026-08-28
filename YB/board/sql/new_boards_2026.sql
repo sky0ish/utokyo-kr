@@ -3,8 +3,8 @@
 --
 --   참여마당 > 진로상담      (counsel)     — 진학·취업·연구실 선택 고민
 --   참여마당 > 진학/취업 후기 (career)      — 지나온 과정을 남겨 후배가 읽도록
---   게시판   > 장학정보      (scholarship) — 유학생이 넣을 수 있는 장학금
---   게시판   > 수험생 게시판  (exam)        — 준회원(비동문)도 보고 쓸 수 있는 곳
+--   게시판   > 장학정보      (scholarship) — 유학생이 넣을 수 있는 장학금 (준회원부터 열람)
+--   게시판   > 수험생 게시판  (exam)        — 로그인 없이도 읽을 수 있고, 글은 가입 후
 --
 --   ※ 앞서 exam_board.sql 을 돌리셨어도 이 파일을 그대로 돌리시면 됩니다.
 --     그 내용까지 함께 들어 있고, 두 번 돌려도 탈이 없습니다.
@@ -39,8 +39,13 @@ select '도쿄대학 한국인학생회', 'YB', 'exam',
        '제목 앞에 [입시] 처럼 붙여 주시면 찾기 쉽습니다.' || chr(10) || chr(10) ||
        '※ 학사 일정과 모집 요강은 반드시 도쿄대학 공식 안내를 먼저 확인해 주세요.' || chr(10) ||
        '   이곳의 답변은 재학생의 경험을 나누는 것이며 공식 안내가 아닙니다.',
-       'members'
+       'public'
  where not exists (select 1 from public.posts where org = 'YB' and category = 'exam');
+
+-- 수험생 게시판 글은 로그인 없이도 읽히도록 (앞서 회원 전용으로 넣으셨다면 여기서 풀립니다)
+update public.posts
+   set visibility = 'public'
+ where org = 'YB' and category = 'exam' and visibility <> 'public';
 
 -- ── 진로상담 첫 글 ──
 insert into public.posts (author_name, org, category, title, content, visibility)
@@ -86,8 +91,8 @@ select '도쿄대학 한국인학생회', 'YB', 'scholarship',
  where not exists (select 1 from public.posts where org = 'YB' and category = 'scholarship');
 
 -- ── 확인 — 네 줄이 나오면 성공입니다 ──
-select category as "게시판", count(*) as "글수"
+select category as "게시판", visibility as "공개범위", count(*) as "글수"
   from public.posts
  where org = 'YB' and category in ('exam','career','counsel','scholarship')
- group by category
+ group by category, visibility
  order by category;
