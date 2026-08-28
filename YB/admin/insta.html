@@ -166,7 +166,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=173";
+import { CATS } from "/YB/gallery-lib.js?v=174";
 
 const ORG = "YB";
 
@@ -270,8 +270,22 @@ async function start() {
     if (e.dataTransfer.files[0]) read(e.dataTransfer.files[0]);
   });
   file.addEventListener("change", () => { if (file.files[0]) read(file.files[0]); });
-  [albSel, bdSel, document.getElementById("minText")]
-    .forEach(s => s.addEventListener("change", () => { if (rows.length) { decide(); draw(); } }));
+  const bulk = (k) => {
+    if (!rows.length) return;
+    rows.forEach(r => {
+      const hasT = !!(r.text || "").trim(), hasP = (r.imgs || []).length > 0;
+      if (k === "album") { r.kind = hasP ? "album" : "skip"; return; }
+      if (k === "post")  { r.kind = hasT ? "post" : (hasP ? "album" : "skip"); return; }
+      r.kind = hasT && hasP ? "both" : hasT ? "post" : hasP ? "album" : "skip";
+    });
+    say(); draw();
+  };
+  document.getElementById("allBoth").addEventListener("click", () => bulk("both"));
+  document.getElementById("allPost").addEventListener("click", () => bulk("post"));
+  document.getElementById("allAlbum").addEventListener("click", () => bulk("album"));
+
+  [albSel, document.getElementById("minText")]
+    .forEach(x => x.addEventListener("change", () => { if (rows.length) { decide(); say(); draw(); } }));
 
   /** 글자가 많으면 게시판, 사진이 많으면 사진첩, 둘 다면 양쪽에 */
   function decide() {
