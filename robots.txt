@@ -1,0 +1,15 @@
+# 도쿄대학 한국인 총동문회 · 한국인학생회
+# 검색엔진이 이 홈페이지를 찾아갈 수 있도록 열어 둡니다.
+
+User-agent: *
+Allow: /
+
+# 로그인·글쓰기·운영진 화면은 검색 결과에 나올 이유가 없습니다
+Disallow: /YB/auth/
+Disallow: /OB/auth/
+Disallow: /YB/admin/
+Disallow: /OB/admin/
+Disallow: /YB/write.html
+Disallow: /OB/write.html
+
+Sitemap: https://u-tokyo.kr/sitemap.xml

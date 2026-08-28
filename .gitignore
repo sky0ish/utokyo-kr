@@ -4,6 +4,8 @@
 
 # 홈페이지 파일만 허용
 !/index.html
+!/robots.txt
+!/sitemap.xml
 !/YB/
 !/OB/
 !/images/
