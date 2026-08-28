@@ -27,10 +27,18 @@ export async function initBoard(ORG) {
 
   applyNav(ORG, ORG === "YB" ? "게시판 | 도쿄대학 한국인학생회"
                             : "게시판 | 재한 도쿄대학 총동문회");
-  // 분류 탭 다시 그리기
+  // 참여마당 식구 — 위 메뉴의 참여마당 드롭다운과 같은 차례입니다
+  const JOIN_OB = ["club", "mentoring", "forum"];
+  const JOIN_YB = ["club", "event", "mentoring", "suggest"];
+  const JOIN = ORG === "YB" ? JOIN_YB : JOIN_OB;
+
+  // 분류 탭 다시 그리기 — 위 메뉴에서 들어온 자리에 맞춰
   {
     const cur = new URLSearchParams(location.search).get("cat") || "";
-    const tabs = (cur && !TABS.includes(cur) && CAT[cur]) ? [cur].concat(TABS) : TABS;   // 참여마당 등에서 들어온 분류는 맨 앞에 놓아 바로 눈에 띄게
+    let tabs;
+    if (JOIN.includes(cur)) tabs = JOIN;                    // 참여마당에서 들어왔을 때
+    else if (cur && !TABS.includes(cur) && CAT[cur]) tabs = [cur].concat(TABS);
+    else tabs = TABS;
     document.getElementById("catTabs").innerHTML =
       '<a href="#" data-cat="">전체</a>' + tabs.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
   }
