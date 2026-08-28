@@ -32,6 +32,14 @@ export async function initBoard(ORG) {
   const JOIN_YB = ["mentoring", "event", "club", "major", "suggest"];
   const JOIN = ORG === "YB" ? JOIN_YB : JOIN_OB;
 
+  // 운영진이 줄에서 바로 옮길 수 있는 게시판 (게시판 줄 + 참여마당)
+  const MOVE = TABS.concat(JOIN.filter(c => !TABS.includes(c)));
+  /** 제목 앞의 [말머리] 를 떼어냅니다 */
+  const headOf = (t) => {
+    const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/);
+    return m ? m[1].trim() : "";
+  };
+
   // 분류 탭 다시 그리기 — 위 메뉴에서 들어온 자리에 맞춰
   {
     const cur = new URLSearchParams(location.search).get("cat") || "";
@@ -391,8 +399,48 @@ export async function initBoard(ORG) {
           <span class="mrow">${SRC[p.source] || ""}<span class="who">${escapeHtml(p.author_name || "")}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>
           <span class="dt">${p.created_at.slice(0,10)}</span>
         </span>
+        ${isAdmin ? `<span class="mv">
+            <select class="mvc" data-id="${p.id}" title="다른 게시판으로 옮기기">${
+              MOVE.concat(MOVE.includes(p.category) ? [] : [p.category]).map(c =>
+                `<option value="${c}"${c === p.category ? " selected" : ""}>${CAT[c] || c}</option>`).join("")
+            }</select>
+            <select class="mvt" data-id="${p.id}" title="말머리 바꾸기">${
+              ["", ...boardTags(p.category)].map(t =>
+                `<option value="${t}"${t === headOf(p.title) ? " selected" : ""}>${t || "말머리 없음"}</option>`).join("")
+            }</select>
+          </span>` : ""}
         ${isAdmin ? `<button class="del" type="button" data-del="${p.id}" title="이 글 지우기">✕</button>` : ""}
       </a>`).join("");
+
+    // ── 운영진 : 줄에서 바로 게시판·말머리 바꾸기 ──
+    listEl.querySelectorAll(".mv select").forEach(sel => {
+      sel.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); });
+      sel.addEventListener("change", async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const id = sel.dataset.id;
+        const row = loaded.find(x => String(x.id) === String(id));
+        if (!row) return;
+        sel.disabled = true;
+
+        let patch = null;
+        if (sel.classList.contains("mvc")) {
+          patch = { category: sel.value };
+        } else {
+          const body = (row.title || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+          patch = { title: sel.value ? "[" + sel.value + "] " + body : body };
+        }
+        const { error } = await sb.from("posts").update(patch).eq("id", id);
+        sel.disabled = false;
+        if (error) {
+          alert(/posts_category_check/.test(error.message || "")
+            ? "아직 준비 전인 게시판입니다 — 해당 SQL 을 먼저 실행해주세요."
+            : "바꾸지 못했습니다: " + error.message);
+          return;
+        }
+        Object.assign(row, patch);
+        load(false, true);          // 목록을 다시 그립니다
+      });
+    });
 
     // ── 운영진 : 글 지우기 ──
     listEl.querySelectorAll("button[data-del]").forEach(b => b.addEventListener("click", async (e) => {

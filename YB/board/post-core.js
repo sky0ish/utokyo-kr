@@ -3,6 +3,7 @@
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/YB/auth/auth.js";
 import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js";
 import { applyNav } from "/YB/board/nav.js?v=10";
+import { boardTags } from "/YB/board/board-info.js?v=120";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
 function esc(t) {
@@ -323,6 +324,37 @@ function linkify(s) {
           location.href = "post.html?id=" + p.id;
         });
         document.getElementById("actions").appendChild(mv);
+
+        // 운영진 : 이 글의 말머리 바꾸기
+        const headOf = (t) => {
+          const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/);
+          return m ? m[1].trim() : "";
+        };
+        const tg = document.createElement("select");
+        tg.className = "btn movecat";
+        tg.title = "말머리 바꾸기";
+        const drawTags = () => {
+          const now = headOf(p.title);
+          const list = boardTags(p.category);
+          tg.innerHTML = '<option value="">↔ 말머리…</option>' +
+            '<option value="__none">말머리 없음</option>' +
+            list.map(t => `<option value="${t}"${t === now ? " selected" : ""}>${t}</option>`).join("");
+          if (now && list.includes(now)) tg.value = now;
+        };
+        drawTags();
+        tg.addEventListener("change", async () => {
+          const to = tg.value;
+          if (!to) return;
+          const body = (p.title || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+          const title = to === "__none" ? body : "[" + to + "] " + body;
+          if (title === p.title) { drawTags(); return; }
+          tg.disabled = true;
+          const { error } = await sb.from("posts").update({ title }).eq("id", p.id);
+          tg.disabled = false;
+          if (error) { alert("바꾸지 못했습니다: " + error.message); drawTags(); return; }
+          location.href = "post.html?id=" + p.id;
+        });
+        document.getElementById("actions").appendChild(tg);
 
         const pin = document.createElement("button");
         pin.className = "btn pin" + (p.pinned ? " on" : "");
