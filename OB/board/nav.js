@@ -79,7 +79,7 @@ const NAV = {
           <a href="/YB/board.html?cat=event">행사</a>
           <a href="/YB/board.html?cat=club">소모임</a>
           <a href="/YB/board.html?cat=major">전공별모임</a>
-          <a href="/YB/board.html?cat=suggest">동문회에 바란다</a>
+          <a href="/YB/board.html?cat=suggest">학생회에 바란다</a>
         </div>
       </div>
       <div class="dd">

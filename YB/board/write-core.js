@@ -60,7 +60,7 @@ export async function initWrite(ORG) {
     const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
     const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                       club:"소모임", major:"전공별모임", event:"행사",
-                      mentoring:"멘토멘티(OB/YB)", suggest:"동문회에 바란다" };
+                      mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
