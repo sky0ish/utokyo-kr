@@ -154,6 +154,20 @@
       </div>
       <div class="log" id="legacyLog"></div>
     </div>
+
+    <div class="card">
+      <h2>⑤ 「행사」 글을 참여마당 → 행사로 옮기기</h2>
+      <p>자유게시판 · 공지사항 · 소모임에 흩어져 있는 <b>행사 글</b>을 찾아
+        참여마당의 <b>행사</b> 게시판으로 옮깁니다.</p>
+      <p class="hint">먼저 찾아보고, 목록을 눈으로 확인하신 뒤 고른 것만 옮깁니다.</p>
+      <div style="margin-top:14px;">
+        <button class="btn" id="evFind">행사 글 찾아보기</button>
+        <button class="btn dark" id="evGo" style="display:none;">고른 글 옮기기</button>
+        <button class="btn" id="evAll" style="display:none;">모두 고르기 / 풀기</button>
+      </div>
+      <div class="log" id="evLog"></div>
+      <div id="evList" style="margin-top:12px;"></div>
+    </div>
   </div>
 </div>
 
@@ -325,6 +339,92 @@ if (!user) {
       goBtn.disabled = rows.length === 0;
     };
     r.readAsText(f, "utf-8");
+  }
+
+
+  // ── ⑤ 「행사」 글을 참여마당 → 행사로 옮기기 ──
+  {
+    const findBtn = document.getElementById("evFind");
+    const goBtn   = document.getElementById("evGo");
+    const allBtn  = document.getElementById("evAll");
+    const log     = document.getElementById("evLog");
+    const box     = document.getElementById("evList");
+    let found = [];
+
+    const esc2 = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
+      c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    const CATN = { free: "자유게시판", notice: "공지사항", club: "소모임",
+                   qna: "Q&A", jobs: "취업정보", parttime: "아르바이트",
+                   market: "벼룩시장", mentoring: "멘토멘티", history: "활동 이력" };
+
+    findBtn.addEventListener("click", async () => {
+      findBtn.disabled = true;
+      log.style.display = "block";
+      log.textContent = "행사 글을 찾는 중…" + String.fromCharCode(10);
+      box.innerHTML = "";
+
+      const { data, error } = await sb.from("posts")
+        .select("id,title,content,category,created_at")
+        .eq("org", "YB")
+        .in("category", ["free", "notice", "club"])
+        .or("title.ilike.%행사%,content.ilike.%행사%")
+        .order("created_at", { ascending: false })
+        .limit(500);
+
+      findBtn.disabled = false;
+      if (error) { log.textContent += "찾지 못했습니다: " + error.message; return; }
+
+      found = data || [];
+      if (!found.length) { log.textContent += "옮길 글이 없습니다."; return; }
+
+      log.textContent += found.length + "건을 찾았습니다. 옮길 글만 남기고 체크를 풀어주세요.";
+      box.innerHTML = found.map((p, i) => {
+        const t = (p.title || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+        return `<label style="display:flex;gap:9px;align-items:baseline;padding:6px 4px;
+                  border-bottom:1px solid #f0ece1;font-size:13.5px;cursor:pointer;">
+          <input type="checkbox" data-i="${i}" checked>
+          <span style="flex:none;color:#9a947f;font-size:12px;width:74px;">${CATN[p.category] || p.category}</span>
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc2(t)}</span>
+          <span style="flex:none;color:#b8b2a0;font-size:12px;">${(p.created_at || "").slice(0, 10)}</span>
+        </label>`;
+      }).join("");
+      goBtn.style.display = "inline-block";
+      allBtn.style.display = "inline-block";
+    });
+
+    allBtn.addEventListener("click", () => {
+      const bs = [...box.querySelectorAll("input[type=checkbox]")];
+      const on = bs.some(b => !b.checked);
+      bs.forEach(b => { b.checked = on; });
+    });
+
+    goBtn.addEventListener("click", async () => {
+      const ids = [...box.querySelectorAll("input[type=checkbox]")]
+        .filter(b => b.checked).map(b => found[+b.dataset.i].id);
+      if (!ids.length) { alert("옮길 글을 골라주세요."); return; }
+      if (!confirm(ids.length + "건을 참여마당 → 행사로 옮깁니다. 계속할까요?")) return;
+
+      goBtn.disabled = true;
+      let ok = 0, err = null;
+      for (let i = 0; i < ids.length; i += 50) {
+        const part = ids.slice(i, i + 50);
+        const r = await sb.from("posts").update({ category: "event" }).in("id", part);
+        if (r.error) { err = r.error; break; }
+        ok += part.length;
+        log.textContent = "옮기는 중… " + ok + "/" + ids.length;
+      }
+      goBtn.disabled = false;
+      if (err) {
+        log.textContent = /posts_category_check/.test(err.message || "")
+          ? "아직 준비 전입니다 — Supabase SQL Editor 에서 YB/board/sql/event_board.sql 의 첫 부분을 한 번 실행해주세요."
+          : "옮기지 못했습니다: " + err.message;
+        return;
+      }
+      log.textContent = ok + "건을 행사 게시판으로 옮겼습니다.";
+      box.innerHTML = "";
+      goBtn.style.display = "none"; allBtn.style.display = "none";
+    });
   }
 
   // ── ④ 학생회 소모임 · 활동 이력 가져오기 ──
