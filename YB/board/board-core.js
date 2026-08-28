@@ -18,7 +18,7 @@ export async function initBoard(ORG) {
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                    club:"소모임", history:"활동 이력", mentoring:"멘토멘티(OB/YB)",
                    suggest:"동문회에 바란다" };
-  const TABS_OB = ["free","promo","forum","research","condolence","notice","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
+  const TABS_OB = ["notice","free","promo","condolence","research","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
   const TABS_YB = ["notice","free","qna","jobs","parttime","market","mentoring","suggest"];   // 소모임·활동 이력은 학생회 메뉴에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
   // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
