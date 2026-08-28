@@ -50,6 +50,12 @@
   table.prev td:first-child{color:#8a8574;width:90px;}
   .warn{background:#f8e8e6;color:#8a3b32;padding:12px 14px;border-radius:4px;font-size:13.5px;margin-top:12px;}
   .ok{background:#e8f0e6;color:#3f6a3a;padding:12px 14px;border-radius:4px;font-size:13.5px;margin-top:12px;}
+
+  /* 어디에서 모을지 — 하는 일은 같고 이름만 다릅니다 */
+  .bmrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 4px;}
+  .bmk.fb{background:#1877f2;box-shadow:0 6px 18px rgba(24,119,242,.28);}
+  .bmk.ig{background:linear-gradient(45deg,#f9ce34,#ee2a7b 45%,#6228d7);
+    box-shadow:0 6px 18px rgba(238,42,123,.3);}
 </style>
 </head>
 <body>
@@ -78,11 +84,16 @@
     <div class="card">
       <h2>① 수집 버튼 등록 (처음 한 번만)</h2>
       <p>아래 버튼을 <b>브라우저 북마크바로 끌어다 놓으세요.</b> (북마크바가 안 보이면 Ctrl+Shift+B)</p>
-      <a class="bmk" id="bmk" href="#">📥 동문회 수집</a>
+      <div class="bmrow">
+        <a class="bmk fb" id="bmk" href="#">📥 Facebook 수집</a>
+        <a class="bmk ig" id="bmk2" href="#">📥 Instagram 수집</a>
+      </div>
+      <p class="hint">둘 다 같은 도구입니다 — 어느 쪽에서 누르든 알아서 가려냅니다.
+        하나만 끌어다 놓으셔도 됩니다.</p>
       <div class="hint">
         <b>끌어다 놓기가 안 될 때</b> — 아래 <b>주소 복사</b>를 누른 뒤,
         북마크바에서 마우스 오른쪽 → <b>페이지 추가</b>를 고르고
-        이름은 <b>동문회 수집</b>, URL 칸에 붙여넣으시면 됩니다.
+        이름은 <b>Facebook 수집</b> 또는 <b>Instagram 수집</b>, URL 칸에 붙여넣으시면 됩니다.
         <div style="margin-top:8px;">
           <button type="button" id="bmkCopy" class="btn" style="padding:7px 16px;font-size:13px;">주소 복사</button>
           <span id="bmkCopied" style="margin-left:8px;color:#3f6a3a;font-size:13px;display:none;">복사했습니다 ✓</span>
@@ -92,14 +103,16 @@
     </div>
 
     <div class="card">
-      <h2>② 밴드 / 페이스북에서 수집</h2>
-      <p>아래에서 모으실 곳을 <b>새 창으로 열고</b>, 북마크바의 <b>📥 동문회 수집</b>을 누르시면 됩니다.
+      <h2>② Facebook / Instagram 에서 수집</h2>
+      <p>아래에서 모으실 곳을 <b>새 창으로 열고</b>, 북마크바의 <b>📥 수집</b> 단추를 누르시면 됩니다.
         오른쪽 아래에 수집창이 뜨고 자동으로 스크롤하다가, 끝나면 파일이 저장됩니다.
         <span class="hint">(원하는 만큼만 모았다면 “지금 저장하고 종료”를 눌러도 됩니다)</span></p>
 
       <div class="srcs">
         <a class="src" href="https://www.facebook.com/tokyoksa" target="_blank" rel="noopener">
           <span class="go">→</span><b>학생회 페이스북</b><small>facebook.com/tokyoksa</small></a>
+        <a class="src" href="https://www.instagram.com/tokyoksa/" target="_blank" rel="noopener">
+          <span class="go">→</span><b>학생회 Instagram</b><small>instagram.com/tokyoksa</small></a>
         <a class="src off" href="https://www.tokyoksa.com/" target="_blank" rel="noopener">
           <span class="go">→</span><b>학생회 구게시판</b><small>tokyoksa.com · 수집 단추는 안 됩니다</small></a>
       </div>
@@ -116,7 +129,7 @@
       <p>이미 등록된 글은 자동으로 건너뛰고 <b>새 글만</b> 게시판에 올라갑니다.</p>
       <div class="drop" id="drop">
         <b>파일을 여기에 끌어다 놓으세요</b>
-        <span>또는 클릭해서 선택 (band_collected.json / facebook_collected.json)</span>
+        <span>또는 클릭해서 선택 (facebook_collected.json / instagram_collected.json)</span>
         <input type="file" id="file" accept=".json" style="display:none;">
       </div>
       <div id="preview"></div>
@@ -162,6 +175,7 @@ if (!user) {
     if (res.ok) { const t = (await res.text()).trim(); if (t.startsWith("javascript:")) code = t; }
   } catch (e) { /* 실패 시 기본값 사용 */ }
   document.getElementById("bmk").setAttribute("href", code);
+  document.getElementById("bmk2").setAttribute("href", code);
   document.getElementById("bmkText").value = code;
   document.getElementById("bmkCopy").addEventListener("click", async () => {
     const ta = document.getElementById("bmkText");
