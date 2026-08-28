@@ -68,7 +68,7 @@ const NAV = {
           <a href="/YB/index.html#officers">임원진</a>
           <a href="/YB/index.html#past">역대 회장 및 임원진</a>
           <a href="/YB/board.html?cat=history">활동 이력</a>
-          <a href="/YB/index.html#rules">회칙</a>
+          <a href="/YB/rules.html">회칙</a>
         </div>
       </div>
       <div class="dd">

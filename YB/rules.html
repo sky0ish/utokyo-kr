@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>회칙 | 도쿄대학 한국인학생회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#1e5230;--green-2:#2a6b40;--leaf:#7fc48a;--leaf-bright:#bfe8c2;--ivory:#f4f8f4;--ink:#1b2620;--line:#dfe8e0;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#f8fbf8;line-height:1.8;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:860px;margin:0 auto;padding:0 24px;}
+
+  .utilbar{background:#132c1c;color:rgba(255,255,255,.72);font-size:12px;}
+  .utilbar .inner{max-width:860px;margin:0 auto;padding:8px 24px;display:flex;gap:18px;}
+  .utilbar a:hover{color:var(--leaf-bright);}
+
+  .mhead{background:var(--green);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+  .mhead .inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
+  .mhead .mlogo{font-family:'Noto Serif KR',serif;font-weight:600;font-size:16.5px;color:#fff;line-height:1.25;}
+  .mhead .mlogo small{display:block;font-size:9.5px;font-weight:300;color:rgba(255,255,255,.55);letter-spacing:.14em;font-family:'Noto Sans KR',sans-serif;}
+  .mhead nav{display:flex;gap:2px;align-items:center;margin-left:auto;}
+  .mhead nav > a,.mhead nav .dd > a{display:inline-block;padding:8px 10px;font-size:13.5px;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  .mhead nav > a:hover,.mhead nav .dd > a:hover{color:var(--leaf-bright);border-bottom-color:var(--leaf);}
+  .mhead nav .dd{position:relative;}
+  .mhead .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:18px;min-width:150px;z-index:300;}
+  .mhead .dd:hover .dd-menu{display:flex;}
+  .mhead .dd-menu a{display:block;text-align:center;padding:9px 18px;font-size:13px;color:#1b2620;font-weight:500;
+    background:rgba(255,255,255,.95);border:1px solid #9fb3a4;border-radius:7px;white-space:nowrap;transition:.18s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 4px rgba(0,0,0,.07), 0 3px 8px rgba(0,0,0,.2);}
+  .mhead .dd-menu a:hover{background:#fff;color:var(--green);border-color:var(--leaf);transform:translateY(-1px);}
+  .mpills{display:flex;gap:6px;}
+  .mpills a{padding:6px 13px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap;transition:.2s;}
+  @media (max-width:900px){ .mhead nav,.mpills{display:none;} }
+
+  .banner{background:linear-gradient(rgba(14,40,24,.74),rgba(14,40,24,.66)),url('../images/green_avenue.jpg') center 42%/cover;color:#fff;}
+  .banner .inner{max-width:860px;margin:0 auto;padding:44px 24px 40px;}
+  .banner .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--leaf-bright);letter-spacing:.14em;display:block;margin-bottom:4px;}
+  .banner h1{font-family:'Noto Serif KR',serif;font-size:30px;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,.5);}
+  .banner p{font-size:13.5px;color:rgba(255,255,255,.78);margin-top:6px;}
+
+  .doc{background:#fff;border:1px solid var(--line);border-top:3px solid var(--green);border-radius:2px;
+    box-shadow:0 10px 40px rgba(20,60,35,.06);padding:52px 56px;margin:44px auto 22px;}
+  .doc-title{text-align:center;margin-bottom:8px;font-family:'Noto Serif KR',serif;font-size:23px;font-weight:600;}
+  .doc-sub{text-align:center;font-size:13px;color:#8a9a90;margin-bottom:6px;}
+  .doc-jp{text-align:center;font-size:12.5px;color:#a3b3a8;margin-bottom:40px;letter-spacing:.06em;}
+
+  h2.chap{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--green);
+    margin:38px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:.06em;}
+  h2.chap:first-of-type{margin-top:0;}
+  h2.chap span{float:right;font-family:'Noto Sans KR',sans-serif;font-size:12.5px;font-weight:300;color:#a3b3a8;letter-spacing:.1em;padding-top:5px;}
+  .art{margin-bottom:16px;font-size:14.5px;color:#3a4a40;word-break:keep-all;}
+  .art b{font-weight:600;color:var(--ink);}
+  .art ol{margin:6px 0 0 22px;font-weight:300;}
+  .art li{margin-bottom:4px;}
+
+  .transnote{background:var(--ivory);border:1px solid var(--line);border-radius:9px;
+    padding:20px 24px;margin-top:44px;font-size:13px;color:#4a5a50;line-height:1.85;}
+  .transnote b{display:block;margin-bottom:9px;font-size:13.5px;color:var(--green);font-weight:700;letter-spacing:.08em;}
+  .transnote ul{margin:0;padding-left:17px;}
+  .transnote li{margin-bottom:6px;}
+  .transnote .warn{color:#8a3b3b;}
+
+  .stamp{text-align:center;font-size:11.5px;color:#a3b3a8;letter-spacing:.06em;margin:0 auto 8px;}
+  .back{display:block;text-align:center;margin:0 auto 70px;font-size:13px;letter-spacing:.14em;color:#8a9a90;}
+  .back:hover{color:var(--green);}
+  @media (max-width:640px){ .doc{padding:32px 22px;} h2.chap span{display:none;} }
+</style>
+</head>
+<body class="yb">
+
+<div class="utilbar">
+  <div class="inner">
+    <a href="javascript:history.back()">← 이전화면으로</a>
+    <a href="/index.html">⌂ 통합 홈</a>
+    <a href="/YB/index.html">도쿄대학 한국인학생회</a>
+  </div>
+</div>
+
+<header class="mhead">
+  <div class="inner">
+    <a class="mlogo" href="/YB/index.html">도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small></a>
+    <nav></nav>
+    <div class="mpills"></div>
+  </div>
+</header>
+
+<div class="banner">
+  <div class="inner">
+    <span class="en">Constitution</span>
+    <h1>회칙</h1>
+    <p>도쿄대학 한국인 학생회 회칙 — 2009년 2월 15일 제정 · 전 7장 11조</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="doc">
+    <div class="doc-title">도쿄대학 한국인 학생회 회칙</div>
+    <div class="doc-sub">제정 2009년 2월 15일 · 제정 주체 : 도쿄대학 한국인 학생회</div>
+    <div class="doc-jp">東京大学韓国人学生会　会則</div>
+
+    <h2 class="chap">제 1 장 총칙 <span>第1章 総則</span></h2>
+    <div class="art"><b>제 1 조 (정체 및 명칭)</b>
+      <ol>
+        <li>본회는 도쿄대학의 대한민국 학생의 자치 조직이다.</li>
+        <li>본회의 대외 명칭은 「도쿄대학 한국인 학생회」라 한다.</li>
+        <li>본회의 영문 대외 명칭은 「Korean Student Association at The University of Tokyo (KSAUT)」라 한다.</li>
+      </ol></div>
+    <div class="art"><b>제 2 조 (목적)</b>
+      <ol>
+        <li>본회는 재학생 및 졸업생의 상호 친선과 협력을 도모하고, 학술 교류를 보다 효율적으로 하는 것을 목적으로 한다.</li>
+        <li>본회는 제 1 항의 목적을 달성하기 위하여 학술 교류, 회원 간의 교류 및 친선 활동에 적합한 사업을 시행할 수 있다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 2 장 회원 <span>第2章 会員</span></h2>
+    <div class="art"><b>제 3 조 (정의)</b>
+      <ol>
+        <li>일본 도쿄대학 내의 대학원 연구과, 학부, 연구원으로 재적 중인 한국인 학생을 「회원」이라 한다.</li>
+      </ol></div>
+    <div class="art"><b>제 4 조 (정회원의 권리와 의무)</b>
+      <ol>
+        <li>정회원은 정기 총회에서 최고 의결권을 가진다.</li>
+        <li>정회원은 정기 총회에서 예산안 및 결산안의 승인권을 가진다.</li>
+        <li>정회원은 본회 대표자(회장)의 선거권 및 피선거권을 가진다.</li>
+        <li>정회원은 본회의 사업 및 행사에 참가할 권한을 가진다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 3 장 조직 <span>第3章 組織</span></h2>
+    <div class="art"><b>제 5 조 (운영)</b>
+      <ol>
+        <li>본회는 회장, 부회장을 포함한 임원 및 운영 스태프로 구성되며, 부회장을 비롯한 전 운영 스태프는 회장이 임명한다.</li>
+        <li>회장은 본회를 대표하며 업무 전반을 총괄한다.</li>
+        <li>회장은 1년의 임기가 끝남과 동시에, 차기 회장에게 행사 집행에 관한 관련 자료 및 예산 집행의 증빙 자료를 인계할 의무를 진다.</li>
+        <li>관련 자료 및 증빙 자료란 학생회 회의록, 행사 시 작성된 명부 및 예산 사용에 따른 영수증 등을 가리킨다.</li>
+        <li>회장의 임기는 1년으로 하며, 해당 연도 2월 15일부터 다음 해 2월 14일까지로 한다. 또한 제 8 조에 근거한 선거에서 연장할 수 있다.</li>
+      </ol></div>
+    <div class="art"><b>제 6 조 (임원 및 운영 스태프)</b>
+      <ol>
+        <li>임원은 도쿄대학의 전 학생을 대상으로 모집한다.</li>
+        <li>운영 스태프는 회장을 보좌하며, 본회 운영에 따른 실무의 담당, 지원 및 원활한 사업 진행에 힘쓴다.</li>
+        <li>자문 의원은 회장의 추천 및 총회의 요청에 의하여 선임한다.</li>
+        <li>자문 의원은 본회의 운영에 관한 제반 사항 등에 조언할 권한을 가진다. 다만 구속력은 가지지 아니한다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 4 장 총회 <span>第4章 総会</span></h2>
+    <div class="art"><b>제 7 조 (시기와 내용)</b>
+      <ol>
+        <li>정기 총회는 학기별 1회, 총 2회로 한다.</li>
+        <li>상반기 및 하반기의 최종 정기 총회 시, 해당 반기의 결산 보고를 한다.</li>
+        <li>당대의 최종 정기 총회일에 차기 회장 선거를 실시한다.</li>
+      </ol></div>
+    <div class="art"><b>제 8 조 (선거)</b>
+      <ol>
+        <li>차기 회장은 임원 및 운영 스태프의 선거에 의하여 선출된다.</li>
+        <li>회장은 선거 당일의 최다 득표자를 당선자로 인정한다.</li>
+        <li>입후보 자격은 도쿄대학의 학생에게 있다.</li>
+        <li>입후보자는 운영 스태프가 명시한 후보 등록 기관에 후보 등록을 한다. (소정 양식의 입후보서를 제출하여야 한다.)</li>
+        <li>선거관리위원회는 임원 중 4명으로 구성하며, 입후보자 및 그 소속 임원을 제외하고 선거관리위원장 1명과 선거관리위원 3명을 선출한다.</li>
+        <li>등록 기간 중에 임원 및 운영 스태프는 입후보자를 추천할 수 있다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 5 장 회의 <span>第5章 会議</span></h2>
+    <div class="art"><b>제 9 조</b>
+      <ol>
+        <li>임시 총회 또는 운영 스태프 회의는 운영 스태프가 필요하다고 인정하는 경우, 또는 참가 대학 회장 3명 이상의 요청이 있는 경우에 본회의 회장이 소집하며 1주 전에 고지한다.</li>
+        <li>모든 회의는 본회의 회장이 주관하며, 의결은 참가자의 과반수 이상의 찬성에 의한다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 6 장 회칙 개정 <span>第6章 会則改定</span></h2>
+    <div class="art"><b>제 10 조</b>
+      <ol>
+        <li>본 회칙은 운영 스태프를 포함한 임원 2분의 1 이상이 출석한 정기 총회에서 정회원의 의견에 근거하여 수정할 수 있다. 다만 출석자의 2분의 1 이상의 찬성을 얻음으로써 개정할 수 있다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 7 장 부칙 <span>第7章 附則</span></h2>
+    <div class="art"><b>제 11 조</b>
+      <ol>
+        <li>본 회칙은 2009년 2월 15일부터 시행한다.</li>
+        <li>본 회칙에 규정되지 아니한 사항에 관하여는 임원 회의의 결과에 따르며, 그 밖의 미비점은 관례에 준한다.</li>
+      </ol></div>
+
+    <div class="transnote">
+      <b>번역에 관하여</b>
+      <ul>
+        <li>본 문서는 2009년 2월 15일 제정된 일본어 회칙 「東京大学韓国人学生会 会則」을 한국어로 옮긴 것입니다. 장·조·항의 번호와 구성은 원문을 그대로 따랐습니다.</li>
+        <li>해석에 다툼이 있는 경우에는 일본어 원문을 정본으로 합니다.</li>
+        <li class="warn">원문 제 4 조 및 제 9 조의 「連合会」·「参加大学の会長」이라는 표현은 본회의 실제 조직 형태와 일치하지 않으나, 번역에서는 문맥에 따라 「본회」로 옮겼습니다. 해당 조항은 개정 검토가 필요합니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stamp">2026년 8월 28일 한일 번역 업데이트</div>
+  <a class="back" href="/YB/index.html">← 도쿄대학 한국인학생회 홈으로</a>
+</div>
+
+<script type="module">
+  // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
+  import { applyMenu } from "/YB/board/nav.js?v=182";
+  applyMenu("YB");
+</script>
+</body>
+</html>

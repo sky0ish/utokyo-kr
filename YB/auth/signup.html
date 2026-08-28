@@ -7,6 +7,16 @@
 <title>회원가입 | 도쿄대학 한국인 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<style>
+  /* 학생회 가입 화면에서만 쓰는 부분 — 총동문회 화면과 공용인 style.css 는 손대지 않았습니다 */
+  .hint{margin:-8px 0 14px;font-size:12.5px;color:#8a8474;line-height:1.6;}
+  .row2 + .hint{margin-top:-4px;}
+  .idcard{margin:18px 0 4px;padding:15px 17px;border:1px solid #cfe3d4;background:#eef5ef;border-radius:9px;
+          font-size:13px;color:#33513c;line-height:1.75;}
+  .idcard b{display:block;margin-bottom:5px;font-size:13.5px;color:#1e5230;font-weight:700;}
+  .idcard a{color:#1e5230;font-weight:600;border-bottom:1px solid rgba(30,82,48,.4);}
+  .idcard .em{font-weight:600;color:#1e5230;}
+</style>
 </head>
 <body>
 
@@ -32,21 +42,57 @@
     <label>구분 *</label>
     <select id="member_type" required>
       <option value="">선택하세요</option>
-      <option value="YB">YB — 재학생 (한국인학생회)</option>
+      <option value="YB" selected>YB — 재학생 (한국인학생회)</option>
       <option value="OB">OB — 졸업생 (재한 도쿄대학 총동문회)</option>
       <option value="GUEST">비동문 — 준회원 (도쿄대학 출신이 아닌 분)</option>
     </select>
 
-    <div class="row2">
-      <div>
-        <label>학부/연구과</label>
-        <input type="text" id="faculty" placeholder="예: 공학부 건축학">
-      </div>
-      <div>
-        <label>졸업(예정)연도</label>
-        <input type="text" id="grad_year" placeholder="예: 박2012">
-      </div>
-    </div>
+    <label>학부 / 연구과 *</label>
+    <select id="faculty" required>
+      <option value="">선택하세요</option>
+      <optgroup label="학부 (学部)">
+        <option>법학부 (法学部)</option>
+        <option>의학부 (医学部)</option>
+        <option>공학부 (工学部)</option>
+        <option>문학부 (文学部)</option>
+        <option>이학부 (理学部)</option>
+        <option>농학부 (農学部)</option>
+        <option>경제학부 (経済学部)</option>
+        <option>교양학부 (教養学部)</option>
+        <option>교육학부 (教育学部)</option>
+        <option>약학부 (薬学部)</option>
+      </optgroup>
+      <optgroup label="대학원 연구과 (大学院)">
+        <option>인문사회계연구과 (人文社会系研究科)</option>
+        <option>교육학연구과 (教育学研究科)</option>
+        <option>법학정치학연구과 (法学政治学研究科)</option>
+        <option>경제학연구과 (経済学研究科)</option>
+        <option>총합문화연구과 (総合文化研究科)</option>
+        <option>이학계연구과 (理学系研究科)</option>
+        <option>공학계연구과 (工学系研究科)</option>
+        <option>농학생명과학연구과 (農学生命科学研究科)</option>
+        <option>의학계연구과 (医学系研究科)</option>
+        <option>약학계연구과 (薬学系研究科)</option>
+        <option>수리과학연구과 (数理科学研究科)</option>
+        <option>신영역창성과학연구과 (新領域創成科学研究科)</option>
+        <option>정보이공학계연구과 (情報理工学系研究科)</option>
+        <option>학제정보학부 (学際情報学府)</option>
+        <option>공공정책대학원 (公共政策大学院)</option>
+      </optgroup>
+      <optgroup label="그 밖">
+        <option>연구생 (研究生)</option>
+        <option>연구원 (研究員)</option>
+        <option>기타</option>
+      </optgroup>
+    </select>
+
+    <label>전공 *</label>
+    <input type="text" id="major" required placeholder="예: 항공우주공학">
+    <div class="hint">전공명은 <b>학생증에 기재된 정식 명칭</b>을 한글로 적어주세요.
+      줄임말이나 통칭 대신 정식 명칭으로 적어주시면 분류가 정확해집니다.</div>
+
+    <label>졸업(예정)연도</label>
+    <input type="text" id="grad_year" placeholder="예: 박2012">
 
     <div id="jobBox">
       <label style="margin-bottom:2px;">현재 직장</label>
@@ -61,13 +107,30 @@
     </div>
 
     <label>전화번호</label>
-    <input type="tel" id="phone" placeholder="010-0000-0000">
+    <div class="row2">
+      <div>
+        <input type="tel" id="phone_kr" placeholder="한국 — 010-0000-0000">
+      </div>
+      <div>
+        <input type="tel" id="phone_jp" placeholder="일본 — 090-0000-0000">
+      </div>
+    </div>
+    <div class="hint">둘 중 쓰시는 번호만 적으셔도 됩니다.</div>
 
     <label>이메일 *</label>
     <input type="email" id="email" required placeholder="you@example.com">
 
     <label>비밀번호 * <span style="font-weight:300;color:#9a947f;">(8자 이상)</span></label>
     <input type="password" id="password" required minlength="8">
+
+    <div class="idcard" id="idcardBox">
+      <b>정회원 인증 안내</b>
+      가입 신청을 마치신 뒤, <span class="em">도쿄대학 학교 메일 계정</span>으로
+      <span class="em">학생증 사진</span>을 첨부해
+      <a href="mailto:tokyoksa.president@gmail.com?subject=%5B%ED%95%99%EC%83%9D%EC%A6%9D%20%EC%9D%B8%EC%A6%9D%5D%20%EC%A0%95%ED%9A%8C%EC%9B%90%20%EC%8B%A0%EC%B2%AD">tokyoksa.president@gmail.com</a>
+      으로 보내주세요.<br>
+      학생증 확인이 끝나야 정회원으로 승인되어 회원 전용 게시판과 자료를 이용하실 수 있습니다.
+    </div>
 
     <button class="primary" id="btn" type="submit">가입 신청하기</button>
     <div class="msg" id="msg"></div>
@@ -82,16 +145,20 @@ import { sb, showMsg } from "./auth.js";
 
 const form = document.getElementById("signupForm");
 
-// 재학생(YB)에게는 직장·직급을 묻지 않는다
+// 재학생(YB)에게는 직장·직급을 묻지 않고, 학생증 안내는 재학생에게만 보여준다
 const jobBox = document.getElementById("jobBox");
+const idcardBox = document.getElementById("idcardBox");
 const typeSel = document.getElementById("member_type");
-function toggleJob() {
+function toggleByType() {
   const yb = typeSel.value === "YB";
   jobBox.style.display = yb ? "none" : "";
   if (yb) { document.getElementById("company").value = ""; document.getElementById("position").value = ""; }
+  // 졸업생·비동문은 학생증이 없으므로 안내를 감춥니다
+  const grad = typeSel.value === "OB" || typeSel.value === "GUEST";
+  idcardBox.style.display = grad ? "none" : "";
 }
-typeSel.addEventListener("change", toggleJob);
-toggleJob();
+typeSel.addEventListener("change", toggleByType);
+toggleByType();
 
 const btn = document.getElementById("btn");
 const msg = document.getElementById("msg");
@@ -100,6 +167,8 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
   btn.disabled = true;
   const mail = document.getElementById("email").value.trim();
+  const phoneKr = document.getElementById("phone_kr").value.trim();
+  const phoneJp = document.getElementById("phone_jp").value.trim();
 
   // 명단에서 빠진 뒤 다시 가입할 수 없게 막아둔 메일인지 먼저 봅니다
   try {
@@ -119,12 +188,16 @@ form.addEventListener("submit", async (e) => {
         name: document.getElementById("name").value.trim(),
         member_type: document.getElementById("member_type").value,
         faculty: document.getElementById("faculty").value.trim(),
+        major: document.getElementById("major").value.trim(),
         grad_year: document.getElementById("grad_year").value.trim(),
         company: document.getElementById("company").value.trim(),
         job_title: document.getElementById("position").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
+        phone_kr: phoneKr,
+        phone_jp: phoneJp,
+        // phone 은 예전부터 쓰던 칸이라 그대로 채워 둡니다 (운영진 화면·주소록이 이 값을 봅니다)
+        phone: [phoneKr && "한국 " + phoneKr, phoneJp && "일본 " + phoneJp].filter(Boolean).join(" / "),
       },
-      emailRedirectTo: "https://u-tokyo.kr/auth/login.html",
+      emailRedirectTo: "https://u-tokyo.kr/YB/auth/login.html",
     },
   });
   btn.disabled = false;
@@ -133,7 +206,9 @@ form.addEventListener("submit", async (e) => {
       ? "이 메일 주소로는 다시 가입하실 수 없습니다. 운영진에게 문의해주세요."
       : "가입 실패: " + error.message);
   } else {
-    showMsg(msg, "가입 신청 완료! 입력하신 이메일로 인증 메일을 보냈습니다. 메일의 링크를 눌러 인증을 마친 뒤 로그인해주세요.", true);
+    showMsg(msg, typeSel.value === "YB"
+      ? "가입 신청 완료! 인증 메일을 보냈습니다. 메일의 링크로 인증을 마친 뒤, 학교 메일로 학생증 사진을 tokyoksa.president@gmail.com 으로 보내주시면 정회원 승인이 진행됩니다."
+      : "가입 신청 완료! 입력하신 이메일로 인증 메일을 보냈습니다. 메일의 링크를 눌러 인증을 마친 뒤 로그인해주세요.", true);
     form.reset();
   }
 });
