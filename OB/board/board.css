@@ -204,6 +204,21 @@ body.mapbg .banner h1{text-shadow:0 2px 22px rgba(0,0,0,.75);}
 .pickrow.need a{background:linear-gradient(#f3faf4,#e6f3e9);border-color:#a9cfb4;color:#2f6b3c;}
 .pickrow.need a:hover{background:linear-gradient(#ffffff,#eaf6ed);border-color:#4f9d5d;color:#1e5230;}
 
+/* 말머리를 고르지 않고 등록을 누르셨을 때 — 그 자리에서 붉게 알립니다 */
+.pickrow.warn a{background:linear-gradient(#fff6f5,#fdeceb);border-color:#e3a49d;color:#b3453b;}
+.pickrow.warn a:hover{background:#fff;border-color:#b3453b;color:#8f3229;}
+.tagwarn{display:none;position:relative;margin:8px 0 0;padding:8px 14px;
+  background:#fff;border:1px solid #d9d3c6;border-radius:6px;
+  box-shadow:0 3px 10px rgba(0,0,0,.12);font-size:13px;color:#3b3a36;
+  width:max-content;max-width:100%;}
+.tagwarn.on{display:block;}
+.tagwarn::before{content:"";position:absolute;top:-6px;left:22px;width:10px;height:10px;
+  background:#fff;border-left:1px solid #d9d3c6;border-top:1px solid #d9d3c6;
+  transform:rotate(45deg);}
+.tagwarn i{display:inline-block;width:18px;height:18px;border-radius:3px;background:#e8590c;
+  color:#fff;font-style:normal;font-weight:700;font-size:13px;line-height:18px;
+  text-align:center;margin-right:8px;vertical-align:-3px;}
+
 /* 글쓰기 */
 .form{background:#fff;border:1px solid #e6e1d5;border-radius:4px;padding:30px;}
 label{display:block;font-size:12.5px;font-weight:500;color:#5a5648;margin:16px 0 6px;}

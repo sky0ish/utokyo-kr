@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <title>글쓰기 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=161">
+<link rel="stylesheet" href="/YB/board/board.css?v=162">
 </head>
 <body class="yb">
 
@@ -65,6 +65,7 @@
 
       <label>말머리 * <span style="font-weight:300;color:#9a947f;">(제목 앞에 [말머리]로 붙습니다)</span></label>
       <div class="pickrow" id="tagPick"></div>
+      <div class="tagwarn" id="tagWarn"><i>!</i>말머리를 골라주세요</div>
       <div class="whatfor" id="whatFor"></div>
 
       <div style="margin-top:16px;">
@@ -91,7 +92,7 @@
 </div>
 
 <script type="module">
-import { initWrite } from "/YB/board/write-core.js?v=161";
+import { initWrite } from "/YB/board/write-core.js?v=162";
 initWrite("YB");
 </script>
 

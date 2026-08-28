@@ -111,6 +111,11 @@ export async function initWrite(ORG) {
       const list = TAGS[category] || [];
       sayWhatFor();
       tagPick.classList.toggle("need", !headTag);   // 미선택 시 연초록 강조
+      if (headTag) {                                 // 고르시면 붉은 알림을 거둡니다
+        tagPick.classList.remove("warn");
+        const w = document.getElementById("tagWarn");
+        if (w) w.classList.remove("on");
+      }
       tagPick.innerHTML = list.map(t => `<a href="#" data-v="${t}"${t === headTag ? ' class="on"' : ''}>${t}</a>`).join("");
       tagPick.querySelectorAll("a").forEach(a => a.addEventListener("click", e => {
         e.preventDefault();
@@ -262,9 +267,12 @@ export async function initWrite(ORG) {
       const btn = document.getElementById("submitBtn");
       const msg = document.getElementById("msg");
       if (!headTag) {
-        msg.className = "msg err";
-        msg.textContent = "말머리를 선택해주세요.";
-        document.getElementById("tagPick").scrollIntoView({ behavior: "smooth", block: "center" });
+        // 아래에 글로 적기보다 말머리 자리에서 바로 알려드립니다
+        msg.className = "msg"; msg.textContent = "";
+        tagPick.classList.add("warn");
+        const w = document.getElementById("tagWarn");
+        if (w) w.classList.add("on");
+        tagPick.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
       btn.disabled = true;
