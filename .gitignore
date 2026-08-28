@@ -6,6 +6,8 @@
 !/index.html
 !/robots.txt
 !/sitemap.xml
+!/google*.html          # 구글 서치콘솔 소유권 확인 파일 (지우면 확인이 풀립니다)
+!/naver*.html           # 네이버 서치어드바이저 소유권 확인 파일
 !/YB/
 !/OB/
 !/images/
