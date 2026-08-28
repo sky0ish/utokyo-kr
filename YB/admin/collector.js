@@ -18,7 +18,7 @@
   var box = document.createElement("div");
   box.style.cssText = "position:fixed;right:18px;bottom:18px;z-index:2147483647;background:#101d33;color:#fff;" +
     "padding:16px 20px;border-radius:10px;font:14px/1.6 'Malgun Gothic',sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.4);min-width:280px";
-  box.innerHTML = '<div style="font-weight:700;margin-bottom:6px">재한 도쿄대학 총동문회 수집기</div>' +
+  box.innerHTML = '<div style="font-weight:700;margin-bottom:6px">도쿄대학 한국인학생회 수집기</div>' +
     '<div id="utkMsg">준비 중…</div>' +
     '<div style="margin-top:10px"><button id="utkStop" style="background:#c9a24b;border:0;color:#14203a;padding:7px 14px;border-radius:5px;font-weight:700;cursor:pointer">지금 저장하고 종료</button></div>';
   document.body.appendChild(box);
@@ -195,7 +195,7 @@
     a.href = URL.createObjectURL(blob);
     a.download = SITE + "_collected.json";
     document.body.appendChild(a); a.click(); a.remove();
-    msg.innerHTML = "<b>" + arr.length + "건</b> 저장 완료!<br>내려받은 파일을 채팅창에<br>올려주시면 게시판에 옮겨드립니다.";
+    msg.innerHTML = "✅ <b>" + arr.length + "건</b> 수집 완료!" + "<br>파일이 내려받아졌습니다." + "<br><span style='color:#c9a24b'>게시글 가져오기</span> 화면에서" + "<br>그 파일을 올려주세요.";
     window.__utkData = arr;
     setTimeout(function () { box.remove(); window.__utkCollector = false; }, 20000);
   }

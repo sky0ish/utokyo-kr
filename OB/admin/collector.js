@@ -195,7 +195,7 @@
     a.href = URL.createObjectURL(blob);
     a.download = SITE + "_collected.json";
     document.body.appendChild(a); a.click(); a.remove();
-    msg.innerHTML = "<b>" + arr.length + "건</b> 저장 완료!<br>내려받은 파일을 채팅창에<br>올려주시면 게시판에 옮겨드립니다.";
+    msg.innerHTML = "✅ <b>" + arr.length + "건</b> 수집 완료!" + "<br>파일이 내려받아졌습니다." + "<br><span style='color:#c9a24b'>게시글 가져오기</span> 화면에서" + "<br>그 파일을 올려주세요.";
     window.__utkData = arr;
     setTimeout(function () { box.remove(); window.__utkCollector = false; }, 20000);
   }
