@@ -87,9 +87,14 @@
     </select>
 
     <label>전공 *</label>
-    <input type="text" id="major" required placeholder="예: 항공우주공학">
-    <div class="hint">전공명은 <b>학생증에 기재된 정식 명칭</b>을 한글로 적어주세요.
-      줄임말이나 통칭 대신 정식 명칭으로 적어주시면 분류가 정확해집니다.</div>
+    <select id="major" required>
+      <option value="">먼저 학부 / 연구과를 골라주세요</option>
+    </select>
+    <input type="text" id="major_etc" placeholder="학생증에 적힌 정식 명칭을 그대로 적어주세요"
+           style="display:none;margin-top:8px;">
+    <div class="hint" id="majorHint">학부 / 연구과를 고르시면 그에 맞는 전공만 나옵니다.
+      목록에 없으면 맨 아래 <b>「목록에 없음 — 직접 입력」</b>을 고르시고,
+      <b>학생증에 적힌 정식 명칭</b>을 그대로 적어주세요.</div>
 
     <label>졸업(예정)연도</label>
     <input type="text" id="grad_year" placeholder="예: 박2012">
@@ -162,6 +167,7 @@
 
 <script type="module">
 import { sb, showMsg } from "./auth.js";
+import { majorsOf } from "./majors.js?v=1";
 
 const form = document.getElementById("signupForm");
 
@@ -188,11 +194,42 @@ function toggleByType() {
   $("guest_type").required = guest;
 
   // 감춘 칸에 남은 값은 지워 둡니다
-  if (guest) { $("faculty").value = ""; $("major").value = ""; $("grad_year").value = ""; }
+  if (guest) { $("faculty").value = ""; $("grad_year").value = ""; fillMajors(); }
   else { $("guest_type").value = ""; $("org_name").value = ""; $("guest_note").value = ""; }
   if (yb || guest) { $("company").value = ""; $("position").value = ""; }
 }
 typeSel.addEventListener("change", toggleByType);
+
+// ── 학부 / 연구과를 고르면 그에 맞는 전공만 보여 준다 ──
+const facSel = $("faculty"), majSel = $("major"), majEtc = $("major_etc");
+const ETC = "__etc__";
+function fillMajors() {
+  const list = majorsOf(facSel.value);
+  const before = majSel.value;
+  if (!facSel.value) {
+    majSel.innerHTML = '<option value="">먼저 학부 / 연구과를 골라주세요</option>';
+  } else if (!list.length) {
+    // 연구생·연구원·기타 — 정해진 전공 목록이 없어 직접 적으십니다
+    majSel.innerHTML = `<option value="${ETC}">직접 입력</option>`;
+    majSel.value = ETC;
+  } else {
+    majSel.innerHTML = '<option value="">선택하세요</option>' +
+      list.map(m => `<option>${m}</option>`).join("") +
+      `<option value="${ETC}">목록에 없음 — 직접 입력</option>`;
+    if (before && [...majSel.options].some(o => o.value === before)) majSel.value = before;
+  }
+  toggleMajorEtc();
+}
+function toggleMajorEtc() {
+  const etc = majSel.value === ETC;
+  majEtc.style.display = etc ? "" : "none";
+  majEtc.required = etc;
+  if (!etc) majEtc.value = "";
+}
+facSel.addEventListener("change", fillMajors);
+majSel.addEventListener("change", toggleMajorEtc);
+fillMajors();
+
 toggleByType();
 
 const btn = document.getElementById("btn");
@@ -223,7 +260,7 @@ form.addEventListener("submit", async (e) => {
         name: document.getElementById("name").value.trim(),
         member_type: document.getElementById("member_type").value,
         faculty: document.getElementById("faculty").value.trim(),
-        major: document.getElementById("major").value.trim(),
+        major: (majSel.value === ETC ? majEtc.value : majSel.value).trim(),
         guest_type: document.getElementById("guest_type").value.trim(),
         org_name: document.getElementById("org_name").value.trim(),
         guest_note: document.getElementById("guest_note").value.trim(),
