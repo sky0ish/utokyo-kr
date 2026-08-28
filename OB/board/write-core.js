@@ -59,6 +59,7 @@ export async function initWrite(ORG) {
     // 게시판 분류 · 말머리 선택 (조직별)
     const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"포럼·세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
     const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
+                      club:"소모임", event:"행사",
                       mentoring:"멘토멘티(OB/YB)", suggest:"동문회에 바란다" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
@@ -67,6 +68,8 @@ export async function initWrite(ORG) {
       club: ["운영진", "골프", "등산", "전공별", "친목", "기타"],
       mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",
                   "만남의 광장", "유학", "운영관리", "기타"],
+      club: ["운영진", "모임 안내", "후기", "기타"],
+      event: ["행사 안내", "참가 모집", "후기", "기타"],
       promo: ["저서", "논문·연구", "상품", "기업", "채용", "행사", "기타"],
       condolence: ["부고", "결혼", "출산", "축하", "기타"],
       notice: ["총회", "회비", "행사", "안내", "기타"],
