@@ -8,11 +8,11 @@
 --     축구 · 농구 · 등산 · 스터디·분과회 · 친목 · 기타
 --
 --   대표자 연락처가 들어 있어 회원 전용(members)으로 넣습니다.
---   (옛 홈페이지에서는 누구나 볼 수 있는 상태였습니다)
 --
---   물리분과회·분과회 정보 두 글에는 원문에 사진과 연락처 표가 붙어 있는데,
---   얼굴과 개인 메일 주소가 담겨 있어 옮기지 않았습니다.
---   넣으시려면 홈페이지의 사진 올리기 기능으로 직접 올려주세요.
+--   사진 두 장(물리분과회 모임 사진, 분과회장 연락처 표)은
+--   YB/images/clubs/ 에 함께 넣어 두었습니다.
+--   ※ 글은 회원 전용이지만 사진 파일 주소 자체는 누구나 열 수 있습니다.
+--     내리고 싶으시면 이 파일의 image_url 을 null 로 바꾸고 다시 돌리시면 됩니다.
 --
 -- 실행: Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 -- ※ 다시 돌려도 괜찮습니다. 같은 제목의 글만 지우고 새로 넣습니다.
@@ -34,7 +34,7 @@ delete from public.posts
          '[스터디·분과회] JSPS 스터디 모임');
 
 insert into public.posts
-  (author_name, org, category, title, content, visibility, source, source_url, created_at)
+  (author_name, org, category, title, content, visibility, source, source_url, image_url, created_at)
 values
 ('도쿄대학 한국인학생회', 'YB', 'club', '[기타] 태권도부', '1. 정식 명칭
 도쿄대학교 태권도부
@@ -64,7 +64,7 @@ UTokyo Taekwondo Club
 초보자도 언제든지 환영합니다!
 
 7. 2026년도 대표자 연락처
-강대모 (kakao daemotkd)', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=19', '2026-05-12 10:05:00+09'),
+강대모 (kakao daemotkd)', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=19', null, '2026-05-12 10:05:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[친목] 보드게임 동호회', '1. 정식 명칭
 보드게임 동호회
 
@@ -85,7 +85,7 @@ UTokyo Taekwondo Club
 보드게임을 좋아하는 누구나
 
 7. 2026년도 대표자 연락처
-07032271687', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=20', '2026-05-12 10:20:00+09'),
+07032271687', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=20', null, '2026-05-12 10:20:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 항공우주분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
 항공우주분과회
 
@@ -106,7 +106,7 @@ UTokyo Taekwondo Club
 항공우주에 관심 있으신 모든 이공계 대학원생(정규회원) 과 학부생 및 이공계를 제외한 타 분야 대학원생(비정규 회원)
 
 7. 2026년도 대표자 연락처
-한민우; hanmw54@g.ecc.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=21', '2026-05-12 10:35:00+09'),
+한민우; hanmw54@g.ecc.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=21', null, '2026-05-12 10:35:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[등산] 도쿄대학 등산회', '1. 정식 명칭
 도쿄대학 등산회
 
@@ -129,7 +129,7 @@ UTokyo Taekwondo Club
 도쿄대학 소속이라면 누구나 환영! (학부생, 대학원생, 연구원, 교원, 교환학생, 졸업생 등)
 
 7. 2026년도 대표자 연락처
-이지원 (카카오톡 ID: qazqwer) - 편하게 문의해 주세요!', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=22', '2026-05-12 10:50:00+09'),
+이지원 (카카오톡 ID: qazqwer) - 편하게 문의해 주세요!', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=22', null, '2026-05-12 10:50:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[농구] 도쿄대 농구회', '1. 정식 명칭
 도쿄대 농구회
 
@@ -153,7 +153,7 @@ UTokyo Taekwondo Club
 
 7. 2026년도 대표자 연락처
 이진수 (소속: 도쿄대한국인학생회 취업국)
-연락처: (카카오톡 : dlwlstn1996)', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=23', '2026-05-12 11:05:00+09'),
+연락처: (카카오톡 : dlwlstn1996)', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=23', null, '2026-05-12 11:05:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[축구] 도쿄대학 축구 동호회', '1. 정식 명칭
 도쿄대학 축구 동호회
 
@@ -179,7 +179,7 @@ UTokyo Taekwondo Club
 
 7. 2026년도 대표자 연락처
 대표: 김준우 (카카오톡 ID: j-kim)
-운동장 예약 및 모임 공지를 오픈채팅방이나 연락망을 통해 전달해 드립니다. 궁금한 점은 언제든 편하게 문의해 주세요', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=24', '2026-05-12 11:20:00+09'),
+운동장 예약 및 모임 공지를 오픈채팅방이나 연락망을 통해 전달해 드립니다. 궁금한 점은 언제든 편하게 문의해 주세요', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=24', null, '2026-05-12 11:20:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 물리분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
 재일과협 물리분과회
 
@@ -199,10 +199,7 @@ UTokyo Taekwondo Club
 
 7. 2026년도 대표자 연락처
 오창근 (물리분과회장)
-cg.oh.0404@gmail.com
-
-※ 원문에 모임 사진가 첨부되어 있습니다. 개인정보가 담겨 있어 이곳에는 옮기지 않았습니다.
-   옛 홈페이지 원문: https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=25', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=25', '2026-05-14 10:05:00+09'),
+cg.oh.0404@gmail.com', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=25', '/YB/images/clubs/physics_2026.jpg', '2026-05-14 10:05:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 인공지능연구분과회', '1. 정식 명칭
 인공지능연구분과회
 
@@ -224,7 +221,7 @@ cg.oh.0404@gmail.com
 AI 연구를 진행중이신 분, 생성형 AI에 관심이 있는 분
 
 7. 2026년도 대표자 연락처
-박래현 raehyun0928@gmail.com', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=26', '2026-05-14 10:20:00+09'),
+박래현 raehyun0928@gmail.com', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=26', null, '2026-05-14 10:20:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 생명과학 연구분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
 생명과학 연구분과회
 
@@ -245,12 +242,9 @@ AI 연구를 진행중이신 분, 생성형 AI에 관심이 있는 분
 
 7. 2026년도 대표자 연락처
 구민지
-goominji@m.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=27', '2026-05-14 10:35:00+09'),
+goominji@m.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=27', null, '2026-05-14 10:35:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 재일한국과학기술자협회 분과회 정보', '2026년도 3월 시점
-재일한국과학기술자협회 분과회장님들 연락처 정보 입니다.
-
-※ 원문에 분과회장 연락처 표가 첨부되어 있습니다. 개인정보가 담겨 있어 이곳에는 옮기지 않았습니다.
-   옛 홈페이지 원문: https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=28', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=28', '2026-05-14 10:50:00+09'),
+재일한국과학기술자협회 분과회장님들 연락처 정보 입니다.', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=28', '/YB/images/clubs/kseaj_contacts_2026.png', '2026-05-14 10:50:00+09'),
 ('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] JSPS 스터디 모임', '1. 정식 명칭
 JSPS 스터디 모임
 
@@ -275,7 +269,7 @@ JSPS 스터디 모임
 
 7. 2026년도 대표자 연락처
 회장 이지원; 카카오톡 ID: qazqwer
-학술국장 한민우; hanmw54@g.ecc.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', '2026-05-14 11:05:00+09');
+학술국장 한민우; hanmw54@g.ecc.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', null, '2026-05-14 11:05:00+09');
 
 -- 확인 — 11 이 나오면 성공입니다
 -- select count(*) from public.posts
