@@ -322,3 +322,10 @@ body.yb .sec-head .t h2,
 body.yb .likebtn{border-color:#cfe3d4;background:linear-gradient(#fbfefb,#eef6f0);color:#1e5230;}
 body.yb .likebtn:hover{border-color:#4f9d5d;box-shadow:0 3px 9px rgba(79,157,93,.24);}
 body.yb .likebtn.on{background:linear-gradient(#fff3f1,#fbe3e0);border-color:#e3a49d;color:#b3453b;}
+
+/* 운영진만 보이는 글 지우기 단추 */
+.list .row .del{flex:none;width:24px;height:24px;border:1px solid #e3d6d4;border-radius:6px;
+  background:#fff;color:#c08a84;font-family:inherit;font-size:13px;line-height:1;
+  cursor:pointer;transition:.15s;margin-left:2px;}
+.list .row .del:hover{background:#fbeeec;border-color:#b3453b;color:#b3453b;}
+.list .row .del:disabled{opacity:.45;cursor:default;}

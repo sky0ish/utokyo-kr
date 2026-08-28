@@ -169,12 +169,14 @@ export async function initBoard(ORG) {
   const PUBLIC_CATS = ["notice", "condolence"];   // 공지사항과 경조사는 누구나 볼 수 있습니다
   let memberOnlyBlocked = null;
   let otherOrg = false;              // 다른 쪽 단체 회원이신가
+  let isAdmin = false;               // 운영진이면 글을 지울 수 있습니다
   const user = await currentUser();
   if (user) {
     const p = await myProfile();
     // 제 쪽 사람만 회원 전용 게시판을 봅니다 (운영진은 양쪽 모두)
     const side = (p && p.member_type) === "YB" ? "YB" : "OB";
     otherOrg = !!(p && !p.is_admin && side !== ORG);
+    isAdmin = !!(p && p.is_admin);
     const el = document.getElementById("authLinks");
     el.innerHTML = "";
     const st = document.createElement("span");
@@ -380,7 +382,23 @@ export async function initBoard(ORG) {
           <span class="mrow">${SRC[p.source] || ""}<span class="who">${escapeHtml(p.author_name || "")}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>
           <span class="dt">${p.created_at.slice(0,10)}</span>
         </span>
+        ${isAdmin ? `<button class="del" type="button" data-del="${p.id}" title="이 글 지우기">✕</button>` : ""}
       </a>`).join("");
+
+    // ── 운영진 : 글 지우기 ──
+    listEl.querySelectorAll("button[data-del]").forEach(b => b.addEventListener("click", async (e) => {
+      e.preventDefault(); e.stopPropagation();          // 글로 넘어가지 않도록
+      const id = b.dataset.del;
+      const row = b.closest(".row");
+      const title = row.querySelector(".t") ? row.querySelector(".t").textContent.trim() : "";
+      if (!confirm("이 글을 지웁니다. 되돌릴 수 없습니다.\n\n" + title.slice(0, 60))) return;
+      b.disabled = true;
+      const { error } = await sb.from("posts").delete().eq("id", id);
+      if (error) { alert("지우지 못했습니다: " + error.message); b.disabled = false; return; }
+      loaded = loaded.filter(x => String(x.id) !== String(id));
+      total = Math.max(0, total - 1);
+      row.remove();
+    }));
   }
 
   function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
