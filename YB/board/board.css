@@ -34,8 +34,8 @@ a{text-decoration:none;color:inherit;}
 .mpills a{padding:6px 13px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap;transition:.2s;}
 .mpills .band{background:#c9a24b;color:#14203a;}
 .mpills .band:hover{background:#e8c876;}
-.mpills .fb{border:1px solid rgba(255,255,255,.55);color:#fff;}
-.mpills .fb:hover{border-color:#e8c876;color:#e8c876;}
+.mpills .fb,.mpills .ig{border:1px solid rgba(255,255,255,.55);color:#fff;}
+.mpills .fb:hover,.mpills .ig:hover{border-color:#e8c876;color:#e8c876;}
 @media (max-width:900px){ .mhead nav,.mpills{display:none;} }
 
 /* ─── 어두운 사진 배너 ─── */
@@ -97,7 +97,7 @@ body.yb .mhead nav > a:hover,body.yb .mhead nav .dd > a:hover{color:#bfe8c2;bord
 body.yb .mhead .dd-menu a:hover{color:#1e5230;border-color:#7fc48a;}
 body.yb .mpills .band{background:#7fc48a;color:#14301c;}
 body.yb .mpills .band:hover{background:#a5dcae;}
-body.yb .mpills .fb:hover{border-color:#bfe8c2;color:#bfe8c2;}
+body.yb .mpills .fb:hover,body.yb .mpills .ig:hover{border-color:#bfe8c2;color:#bfe8c2;}
 body.yb .topbar{background:#132c1c;}
 body.yb .topbar a:hover{color:#bfe8c2;}
 body.yb .banner{background:linear-gradient(rgba(14,26,16,.56),rgba(12,24,14,.60)),url('/YB/images/yb_board_arch_wide.jpg?v=1') center 38%/cover;}

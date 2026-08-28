@@ -64,8 +64,8 @@
   .dd-menu a:hover{background:#fff;color:var(--green);border-color:var(--leaf);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 6px 14px rgba(0,0,0,.18);transform:translateY(-1px);}
   .sns-btns{display:flex;gap:7px;align-items:center;margin-right:-26px;}
-  .pill.fb{background:rgba(255,255,255,.14);color:#e8f3ea;border:1px solid rgba(255,255,255,.3);}
-  .pill.fb:hover{background:rgba(255,255,255,.24);}
+  .pill.fb,.pill.ig{background:rgba(255,255,255,.14);color:#e8f3ea;border:1px solid rgba(255,255,255,.3);}
+  .pill.fb:hover,.pill.ig:hover{background:rgba(255,255,255,.24);}
   .pill{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;transition:.25s;white-space:nowrap;}
   .pill.ksa{background:var(--leaf);color:#14301c;}
   .pill.ksa:hover{background:var(--leaf-bright);transform:translateY(-1px);}
@@ -614,7 +614,8 @@
       <a href="/YB/index.html#sponsor">후원</a>
     </nav>
     <div class="sns-btns">
-      <a class="pill fb" href="https://www.facebook.com/tokyoksa" target="_blank" rel="noopener">페이스북</a>
+      <a class="pill fb" href="https://www.facebook.com/tokyoksa" target="_blank" rel="noopener">Facebook</a>
+      <a class="pill ig" href="https://www.instagram.com/tokyoksa/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
 </header>
@@ -1233,7 +1234,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=163";
+import { initCalendar } from "/YB/board/calendar.js?v=164";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1310,14 +1311,14 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=163");
+  const { initCouncil } = await import("/YB/council.js?v=164");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=163";
+  import { applyMenu } from "/YB/board/nav.js?v=164";
   applyMenu("YB");
 </script>
 </body>

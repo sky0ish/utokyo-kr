@@ -9,8 +9,10 @@
   window.__utkCollector = true;
 
   var host = location.hostname;
-  var SITE = /band\.us/.test(host) ? "band" : (/facebook\.com/.test(host) ? "facebook" : null);
-  if (!SITE) { alert("네이버 밴드 또는 페이스북 그룹 페이지에서 실행해주세요."); window.__utkCollector = false; return; }
+  var SITE = /band\.us/.test(host) ? "band"
+    : (/facebook\.com/.test(host) ? "facebook"
+    : (/instagram\.com/.test(host) ? "instagram" : null));
+  if (!SITE) { alert("네이버 밴드 · 페이스북 · 인스타그램 페이지에서 실행해주세요."); window.__utkCollector = false; return; }
 
   // ── 화면 표시 ──
   var box = document.createElement("div");
@@ -50,6 +52,58 @@
         url: "https://band.us/band/" + (location.pathname.split("/")[2] || "") + "/post/" + id
       };
     });
+  }
+
+
+  // ── 인스타그램 ───────────────────────────────────────────
+  //   프로필·피드 화면에서 글 주소(/p/…, /reel/…)와 사진을 모읍니다.
+  //   글보기 화면(한 글만 열었을 때)이면 본문까지 함께 담습니다.
+  function igCaption() {
+    var h = document.querySelector("article h1");
+    if (h) return text(h);
+    var m = document.querySelector('article [data-testid="post-comment-root"] span');
+    return m ? text(m) : "";
+  }
+
+  function harvestInsta() {
+    var vh = innerHeight;
+    var here = (location.pathname.match(/\/(?:p|reel)\/([\w-]+)/) || [])[1];
+    var cap = here ? igCaption() : "";
+
+    [].forEach.call(document.querySelectorAll('a[href*="/p/"], a[href*="/reel/"]'), function (a) {
+      var r = a.getBoundingClientRect();
+      if (r.bottom < -1200 || r.top > vh + 1200) return;
+      var id = ((a.getAttribute("href") || "").match(/\/(?:p|reel)\/([\w-]+)/) || [])[1];
+      if (!id) return;
+      var img = a.querySelector("img");
+      var prev = data[id] || {};
+      var body = (img && (img.getAttribute("alt") || "")) || "";
+      data[id] = {
+        id: id, site: "instagram",
+        author: (location.pathname.split("/")[1] || "").replace(/^@/, "") || prev.author || "",
+        time: prev.time || "",
+        text: body.length > (prev.text || "").length ? body : (prev.text || ""),
+        imgs: uniq((prev.imgs || []).concat(img && img.src ? [img.src.split("?")[0]] : [])),
+        url: "https://www.instagram.com/p/" + id + "/"
+      };
+    });
+
+    // 한 글만 열어 두셨다면 그 글의 본문·사진을 더 담습니다
+    if (here) {
+      var prev = data[here] || {};
+      var imgs = [].filter.call(document.querySelectorAll("article img"), function (i) {
+        return (i.naturalWidth || i.width || 0) >= 240;
+      }).map(function (i) { return i.src.split("?")[0]; });
+      var t = document.querySelector("article time");
+      data[here] = {
+        id: here, site: "instagram",
+        author: (prev.author || (location.pathname.split("/")[1] || "")),
+        time: (t && (t.getAttribute("datetime") || text(t))) || prev.time || "",
+        text: cap.length > (prev.text || "").length ? cap : (prev.text || ""),
+        imgs: uniq((prev.imgs || []).concat(imgs)),
+        url: "https://www.instagram.com/p/" + here + "/"
+      };
+    }
   }
 
   // ── 페이스북 ─────────────────────────────────────────────
@@ -152,7 +206,7 @@
   function step() {
     if (stopped) { save(); return; }
     clickMore();
-    (SITE === "band" ? harvestBand : harvestFb)();
+    (SITE === "band" ? harvestBand : SITE === "instagram" ? harvestInsta : harvestFb)();
     var n = Object.keys(data).length;
     msg.textContent = "수집 중… " + n + "건 (스크롤 " + Math.round(scrollY / 1000) + "k)";
     scrollBy(0, SITE === "band" ? 900 : 800);
@@ -161,6 +215,7 @@
     if (idle > MAXIDLE) { save(); return; }   // 더 이상 새 글이 없으면 종료
     setTimeout(step, STEP);
   }
-  msg.textContent = (SITE === "band" ? "네이버 밴드" : "페이스북") + " 수집을 시작합니다…";
+  msg.textContent = (SITE === "band" ? "네이버 밴드"
+    : SITE === "instagram" ? "인스타그램" : "페이스북") + " 수집을 시작합니다…";
   setTimeout(step, 800);
 })();
