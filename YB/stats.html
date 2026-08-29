@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=225">
+<link rel="stylesheet" href="/YB/board/board.css?v=226">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -171,7 +171,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=225";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=226";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -202,7 +202,10 @@ if (!me || !(me.approved || me.is_admin)) {
 }
 
 async function start() {
-  const org = me.member_type || "YB";
+  // 이 화면이 어느 단체 것인지는 주소가 정합니다.
+  //   운영진은 두 단체를 다 맡으므로, 보는 사람의 소속으로 정하면
+  //   학생회 화면에 총동문회 기록이 나오는 일이 생깁니다.
+  const org = "YB";
   document.getElementById("sTitle").textContent =
     (ORG_NAME[org] || "") + " 사용통계";
 
@@ -225,12 +228,13 @@ async function start() {
     return;
   }
 
-  // 운영진은 양쪽이 다 오므로 제 소속만 골라 봅니다
-  const all = (b.data || []).filter(r => !me.is_admin || r.org === org);
-  const months = (m.data || []).filter(r => !me.is_admin || r.org === org);
+  // 이 화면의 단체 기록만 골라 봅니다 (학생회 화면에는 학생회 회원만)
+  const all = (b.data || []).filter(r => r.org === org);
+  const months = (m.data || []).filter(r => r.org === org);
 
-  // 내 기록은 따로 챙기고, 순위에서는 운영진인 나를 뺍니다
-  const mine = all.find(r => r.is_me);
+  // 내 기록은 따로 챙깁니다 — 운영진처럼 소속이 다른 분도 제 것은 보셔야 하니
+  //   거르기 전 자료에서 찾습니다. 순위에서는 운영진인 나를 뺍니다.
+  const mine = (b.data || []).find(r => r.is_me);
   const rows = all.filter(r => !(me.is_admin && r.is_me));
   rows.sort((x, y) => (y.score || 0) - (x.score || 0));
 
