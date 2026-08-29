@@ -88,9 +88,9 @@ const NAV = {
           <a href="/YB/board.html?cat=jobs">구인·채용(OB/YB)</a>
           <a href="/YB/board.html?cat=free">자유게시판</a>
           <a href="/YB/board.html?cat=qna">Q&amp;A</a>
-          <a href="/YB/board.html?cat=scholarship">장학·연구지원</a>
+          <a href="/YB/board.html?cat=scholarship">장학·연구지원 <small>준회원 열람</small></a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
-          <a href="/YB/board.html?cat=exam">수험생 게시판 (준회원)</a>
+          <a href="/YB/board.html?cat=exam">수험생 게시판 <small>누구나 열람</small></a>
           <a href="/YB/board.html?cat=notice">공지사항</a>
         </div>
       </div>

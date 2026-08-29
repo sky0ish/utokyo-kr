@@ -428,3 +428,9 @@ body.yb .row .rowlike{border-color:#dcebe0;background:#fbfefb;color:#7d9a86;}
 body.yb .row .rowlike:hover{border-color:#7fc48a;color:#1e5230;}
 body.yb .row .rowlike.on{background:#fbe9e6;border-color:#e3a49d;color:#b3453b;}
 @media (max-width:680px){ .row .rowlike{margin-left:6px;padding:2px 7px;font-size:11.5px;} }
+
+
+/* ── 메뉴 안의 「누가 볼 수 있는지」 표시 ── */
+.mhead .dd-menu a small{display:block;margin-top:2px;font-size:10.5px;font-weight:500;
+  color:#8a9a90;letter-spacing:.02em;}
+.mhead .dd-menu a:hover small{color:#4f9d5d;}
