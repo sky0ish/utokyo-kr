@@ -212,6 +212,8 @@ export async function applyAuthLinks(org) {
   };
   // 승인된 회원이면 누구나 — 제 소속의 사용통계를 봅니다
   if (p && (p.approved || p.is_admin)) el.append(mk("/OB/stats.html", "사용통계"));
+  // 로그인만 했으면 누구나 — 제 정보 고치기
+  el.append(mk("/OB/auth/mypage.html", "[MyPage]"));
 
   if (p && p.is_admin) {
     el.append(mk("/OB/admin/members.html?org=" + org, "⚙ 회원관리", 1),

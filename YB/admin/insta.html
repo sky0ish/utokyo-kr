@@ -166,7 +166,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=214";
+import { CATS } from "/YB/gallery-lib.js?v=215";
 
 const ORG = "YB";
 
@@ -502,6 +502,8 @@ async function start() {
     });
     el.append(st, mk("/YB/auth/mypage.html", (p && p.name ? p.name + "님" : "내 정보")), out);
     if (p && (p.approved || p.is_admin)) el.append(mk("/YB/stats.html", "사용통계"));
+    // 로그인만 했으면 누구나 — 제 정보 고치기
+    el.append(mk("/YB/auth/mypage.html", "[MyPage]"));
     if (p && p.is_admin) {
       el.append(mk("/YB/admin/members.html", "⚙ 회원관리", 1),
                 mk("/YB/admin/gallery.html", "⚙ 갤러리 관리", 1));

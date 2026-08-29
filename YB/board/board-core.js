@@ -252,6 +252,14 @@ export async function initBoard(ORG) {
       sa.textContent = "사용통계";
       el.append(sa);
     }
+    // 로그인만 했으면 누구나 — 제 정보 고치기
+    {
+      const mp = document.createElement("a");
+      mp.href = "/YB/auth/mypage.html";
+      mp.textContent = "[MyPage]";
+      mp.title = "내 정보 보기 · 고치기";
+      el.append(mp);
+    }
     if (p && p.is_admin) {                      // 운영진 관리 메뉴
       const mk = (href, text) => { const a = document.createElement("a");
         a.href = href; a.textContent = text; a.style.color = "#e8c876"; a.style.fontWeight = "600"; return a; };

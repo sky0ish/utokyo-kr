@@ -182,6 +182,14 @@ export async function initPost(ORG) {
       sa.textContent = "사용통계";
       el.append(sa);
     }
+    // 로그인만 했으면 누구나 — 제 정보 고치기
+    {
+      const mp = document.createElement("a");
+      mp.href = "/OB/auth/mypage.html";
+      mp.textContent = "[MyPage]";
+      mp.title = "내 정보 보기 · 고치기";
+      el.append(mp);
+    }
   }
 
     // ── 밴드·페이스북에 공유 ──

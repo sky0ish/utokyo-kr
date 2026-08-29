@@ -1349,7 +1349,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=214";
+import { initCalendar } from "/YB/board/calendar.js?v=215";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1401,6 +1401,14 @@ try {
       sa.textContent = "사용통계";
       el.append(sa);
     }
+    // 로그인만 했으면 누구나 — 제 정보 고치기
+    {
+      const mp = document.createElement("a");
+      mp.href = "/YB/auth/mypage.html";
+      mp.textContent = "[MyPage]";
+      mp.title = "내 정보 보기 · 고치기";
+      el.append(mp);
+    }
     if (p && p.is_admin) {                       // 운영진 관리 메뉴
       const mk = (href, text) => {
         const a = document.createElement("a");
@@ -1433,7 +1441,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=214";
+  import { applyMenu } from "/YB/board/nav.js?v=215";
   applyMenu("YB");
 </script>
 </body>
