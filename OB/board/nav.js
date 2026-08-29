@@ -88,8 +88,7 @@ const NAV = {
           <a href="/YB/board.html?cat=notice">공지사항</a>
           <a href="/YB/board.html?cat=free">자유게시판</a>
           <a href="/YB/board.html?cat=qna">Q&amp;A</a>
-          <a href="/YB/board.html?cat=jobs">취업정보</a>
-          <a href="/YB/board.html?cat=parttime">아르바이트</a>
+          <a href="/YB/board.html?cat=jobs">구인/채용</a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
         </div>
       </div>
