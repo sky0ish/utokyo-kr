@@ -4,6 +4,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/YB/board/nav.js?v=10";
 import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=120";
+import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js?v=2";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -429,6 +430,32 @@ export async function initBoard(ORG) {
     countInfo.textContent = `${from}–${to} / 전체 ${total}건 · ${pageNo} / ${pages} 쪽`;
   }
 
+  /** 목록에 좋아요 수를 채우고, 눌렀을 때를 잇습니다.
+   *  좋아요 자리(테이블)가 아직 없으면 단추를 감춰 아무 일도 없던 것처럼 둡니다. */
+  async function paintLikes(data) {
+    const btns = [...listEl.querySelectorAll("button[data-like]")];
+    if (!btns.length) return;
+    const got = await loadLikes("post", data.map(p => p.id));
+    const ready = !!(got && got.n && Object.keys(got.n).length) || !!(got && got.mine && got.mine.size);
+    btns.forEach(b => {
+      const id = b.dataset.like;
+      const n = (got.n || {})[String(id)] || 0;
+      const on = !!(got.mine && got.mine.has(String(id)));
+      b.classList.toggle("on", on);
+      b.innerHTML = heart(on) + `<span class="n">${n || ""}</span>`;
+      b.addEventListener("click", async (e) => {
+        e.preventDefault(); e.stopPropagation();      // 줄을 누른 것으로 새지 않게
+        if (b.disabled) return;
+        b.disabled = true;
+        const r = await toggleLike("post", id, b.classList.contains("on"));
+        b.disabled = false;
+        if (!r) return;
+        b.classList.toggle("on", r.on);
+        b.innerHTML = heart(r.on) + `<span class="n">${r.n || ""}</span>`;
+      });
+    });
+  }
+
   function render(data) {
     listEl.innerHTML = data.map(p => `
       <a class="row${p.pinned ? " pinned" : ""}" href="${HOME}/post.html?id=${p.id}">
@@ -439,6 +466,7 @@ export async function initBoard(ORG) {
         <span class="meta">
           <span class="mrow">${SRC[p.source] || ""}<span class="who">${escapeHtml(p.author_name || "")}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>
           <span class="dt">${p.created_at.slice(0,10)}</span>
+          <button class="rowlike" type="button" data-like="${p.id}" title="좋아요">${heart(false)}<span class="n"></span></button>
         </span>
         ${isAdmin ? `<span class="mv">
             <select class="mvc" data-id="${p.id}" title="다른 게시판으로 옮기기">${
@@ -452,6 +480,8 @@ export async function initBoard(ORG) {
           </span>` : ""}
         ${isAdmin ? `<button class="del" type="button" data-del="${p.id}" title="이 글 지우기">✕</button>` : ""}
       </a>`).join("");
+
+    paintLikes(data);
 
     // ── 운영진 : 줄에서 바로 게시판·말머리 바꾸기 ──
     listEl.querySelectorAll(".mv select").forEach(sel => {
