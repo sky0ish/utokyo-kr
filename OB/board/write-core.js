@@ -264,6 +264,14 @@ export async function initWrite(ORG) {
       }
     }
 
+    // 돌아가기 — 지금 고른 게시판의 글 목록으로
+    {
+      const back = document.getElementById("backBtn");
+      if (back) back.addEventListener("click", () => {
+        location.href = HOME + "/board.html" + (category ? "?cat=" + category : "");
+      });
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = document.getElementById("submitBtn");
