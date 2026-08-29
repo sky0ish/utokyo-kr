@@ -17,9 +17,10 @@ export async function initBoard(ORG) {
                    suggest:"동문회에 바란다" };
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장",
                    club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력", mentoring:"멘토멘티(OB/YB)",
-                   suggest:"학생회에 바란다" };
+                   suggest:"학생회에 바란다", exam:"수험생 게시판",
+                   career:"진학/취업 후기", counsel:"진로상담", scholarship:"장학정보" };
   const TABS_OB = ["notice","free","promo","condolence","research","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
-  const TABS_YB = ["notice","free","qna","jobs","parttime","market"];   // 참여마당 식구는 위 메뉴에서 들어옵니다
+  const TABS_YB = ["notice","free","qna","jobs","scholarship","parttime","market","exam"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
   // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
   const SHARED = ["mentoring"];
@@ -29,7 +30,7 @@ export async function initBoard(ORG) {
                             : "게시판 | 재한 도쿄대학 총동문회");
   // 참여마당 식구 — 위 메뉴의 참여마당 드롭다운과 같은 차례입니다
   const JOIN_OB = ["club", "mentoring", "forum"];
-  const JOIN_YB = ["mentoring", "event", "club", "major", "suggest"];
+  const JOIN_YB = ["mentoring", "counsel", "career", "event", "club", "major", "suggest"];
   const JOIN = ORG === "YB" ? JOIN_YB : JOIN_OB;
 
   // 운영진이 줄에서 바로 옮길 수 있는 게시판 (게시판 줄 + 참여마당)
@@ -186,7 +187,7 @@ export async function initBoard(ORG) {
   // 수험생 게시판은 진학을 알아보는 분이 로그인 없이 읽을 수 있어야 뜻이 있습니다.
   // 다만 글쓰기는 로그인·승인을 거쳐야 하므로 읽기만 열립니다.
   const PUBLIC_CATS = ["notice", "exam"];                    // 로그인 없이 볼 수 있는 곳
-  const GUEST_CATS  = ["notice"];     // 비동문 준회원께도 열어드리는 곳
+  const GUEST_CATS  = ["notice", "exam", "scholarship"];     // 비동문 준회원께도 열어드리는 곳
   let openCats = PUBLIC_CATS;                 // 지금 보시는 분께 열려 있는 곳
   let memberOnlyBlocked = null;
   let otherOrg = false;              // 다른 쪽 단체 회원이신가
@@ -200,7 +201,7 @@ export async function initBoard(ORG) {
     isGuest = mtype === "GUEST";                // 도쿄대 출신이 아닌 준회원
     const side = mtype === "YB" ? "YB" : "OB";
     otherOrg = !!(p && !p.is_admin && (isGuest || side !== ORG));
-    if (isGuest) openCats = GUEST_CATS;         // 준회원은 공지사항만
+    if (isGuest) openCats = GUEST_CATS;         // 준회원은 공지사항과 수험생 게시판까지
     isAdmin = !!(p && p.is_admin);
     const el = document.getElementById("authLinks");
     el.innerHTML = "";

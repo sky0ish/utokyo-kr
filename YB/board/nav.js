@@ -75,6 +75,8 @@ const NAV = {
         <a href="/YB/board.html?cat=mentoring">참여마당</a>
         <div class="dd-menu">
           <a href="/YB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
+          <a href="/YB/board.html?cat=counsel">진로상담</a>
+          <a href="/YB/board.html?cat=career">진학/취업 후기</a>
           <a href="/YB/board.html?cat=event">행사</a>
           <a href="/YB/board.html?cat=club">소모임</a>
           <a href="/YB/board.html?cat=major">전공별모임</a>
@@ -88,8 +90,10 @@ const NAV = {
           <a href="/YB/board.html?cat=free">자유게시판</a>
           <a href="/YB/board.html?cat=qna">Q&amp;A</a>
           <a href="/YB/board.html?cat=jobs">취업정보</a>
+          <a href="/YB/board.html?cat=scholarship">장학정보</a>
           <a href="/YB/board.html?cat=parttime">아르바이트</a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
+          <a href="/YB/board.html?cat=exam">수험생 게시판 (준회원)</a>
         </div>
       </div>
       <div class="dd">
