@@ -65,8 +65,8 @@
   .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--leaf);display:flex;align-items:center;justify-content:center;}
   .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;}
   .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:10.5px;color:rgba(255,255,255,.6);letter-spacing:.14em;}
-  nav.gnb{display:flex;gap:2px;align-items:center;margin-left:auto;margin-right:20px;}
-  nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 13px;font-size:17.5px;color:rgba(255,255,255,.88);border-bottom:2px solid transparent;transition:.2s;}
+  nav.gnb{display:flex;gap:0px;align-items:center;margin-left:auto;margin-right:20px;}
+  nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 8px;font-size:17.5px;color:rgba(255,255,255,.88);border-bottom:2px solid transparent;transition:.2s;}
   nav.gnb>a:hover,nav.gnb .dd>a:hover{color:var(--leaf-bright);border-bottom-color:var(--leaf);}
   /* 메뉴 항목이 헤더 높이를 꽉 채워서, 마우스가 내려오는 동안 하위 메뉴가 닫히지 않도록 */
   .gnb .dd{position:relative;z-index:1500;display:flex;align-items:center;align-self:stretch;}
@@ -1323,7 +1323,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=194";
+import { initCalendar } from "/YB/board/calendar.js?v=195";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1400,14 +1400,14 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=194");
+  const { initCouncil } = await import("/YB/council.js?v=195");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=194";
+  import { applyMenu } from "/YB/board/nav.js?v=195";
   applyMenu("YB");
 </script>
 </body>
