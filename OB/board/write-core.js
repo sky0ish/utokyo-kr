@@ -85,7 +85,7 @@ export async function initWrite(ORG) {
       jobs: ["신입", "경력", "인턴", "설명회"],
       parttime: ["단기", "장기", "과외", "번역·통역"],
       market: ["삽니다", "팝니다", "나눔", "구합니다"],
-      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "유학"],
+      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "진학/취업 후기", "유학"],
       suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"]
     };
     const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
