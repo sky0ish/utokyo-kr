@@ -3,6 +3,7 @@
 --   · 전공 (학생증에 적힌 정식 명칭)
 --   · 한국 전화번호 / 일본 전화번호
 --   · 비동문 준회원 칸 — 오신 자격(기업·수험생·기타) / 소속 기관 / 기타
+--   · 이용약관에 동의한 시각
 -- 실행 방법: Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 --
 -- 총동문회(OB) 화면은 이 칸들을 보내지 않습니다. 그때는 빈칸으로 들어가므로
@@ -16,6 +17,7 @@ alter table public.profiles add column if not exists phone_jp text;  -- 일본 �
 alter table public.profiles add column if not exists guest_type text; -- 비동문: 기업 / 수험생 / 기타
 alter table public.profiles add column if not exists org_name   text; -- 비동문: 소속 기관
 alter table public.profiles add column if not exists guest_note text; -- 비동문: 기타 적으신 내용
+alter table public.profiles add column if not exists terms_agreed_at timestamptz; -- 이용약관에 동의한 시각
 
 -- 2) 가입할 때 프로필을 만드는 함수에 새 칸을 더합니다
 create or replace function public.handle_new_user()
@@ -27,7 +29,7 @@ begin
   insert into public.profiles (
     id, email, name, member_type, faculty, major, grad_year,
     company, job_title, phone, phone_kr, phone_jp,
-    guest_type, org_name, guest_note
+    guest_type, org_name, guest_note, terms_agreed_at
   )
   values (
     new.id,
@@ -44,7 +46,8 @@ begin
     coalesce(new.raw_user_meta_data->>'phone_jp', ''),
     coalesce(new.raw_user_meta_data->>'guest_type', ''),
     coalesce(new.raw_user_meta_data->>'org_name', ''),
-    coalesce(new.raw_user_meta_data->>'guest_note', '')
+    coalesce(new.raw_user_meta_data->>'guest_note', ''),
+    nullif(new.raw_user_meta_data->>'terms_agreed_at', '')::timestamptz
   );
   return new;
 end;
@@ -58,4 +61,4 @@ create trigger on_auth_user_created
 -- 3) 확인 — 새로 생긴 칸이 보이면 성공입니다
 -- select column_name from information_schema.columns
 --  where table_schema='public' and table_name='profiles'
---    and column_name in ('major','phone_kr','phone_jp','guest_type','org_name','guest_note');
+--    and column_name in ('major','phone_kr','phone_jp','guest_type','org_name','guest_note','terms_agreed_at');
