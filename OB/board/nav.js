@@ -85,11 +85,13 @@ const NAV = {
       <div class="dd">
         <a href="/YB/board.html">게시판</a>
         <div class="dd-menu">
-          <a href="/YB/board.html?cat=notice">공지사항</a>
+          <a href="/YB/board.html?cat=jobs">구인·채용(OB/YB)</a>
           <a href="/YB/board.html?cat=free">자유게시판</a>
           <a href="/YB/board.html?cat=qna">Q&amp;A</a>
-          <a href="/YB/board.html?cat=jobs">구인/채용</a>
+          <a href="/YB/board.html?cat=scholarship">장학정보</a>
           <a href="/YB/board.html?cat=market">벼룩시장</a>
+          <a href="/YB/board.html?cat=exam">수험생 게시판 (준회원)</a>
+          <a href="/YB/board.html?cat=notice">공지사항</a>
         </div>
       </div>
       <div class="dd">

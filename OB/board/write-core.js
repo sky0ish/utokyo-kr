@@ -58,7 +58,7 @@ export async function initWrite(ORG) {
 
     // 게시판 분류 · 말머리 선택 (조직별)
     const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"포럼·세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
-    const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"구인/채용", market:"벼룩시장",
+    const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"구인·채용(OB/YB)", market:"벼룩시장",
                       club:"소모임", event:"행사",
                       mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
