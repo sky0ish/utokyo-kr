@@ -10,7 +10,7 @@ export async function initBoard(ORG) {
 
 
   // ── 조직별 게시판 구성 ──
-  const CAT_OB = { assembly:"총회", notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", promo:"홍보·채용", condolence:"경조사",
+  const CAT_OB = { assembly:"총회", notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", condolence:"경조사",
                    forum:"포럼·세미나", seminar:"포럼·세미나",
                    jobs:"구인·채용(OB/YB)", faculty:"단과대별", news:"소식", market:"장터",
                    research:"단행본 및 연구소개",
@@ -107,7 +107,14 @@ export async function initBoard(ORG) {
   const onlyMyOrg = (q) => SHARED.includes(cat) ? q : q.eq("org", ORG);
   const params = new URLSearchParams(location.search);
   const org = ORG;
+  // 합쳐지며 없어진 옛 갈래는 새 자리로 돌립니다 (빈 껍데기 탭이 뜨지 않도록)
+  const MOVED = { promo: "jobs", parttime: "jobs" };
   let cat = params.get("cat") || "";
+  if (MOVED[cat]) {
+    cat = MOVED[cat];
+    params.set("cat", cat);
+    history.replaceState(null, "", location.pathname + "?" + params.toString());
+  }
   if (!CAT[cat]) cat = "";
   let kw = (params.get("q") || "").trim();          // 키워드 검색어
   let tag = (params.get("tag") || "").trim();      // 말머리로 좁혀 보기
