@@ -14,8 +14,11 @@
 // ═══════════════════════════════════════════════════════════
 import { sb } from "/YB/auth/auth.js";
 
+import { fixedEvents } from "/YB/board/calendar-fixed.js?v=1";
+
 const ORG = "YB";
 
+const FIXED_NAME = { academic: "도쿄대 학사일정", holkr: "한국 공휴일", holjp: "일본 공휴일" };
 const CATNAME = {
   notice: "공지사항", free: "자유게시판", qna: "Q&A", jobs: "취업정보",
   parttime: "아르바이트", market: "벼룩시장", club: "소모임",
@@ -182,6 +185,12 @@ export async function loadEvents() {
       });
     });
   });
+  // 학사일정·공휴일은 게시판과 상관없이 늘 들어갑니다
+  fixedEvents().forEach((e) => {
+    const t = e.date.getTime();
+    if (t >= lo && t <= hi) events.push(e);
+  });
+
   events.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0) ||
                         (a.time < b.time ? -1 : 1));
   return { events, error: null };
@@ -239,6 +248,7 @@ function monthGrid(year, month, map, todayKey, titles) {
     if (ev.length) cls.push("has");
     if (d.getDay() === 0) cls.push("sun");
     if (d.getDay() === 6) cls.push("sat");
+    if (ev.some((e) => e.cat === "holkr" || e.cat === "holjp")) cls.push("hol");
     html += `<div class="${cls.join(" ")}" data-k="${k}"${ev.length ? ' role="button" tabindex="0"' : ""}>` +
             `<span class="n">${d.getDate()}</span>`;
     // 칸이 넉넉하면 행사명을 작게 얹고, 좁으면 점만 찍습니다
@@ -268,6 +278,11 @@ function fromMark(e) {
 
 /** 날짜를 눌렀을 때 — 제목과 함께 글 속의 그 줄을 그대로 보여줍니다 */
 function evCard(e) {
+  if (e.fixed) {
+    return `<span class="cev cev-card cev-fix">
+      <span class="cc-top"><b>${esc(e.title)}</b></span>
+      <span class="cc-meta">${esc(FIXED_NAME[e.cat] || "")}</span></span>`;
+  }
   return `<a class="cev cev-card" href="/YB/post.html?id=${e.id}">
     <span class="cc-top"><b>${esc(e.title)}</b></span>
     <span class="cc-meta">${e.time ? `<em>${e.time}</em> · ` : ""}` +
@@ -278,6 +293,12 @@ function evCard(e) {
 }
 
 function evLine(e) {
+  if (e.fixed) {
+    return `<span class="cev cev-fix">
+      <span class="cev-d">${e.key.slice(5).replace("-", ".")}</span>
+      <span class="cev-t">${esc(e.title)}</span>
+      <span class="cev-c">${esc(FIXED_NAME[e.cat] || "")}</span></span>`;
+  }
   return `<a class="cev" href="/YB/post.html?id=${e.id}">
     <span class="cev-d">${e.key.slice(5).replace("-", ".")}${e.time ? ` <b>${e.time}</b>` : ""}</span>
     <span class="cev-t">${esc(e.title)}</span>

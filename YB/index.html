@@ -537,6 +537,13 @@
   .cal-titles .chip.c-forum{background:#eef1f8;color:#3d4a7a;}
   .cal-titles .chip.c-notice{background:#f5eeec;color:#7a4a3c;}
   .cal-titles .chip.c-ob{background:#f8f2e2;color:#7a5f1c;}   /* 총동문회에서 온 것 */
+  /* 늘 들어가는 일정 — 학사일정과 공휴일 */
+  .cal-titles .chip.c-academic{background:#e6eef8;color:#2f4a72;}
+  .cal-titles .chip.c-holkr{background:#fbeceb;color:#a8423a;}
+  .cal-titles .chip.c-holjp{background:#fdf3e6;color:#96662a;}
+  .cd.hol .n{color:#c0504a;font-weight:700;}
+  .cev-fix{cursor:default;}
+  .cev-fix .cc-go{display:none;}
   .cal-titles .chip.more{background:none;color:#98a89d;padding-left:0;}
 
   .cal-list{margin-top:12px;}
@@ -1324,7 +1331,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=208";
+import { initCalendar } from "/YB/board/calendar.js?v=210";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
