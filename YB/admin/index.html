@@ -438,7 +438,7 @@ if (!user) {
         if (!have.has(src)) {
           const name = titleOf[key] || (day ? day + " 인재채용" : "인재채용");
           const r = await sb.from("posts").insert({
-            author_name: "학생회", org: "YB", category: "jobs",
+            author_id: user.id, author_name: "학생회", org: "YB", category: "jobs",
             title: "[기업홍보] " + name,
             content: (list[0].caption || name) + String.fromCharCode(10)
                      + "(갤러리 「인재채용」에서 옮겨온 자료입니다)",
