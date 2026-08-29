@@ -166,6 +166,7 @@
         <button class="btn" id="evAll" style="display:none;">모두 고르기 / 풀기</button>
         <button class="btn" id="mtGo">진로상담 · 진학/취업 후기 → 멘토멘티로 모으기</button>
         <button class="btn" id="gjGo">갤러리 「인재채용」 → 구인/채용 게시판으로 옮기기</button>
+        <button class="btn" id="ptGo">아르바이트 글 → 구인/채용 [아르바이트] 로 옮기기</button>
       </div>
       <div class="log" id="evLog"></div>
       <div id="evList" style="margin-top:12px;"></div>
@@ -345,6 +346,44 @@ if (!user) {
 
 
 
+
+
+  // ── 아르바이트 글을 구인/채용 [아르바이트] 로 옮기기 ──
+  {
+    const btn = document.getElementById("ptGo");
+    const log = document.getElementById("evLog");
+
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      log.style.display = "block";
+      log.textContent = "옮길 글을 찾는 중…";
+
+      const { data, error } = await sb.from("posts")
+        .select("id,title").eq("org", "YB").eq("category", "parttime").limit(2000);
+      if (error) { log.textContent = "찾지 못했습니다: " + error.message; btn.disabled = false; return; }
+      if (!data.length) { log.textContent = "옮길 글이 없습니다."; btn.disabled = false; return; }
+
+      if (!confirm(data.length + "건을 구인/채용 게시판으로 옮깁니다."
+                   + String.fromCharCode(10)
+                   + "제목 앞에 [아르바이트] 말머리가 붙습니다. 계속할까요?")) {
+        btn.disabled = false; return;
+      }
+
+      let ok = 0, err = null;
+      for (const p of data) {
+        const body = (p.title || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+        const r = await sb.from("posts")
+          .update({ category: "jobs", title: "[아르바이트] " + body })
+          .eq("id", p.id);
+        if (r.error) { err = r.error; break; }
+        ok++;
+        log.textContent = "옮기는 중… " + ok + "/" + data.length;
+      }
+      btn.disabled = false;
+      log.textContent = err ? (ok + "건까지 옮기고 멈췄습니다: " + err.message)
+                            : (ok + "건을 구인/채용 [아르바이트] 로 옮겼습니다.");
+    });
+  }
 
   // ── 갤러리 「인재채용」 사진을 구인/채용 게시판으로 옮기기 ──
   {
