@@ -478,12 +478,15 @@ function linkify(s) {
       }
       document.getElementById("cmtCount").textContent = data.length;
       if (!data.length) { listEl.innerHTML = '<div class="cmt-empty">첫 댓글을 남겨보세요.</div>'; return; }
-      const isMine  = (c) => !!(user && c.author_id === user.id);   // 수정은 본인 것만
-      const canDrop = (c) => isMine(c) || !!(user && meProfile && meProfile.is_admin);
+      const isMine  = (c) => !!(user && c.author_id === user.id);
+      const isAdmin = () => !!(user && meProfile && meProfile.is_admin);
+      // 제 댓글은 스스로 고치고, 운영진은 어느 댓글이든 고치고 지울 수 있습니다
+      const canEditC = (c) => isMine(c) || isAdmin();
+      const canDrop  = (c) => isMine(c) || isAdmin();
       listEl.innerHTML = data.map(c => `
         <div class="cmt" data-id="${c.id}">
           ${canDrop(c) ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
-          ${isMine(c)  ? `<button class="edit" data-id="${c.id}">수정</button>` : ""}
+          ${canEditC(c) ? `<button class="edit" data-id="${c.id}">수정</button>` : ""}
           <div class="who">${escapeHtml(c.author_name || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
           <div class="body">${linkify(c.content)}</div>
         </div>`).join("");
