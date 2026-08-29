@@ -24,7 +24,7 @@ export async function initBoard(ORG) {
   const TABS_YB = ["jobs","free","qna","scholarship","market","exam","notice"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
   // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
-  const SHARED = ["mentoring", "jobs"];
+  const SHARED = ["mentoring", "jobs", "scholarship"];
   const TABS = ORG === "YB" ? TABS_YB : TABS_OB;
 
   applyNav(ORG, ORG === "YB" ? "게시판 | 도쿄대학 한국인학생회"
