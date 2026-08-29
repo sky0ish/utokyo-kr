@@ -309,7 +309,7 @@ function linkify(s) {
           return m ? m[1].trim() : "";
         };
         const tg = document.createElement("select");
-        tg.className = "btn movecat";
+        tg.className = "btn movetag";
         tg.title = "말머리 바꾸기";
         const drawTags = () => {
           const now = headOf(p.title);

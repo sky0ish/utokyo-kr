@@ -260,9 +260,11 @@ body.yb .sec-head .t h2,
 @media (max-width:700px){ .mhead .hmark{width:27px;height:27px;} .mhead .mlogo{gap:8px;} }
 
 /* 운영진 : 이 글을 다른 게시판으로 옮기기 */
-.btn.movecat{border:1px solid #c9a24b;background:#fdf6e4;color:#7a6428;font-weight:600;
-  padding:9px 14px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:13.5px;}
+.btn.movecat{flex:2 1 260px;border:1px solid #c9a24b;background:#fdf6e4;color:#7a6428;font-weight:700;padding:11px 16px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:14.5px;}
 .btn.movecat:hover{filter:brightness(.97);}
+/* 말머리는 한 걸음 작고 옅게 — 게시판과 헷갈리지 않도록 */
+.btn.movetag{flex:1 1 150px;border:1px dashed #b8b2a0;background:#f7f5ef;color:#6f6a5c;font-weight:500;padding:8px 12px;border-radius:100px;cursor:pointer;font-family:inherit;font-size:12.5px;}
+.btn.movetag:hover{border-color:#8a6d2b;color:#8a6d2b;background:#fdfaf2;}
 
 /* 글 안의 주소 */
 .post .body a, .cmt .body a{color:#8a6d2b;border-bottom:1px solid #e0d3ae;word-break:break-all;}
