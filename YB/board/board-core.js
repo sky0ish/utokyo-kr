@@ -35,6 +35,8 @@ export async function initBoard(ORG) {
 
   // 운영진이 줄에서 바로 옮길 수 있는 게시판 (게시판 줄 + 참여마당)
   const MOVE = TABS.concat(JOIN.filter(c => !TABS.includes(c)));
+  /** 제목 앞의 [말머리] 만 남깁니다 */
+  const bodyOf = (t) => String(t || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
   /** 제목 앞의 [말머리] 를 떼어냅니다 */
   const headOf = (t) => {
     const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/);
@@ -431,7 +433,8 @@ export async function initBoard(ORG) {
     listEl.innerHTML = data.map(p => `
       <a class="row${p.pinned ? " pinned" : ""}" href="${HOME}/post.html?id=${p.id}">
         <span class="chip ${p.pinned ? "notice-pin" : p.category}">${p.pinned ? "알림" : (CAT[p.category] || p.category)}</span>
-        <span class="t">${escapeHtml(p.title)}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
+        ${headOf(p.title) ? `<span class="tagchip">${escapeHtml(headOf(p.title))}</span>` : ""}
+        <span class="t">${escapeHtml(bodyOf(p.title))}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
         ${p.image_url ? `<img class="thumb" src="${p.image_url}" alt="">` : ""}
         <span class="meta">
           <span class="mrow">${SRC[p.source] || ""}<span class="who">${escapeHtml(p.author_name || "")}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>

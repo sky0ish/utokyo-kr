@@ -344,3 +344,9 @@ body.yb .likebtn.on{background:linear-gradient(#fff3f1,#fbe3e0);border-color:#e3
 .list .row .mv select:hover{border-color:#c9a961;}
 .list .row .mv select:disabled{opacity:.5;}
 @media (max-width:820px){ .list .row .mv{display:none;} }
+
+/* 목록 줄의 말머리 — 게시판 이름표 옆에 따로 */
+.list .row .tagchip{flex:none;font-size:11.5px;font-weight:600;color:#8a6d2b;
+  background:#faf5e8;border:1px solid #efe4cc;border-radius:100px;padding:1px 10px;
+  white-space:nowrap;}
+body.yb .list .row .tagchip{color:#2a6b40;background:#eef7f0;border-color:#d8eadd;}
