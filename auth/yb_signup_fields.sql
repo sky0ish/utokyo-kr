@@ -58,7 +58,30 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
--- 3) 확인 — 새로 생긴 칸이 보이면 성공입니다
+-- 3) 이미 가입하신 분들의 값을 되살립니다
+--    칸이 없어 profiles 에 담기지 못했을 뿐, 가입할 때 적어주신 값은
+--    auth.users 의 가입 기록(raw_user_meta_data)에 그대로 남아 있습니다.
+--    그래서 이 한 번으로 그동안 놓친 값이 모두 채워집니다.
+update public.profiles p
+   set major       = coalesce(nullif(p.major, ''),      u.raw_user_meta_data->>'major'),
+       phone_kr    = coalesce(nullif(p.phone_kr, ''),   u.raw_user_meta_data->>'phone_kr'),
+       phone_jp    = coalesce(nullif(p.phone_jp, ''),   u.raw_user_meta_data->>'phone_jp'),
+       guest_type  = coalesce(nullif(p.guest_type, ''), u.raw_user_meta_data->>'guest_type'),
+       org_name    = coalesce(nullif(p.org_name, ''),   u.raw_user_meta_data->>'org_name'),
+       guest_note  = coalesce(nullif(p.guest_note, ''), u.raw_user_meta_data->>'guest_note'),
+       terms_agreed_at = coalesce(p.terms_agreed_at,
+                                  nullif(u.raw_user_meta_data->>'terms_agreed_at', '')::timestamptz)
+  from auth.users u
+ where u.id = p.id;
+
+-- 되살아난 값 확인 (비동문 회원의 자격이 채워졌는지)
+select name as "이름", member_type as "구분", guest_type as "자격",
+       org_name as "소속 기관", major as "전공"
+  from public.profiles
+ where member_type = 'GUEST'
+ order by created_at desc;
+
+-- 4) 확인 — 새 칸이 보이면 성공입니다
 -- select column_name from information_schema.columns
 --  where table_schema='public' and table_name='profiles'
 --    and column_name in ('major','phone_kr','phone_jp','guest_type','org_name','guest_note','terms_agreed_at');
