@@ -89,6 +89,11 @@ a{text-decoration:none;color:inherit;}
 .chip.promo{background:#f5e9e2;color:#9a5a2b;}
 .chip.qna{background:#e7eef7;color:#2f4b8f;}
 .chip.parttime{background:#eef3e8;color:#5a7a33;}
+.chip.history{background:#f0ece2;color:#7a6a3c;}
+.chip.event{background:#fbe9e4;color:#a8542b;}
+.chip.major{background:#e6e9f5;color:#454f8c;}
+.chip.research{background:#e9f1ea;color:#3c6b4a;}
+.chip.suggest{background:#f5ecdf;color:#8a5a2b;}
 
 /* ═══ 학생회(YB) 초록 테마 ═══ */
 /* 갤러리 화면은 벚꽃 야경 */
