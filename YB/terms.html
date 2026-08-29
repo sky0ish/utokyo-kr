@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+
+<title>이용약관 | 도쿄대학 한국인학생회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#1e5230;--green-2:#2a6b40;--leaf:#7fc48a;--leaf-bright:#bfe8c2;--ivory:#f4f8f4;--ink:#1b2620;--line:#dfe8e0;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#f8fbf8;line-height:1.8;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:860px;margin:0 auto;padding:0 24px;}
+
+  .utilbar{background:#132c1c;color:rgba(255,255,255,.72);font-size:12px;}
+  .utilbar .inner{max-width:860px;margin:0 auto;padding:8px 24px;display:flex;gap:18px;}
+  .utilbar a:hover{color:var(--leaf-bright);}
+
+  .mhead{background:var(--green);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
+  .mhead .inner{max-width:860px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
+  .mhead .mlogo{font-family:'Noto Serif KR',serif;font-weight:600;font-size:16.5px;color:#fff;line-height:1.25;}
+  .mhead .mlogo small{display:block;font-size:9.5px;font-weight:300;color:rgba(255,255,255,.55);letter-spacing:.14em;font-family:'Noto Sans KR',sans-serif;}
+  .mhead nav{display:flex;gap:2px;align-items:center;margin-left:auto;}
+  .mhead nav > a,.mhead nav .dd > a{display:inline-block;padding:8px 10px;font-size:13.5px;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  .mhead nav > a:hover,.mhead nav .dd > a:hover{color:var(--leaf-bright);border-bottom-color:var(--leaf);}
+  .mhead nav .dd{position:relative;z-index:1500;}
+  .mhead .dd-menu{position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:7px;padding-top:18px;min-width:150px;z-index:1500;}
+  .mhead .dd:hover .dd-menu{display:flex;}
+  .mhead .dd-menu a{display:block;text-align:center;padding:9px 18px;font-size:13px;color:#1b2620;font-weight:500;
+    background:#fff;border:1px solid #9fb3a4;border-radius:7px;white-space:nowrap;transition:.18s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 4px rgba(0,0,0,.07), 0 3px 8px rgba(0,0,0,.2);}
+  .mhead .dd-menu a:hover{background:#fff;color:var(--green);border-color:var(--leaf);transform:translateY(-1px);}
+  .mpills{display:flex;gap:6px;}
+  .mpills a{padding:6px 13px;border-radius:100px;font-size:11.5px;font-weight:600;white-space:nowrap;transition:.2s;}
+  @media (max-width:900px){ .mhead nav,.mpills{display:none;} }
+
+  .banner{background:linear-gradient(rgba(14,40,24,.74),rgba(14,40,24,.66)),url('../images/green_avenue.jpg') center 42%/cover;color:#fff;}
+  .banner .inner{max-width:860px;margin:0 auto;padding:44px 24px 40px;}
+  .banner .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--leaf-bright);letter-spacing:.14em;display:block;margin-bottom:4px;}
+  .banner h1{font-family:'Noto Serif KR',serif;font-size:30px;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,.5);}
+  .banner p{font-size:13.5px;color:rgba(255,255,255,.78);margin-top:6px;}
+
+  .doc{background:#fff;border:1px solid var(--line);border-top:3px solid var(--green);border-radius:2px;
+    box-shadow:0 10px 40px rgba(20,60,35,.06);padding:52px 56px;margin:44px auto 22px;}
+  .doc-title{text-align:center;margin-bottom:8px;font-family:'Noto Serif KR',serif;font-size:23px;font-weight:600;}
+  .doc-sub{text-align:center;font-size:13px;color:#8a9a90;margin-bottom:6px;}
+  .doc-jp{text-align:center;font-size:12.5px;color:#a3b3a8;margin-bottom:40px;letter-spacing:.06em;}
+
+  h2.chap{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--green);
+    margin:38px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:.06em;}
+  h2.chap:first-of-type{margin-top:0;}
+  h2.chap span{float:right;font-family:'Noto Sans KR',sans-serif;font-size:12.5px;font-weight:300;color:#a3b3a8;letter-spacing:.1em;padding-top:5px;}
+  .art{margin-bottom:16px;font-size:14.5px;color:#3a4a40;word-break:keep-all;}
+  .art b{font-weight:600;color:var(--ink);}
+  .art ol{margin:6px 0 0 22px;font-weight:300;}
+  .art li{margin-bottom:4px;}
+
+  .transnote{background:var(--ivory);border:1px solid var(--line);border-radius:9px;
+    padding:20px 24px;margin-top:44px;font-size:13px;color:#4a5a50;line-height:1.85;}
+  .transnote b{display:block;margin-bottom:9px;font-size:13.5px;color:var(--green);font-weight:700;letter-spacing:.08em;}
+  .transnote ul{margin:0;padding-left:17px;}
+  .transnote li{margin-bottom:6px;}
+  .transnote .warn{color:#8a3b3b;}
+
+  .stamp{text-align:center;font-size:11.5px;color:#a3b3a8;letter-spacing:.06em;margin:0 auto 8px;}
+  .back{display:block;text-align:center;margin:0 auto 70px;font-size:13px;letter-spacing:.14em;color:#8a9a90;}
+  .back:hover{color:var(--green);}
+  @media (max-width:640px){ .doc{padding:32px 22px;} h2.chap span{display:none;} }
+</style>
+</head>
+<body class="yb">
+
+<div class="utilbar">
+  <div class="inner">
+    <a href="javascript:history.back()">← 이전화면으로</a>
+    <a href="/index.html">⌂ 통합 홈</a>
+    <a href="/YB/index.html">도쿄대학 한국인학생회</a>
+  </div>
+</div>
+
+<header class="mhead">
+  <div class="inner">
+    <a class="mlogo" href="/YB/index.html">도쿄대학 한국인학생회<small>東京大学韓国人学生会 · UT-KSA</small></a>
+    <nav></nav>
+    <div class="mpills"></div>
+  </div>
+</header>
+
+<div class="banner">
+  <div class="inner">
+    <span class="en">Terms of Service</span>
+    <h1>홈페이지 이용약관</h1>
+    <p>도쿄대학 한국인학생회 · 재한 도쿄대학 총동문회 통합 홈페이지</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="doc">
+    <div class="doc-title">홈페이지 이용약관</div>
+    <div class="doc-sub">도쿄대학 한국인학생회 · 재한 도쿄대학 총동문회</div>
+    <div class="doc-jp">u-tokyo.kr</div>
+
+    <h2 class="chap">제 1 장 총칙 <span>제1조 ~ 제3조</span></h2>
+    <div class="art"><b>제 1 조 (목적)</b>
+      <ol>
+        <li>이 약관은 도쿄대학 한국인학생회와 재한 도쿄대학 총동문회(이하 「운영 주체」)가 함께 운영하는 홈페이지 u-tokyo.kr(이하 「본 홈페이지」)의 이용 조건과 절차, 회원과 운영 주체의 권리·의무를 정하는 것을 목적으로 합니다.</li>
+        <li>본 홈페이지는 재학생과 동문의 교류를 돕기 위한 <b>비영리 커뮤니티</b>입니다. 재화나 용역을 판매하지 않으며, 회원에게 대금을 청구하지 않습니다.</li>
+      </ol></div>
+    <div class="art"><b>제 2 조 (용어의 정의)</b>
+      <ol>
+        <li>「회원」이란 본 약관에 동의하고 가입을 신청하여 운영진의 승인을 받은 사람을 말합니다.</li>
+        <li>「비회원」이란 가입하지 않고 공개된 정보만을 열람하는 사람을 말합니다.</li>
+        <li>「운영진」이란 각 단체의 임원 중 홈페이지 관리 권한을 부여받은 사람을 말합니다.</li>
+        <li>「게시물」이란 회원이 본 홈페이지에 올린 글·댓글·사진·파일 일체를 말합니다.</li>
+      </ol></div>
+    <div class="art"><b>제 3 조 (약관의 게시와 개정)</b>
+      <ol>
+        <li>운영 주체는 이 약관을 회원가입 화면에서 확인할 수 있도록 게시합니다.</li>
+        <li>운영 주체는 필요한 경우 이 약관을 개정할 수 있으며, 개정 시에는 적용일과 개정 사유를 밝혀 <b>적용일 7일 전부터</b> 공지사항에 알립니다. 회원에게 불리한 개정은 <b>30일 전부터</b> 알립니다.</li>
+        <li>공지 후에도 회원이 거부 의사를 밝히지 않고 계속 이용하는 경우 개정에 동의한 것으로 봅니다. 동의하지 않으시는 경우 탈퇴하실 수 있습니다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 2 장 회원 <span>제4조 ~ 제9조</span></h2>
+    <div class="art"><b>제 4 조 (회원 등급)</b>
+      <ol>
+        <li><b>준회원</b> — 기업 관계자, 수험생, 그 밖에 도쿄대학 소속이 아닌 분. 공개 게시판과 준회원에게 열린 게시판을 이용하실 수 있습니다.</li>
+        <li><b>정회원</b> — 도쿄대학의 연구생·학부생·대학원생·교환학생·졸업생·교직원 및 그 가족. 회원 전용 게시판과 자료를 이용하실 수 있습니다.</li>
+        <li><b>운영진</b> — 학생회 및 동문회 임원진. 회원 승인, 게시물 관리 권한을 가집니다.</li>
+        <li>준회원이 도쿄대학 소속임이 확인된 경우 운영진의 확인을 거쳐 정회원으로 변경됩니다.</li>
+      </ol></div>
+    <div class="art"><b>제 5 조 (가입 신청)</b>
+      <ol>
+        <li>가입을 원하시는 분은 가입 화면의 항목을 <b>실명으로</b> 작성하고 이 약관에 동의함으로써 가입을 신청합니다.</li>
+        <li>본 홈페이지는 동문 주소록을 겸하므로 <b>실명 등록을 원칙</b>으로 합니다. 가명·차명으로는 가입하실 수 없습니다.</li>
+        <li>재학생은 <b>도쿄대학에서 발급한 학교 메일 계정</b>으로 학생증 사진을 학생회장 메일(tokyoksa.president@gmail.com)로 보내주셔야 정회원 인증이 완료됩니다.</li>
+        <li>졸업생은 동문 명부와 대조하여 확인하며, 명부에서 확인되지 않는 경우 운영진이 별도로 연락드릴 수 있습니다.</li>
+      </ol></div>
+    <div class="art"><b>제 6 조 (가입의 승인과 거절)</b>
+      <ol>
+        <li>가입은 신청만으로 완료되지 않으며, <b>운영진의 승인</b>을 거쳐야 회원 전용 기능을 이용하실 수 있습니다.</li>
+        <li>다음의 경우 운영 주체는 가입을 승인하지 않거나 보류할 수 있습니다.
+          <ol>
+            <li>실명이 아니거나 기재 내용에 거짓·누락이 있는 경우</li>
+            <li>타인의 명의나 학생증을 사용한 경우</li>
+            <li>제9조에 따라 자격을 잃은 뒤 1년이 지나지 않은 경우</li>
+            <li>영리·광고·홍보를 주된 목적으로 가입하려는 경우</li>
+          </ol></li>
+        <li>승인 결과는 가입 시 적어주신 메일로 알려드립니다.</li>
+      </ol></div>
+    <div class="art"><b>제 7 조 (회원 정보의 변경)</b>
+      <ol>
+        <li>회원은 소속·연락처 등이 바뀐 경우 「내 정보」에서 스스로 고칠 수 있습니다.</li>
+        <li>본 홈페이지는 주소록을 겸하므로, 졸업·이직·귀국 등으로 정보가 바뀐 경우 알려주시기를 부탁드립니다.</li>
+      </ol></div>
+    <div class="art"><b>제 8 조 (탈퇴)</b>
+      <ol>
+        <li>회원은 언제든지 탈퇴를 요청할 수 있으며, 운영 주체는 지체 없이 처리합니다.</li>
+        <li>탈퇴 시 회원 정보는 파기합니다. 다만 이미 올리신 게시물은 다른 회원과의 대화 맥락을 위해 남을 수 있으며, 삭제를 원하시면 탈퇴 전에 직접 지우시거나 운영진에게 요청해 주세요.</li>
+      </ol></div>
+    <div class="art"><b>제 9 조 (자격의 정지와 상실)</b>
+      <ol>
+        <li>회원이 다음에 해당하는 경우 운영 주체는 사전 통지 후 자격을 정지하거나, 사안이 명백하고 중대한 경우 즉시 정지할 수 있습니다.
+          <ol>
+            <li>가입 시 거짓 정보를 등록한 경우</li>
+            <li>타인의 계정·개인정보를 도용하거나 무단으로 이용한 경우</li>
+            <li>광고·홍보·도박·음란물 등 이 홈페이지의 목적과 무관한 글을 반복하여 올리는 경우</li>
+            <li>다른 회원을 모욕·비방하거나 괴롭히는 경우</li>
+            <li>회원 명부나 연락처를 영업·정치 활동 등 본래 목적 밖으로 이용한 경우</li>
+          </ol></li>
+        <li>정지 후 같은 행위가 반복되거나 30일 안에 시정되지 않으면 자격을 잃을 수 있습니다. 이 경우 소명할 기회를 드립니다.</li>
+        <li>제1항 제3호의 광고성 글은 발견 즉시 삭제하며, 해당 계정은 통지 없이 정지할 수 있습니다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 3 장 서비스 <span>제10조 ~ 제12조</span></h2>
+    <div class="art"><b>제 10 조 (제공하는 서비스)</b>
+      <ol>
+        <li>학생회·동문회 소식과 행사 안내</li>
+        <li>취업·장학·아르바이트 등 생활 정보의 공유</li>
+        <li>게시판과 사진첩을 통한 회원 간 교류</li>
+        <li>선후배 멘토링과 진로 상담</li>
+        <li>그 밖에 운영 주체가 정하는 활동</li>
+      </ol></div>
+    <div class="art"><b>제 11 조 (서비스의 중단)</b>
+      <ol>
+        <li>설비 점검·교체·고장, 통신 장애, 그 밖의 부득이한 사유가 있는 경우 서비스 제공을 일시 중단할 수 있습니다.</li>
+        <li>본 홈페이지는 <b>회비를 받지 않고 임원진이 자원하여 운영</b>하는 비영리 서비스입니다. 서비스 중단이나 자료 손실에 대하여 운영 주체는 고의 또는 중대한 과실이 없는 한 책임을 지지 않습니다.</li>
+        <li>중요한 자료는 회원께서도 따로 보관해 주시기를 권합니다.</li>
+      </ol></div>
+    <div class="art"><b>제 12 조 (회원에 대한 통지)</b>
+      <ol>
+        <li>개별 통지는 가입 시 적어주신 메일 주소로 합니다.</li>
+        <li>회원 전체에 대한 통지는 공지사항에 7일 이상 게시하는 것으로 갈음할 수 있습니다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 4 장 게시물 <span>제13조 ~ 제15조</span></h2>
+    <div class="art"><b>제 13 조 (게시물의 관리)</b>
+      <ol>
+        <li>게시물에 대한 책임은 작성한 회원에게 있습니다.</li>
+        <li>다음에 해당하는 게시물은 운영진이 사전 통지 없이 숨기거나 삭제할 수 있습니다.
+          <ol>
+            <li>광고·홍보·도박·음란물</li>
+            <li>타인을 모욕·비방하거나 명예를 훼손하는 내용</li>
+            <li>타인의 개인정보를 동의 없이 올린 것</li>
+            <li>저작권 등 타인의 권리를 침해하는 것</li>
+            <li>같은 내용을 반복하여 올린 것</li>
+          </ol></li>
+        <li>삭제된 게시물에 대해서는 작성자에게 사유를 알려드립니다. 다만 광고성 게시물은 그러하지 아니합니다.</li>
+      </ol></div>
+    <div class="art"><b>제 14 조 (게시물의 저작권)</b>
+      <ol>
+        <li>회원이 올린 게시물의 저작권은 <b>작성한 회원에게 있습니다.</b></li>
+        <li>운영 주체는 본 홈페이지의 운영·홍보 범위에서 게시물을 노출·보관·이관할 수 있습니다. 그 밖의 목적으로 쓰려는 경우에는 미리 동의를 구합니다.</li>
+        <li>다른 회원의 게시물을 홈페이지 밖으로 옮기거나 영리 목적으로 이용하시려면 작성자의 동의를 받으셔야 합니다.</li>
+      </ol></div>
+    <div class="art"><b>제 15 조 (금지 행위)</b>
+      <ol>
+        <li>가입·수정 시 거짓 정보를 등록하는 행위</li>
+        <li>타인의 계정·학생증·개인정보를 도용하는 행위</li>
+        <li>회원 명부와 연락처를 영업·정치·종교 권유 등에 이용하는 행위</li>
+        <li>자동화된 수단으로 홈페이지의 정보를 수집하는 행위</li>
+        <li>홈페이지의 정상적인 운영을 방해하는 행위</li>
+      </ol></div>
+
+    <h2 class="chap">제 5 장 개인정보 <span>제16조 ~ 제17조</span></h2>
+    <div class="art"><b>제 16 조 (개인정보의 수집과 이용)</b>
+      <ol>
+        <li>운영 주체는 회원 확인과 주소록 관리에 필요한 최소한의 정보만을 모읍니다. 성명·구분·학부/연구과·전공·졸업연도·연락처·전자우편이 이에 해당합니다.</li>
+        <li>모은 정보는 회원 확인, 주소록 관리, 행사 안내, 회원 간 교류를 위해서만 씁니다.</li>
+        <li>회원의 동의 없이 제3자에게 제공하지 않습니다. 다만 법령에 따라 요구되는 경우에는 그러하지 아니합니다.</li>
+        <li>회원은 언제든지 자신의 정보를 열람·수정할 수 있으며, 삭제를 요청하실 수 있습니다.</li>
+        <li>학생증 사진 등 인증을 위해 받은 자료는 <b>확인을 마친 뒤 지체 없이 파기</b>합니다.</li>
+        <li>개인정보의 처리에 관한 자세한 내용은 별도의 「개인정보 처리방침」에 따릅니다.</li>
+      </ol></div>
+    <div class="art"><b>제 17 조 (회원 명부의 열람 범위)</b>
+      <ol>
+        <li>회원 명부는 <b>운영진만</b> 열람할 수 있습니다.</li>
+        <li>게시판과 사진첩에는 작성자의 성명과 소속이 다른 회원에게 보일 수 있습니다.</li>
+        <li>연락처(전화번호·주소)는 본인과 운영진 외에는 보이지 않습니다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 6 장 회비와 후원 <span>제18조</span></h2>
+    <div class="art"><b>제 18 조 (회비와 후원)</b>
+      <ol>
+        <li>본 홈페이지의 이용은 <b>무료</b>입니다. 가입이나 이용을 이유로 대금을 청구하지 않습니다.</li>
+        <li>동문회 회비와 학생회 후원금은 각 단체의 규정에 따른 것이며, <b>납부 여부가 홈페이지 이용을 제한하지 않습니다.</b></li>
+        <li>후원해 주신 분의 명단은 본인이 원하지 않는 경우 게재하지 않습니다. 후원금의 사용 내역은 각 단체의 총회에서 보고합니다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 7 장 책임 <span>제19조 ~ 제21조</span></h2>
+    <div class="art"><b>제 19 조 (운영 주체의 의무)</b>
+      <ol>
+        <li>운영 주체는 법령과 이 약관을 지키며, 홈페이지가 안정적으로 운영되도록 노력합니다.</li>
+        <li>회원의 개인정보가 새어나가지 않도록 관리합니다.</li>
+        <li>회원이 제기한 의견과 불만이 정당한 경우 이를 처리하고 결과를 알려드립니다.</li>
+      </ol></div>
+    <div class="art"><b>제 20 조 (회원의 의무)</b>
+      <ol>
+        <li>회원은 계정과 비밀번호를 스스로 관리하여야 하며, 다른 사람이 쓰게 해서는 안 됩니다.</li>
+        <li>계정이 도용된 것을 알게 된 경우 즉시 운영진에게 알려주셔야 합니다.</li>
+        <li>회원은 이 약관과 관계 법령을 지켜야 하며, 홈페이지의 명예를 손상시키는 행위를 하여서는 안 됩니다.</li>
+      </ol></div>
+    <div class="art"><b>제 21 조 (책임의 한계)</b>
+      <ol>
+        <li>본 홈페이지에 실린 입시·취업·장학·생활 정보는 회원들이 경험을 나누기 위해 올린 것으로, <b>공식 안내가 아닙니다.</b> 실제 절차는 반드시 도쿄대학과 해당 기관의 공식 안내를 확인해 주세요.</li>
+        <li>회원 간의 거래·약속·모임에서 생긴 분쟁에 대하여 운영 주체는 개입하거나 책임지지 않습니다.</li>
+        <li>천재지변, 통신 장애, 외부 서비스의 중단 등 운영 주체가 통제할 수 없는 사유로 생긴 손해에 대하여는 책임을 지지 않습니다.</li>
+      </ol></div>
+
+    <h2 class="chap">제 8 장 분쟁의 해결 <span>제22조</span></h2>
+    <div class="art"><b>제 22 조 (분쟁의 해결과 준거법)</b>
+      <ol>
+        <li>홈페이지 이용과 관련한 의견이나 분쟁은 우선 운영진에게 알려주시면 성실히 협의하겠습니다.</li>
+        <li>협의로 해결되지 않는 분쟁에 대하여는 <b>대한민국 법</b>을 적용합니다.</li>
+        <li>소송이 필요한 경우 재한 도쿄대학 총동문회의 소재지를 관할하는 법원을 관할 법원으로 합니다.</li>
+      </ol></div>
+
+    <h2 class="chap">부칙 <span>시행일</span></h2>
+    <div class="art"><b>제 1 조 (시행일)</b>
+      <ol>
+        <li>이 약관은 2026년 ○월 ○일부터 시행합니다.</li>
+      </ol></div>
+    <div class="art"><b>제 2 조 (종전 약관의 폐지)</b>
+      <ol>
+        <li>종전의 「전자상거래(인터넷사이버몰) 표준약관」에 따른 이용약관은 이 약관의 시행과 동시에 폐지합니다.</li>
+      </ol></div>
+
+    <div class="transnote">
+      <b>이 약관에 관하여</b>
+      <ul>
+        <li>본 홈페이지는 재화를 판매하지 않는 <b>비영리 커뮤니티</b>이므로, 종전의 쇼핑몰 표준약관에 있던 구매·결제·배송·청약철회·환급 조항은 모두 덜어냈습니다.</li>
+        <li>대신 회원 등급, 학생증 인증, 게시물 관리, 회원 명부의 열람 범위, 회비와 홈페이지 이용의 분리 등 <b>이 홈페이지에 실제로 필요한 사항</b>을 담았습니다.</li>
+        <li class="warn">이 약관은 법률 자문이 아닙니다. 시행 전에 두 단체 운영진이 함께 검토해 주시고, 시행일과 관할 법원은 확정하여 채워 주세요. 「개인정보 처리방침」은 이 약관과 별개의 문서로 따로 마련하셔야 합니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stamp">검토용 초안 · 2026년 8월 29일 작성</div>
+  <a class="back" href="/YB/index.html">← 도쿄대학 한국인학생회 홈으로</a>
+</div>
+
+<script type="module">
+  import { applyMenu } from "/YB/board/nav.js?v=182";
+  applyMenu("YB");
+</script>
+</body>
+</html>
