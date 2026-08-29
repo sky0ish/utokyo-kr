@@ -387,6 +387,13 @@ async function start() {
       { col: "welcome_sent_at", sql: "auth/admin_members.sql", what: "‘아직 안 보낸 회원’ 골라 보내기" },
       { col: "company",         sql: "auth/add_company.sql",   what: "직장명" },
       { col: "job_title",       sql: "auth/add_company.sql",   what: "직급" },
+      { col: "major",       sql: "auth/yb_signup_fields.sql", what: "전공" },
+      { col: "phone_kr",    sql: "auth/yb_signup_fields.sql", what: "한국 전화번호" },
+      { col: "phone_jp",    sql: "auth/yb_signup_fields.sql", what: "일본 전화번호" },
+      { col: "guest_type",  sql: "auth/yb_signup_fields.sql", what: "비동문 — 오신 자격" },
+      { col: "org_name",    sql: "auth/yb_signup_fields.sql", what: "비동문 — 소속 기관" },
+      { col: "guest_note",  sql: "auth/yb_signup_fields.sql", what: "비동문 — 남기신 말" },
+      { col: "terms_agreed_at", sql: "auth/yb_signup_fields.sql", what: "약관 동의 시각" },
     ];
     let have = LATER.map(x => x.col), missing = [], data, error;
     for (let n = 0; n <= LATER.length; n++) {
@@ -424,6 +431,7 @@ async function start() {
     const order = HOME === "YB" ? ["YB", "OB"] : ["OB", "YB"];
     document.getElementById("orgseg").innerHTML =
       order.map(o => `<a data-o="${o}"${o === "YB" ? ' class="yb"' : ""}>${HOME_NAME[o]}</a>`).join("") +
+      '<a data-o="GUEST">비동문 준회원</a>' +
       '<a data-o="all">도쿄대학 한국인 총동문회(전체)</a>';
     orgF = HOME || "all";                       // 처음에는 들어온 쪽 명단부터
   }
@@ -550,7 +558,9 @@ async function start() {
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty","전공 · 연도"],["company","직장 · 직급"],["login","활동"],["joined","가입일"],["grade","등급"],["state","상태"]]
+       ["faculty", orgF === "GUEST" ? "자격 · 소속 기관" : "전공 · 연도"],
+       ["company", orgF === "GUEST" ? "남기신 말" : "직장 · 직급"],
+       ["login","활동"],["joined","가입일"],["grade","등급"],["state","상태"]]
         .filter(([k]) => k !== "company" || showJob)
         .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
           `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
@@ -561,8 +571,12 @@ async function start() {
         <td class="em">${esc(r.email) || "-"}</td>
         <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : r.member_type === "GUEST" ? "wait" : "ob"}">${r.member_type === "GUEST" ? "비동문" : r.member_type}</span>` : "-"}</td>
-        <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
-        ${showJob ? `<td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>` : ""}
+        <td>${r.member_type === "GUEST"
+              ? (esc(r.guest_type) || "-") + (r.org_name ? " · " + esc(r.org_name) : "")
+              : (esc(r.faculty) || "-") + (r.major ? " " + esc(r.major) : "") + " " + (esc(r.grad_year) || "")}</td>
+        ${showJob ? `<td>${r.member_type === "GUEST"
+              ? (esc(r.guest_note) || "-")
+              : (esc(r.company) || "-") + " " + (esc(r.job_title) || "")}</td>` : ""}
         <td>${actCell(r.id)}</td>
         <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
@@ -945,7 +959,7 @@ async function start() {
 
   const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
   const jobCols = () => orgF !== "YB";     // 재학생 명단에는 직장·직급을 넣지 않는다
-  const HEADER = () => "이름,이메일,연락처,구분,전공,졸업연도," +
+  const HEADER = () => "이름,이메일,연락처,구분,전공(비동문:자격),세부전공(비동문:소속기관),졸업연도(비동문:남기신말)," +
                        (jobCols() ? "직장,직급," : "") +
                        "활동점수,로그인,방문,글읽기,댓글,글쓰기,사진,마지막로그인,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
   /** 전화번호를 010-1234-5678 꼴로 (엑셀이 숫자로 바꿔 앞 0 이 사라지는 것도 막습니다) */
@@ -959,7 +973,10 @@ async function start() {
     return String(v);
   }
 
-  const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type, r.faculty, r.grad_year]
+  const csvLine = (r) => [r.name, r.email, phoneText(r.phone), r.member_type,
+                          r.member_type === "GUEST" ? (r.guest_type || "") : (r.faculty || ""),
+                          r.member_type === "GUEST" ? (r.org_name || "")   : (r.major || ""),
+                          r.member_type === "GUEST" ? (r.guest_note || "") : (r.grad_year || "")]
     .concat(jobCols() ? [r.company, r.job_title] : [])
     .concat((() => { const a = ACT.get(r.id) || {};
       return [String(Math.round(scoreOf(a))), a.login || 0, a.visit || 0, a.read || 0,
