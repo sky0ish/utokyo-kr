@@ -58,11 +58,7 @@ export async function initWrite(ORG) {
 
     // 게시판 분류 · 말머리 선택 (조직별)
     const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
-    const CATS_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"구인·채용(OB/YB)", market:"벼룩시장",
-                      club:"소모임", major:"전공별모임", event:"행사",
-                      mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다",
-                      exam:"수험생 게시판", career:"진학/취업 후기", counsel:"진로상담",
-                      scholarship:"장학정보" };
+    const CATS_YB = { mentoring:"멘토멘티(OB/YB)", event:"행사", club:"소모임", major:"전공별모임", suggest:"학생회에 바란다", jobs:"구인·채용(OB/YB)", free:"자유게시판", qna:"Q&A", scholarship:"장학정보", market:"벼룩시장", exam:"수험생 게시판", notice:"공지사항", history:"활동 이력", career:"진학/취업 후기", counsel:"진로상담" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
@@ -82,18 +78,21 @@ export async function initWrite(ORG) {
       suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"]
     };
     const TAGS_YB = {
-      notice: ["학생회", "행사", "장학", "안내", "기타"],
+      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "진학/취업 후기", "만남의 광장", "유학", "기타"],
+      event: ["행사 안내", "참가 모집", "후기", "기타"],
+      club: ["운영진", "축구", "농구", "등산", "친목", "기타"],
+      major: ["모임 안내", "후기", "자료 공유", "기타"],
+      suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"],
+      jobs: ["아르바이트", "일본채용", "한국채용", "인턴", "설명회", "기업홍보", "기타"],
       free: ["일상", "질문", "정보공유", "후기", "기타"],
       qna: ["입학", "비자·체류", "생활", "학업", "기타"],
-      jobs: ["아르바이트", "일본채용", "한국채용", "인턴", "설명회", "기업홍보", "기타"],
+      scholarship: ["교내", "일본정부", "한국정부", "민간재단", "기타"],
       market: ["삽니다", "팝니다", "나눔", "구합니다", "기타"],
-      mentoring: ["멘토 모집", "멘티 모집", "진로상담", "진학/취업 후기",
-                  "만남의 광장", "유학", "기타"],
-      suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"],
       exam: ["입시", "유학준비", "학교생활", "기타"],
+      notice: ["학생회", "행사", "장학", "안내", "기타"],
+      history: ["활동", "기타"],
       career: ["대학원 진학", "학부 진학", "취업", "인턴", "기타"],
       counsel: ["진학 상담", "취업 상담", "연구실 선택", "진로 고민", "기타"],
-      scholarship: ["교내", "일본정부", "한국정부", "민간재단", "기타"]
     };
     const TAGS = ORG === "YB" ? TAGS_YB : TAGS_OB;
 
