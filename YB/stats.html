@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=220">
+<link rel="stylesheet" href="/YB/board/board.css?v=221">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -123,10 +123,11 @@
   .myshots img{width:100%;height:80px;object-fit:cover;display:block;}
   .myshots a:hover{border-color:#4f9d5d;}
 
-  .stattop .gift{margin-top:10px;padding:8px 10px;border-radius:6px;
-    background:#eef6f0;border:1px solid #dfe9e1;
-    font-size:12px;line-height:1.55;color:#1e5230;}
-  .stattop .gift b{color:#1e5230;}
+  /* 선물 안내 — 바탕색과 헷갈리지 않게 노란빛으로 도드라지게 */
+  .stattop .gift{margin-top:10px;padding:10px 13px;border-radius:8px;
+    background:#fff4cf;border:1px solid #eccf72;border-left:4px solid #dfa521;
+    font-size:12.5px;line-height:1.6;color:#6b4d06;font-weight:500;}
+  .stattop .gift b{color:#a06f08;font-weight:700;}
 </style>
 </head>
 <body>
@@ -170,7 +171,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=220";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=221";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
