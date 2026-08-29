@@ -99,7 +99,6 @@ const NAV = {
           <a href="/YB/gallery.html?cat=all">전체</a>
           <a href="/YB/gallery.html?cat=assembly">총회</a>
           <a href="/YB/gallery.html?cat=event">행사·소모임</a>
-          <a href="/YB/gallery.html?cat=jobs">인재채용</a>
           <a href="/YB/gallery.html?cat=daily">일상</a>
           <a href="/YB/gallery.html?cat=etc">기타</a>
         </div>
