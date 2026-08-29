@@ -19,7 +19,7 @@ export async function initBoard(ORG) {
                    club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력",
                    mentoring:"멘토멘티(OB/YB)", suggest:"학생회에 바란다" };
   const TABS_OB = ["notice","free","promo","condolence","research","suggest"];   // 소모임·멘토멘티는 참여마당에서 접근
-  const TABS_YB = ["notice","free","qna","jobs","parttime","market"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
+  const TABS_YB = ["notice","free","qna","jobs","parttime","market"];   // 참여마당 식구는 위 메뉴에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;
   // 총동문회와 학생회가 함께 쓰는 게시판 — 이 분류에서는 양쪽 글을 모두 보여준다
   const SHARED = ["mentoring"];
