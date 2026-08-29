@@ -10,15 +10,20 @@
 -- ═══════════════════════════════════════════════════════════
 
 -- ── 1) 자리 만들기 ──
---   kind : 'post'(게시판 글) 또는 'photo'(갤러리 사진)
+--   kind : 'post'(게시판 글) · 'photo'(갤러리 사진) · 'comment'(댓글)
 --   ref  : 글 번호 또는 사진 번호 (글자로 담아 양쪽을 함께 씁니다)
 create table if not exists public.likes (
-  kind    text        not null check (kind in ('post', 'photo')),
+  kind    text        not null check (kind in ('post', 'photo', 'comment')),
   ref     text        not null,
   user_id uuid        not null references auth.users(id) on delete cascade,
   at      timestamptz not null default now(),
   primary key (kind, ref, user_id)
 );
+
+-- 이미 만드셨다면 댓글도 받도록 규칙만 고칩니다
+alter table public.likes drop constraint if exists likes_kind_check;
+alter table public.likes add constraint likes_kind_check
+  check (kind in ('post', 'photo', 'comment'));
 
 create index if not exists likes_kind_ref_idx on public.likes (kind, ref);
 

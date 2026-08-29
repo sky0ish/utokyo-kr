@@ -488,6 +488,41 @@ function linkify(s) {
           <div class="body">${linkify(c.content)}</div>
         </div>`).join("");
 
+      // 댓글마다 좋아요 — 글에 붙은 것과 같은 자리를 씁니다 (kind = "comment")
+      {
+        const ids = data.map(c => String(c.id));
+        const made = {};
+        data.forEach(c => {
+          const box = listEl.querySelector('.cmt[data-id="' + c.id + '"]');
+          if (!box) return;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "likebtn sm";
+          let on = false, n = 0;
+          const paint = () => {
+            b.innerHTML = heart(on) + "<span>좋아요</span>" +
+                          (n ? '<span class="n">' + n + "</span>" : "");
+            b.classList.toggle("on", on);
+          };
+          paint();
+          b.addEventListener("click", async () => {
+            b.disabled = true;
+            const r = await toggleLike("comment", c.id, on);
+            b.disabled = false;
+            if (!r) return;
+            on = r.on; n = r.n; paint();
+          });
+          made[String(c.id)] = (o, k) => { on = o; n = k; paint(); };
+          const foot = document.createElement("div");
+          foot.className = "cmt-foot";
+          foot.appendChild(b);
+          box.appendChild(foot);
+        });
+        loadLikes("comment", ids).then(r => {
+          ids.forEach(id => { if (made[id]) made[id](r.mine.has(id), r.n[id] || 0); });
+        });
+      }
+
       listEl.querySelectorAll(".del").forEach(b => b.addEventListener("click", async () => {
         if (!confirm("댓글을 삭제할까요?")) return;
         await sb.from("comments").delete().eq("id", b.dataset.id);
