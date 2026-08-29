@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 재한 도쿄대학 총동문회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/OB/board/board.css?v=226">
+<link rel="stylesheet" href="/OB/board/board.css?v=227">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -171,7 +171,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=226";
+import { applyNav, applyAuthLinks } from "/OB/board/nav.js?v=227";
 
 applyNav("OB", "사용통계 | 재한 도쿄대학 총동문회");
 applyAuthLinks("OB");
@@ -180,8 +180,9 @@ const ORG_NAME = { OB: "재한 도쿄대학 총동문회", YB: "도쿄대학 한
 const KIND = [["login", "로그인"], ["visit", "방문"], ["read", "글읽기"],
               ["comment", "댓글"], ["post", "글쓰기"], ["photo", "사진"]];
 const KNAME = Object.fromEntries(KIND);
-const KCOLOR = { login: "#2a78d6", visit: "#eb6834", read: "#1baf7a",
-                 comment: "#eda100", post: "#e87ba4", photo: "#008300" };
+// 그래프 색 — 채도를 낮춘 차분한 여섯 빛깔
+const KCOLOR = { login: "#6b83a8", visit: "#c9836a", read: "#6f9e86",
+                 comment: "#c9a961", post: "#b07f92", photo: "#7a6a90" };
 const CATN = { notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", forum:"포럼·세미나", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장", history:"활동 이력", suggest:"동문회에 바란다" };
 const KORDER = ["login", "visit", "read", "comment", "post", "photo"];
 const esc = (s) => String(s == null ? "" : s)
@@ -488,9 +489,9 @@ async function start() {
       } else {
         const bw = Math.min(24, step * 0.36);
         const cx = x0 + step / 2;
-        body = bar(cx - bw - 1, bw, d.n, KCOLOR[kind] || "#2a78d6",
+        body = bar(cx - bw - 1, bw, d.n, KCOLOR[kind] || "#6b83a8",
                    `${d.k} · ${KNAME[kind] || ""} ${d.n}`, dim) +
-               bar(cx + 1, bw, d.p, "#9aa3ad", `${d.k} · ${d.p}명`, dim);
+               bar(cx + 1, bw, d.p, "#b3aca0", `${d.k} · ${d.p}명`, dim);
       }
 
       return `<rect class="pickbar" data-k="${d.k}" x="${x0}" y="0" width="${step}"
@@ -507,7 +508,7 @@ async function start() {
 
     if (lg) lg.innerHTML = wide
       ? KORDER.map(k => `<span><i style="background:${KCOLOR[k]};"></i>${KNAME[k]}</span>`).join("")
-      : `<span><i style="background:${KCOLOR[kind] || "#2a78d6"};"></i>${KNAME[kind] || ""} 수</span>` +
+      : `<span><i style="background:${KCOLOR[kind] || "#6b83a8"};"></i>${KNAME[kind] || ""} 수</span>` +
         '<span><i style="background:#9aa3ad;"></i>사람 수</span>';
 
     el.querySelectorAll(".pickbar").forEach(r => r.addEventListener("click", () => {
