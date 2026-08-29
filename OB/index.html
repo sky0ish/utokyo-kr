@@ -16,6 +16,24 @@
     src:url("/fonts/VitroCore.woff2") format("woff2");
     font-weight:400 900; font-style:normal; font-display:swap;
   }
+
+  /* 총회 게시판에서 불러온 글 */
+  .asm-board{margin-top:26px;border-top:1px solid #e6dfcb;padding-top:20px;}
+  .asm-board h4{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;
+    color:#5c4a1c;margin-bottom:4px;}
+  .asm-board .more{float:right;font-size:12.5px;color:#8a6d2b;border-bottom:1px solid transparent;}
+  .asm-board .more:hover{border-color:#8a6d2b;}
+  .asm-board p.sub{font-size:12.5px;color:#9a947f;margin-bottom:10px;}
+  .asm-board ul{list-style:none;}
+  .asm-board li{border-bottom:1px solid #f0ece2;}
+  .asm-board li:last-child{border-bottom:none;}
+  .asm-board li a{display:flex;gap:12px;align-items:baseline;padding:9px 2px;font-size:14px;color:#3b3629;}
+  .asm-board li a:hover{color:#8a6d2b;}
+  .asm-board li .tg{flex:none;font-size:11.5px;color:#8a6d2b;background:#faf5e8;
+    border-radius:100px;padding:1px 9px;}
+  .asm-board li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .asm-board li .dt{flex:none;font-size:12px;color:#b0a98f;font-variant-numeric:tabular-nums;}
+  .asm-board .none{padding:14px 2px;font-size:13.5px;color:#a8a291;}
 </style>
 <style>
   :root{
@@ -711,10 +729,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=203b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=203b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=203b3b5b07" alt="단과대모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=203b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=204b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=204b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=204b3b5b07" alt="단과대모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=204b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -1398,6 +1416,12 @@
       </ul>
       </div>
     </div>
+    <div class="asm-board" id="asmBoard">
+      <a class="more" href="/OB/board.html?cat=assembly">총회 게시판 전체보기 →</a>
+      <h4>총회 게시판</h4>
+      <p class="sub">총회 안내와 자료, 지난 총회 이야기를 게시판에서 이어서 보실 수 있습니다.</p>
+      <div id="asmList"><div class="none">불러오는 중…</div></div>
+    </div>
     </div>
   </div>
 </section>
@@ -1410,27 +1434,27 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=203b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=204b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=203b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=204b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=203b3b5b07" alt="단과대모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=204b3b5b07" alt="단과대모임" loading="lazy"></span>
         <span class="cap">단과대모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=203b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=204b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=203b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=204b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=203b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=204b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
     </div>
@@ -1540,7 +1564,7 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=203";
+import { initCalendar } from "/OB/board/calendar.js?v=204";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
@@ -1624,11 +1648,40 @@ try {
     if (ln) ln.remove();
   }
 } catch (e) { /* 오프라인 등 실패 시 기본 링크 유지 */ }
+
+// ── 첫 화면 총회 구역 : 총회 게시판 글 불러오기 ──
+{
+  const box = document.getElementById("asmList");
+  if (box) {
+    const esc2 = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
+      c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const head = (t) => {
+      const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/);
+      return m ? m[1].trim() : "";
+    };
+    const body = (t) => String(t || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+    sb.from("posts").select("id,title,created_at")
+      .eq("org", "OB").eq("category", "assembly")
+      .order("created_at", { ascending: false }).limit(8)
+      .then(({ data, error }) => {
+        if (error || !data || !data.length) {
+          box.innerHTML = '<div class="none">아직 총회 게시판에 올라온 글이 없습니다.</div>';
+          return;
+        }
+        box.innerHTML = "<ul>" + data.map(p => `
+          <li><a href="/OB/post.html?id=${p.id}">
+            ${head(p.title) ? `<span class="tg">${esc2(head(p.title))}</span>` : ""}
+            <span class="tt">${esc2(body(p.title))}</span>
+            <span class="dt">${(p.created_at || "").slice(0, 10)}</span>
+          </a></li>`).join("") + "</ul>";
+      });
+  }
+}
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=203";
+  import { applyMenu } from "/OB/board/nav.js?v=204";
   applyMenu("OB");
 </script>
 </body>

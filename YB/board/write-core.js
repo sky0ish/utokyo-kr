@@ -57,11 +57,12 @@ export async function initWrite(ORG) {
     orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
     // 게시판 분류 · 말머리 선택 (조직별)
-    const CATS_OB = { free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
+    const CATS_OB = { assembly:"총회", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", promo:"홍보·채용", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
     const CATS_YB = { mentoring:"멘토멘티(OB/YB)", event:"행사", club:"소모임", major:"전공별모임", suggest:"학생회에 바란다", jobs:"구인·채용(OB/YB)", free:"자유게시판", qna:"Q&A", scholarship:"장학정보", market:"벼룩시장", exam:"수험생 게시판", notice:"공지사항", history:"활동 이력", career:"진학/취업 후기", counsel:"진로상담" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
+      assembly: ["결과 보고", "총회 안내", "자료", "기타"],
       free: ["일상", "질문", "정보공유", "후기"],
       club: ["골프", "등산", "전공별", "친목", "기타"],
       mentoring: ["멘토 모집", "멘티 모집", "진로상담", "취업후기", "구인",

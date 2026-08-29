@@ -19,7 +19,8 @@ const NAV = {
       <div class="dd">
         <a href="/OB/index.html#join">참여마당</a>
         <div class="dd-menu">
-          <a href="/OB/index.html#news">동문회 총회</a>
+          <a href="/OB/index.html#news">총회 안내</a>
+          <a href="/OB/board.html?cat=assembly">총회</a>
           <a href="/OB/board.html?cat=club">소모임</a>
           <a href="/OB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
           <a href="/OB/board.html?cat=forum">포럼·세미나</a>

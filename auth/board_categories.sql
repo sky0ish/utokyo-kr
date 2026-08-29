@@ -15,7 +15,7 @@ alter table public.posts drop constraint if exists posts_category_check;
 alter table public.posts add constraint posts_category_check
   check (category in (
     -- 재한 도쿄대학 총동문회 (OB)
-    'notice','free','club','mentoring','promo','condolence','forum','seminar',
+    'assembly','notice','free','club','mentoring','promo','condolence','forum','seminar',
     'jobs','faculty','news','market','research',
 
     -- 도쿄대학 한국인학생회 (YB)
