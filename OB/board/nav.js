@@ -230,104 +230,126 @@ export const applyYB = (title) => applyNav("YB", title);
 /* ─── 휴대전화에서 쓰는 메뉴 ──────────────────────────────────
    넓은 화면은 지금 그대로 둡니다. 900px 아래에서만 ☰ 단추가 나오고,
    누르면 메뉴가 아래로 펼쳐집니다.
-   손가락으로는 마우스 올리기(:hover)가 되지 않아 드롭다운이
-   열리지 않았고, 그 아래 화면폭에서는 메뉴가 아예 숨겨져 있었습니다. */
+
+   그동안 휴대전화에서는
+     · 메뉴줄이 아예 숨겨져 있었고 (900px 아래에서 display:none)
+     · 손가락으로는 마우스 올리기(:hover)가 되지 않아 드롭다운도 안 열렸고
+     · 맨 윗줄 링크가 한 글자씩 세로로 쪼개져 보였습니다.
+
+   머리글 모양이 두 가지라 둘 다 손봅니다.
+     첫 화면        header.site > .container > nav.gnb
+     그 밖의 화면   .mhead     > .inner     > nav                        */
+
+const MNAV_HEADS = [
+  { head: ".mhead", inner: ".inner", nav: "nav" },
+  { head: "header.site", inner: ".container", nav: "nav.gnb" },
+];
 
 const MNAV_CSS = `
-.mhead .burger{display:none;margin-left:auto;background:transparent;
+.mhead .burger,header.site .burger{display:none;margin-left:auto;background:transparent;
   border:1px solid rgba(255,255,255,.42);border-radius:9px;color:#fff;
   padding:7px 12px;font-size:19px;line-height:1;cursor:pointer;}
-.mhead .burger:active{background:rgba(255,255,255,.14);}
+.mhead .burger:active,header.site .burger:active{background:rgba(255,255,255,.14);}
 @media (max-width:900px){
-  .mhead .burger{display:block;}
+  .mhead .burger,header.site .burger{display:block;}
   .mhead .inner{gap:10px;}
-  .mhead.mopen nav{display:flex;position:absolute;left:0;right:0;top:100%;
+  header.site .container{gap:10px;height:64px;}
+  .mhead,header.site{top:0 !important;}
+
+  .mhead.mopen nav,header.site.mopen nav.gnb{
+    display:flex !important;position:absolute;left:0;right:0;top:100%;
     flex-direction:column;align-items:stretch;gap:0;margin:0;
     background:#0d1830;border-top:1px solid rgba(255,255,255,.12);
     box-shadow:0 14px 26px rgba(0,0,0,.38);
-    max-height:calc(100vh - 130px);overflow-y:auto;
+    max-height:calc(100vh - 120px);overflow-y:auto;
     -webkit-overflow-scrolling:touch;padding:6px 0 12px;}
-  .mhead.mopen nav .dd{position:static;}
-  .mhead.mopen nav > a,
-  .mhead.mopen nav .dd > a{display:block;padding:13px 22px;font-size:16px;
-    font-weight:600;color:#fff;border-bottom:none;}
-  .mhead.mopen nav > a:active,
-  .mhead.mopen nav .dd > a:active{background:rgba(255,255,255,.09);}
-  .mhead.mopen .dd-menu{position:static;display:flex !important;transform:none;
-    min-width:0;padding:0 0 8px;gap:0;}
-  .mhead.mopen .dd-menu a{display:block;text-align:left;white-space:normal;
-    padding:10px 22px 10px 40px;font-size:14px;font-weight:400;
-    color:rgba(255,255,255,.72);background:transparent;border:none;
-    border-radius:0;box-shadow:none;}
-  .mhead.mopen .dd-menu a:active{background:rgba(255,255,255,.1);color:#fff;transform:none;}
-  .mhead.mopen .mpills.mpills-m{display:flex;flex-wrap:wrap;gap:7px;
-    margin-top:6px;padding:12px 22px 2px;border-top:1px solid rgba(255,255,255,.1);}
-  .topbar .inner{flex-wrap:wrap;row-gap:4px;}
-  .topbar .links{flex-wrap:wrap;gap:12px;}
+  .mhead.mopen nav .dd,header.site.mopen nav.gnb .dd{position:static;}
+  .mhead.mopen nav > a,.mhead.mopen nav .dd > a,
+  header.site.mopen nav.gnb > a,header.site.mopen nav.gnb .dd > a{
+    display:block;padding:13px 22px;font-size:16px;font-weight:600;
+    color:#fff;border-bottom:none;white-space:nowrap;}
+  .mhead.mopen nav > a:active,.mhead.mopen nav .dd > a:active,
+  header.site.mopen nav.gnb > a:active,header.site.mopen nav.gnb .dd > a:active{
+    background:rgba(255,255,255,.09);}
+  .mhead.mopen .dd-menu,header.site.mopen .dd-menu{
+    position:static;display:flex !important;transform:none;min-width:0;
+    padding:0 0 8px;gap:0;}
+  .mhead.mopen .dd-menu a,header.site.mopen .dd-menu a{
+    display:block;text-align:left;white-space:nowrap;padding:10px 22px 10px 40px;
+    font-size:14px;font-weight:400;color:rgba(255,255,255,.72);
+    background:transparent;border:none;border-radius:0;box-shadow:none;}
+  .mhead.mopen .dd-menu a:active,header.site.mopen .dd-menu a:active{
+    background:rgba(255,255,255,.1);color:#fff;transform:none;}
+  .mpills.mpills-m{display:flex !important;flex-wrap:wrap;gap:7px;margin-top:6px;
+    padding:12px 22px 2px;border-top:1px solid rgba(255,255,255,.1);}
+
+  /* 맨 윗줄이 한 글자씩 세로로 쪼개지지 않게 */
+  .topbar .inner,.utilbar .container{flex-wrap:wrap;row-gap:5px;gap:10px;}
+  .topbar .links,.utilbar .links{flex-wrap:wrap;gap:7px 14px;min-width:0;}
+  .topbar a,.utilbar a{white-space:nowrap;}
 }
-body.yb .mhead.mopen nav{background:#0f2a1c;}
+body.yb .mhead.mopen nav,body.yb header.site.mopen nav.gnb{background:#0f2a1c;}
 `;
 
 /** ☰ 단추를 달고, 눌렀을 때 메뉴가 펼쳐지게 한다. */
 export function mobileNav() {
-  const head = document.querySelector(".mhead");
-  if (!head) return;
-  const inner = head.querySelector(".inner");
-  const nav = head.querySelector("nav");
-  if (!inner || !nav) return;
-
   if (!document.getElementById("mnav-style")) {
     const st = document.createElement("style");
     st.id = "mnav-style";
     st.textContent = MNAV_CSS;
     document.head.appendChild(st);
   }
+  MNAV_HEADS.forEach((sel) => {
+    const head = document.querySelector(sel.head);
+    if (!head) return;
+    const inner = head.querySelector(sel.inner);
+    const nav = head.querySelector(sel.nav);
+    if (!inner || !nav) return;
 
-  const close = () => {
-    head.classList.remove("mopen");
-    const b = head.querySelector(".burger");
-    if (b) { b.textContent = "☰"; b.setAttribute("aria-label", "메뉴 열기");
-             b.setAttribute("aria-expanded", "false"); }
-  };
+    const btnOf = () => head.querySelector(".burger");
+    const close = () => {
+      head.classList.remove("mopen");
+      const b = btnOf();
+      if (b) { b.textContent = "☰"; b.setAttribute("aria-label", "메뉴 열기");
+               b.setAttribute("aria-expanded", "false"); }
+    };
+    const open = () => {
+      // 밴드·페이스북 같은 단추도 메뉴 아래에 함께 넣어 드립니다
+      const pills = head.querySelector(".mpills:not(.mpills-m)");
+      if (pills && !nav.querySelector(".mpills-m")) {
+        const m = document.createElement("div");
+        m.className = "mpills mpills-m";
+        m.innerHTML = pills.innerHTML;
+        nav.appendChild(m);
+      }
+      head.classList.add("mopen");
+      const b = btnOf();
+      if (b) { b.textContent = "✕"; b.setAttribute("aria-label", "메뉴 닫기");
+               b.setAttribute("aria-expanded", "true"); }
+    };
 
-  const open = () => {
-    // 아래쪽에 밴드·페이스북 같은 단추도 함께 넣어 드립니다
-    const pills = head.querySelector(".mpills:not(.mpills-m)");
-    if (pills && !nav.querySelector(".mpills-m")) {
-      const m = document.createElement("div");
-      m.className = "mpills mpills-m";
-      m.innerHTML = pills.innerHTML;
-      nav.appendChild(m);
+    if (!btnOf()) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "burger";
+      btn.textContent = "☰";
+      btn.setAttribute("aria-label", "메뉴 열기");
+      btn.setAttribute("aria-expanded", "false");
+      inner.insertBefore(btn, nav);
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        head.classList.contains("mopen") ? close() : open();
+      });
     }
-    head.classList.add("mopen");
-    const b = head.querySelector(".burger");
-    if (b) { b.textContent = "✕"; b.setAttribute("aria-label", "메뉴 닫기");
-             b.setAttribute("aria-expanded", "true"); }
-  };
 
-  if (!head.querySelector(".burger")) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "burger";
-    btn.textContent = "☰";
-    btn.setAttribute("aria-label", "메뉴 열기");
-    btn.setAttribute("aria-expanded", "false");
-    inner.insertBefore(btn, nav);
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      head.classList.contains("mopen") ? close() : open();
-    });
-  }
-
-  if (!head.dataset.mnav) {
-    head.dataset.mnav = "1";
-    // 메뉴 안의 링크를 누르면 닫습니다
-    nav.addEventListener("click", (e) => { if (e.target.closest("a")) close(); });
-    // 바깥을 누르거나, 넓은 화면으로 돌아가면 닫습니다
-    document.addEventListener("click", (e) => {
-      if (head.classList.contains("mopen") && !head.contains(e.target)) close();
-    });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
-    window.addEventListener("resize", () => { if (window.innerWidth > 900) close(); });
-  }
+    if (!head.dataset.mnav) {
+      head.dataset.mnav = "1";
+      nav.addEventListener("click", (e) => { if (e.target.closest("a")) close(); });
+      document.addEventListener("click", (e) => {
+        if (head.classList.contains("mopen") && !head.contains(e.target)) close();
+      });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+      window.addEventListener("resize", () => { if (window.innerWidth > 900) close(); });
+    }
+  });
 }
