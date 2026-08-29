@@ -5,7 +5,7 @@
 --   그 전 글(현정회·건축학과 학생회 등 오래된 소개)은 넣지 않았습니다.
 --
 --   제목 앞의 [말머리]로 참여마당 > 소모임 안에서 갈래가 나뉩니다.
---     축구 · 농구 · 등산 · 스터디·분과회 · 친목 · 기타
+--     운동 · 종교 · 학술 · 친목 · 기타
 --
 --   대표자 연락처가 들어 있어 회원 전용(members)으로 넣습니다.
 --
@@ -18,25 +18,16 @@
 -- ※ 다시 돌려도 괜찮습니다. 같은 제목의 글만 지우고 새로 넣습니다.
 -- ═══════════════════════════════════════════════════════════
 
--- 이 파일로 넣은 글만 골라 지웁니다 (직접 쓰신 글은 건드리지 않습니다)
+-- 옮겨온 글은 통째로 지우고 새로 넣습니다.
+-- (예전에 다른 말머리로 넣으셨더라도 겹치지 않게 정리됩니다.
+--  source = 'legacy' 는 옮겨온 글만 가리키므로, 회원이 직접 쓰신 글은 그대로 남습니다)
 delete from public.posts
- where org = 'YB' and category = 'club' and source = 'legacy'
-   and title in ('[기타] 태권도부',
-         '[친목] 보드게임 동호회',
-         '[스터디·분과회] 항공우주분과회 (재일한국과학기술자협회 분과회)',
-         '[등산] 도쿄대학 등산회',
-         '[농구] 도쿄대 농구회',
-         '[축구] 도쿄대학 축구 동호회',
-         '[스터디·분과회] 물리분과회 (재일한국과학기술자협회 분과회)',
-         '[스터디·분과회] 인공지능연구분과회',
-         '[스터디·분과회] 생명과학 연구분과회 (재일한국과학기술자협회 분과회)',
-         '[스터디·분과회] 재일한국과학기술자협회 분과회 정보',
-         '[스터디·분과회] JSPS 스터디 모임');
+ where org = 'YB' and category = 'club' and source = 'legacy';
 
 insert into public.posts
   (author_name, org, category, title, content, visibility, source, source_url, image_url, created_at)
 values
-('도쿄대학 한국인학생회', 'YB', 'club', '[기타] 태권도부', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[운동] 태권도부', '1. 정식 명칭
 도쿄대학교 태권도부
 UTokyo Taekwondo Club
 東大テコンドー部
@@ -86,7 +77,7 @@ UTokyo Taekwondo Club
 
 7. 2026년도 대표자 연락처
 07032271687', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=20', null, '2026-05-12 10:20:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 항공우주분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[학술] 항공우주분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
 항공우주분과회
 
 2. 모임의 목적
@@ -107,7 +98,7 @@ UTokyo Taekwondo Club
 
 7. 2026년도 대표자 연락처
 한민우; hanmw54@g.ecc.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=21', null, '2026-05-12 10:35:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[등산] 도쿄대학 등산회', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[운동] 도쿄대학 등산회', '1. 정식 명칭
 도쿄대학 등산회
 
 2. 모임의 목적
@@ -130,7 +121,7 @@ UTokyo Taekwondo Club
 
 7. 2026년도 대표자 연락처
 이지원 (카카오톡 ID: qazqwer) - 편하게 문의해 주세요!', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=22', null, '2026-05-12 10:50:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[농구] 도쿄대 농구회', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[운동] 도쿄대 농구회', '1. 정식 명칭
 도쿄대 농구회
 
 2. 모임의 목적
@@ -154,7 +145,7 @@ UTokyo Taekwondo Club
 7. 2026년도 대표자 연락처
 이진수 (소속: 도쿄대한국인학생회 취업국)
 연락처: (카카오톡 : dlwlstn1996)', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=23', null, '2026-05-12 11:05:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[축구] 도쿄대학 축구 동호회', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[운동] 도쿄대학 축구 동호회', '1. 정식 명칭
 도쿄대학 축구 동호회
 
 2. 모임의 목적
@@ -180,7 +171,7 @@ UTokyo Taekwondo Club
 7. 2026년도 대표자 연락처
 대표: 김준우 (카카오톡 ID: j-kim)
 운동장 예약 및 모임 공지를 오픈채팅방이나 연락망을 통해 전달해 드립니다. 궁금한 점은 언제든 편하게 문의해 주세요', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=24', null, '2026-05-12 11:20:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 물리분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[학술] 물리분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
 재일과협 물리분과회
 
 2. 모임의 목적
@@ -200,7 +191,7 @@ UTokyo Taekwondo Club
 7. 2026년도 대표자 연락처
 오창근 (물리분과회장)
 cg.oh.0404@gmail.com', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=25', '/YB/images/clubs/physics_2026.jpg', '2026-05-14 10:05:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 인공지능연구분과회', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[학술] 인공지능연구분과회', '1. 정식 명칭
 인공지능연구분과회
 
 2. 모임의 목적
@@ -222,7 +213,7 @@ AI 연구를 진행중이신 분, 생성형 AI에 관심이 있는 분
 
 7. 2026년도 대표자 연락처
 박래현 raehyun0928@gmail.com', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=26', null, '2026-05-14 10:20:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 생명과학 연구분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[학술] 생명과학 연구분과회 (재일한국과학기술자협회 분과회)', '1. 정식 명칭
 생명과학 연구분과회
 
 2. 모임의 목적
@@ -243,9 +234,9 @@ AI 연구를 진행중이신 분, 생성형 AI에 관심이 있는 분
 7. 2026년도 대표자 연락처
 구민지
 goominji@m.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=27', null, '2026-05-14 10:35:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] 재일한국과학기술자협회 분과회 정보', '2026년도 3월 시점
+('도쿄대학 한국인학생회', 'YB', 'club', '[학술] 재일한국과학기술자협회 분과회 정보', '2026년도 3월 시점
 재일한국과학기술자협회 분과회장님들 연락처 정보 입니다.', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=28', '/YB/images/clubs/kseaj_contacts_2026.png', '2026-05-14 10:50:00+09'),
-('도쿄대학 한국인학생회', 'YB', 'club', '[스터디·분과회] JSPS 스터디 모임', '1. 정식 명칭
+('도쿄대학 한국인학생회', 'YB', 'club', '[학술] JSPS 스터디 모임', '1. 정식 명칭
 JSPS 스터디 모임
 
 2. 모임의 목적
@@ -270,6 +261,24 @@ JSPS 스터디 모임
 7. 2026년도 대표자 연락처
 회장 이지원; 카카오톡 ID: qazqwer
 학술국장 한민우; hanmw54@g.ecc.u-tokyo.ac.jp', 'members', 'legacy', 'https://www.tokyoksa.com/bbs/board.php?bo_table=z2_05&wr_id=29', null, '2026-05-14 11:05:00+09');
+
+-- ── 회원이 직접 쓰신 소모임 글의 옛 말머리를 새 말머리로 ──
+--    축구·농구·등산 → 운동 / 스터디·분과회 → 학술 / 종교모임 → 종교 / 운영진 → 기타
+update public.posts set title = '[운동]' || substr(title, position(']' in title) + 1)
+ where org = 'YB' and category = 'club' and source <> 'legacy'
+   and (title like '[축구]%' or title like '[농구]%' or title like '[등산]%');
+
+update public.posts set title = '[학술]' || substr(title, position(']' in title) + 1)
+ where org = 'YB' and category = 'club' and source <> 'legacy'
+   and title like '[스터디·분과회]%';
+
+update public.posts set title = '[종교]' || substr(title, position(']' in title) + 1)
+ where org = 'YB' and category = 'club' and source <> 'legacy'
+   and title like '[종교모임]%';
+
+update public.posts set title = '[기타]' || substr(title, position(']' in title) + 1)
+ where org = 'YB' and category = 'club' and source <> 'legacy'
+   and title like '[운영진]%';
 
 -- 확인 — 11 이 나오면 성공입니다
 -- select count(*) from public.posts
