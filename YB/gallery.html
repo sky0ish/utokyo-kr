@@ -26,6 +26,21 @@
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+  /* ── 연도 고르기 ── */
+  .ytabs{display:none;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 6px;}
+  .ytabs.on{display:flex;}
+  .ytabs .yl{font-size:12.5px;color:#8a9a90;margin-right:4px;}
+  .ytabs a{padding:5px 14px;border-radius:100px;font-size:13px;font-weight:500;color:#5c6f62;
+    background:#fff;border:1px solid #dfe9e1;cursor:pointer;transition:.15s;}
+  .ytabs a:hover{border-color:#a9cfb4;color:#1e5230;}
+  .ytabs a.on{background:#1e5230;border-color:#1e5230;color:#fff;font-weight:600;}
+  /* 연도 머리글 (앨범 사이에 끼워 넣습니다) */
+  .ybar{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:14px 0 2px;}
+  .ybar:first-child{margin-top:0;}
+  .ybar b{font-size:17px;font-weight:700;color:#1e5230;letter-spacing:.02em;}
+  .ybar small{font-size:12.5px;color:#a3b3a8;}
+  .ybar i{flex:1;height:1px;background:#e2ebe4;font-style:normal;}
+
   .gtabs{display:flex;flex-wrap:wrap;gap:9px;margin:34px 0 8px;}
   .gtabs a{padding:11px 24px;border-radius:9px;font-size:15px;font-weight:500;color:#3e5344;
     background:linear-gradient(#fbfefb,#eef5ef);border:1px solid #cfe3d4;
@@ -243,6 +258,7 @@
     <button class="clr" id="qClr">✕ 검색 해제</button>
   </div>
   <div class="gtabs" id="gtabs"></div>
+  <div class="ytabs" id="ytabs"></div>
   <span class="memnote" id="memnote"></span>
   <div class="gbar">
     <div class="gcount" id="gcount" style="margin:0;"></div>
@@ -353,6 +369,34 @@ showSearchState();
 const esc = s => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+// ── 연도 고르기 ──
+//   행사 날짜(사진첩) 또는 사진에 적힌 날짜에서 연도를 뽑아 씁니다.
+let year = (new URLSearchParams(location.search).get("year") || "").trim();
+const yearOf = (a) => (a.year || (a.date || "").slice(0, 4) || "");
+
+/** 지금 갈래에 어떤 연도가 있는지 단추로 늘어놓습니다 (최신 해가 앞) */
+function drawYearTabs(pool) {
+  const box = document.getElementById("ytabs");
+  const years = [...new Set(pool.map(yearOf).filter(Boolean))].sort().reverse();
+  if (years.length < 2) { box.className = "ytabs"; box.innerHTML = ""; year = ""; return; }
+  if (year && !years.includes(year)) year = "";          // 갈래를 바꿔 그 해가 없어진 경우
+  box.className = "ytabs on";
+  const n = (y) => pool.filter(a => yearOf(a) === y).length;
+  box.innerHTML = '<span class="yl">연도</span>' +
+    `<a data-y=""${year ? "" : ' class="on"'}>전체</a>` +
+    years.map(y => `<a data-y="${y}"${y === year ? ' class="on"' : ""}>${y}년 <span style="opacity:.55;">${n(y)}</span></a>`).join("");
+  box.querySelectorAll("a[data-y]").forEach(a => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      year = a.dataset.y || "";
+      const u = new URLSearchParams(location.search);
+      if (year) u.set("year", year); else u.delete("year");
+      history.replaceState(null, "", location.pathname + (u.toString() ? "?" + u : ""));
+      render();
+    });
+  });
+}
+
 function render() {
   document.querySelectorAll("#gtabs a[data-c]").forEach(a => a.classList.toggle("on", !kw && a.dataset.c === cur));
   if (lockedNow) {                                       // 회원 전용 갈래
@@ -363,18 +407,21 @@ function render() {
       '<a class="btn line" href="/YB/auth/signup.html">회원가입</a></div>';
     return;
   }
-  const list = kw ? matched() : inCat(cur);              // 검색 중에는 모든 분류에서 찾는다
+  const pool = kw ? matched() : inCat(cur);              // 검색 중에는 모든 분류에서 찾는다
+  drawYearTabs(pool);
+  const list = year ? pool.filter(a => yearOf(a) === year) : pool;
   const shots = list.reduce((s, a) => s + a.photos.length, 0);
+  const ytxt = year ? ` · ${year}년` : "";
   document.getElementById("gcount").textContent = kw
-    ? `‘${kw}’ 검색 · 모든 분류에서 앨범 ${list.length}개 · 사진 ${shots}장`
-    : `${cur === "all" ? "전체" : CAT_NAME[cur]} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
+    ? `‘${kw}’ 검색 · 모든 분류에서${ytxt} 앨범 ${list.length}개 · 사진 ${shots}장`
+    : `${cur === "all" ? "전체" : CAT_NAME[cur]}${ytxt} · 앨범 ${list.length}개 · 사진 ${shots}장 (최신순)`;
   const grid = document.getElementById("ggrid");
   if (!list.length) {
     grid.innerHTML = '<div class="gempty">아직 올라온 사진이 없습니다.<br>' +
       '로그인 후 <b>＋ 사진첩 만들기</b>로 첫 사진첩을 만들어보세요.</div>';
     return;
   }
-  grid.innerHTML = list.map(a => `
+  const card = (a) => `
     <a class="alb" href="album.html?cat=${a.cat}&id=${encodeURIComponent(a.key)}" target="_blank" rel="noopener"
        data-key="${a.key}">
       <span class="sq">
@@ -390,7 +437,26 @@ function render() {
           : '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#a9b8ae;font-size:13px;">사진을 올려주세요</span>'}
       </span>
       <span class="cp"><b>${esc(a.title)}</b><small>${(a.date || "").replace(/-/g, ".")} · 사진 ${a.photos.length}장</small></span>
-    </a>`).join("");
+    </a>`;
+
+  if (year) {
+    grid.innerHTML = list.map(card).join("");           // 한 해만 볼 때는 머리글이 필요 없습니다
+  } else {
+    // 연도가 바뀌는 자리마다 머리글을 끼워 넣습니다 (목록은 이미 최신순입니다)
+    let last = null, out = [];
+    for (const a of list) {
+      const y = yearOf(a) || "연도 미상";
+      if (y !== last) {
+        const cnt = list.filter(x => (yearOf(x) || "연도 미상") === y);
+        const ph = cnt.reduce((n, x) => n + x.photos.length, 0);
+        out.push(`<div class="ybar"><b>${y === "연도 미상" ? y : y + "년"}</b>` +
+                 `<small>앨범 ${cnt.length}개 · 사진 ${ph}장</small><i></i></div>`);
+        last = y;
+      }
+      out.push(card(a));
+    }
+    grid.innerHTML = out.join("");
+  }
   if (isAdmin) enableAdmin(list);
 }
 
