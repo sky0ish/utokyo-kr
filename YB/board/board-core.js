@@ -30,7 +30,7 @@ export async function initBoard(ORG) {
                             : "게시판 | 재한 도쿄대학 총동문회");
   // 참여마당 식구 — 위 메뉴의 참여마당 드롭다운과 같은 차례입니다
   const JOIN_OB = ["club", "mentoring", "forum"];
-  const JOIN_YB = ["mentoring", "counsel", "career", "event", "club", "major", "suggest"];
+  const JOIN_YB = ["mentoring", "event", "club", "major", "suggest"];
   const JOIN = ORG === "YB" ? JOIN_YB : JOIN_OB;
 
   // 운영진이 줄에서 바로 옮길 수 있는 게시판 (게시판 줄 + 참여마당)
