@@ -41,13 +41,32 @@ export async function initBoard(ORG) {
     return m ? m[1].trim() : "";
   };
 
-  // 분류 탭 다시 그리기 — 위 메뉴에서 들어온 자리에 맞춰
+  // 분류 탭 다시 그리기
+  //   위 메뉴(드롭다운)를 그대로 읽어와 아래 단추를 만듭니다.
+  //   목록을 두 곳에 적어두면 언젠가 어긋나므로 한 곳만 봅니다.
   {
     const cur = new URLSearchParams(location.search).get("cat") || "";
-    let tabs;
-    if (JOIN.includes(cur)) tabs = JOIN;                    // 참여마당에서 들어왔을 때
-    else if (cur && !TABS.includes(cur) && CAT[cur]) tabs = [cur].concat(TABS);
-    else tabs = TABS;
+
+    /** 위 메뉴의 드롭다운마다 그 안의 갈래를 뽑아옵니다 */
+    const groups = [...document.querySelectorAll(".mhead .dd")].map(dd => ({
+      top: (dd.querySelector("a") || {}).getAttribute
+             ? (dd.querySelector("a").getAttribute("href") || "") : "",
+      cats: [...dd.querySelectorAll(".dd-menu a[href*='board.html?cat=']")]
+              .map(a => (a.getAttribute("href").match(/cat=([\w-]+)/) || [])[1])
+              .filter(c => c && CAT[c]),
+    })).filter(g => g.cats.length);
+
+    let tabs = null;
+    if (cur) {
+      const g = groups.find(x => x.cats.includes(cur));       // 지금 글이 속한 메뉴
+      if (g) tabs = g.cats;
+    }
+    if (!tabs) {                                             // 「전체」이거나 못 찾았을 때
+      const g = groups.find(x => /board\.html$/.test(x.top || ""));   // 게시판 메뉴
+      tabs = g ? g.cats : TABS;
+    }
+    if (cur && !tabs.includes(cur) && CAT[cur]) tabs = [cur].concat(tabs);
+
     document.getElementById("catTabs").innerHTML =
       '<a href="#" data-cat="">전체</a>' + tabs.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
   }
