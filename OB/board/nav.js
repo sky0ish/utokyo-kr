@@ -31,7 +31,7 @@ const NAV = {
         <div class="dd-menu">
           <a href="/OB/board.html?cat=notice">공지사항</a>
           <a href="/OB/board.html?cat=free">자유게시판</a>
-          <a href="/OB/board.html?cat=promo">홍보·채용</a>
+          <a href="/OB/board.html?cat=jobs">구인·채용(OB/YB)</a>
           <a href="/OB/board.html?cat=condolence">경조사</a>
           <a href="/OB/board.html?cat=research">단행본 및 연구소개</a>
           <a href="/OB/board.html?cat=suggest">동문회에 바란다</a>
