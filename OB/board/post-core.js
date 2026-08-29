@@ -288,13 +288,37 @@ function linkify(s) {
         const mv = document.createElement("select");
         mv.className = "btn movecat";
         mv.title = "다른 게시판으로 옮기기";
-        mv.innerHTML = '<option value="">↔ 이 글을 다른 게시판으로…</option>' +
-          Object.entries(CAT).map(([k, v]) =>
-            `<option value="${k}"${k === p.category ? " selected" : ""}>${v}</option>`).join("");
+        // 위 메뉴를 그대로 읽어와 [참여마당/전공별모임] 처럼 보여줍니다
+        const groups = [...document.querySelectorAll(".mhead .dd")].map(dd => {
+          const top = dd.querySelector("a");
+          return {
+            name: top ? (top.textContent || "").trim() : "",
+            items: [...dd.querySelectorAll(".dd-menu a[href*='board.html?cat=']")].map(a => ({
+              cat: (a.getAttribute("href").match(/cat=([\w-]+)/) || [])[1],
+              label: (a.textContent || "").trim(),
+            })).filter(x => x.cat),
+          };
+        }).filter(g => g.items.length);
+
+        const seen = new Set();
+        let opts = "";
+        groups.forEach(g => {
+          g.items.forEach(it => {
+            if (seen.has(it.cat)) return;
+            seen.add(it.cat);
+            opts += `<option value="${it.cat}"${it.cat === p.category ? " selected" : ""}>` +
+                    `[${g.name}/${it.label}]</option>`;
+          });
+        });
+        if (!seen.has(p.category)) {          // 메뉴에 없는 갈래에 있던 글
+          opts = `<option value="${p.category}" selected>[${CAT[p.category] || p.category}]</option>` + opts;
+        }
+        mv.innerHTML = '<option value="">↔ 이 글을 다른 게시판으로…</option>' + opts;
         mv.addEventListener("change", async () => {
           const to = mv.value;
           if (!to || to === p.category) return;
-          if (!confirm(`이 글을 「${CAT[to]}」 게시판으로 옮길까요?`)) { mv.value = p.category; return; }
+          const nm = (mv.options[mv.selectedIndex] || {}).text || CAT[to] || to;
+          if (!confirm(`이 글을 ${nm} 으로 옮길까요?`)) { mv.value = p.category; return; }
           mv.disabled = true;
           const { error } = await sb.from("posts").update({ category: to }).eq("id", p.id);
           mv.disabled = false;
