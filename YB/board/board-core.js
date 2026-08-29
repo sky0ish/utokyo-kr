@@ -19,7 +19,7 @@ export async function initBoard(ORG) {
   const CAT_YB = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"구인·채용(OB/YB)", market:"벼룩시장",
                    club:"소모임", major:"전공별모임", event:"행사", history:"활동 이력", mentoring:"멘토멘티(OB/YB)",
                    suggest:"학생회에 바란다", exam:"수험생 게시판",
-                   career:"진학/취업 후기", counsel:"진로상담", scholarship:"장학정보" };
+                   career:"진학/취업 후기", counsel:"진로상담", scholarship:"장학·연구지원" };
   const TABS_OB = ["notice","free","jobs","condolence","research","suggest"];   // 참여마당 식구는 위 메뉴에서 들어옵니다
   const TABS_YB = ["jobs","free","qna","scholarship","market","exam","notice"];   // 소모임·행사·멘토멘티·바란다는 참여마당에서 들어옵니다
   const CAT = ORG === "YB" ? CAT_YB : CAT_OB;

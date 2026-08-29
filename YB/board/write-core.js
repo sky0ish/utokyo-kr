@@ -58,7 +58,7 @@ export async function initWrite(ORG) {
 
     // 게시판 분류 · 말머리 선택 (조직별)
     const CATS_OB = { assembly:"총회", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", jobs:"구인·채용(OB/YB)", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
-    const CATS_YB = { mentoring:"멘토멘티(OB/YB)", event:"행사", club:"소모임", major:"전공별모임", suggest:"학생회에 바란다", jobs:"구인·채용(OB/YB)", free:"자유게시판", qna:"Q&A", scholarship:"장학정보", market:"벼룩시장", exam:"수험생 게시판", notice:"공지사항", history:"활동 이력", career:"진학/취업 후기", counsel:"진로상담" };
+    const CATS_YB = { mentoring:"멘토멘티(OB/YB)", event:"행사", club:"소모임", major:"전공별모임", suggest:"학생회에 바란다", jobs:"구인·채용(OB/YB)", free:"자유게시판", qna:"Q&A", scholarship:"장학·연구지원", market:"벼룩시장", exam:"수험생 게시판", notice:"공지사항", history:"활동 이력", career:"진학/취업 후기", counsel:"진로상담" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
@@ -84,7 +84,7 @@ export async function initWrite(ORG) {
       jobs: ["아르바이트", "일본채용", "한국채용", "인턴", "설명회", "기업홍보", "기타"],
       free: ["일상", "질문", "정보공유", "후기", "기타"],
       qna: ["입학", "비자·체류", "생활", "학업", "기타"],
-      scholarship: ["교내", "일본정부", "한국정부", "민간재단", "기타"],
+      scholarship: ["교내", "일본정부", "한국정부", "민간재단", "학진(JSPS)", "연구계획서", "기타"],
       market: ["삽니다", "팝니다", "나눔", "구합니다", "기타"],
       exam: ["입시", "유학준비", "학교생활", "기타"],
       notice: ["학생회", "행사", "장학", "안내", "기타"],
