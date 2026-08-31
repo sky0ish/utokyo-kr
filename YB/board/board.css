@@ -503,3 +503,10 @@ body.yb .mguide{border-color:#d8eadd;background:#fbfefb;}
 body.yb .mguide summary{color:#2a6b40;}
 body.yb .mguide th{background:#f2f9f4;border-color:#e2efe6;}
 body.yb .mguide td b{color:#2a6b40;}
+
+/* 글 날짜 고치기 (운영진) */
+.btn.dateedit{display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  background:#fff;border-style:dashed;font-weight:500;padding:6px 12px;}
+.btn.dateedit input{font-family:inherit;font-size:13px;border:none;background:none;
+  color:inherit;cursor:pointer;padding:0;}
+.btn.dateedit.done{border-style:solid;border-color:#2a7a45;color:#2a7a45;}

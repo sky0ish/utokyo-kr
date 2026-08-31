@@ -439,6 +439,44 @@ function linkify(s) {
         });
         document.getElementById("actions").appendChild(pin);
 
+        /* 운영진 : 글 날짜 고치기 —
+           옮겨 온 글이 「담은 날」로 들어가 있을 때 원래 올라간 날로 되돌립니다.
+           시각은 원래 것을 그대로 두어 같은 날 글의 차례가 흐트러지지 않습니다. */
+        {
+          const lab = document.createElement("label");
+          lab.className = "btn dateedit";
+          lab.title = "이 글이 원래 올라간 날로 고칩니다";
+          const ico = document.createElement("span");
+          ico.textContent = "📅";
+          const inp = document.createElement("input");
+          inp.type = "date";
+          inp.value = String(p.created_at || "").slice(0, 10);
+          lab.append(ico, inp);
+          inp.addEventListener("change", async () => {
+            const v = inp.value;
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return;
+            const old = String(p.created_at || "");
+            const time = old.slice(10) || "T12:00:00+00:00";   // 시각은 그대로
+            const at = new Date(v + time);
+            if (isNaN(at.getTime())) { alert("날짜를 읽지 못했습니다."); return; }
+            inp.disabled = true;
+            const { error } = await sb.from("posts")
+              .update({ created_at: at.toISOString() }).eq("id", p.id);
+            inp.disabled = false;
+            if (error) { alert("고치지 못했습니다: " + error.message);
+                         inp.value = old.slice(0, 10); return; }
+            p.created_at = at.toISOString();
+            const meta = document.querySelector(".pmeta");
+            if (meta) {
+              const t = meta.lastChild;
+              if (t && t.nodeType === 3) t.textContent = " · " + p.created_at.slice(0, 16).replace("T", " ");
+            }
+            lab.classList.add("done");
+            setTimeout(() => lab.classList.remove("done"), 1200);
+          });
+          document.getElementById("actions").appendChild(lab);
+        }
+
         /* 운영진 : 전공별모임 ↔ 포럼·세미나 에 같은 글을 함께 걸어 둡니다.
            글을 옮기는 것이 아니라, 두 게시판에서 같은 글이 함께 보입니다. */
         {
