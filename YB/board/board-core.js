@@ -49,6 +49,9 @@ export async function initBoard(ORG) {
   // 분류 탭 다시 그리기
   //   위 메뉴(드롭다운)를 그대로 읽어와 아래 단추를 만듭니다.
   //   목록을 두 곳에 적어두면 언젠가 어긋나므로 한 곳만 봅니다.
+  /* 「전체」를 눌렀을 때 보여줄 범위 — 지금 보고 계신 메뉴 묶음의 게시판들.
+     이게 비어 있으면 홈페이지의 모든 글이 섞여 나옵니다. */
+  let GROUP = [];
   {
     const cur = new URLSearchParams(location.search).get("cat") || "";
 
@@ -72,6 +75,7 @@ export async function initBoard(ORG) {
     }
     if (cur && !tabs.includes(cur) && CAT[cur]) tabs = [cur].concat(tabs);
 
+    GROUP = tabs.slice();
     document.getElementById("catTabs").innerHTML =
       '<a href="#" data-cat="">전체</a>' + tabs.map(c => `<a href="#" data-cat="${c}">${CAT[c]}</a>`).join("");
   }
@@ -85,8 +89,9 @@ export async function initBoard(ORG) {
   function sayPurpose() {
     if (!purposeEl) return;
     if (!cat) {
-      purposeEl.textContent =
-        "모든 게시판의 글을 한자리에서 봅니다. 위의 게시판을 고르시면 그곳 글만 보입니다.";
+      purposeEl.textContent = GROUP.length
+        ? "이 묶음의 게시판 글을 한자리에서 봅니다. 위에서 하나를 고르시면 그곳 글만 보입니다."
+        : "모든 게시판의 글을 한자리에서 봅니다. 위의 게시판을 고르시면 그곳 글만 보입니다.";
       return;
     }
     if (tag) {
@@ -113,7 +118,8 @@ export async function initBoard(ORG) {
   /* 다른 게시판에서 「여기에도 함께」 로 걸어 둔 글도 이 게시판 글과 나란히 봅니다.
      자리(also_cat)가 아직 없는 데이터베이스에서는 CROSS 를 내리고 예전처럼 봅니다. */
   let CROSS = true;
-  const byCat = (q) => !cat ? q
+  const byCat = (q) => !cat
+    ? (GROUP.length ? q.in("category", GROUP) : q)   // 「전체」 = 이 묶음 안에서만
     : CROSS ? q.or("category.eq." + cat + ",also_cat.eq." + cat)
             : q.eq("category", cat);
   const params = new URLSearchParams(location.search);
