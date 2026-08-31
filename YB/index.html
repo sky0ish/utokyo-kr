@@ -1356,7 +1356,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=263";
+import { initCalendar } from "/YB/board/calendar.js?v=264";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1374,6 +1374,9 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
   const BOARD_CATS = ["notice", "free", "qna", "jobs", "market", "scholarship", "exam"];
   const SHARED = ["mentoring", "jobs", "major"];      // 두 단체가 함께 쓰는 게시판
   const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  /* 로그인 정보가 실린 뒤에 물어봅니다.
+     먼저 물으면 비회원으로 보여 회원전용 글이 빠집니다. */
+  try { await sb.auth.getSession(); } catch (e) { /* 그냥 진행 */ }
   const head = t => { const m = String(t||"").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/); return m ? m[1].trim() : ""; };
   const body = t => String(t||"").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
 
@@ -1384,7 +1387,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
       let q = sb.from("posts").select("id,title,category,org,created_at").in("category", cats);
       const onlyShared = cats.every(c => SHARED.includes(c));
       if (!onlyShared) q = q.or("org.eq.YB,category.in.(" + SHARED.join(",") + ")");
-      const { data } = await q.order("created_at", { ascending: false }).limit(8);
+      const { data } = await q.order("created_at", { ascending: false }).limit(12);
       if (!data || !data.length) {
         el.innerHTML = '<li><a href="' + link + '"><span class="tt">' + emptyMsg + '</span></a></li>';
         return;
@@ -1461,14 +1464,14 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=263");
+  const { initCouncil } = await import("/YB/council.js?v=264");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=263";
+  import { applyMenu } from "/YB/board/nav.js?v=264";
   applyMenu("YB");
 </script>
 </body>
