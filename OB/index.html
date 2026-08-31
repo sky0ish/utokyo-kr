@@ -41,6 +41,27 @@
   .dcard .dbody li .tg{flex:none;font-size:11px;color:#a8a291;white-space:nowrap;}
   .dcard .dbody li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .dcard .dbody li .dt{flex:none;font-size:11.5px;color:#b0a98f;font-variant-numeric:tabular-nums;}
+  /* 참여마당 — 칸 아래 실제 글 */
+  .joinfeed{margin-top:26px;border:1px solid #e6dfcb;border-radius:12px;background:#fffdf8;
+    padding:18px 22px 10px;}
+  .joinfeed .jf-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding-bottom:10px;border-bottom:1px solid #efe8d8;}
+  .joinfeed h4{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;color:#3b3629;}
+  .joinfeed .more{font-size:12.5px;color:#8a6d2b;border-bottom:1px solid transparent;}
+  .joinfeed .more:hover{border-color:#8a6d2b;}
+  .joinfeed ul{list-style:none;}
+  .joinfeed li{border-bottom:1px solid #f4efe2;}
+  .joinfeed li:last-child{border-bottom:none;}
+  .joinfeed li a{display:flex;align-items:baseline;gap:9px;padding:10px 2px;font-size:14px;color:#3b3629;}
+  .joinfeed li a:hover{color:#8a6d2b;}
+  .joinfeed li .bd{flex:none;font-size:11px;font-weight:700;color:#8a6d2b;background:#faf5e8;
+    border:1px solid #efe4cc;border-radius:100px;padding:1px 8px;white-space:nowrap;}
+  .joinfeed li .tg{flex:none;font-size:11px;color:#a8a291;white-space:nowrap;}
+  .joinfeed li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .joinfeed li .dt{flex:none;font-size:11.5px;color:#b0a98f;font-variant-numeric:tabular-nums;}
+  .jcard h3 small{font-size:13px;font-weight:600;color:#8a8574;margin-left:5px;}
+  @media (max-width:900px){ .join-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .join-grid{grid-template-columns:1fr;} }
 </style>
 <style>
   :root{
@@ -736,10 +757,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=271b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=271b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=271b3b5b07" alt="전공별모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=271b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=272b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=272b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=272b3b5b07" alt="전공별모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=272b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -1307,37 +1328,53 @@
   <div class="container">
     <div class="sec-head">
       <div class="t"><span class="en">Participation</span><h2>참여마당</h2></div>
-      <div class="cal-side">
-        <div id="calFull"></div>
-      </div>
     </div>
 
     <div class="join-grid">
-      <a class="jcard on" href="#news" id="sub-assembly">
+      <a class="jcard on" href="/OB/board.html?cat=assembly" data-cat="assembly">
         <span class="no">01</span>
         <h3>총회</h3>
-        <p>매년 2월 정기총회 — 총장 인사말, 활동보고, 자랑스러운 동경대인상 수여, 특별강연과 경품 추첨. 연도별 결과 보고를 아래에서 보실 수 있습니다.</p>
+        <p>매년 2월 정기총회 — 총장 인사말, 활동보고와 회계 결산, 자랑스러운 동경대인상 수여,
+           특별강연과 경품 추첨. 총회 안내와 결과 보고, 지난 총회 자료를 모아 둡니다.
+           연도별 결과 보고는 아래에서 보실 수 있습니다.</p>
       </a>
-      <a class="jcard" href="/OB/board.html?cat=club" id="sub-moim">
+      <a class="jcard" href="/OB/board.html?cat=club" data-cat="club">
         <span class="no">02</span>
         <h3>소모임</h3>
-        <p>골프(은행회) · 등산모임 · 약우회 · 현정회 · 젊은 동문 모임 등 취미·친목 소모임을 연 2회 지원합니다.</p>
+        <p>골프(은행회) · 등산 · 약우회 · 현정회 · 젊은 동문 모임 등 취미와 친목의 자리입니다.
+           연 2회 활동비를 지원하며, 모임 안내와 다녀온 이야기를 함께 나눕니다.
+           새 소모임을 여시려는 분도 이곳에 알려 주세요.</p>
       </a>
-      <a class="jcard" href="/OB/board.html?cat=mentoring" id="sub-mentoring">
+      <a class="jcard" href="/OB/board.html?cat=major" data-cat="major">
         <span class="no">03</span>
-        <h3>멘토멘티</h3>
-        <p>선배 동문이 후배의 진로·유학·취업을 함께 고민합니다 — 멘토·멘티 모집과 상담 후기 나눔.</p>
+        <h3>전공별모임<small>(OB/YB)</small></h3>
+        <p>같은 전공·연구과끼리 모이는 자리로, 총동문회 선배와 학생회 후배가 함께 쓰는 곳입니다.
+           추진하는 모임마다 75만원을 지원합니다. 농학부 · 건축학 · 도시·토목·환경 ·
+           전기·기계 · 의학·약학 등 열여섯 계열로 나뉘어 있습니다.</p>
       </a>
-      <a class="jcard" href="/OB/board.html?cat=forum" id="sub-forum">
+      <a class="jcard" href="/OB/board.html?cat=mentoring" data-cat="mentoring">
         <span class="no">04</span>
-        <h3>단과대포럼</h3>
-        <p>단과대별 순환 포럼(추진 단과대별 75만원 지원) — 건축학 구조계, 농학생명과학, 한일국제포럼 등 분야별 최신 정보 교류.</p>
+        <h3>멘토멘티<small>(OB/YB)</small></h3>
+        <p>선배 동문이 후배의 진로·유학·취업을 함께 고민합니다.
+           멘토·멘티 모집, 이달의 동문 소개, 만남의 광장, 상담과 취업 후기를 나눕니다.
+           학생회 재학생도 함께 쓰는 게시판입니다.</p>
       </a>
-      <a class="jcard" href="/OB/board.html?cat=forum" id="sub-seminar">
+      <a class="jcard" href="/OB/board.html?cat=forum" data-cat="forum">
         <span class="no">05</span>
-        <h3>세미나</h3>
-        <p>학술 세미나와 심포지엄의 자율적 개최를 지원합니다 — 동문 간 전문지식 공유와 네트워크의 장.</p>
+        <h3>포럼·세미나</h3>
+        <p>학술 세미나 · 심포지엄 · 한일국제포럼의 자율적 개최를 지원합니다.
+           동문 간 전문지식을 나누고 서로를 잇는 자리입니다.
+           개최 안내와 다녀온 이야기, 발표 자료를 함께 올려 주세요.</p>
       </a>
+    </div>
+
+
+    <div class="joinfeed" id="joinFeed">
+      <div class="jf-head">
+        <h4 id="jfTitle">참여마당 새 글</h4>
+        <a class="more" id="jfMore" href="/OB/board.html?cat=assembly">게시판 전체보기 →</a>
+      </div>
+      <ul id="jfList"><li><a><span class="tt">불러오는 중…</span></a></li></ul>
     </div>
 
     <div class="asm-panel" id="news">
@@ -1441,27 +1478,27 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=271b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=272b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=271b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=272b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=271b3b5b07" alt="전공별모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=272b3b5b07" alt="전공별모임" loading="lazy"></span>
         <span class="cap">전공별모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=271b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=272b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=271b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=272b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=271b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=272b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
     </div>
@@ -1571,11 +1608,10 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=271";
+import { initCalendar } from "/OB/board/calendar.js?v=272";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
-initCalendar("#calFull", { mode: "mini", upcoming: false, titles: true });
 
 // ─── 모음판: 최근 게시글 ───
 (async () => {
@@ -1719,8 +1755,59 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=271";
+  import { applyMenu } from "/OB/board/nav.js?v=272";
   applyMenu("OB");
+
+// ── 참여마당 : 칸을 누르면 그 게시판 글만 아래에 ──
+(async () => {
+  const NAME = { assembly:"총회", club:"소모임", major:"전공별모임", mentoring:"멘토멘티", forum:"포럼·세미나" };
+  const ALL = ["assembly", "club", "major", "mentoring", "forum"];
+  const SHARED = ["mentoring", "jobs", "major"];
+  const list = document.getElementById("jfList");
+  const ttl = document.getElementById("jfTitle");
+  const more = document.getElementById("jfMore");
+  if (!list) return;
+  const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const head = t => { const m = String(t||"").match(/^\s*[\[【]([^\]】]{1,20})[\]】]/); return m ? m[1].trim() : ""; };
+  const body = t => String(t||"").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+  try { await sb.auth.getSession(); } catch (e) {}
+
+  async function show(cat) {
+    const cats = cat ? [cat] : ALL;
+    ttl.textContent = (cat ? NAME[cat] : "참여마당") + " 새 글";
+    more.href = "/OB/board.html?cat=" + (cat || "assembly");
+    more.textContent = (cat ? NAME[cat] : "참여마당") + " 게시판 전체보기 →";
+    list.innerHTML = '<li><a><span class="tt">불러오는 중…</span></a></li>';
+    let q = sb.from("posts").select("id,title,category,org,created_at").in("category", cats);
+    if (!cats.every(c => SHARED.includes(c)))
+      q = q.or("org.eq.OB,category.in.(" + SHARED.join(",") + ")");
+    const { data, error } = await q.order("created_at", { ascending: false }).limit(12);
+    if (error || !data || !data.length) {
+      list.innerHTML = '<li><a href="' + more.href + '"><span class="tt">' +
+        (error ? "로그인하시면 회원 전용 글까지 보실 수 있습니다." : "아직 올라온 글이 없습니다 →") +
+        '</span></a></li>';
+      return;
+    }
+    list.innerHTML = data.map(p => `
+      <li><a href="/OB/post.html?id=${p.id}">
+        <span class="bd">${esc(NAME[p.category] || p.category)}</span>
+        ${head(p.title) ? `<span class="tg">${esc(head(p.title))}</span>` : ""}
+        <span class="tt">${esc(body(p.title))}</span>
+        <span class="dt">${(p.created_at||"").slice(0,10)}</span>
+      </a></li>`).join("");
+  }
+
+  document.querySelectorAll(".join-grid .jcard[data-cat]").forEach(a => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.querySelectorAll(".join-grid .jcard").forEach(x => x.classList.remove("on"));
+      a.classList.add("on");
+      show(a.dataset.cat);
+      document.getElementById("joinFeed").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  });
+  show("");
+})();
 </script>
 </body>
 </html>
