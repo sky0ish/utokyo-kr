@@ -21,7 +21,7 @@ export const fold = (c) => FOLD[c] || c;
 
 const ALBUM_NAME = {
   assembly: "{y}년도 정기총회", staff: "{y}년 운영진 모임",
-  club: "{y}년 소모임", faculty: "{y}년 단과대 모임",
+  club: "{y}년 소모임", faculty: "{y}년 전공별모임",
   forum: "{y}년 포럼·세미나", old: "{y}년 동문회 행사", daily: "{y}년 동문회 활동",
 };
 const BASE = "../images/gallery/";

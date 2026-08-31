@@ -279,6 +279,7 @@ function linkify(s) {
       ${attachedImages(p.files)}
       ${attachedPdfs(p.files)}
       ${fileBox(p.files)}
+      <div id="galShare"></div>
       ${p.source_url ? `<div class="src"><a href="${p.source_url}" target="_blank" rel="noopener">원문 보기 →</a></div>` : ""}
       ${p.source === "facebook" ? '<div class="src">※ 페이스북 그룹에서 옮겨온 글입니다.</div>' :
         p.source === "band" ? '<div class="src">※ 네이버 밴드에서 옮겨온 글입니다.</div>' :
@@ -455,6 +456,75 @@ function linkify(s) {
         if (!r) return;
         on = r.on; n = r.n; paint();
       });
+    }
+
+
+    /* 운영진 : 이 글에 붙은 사진을 갤러리 앨범으로 보냅니다.
+       사진을 다시 올리지 않고 같은 파일을 가리키게 하므로 빠르고 자리도 안 먹습니다. */
+    if (meProfile && meProfile.is_admin) {
+      const imgs = (Array.isArray(p.files) ? p.files : []).filter(f =>
+        /^image\//.test(f.type || "") || /\.(png|jpe?g|gif|webp)$/i.test(f.name || ""));
+      const slot = document.getElementById("galShare");
+      if (slot && imgs.length) {
+        const CATS = ORG === "YB"
+          ? [["assembly","총회"],["event","행사·소모임"],["daily","일상"],["etc","기타"]]
+          : [["assembly","총회"],["staff","운영진"],["club","소모임"],["faculty","전공별모임"],
+             ["forum","포럼·세미나"],["old","옛날사진"],["daily","일상"]];
+        slot.className = "galshare";
+        slot.innerHTML =
+          '<span class="gs-t">사진 ' + imgs.length + '장을 갤러리에도</span>' +
+          '<select class="gs-cat">' +
+            CATS.map(c => '<option value="' + c[0] + '">' + c[1] + '</option>').join("") +
+          '</select>' +
+          '<select class="gs-alb"><option value="">연도 앨범에 그대로</option></select>' +
+          '<button type="button" class="gs-go">갤러리에 공유</button>' +
+          '<span class="gs-msg"></span>';
+
+        const selC = slot.querySelector(".gs-cat");
+        const selA = slot.querySelector(".gs-alb");
+        const btn = slot.querySelector(".gs-go");
+        const msg = slot.querySelector(".gs-msg");
+
+        // 고른 분류에 이미 있는 앨범을 불러옵니다
+        let albums = [];
+        sb.from("gallery_albums").select("album_key,title,category").eq("org", ORG)
+          .then(({ data }) => { albums = data || []; drawAlbums(); });
+        function drawAlbums() {
+          const c = selC.value;
+          const mine = albums.filter(a => (a.category || "") === c);
+          selA.innerHTML = '<option value="">연도 앨범에 그대로</option>' +
+            mine.map(a => '<option value="' + a.album_key + '">' +
+                          escapeHtml(a.title || a.album_key) + '</option>').join("");
+        }
+        selC.addEventListener("change", drawAlbums);
+
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          msg.className = "gs-msg";
+          msg.textContent = "보내는 중…";
+          const when = (p.created_at || "").slice(0, 10);
+          const rows = imgs.map((f, i) => ({
+            org: ORG,
+            category: selC.value,
+            album_key: selA.value || null,
+            image_url: sb.storage.from("board").getPublicUrl(f.path).data.publicUrl,
+            storage_path: f.path,
+            caption: String(p.title || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, ""),
+            taken_at: when || null,
+            sort: i,
+            created_by: user.id,
+          }));
+          const { error } = await sb.from("gallery_photos").insert(rows);
+          btn.disabled = false;
+          if (error) {
+            msg.className = "gs-msg err";
+            msg.textContent = "보내지 못했습니다: " + error.message;
+            return;
+          }
+          msg.className = "gs-msg ok";
+          msg.textContent = "갤러리에 올렸습니다.";
+        });
+      }
     }
 
     noteActivity("read", 1, p.id);      // 이 글을 읽은 것으로 (같은 글은 하루 한 번)
