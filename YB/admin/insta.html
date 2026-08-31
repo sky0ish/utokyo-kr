@@ -151,6 +151,18 @@
       <div class="msg" id="msg"></div>
     </div>
 
+    <div class="card" id="dateCard">
+      <h2><span class="step">＋</span>주소로 날짜 되살리기</h2>
+      <p class="sub">이미 담은 인스타그램 글의 날짜를 <b>원문 주소</b>만 보고 되돌립니다.
+         인스타그램 주소에는 올린 시각이 들어 있어, 다시 수집하지 않아도 됩니다.</p>
+      <div class="row" style="margin-top:14px;">
+        <button class="btn" id="scanDate">무엇이 바뀌는지 보기</button>
+        <button class="btn go" id="applyDate" style="display:none;">되살리기</button>
+        <span class="msg" id="dateMsg" style="margin:0;"></span>
+      </div>
+      <div style="overflow-x:auto;margin-top:12px;"><table id="dateTbl"></table></div>
+    </div>
+
     <div class="card" id="prevCard" style="display:none;">
       <h2><span class="step">3</span>확인하고 담기</h2>
       <p class="sub">한 줄씩 어디로 갈지 바꾸실 수 있습니다. 이미 담은 글은 자동으로 건너뜁니다.</p>
@@ -167,7 +179,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=267";
+import { CATS } from "/YB/gallery-lib.js?v=268";
 
 const ORG = "YB";
 
@@ -357,6 +369,85 @@ async function start() {
   /* 이미 담은 글의 날짜 고치기 —
      옛 북마클릿으로 담을 때 인스타그램 게시 시각이 비어 와서 「오늘」로 들어간 글들이 있습니다.
      새로 수집한 자료의 원래 시각으로 되돌립니다. 글을 다시 담지 않으니 겹치지 않습니다. */
+
+  /* ── 주소로 날짜 되살리기 ──────────────────────────────
+     인스타그램 주소의 짧은코드(instagram.com/p/XXXX/)에는 글 번호가 담겨 있고,
+     그 번호 안에 올린 시각이 들어 있습니다. 그래서 주소만으로 날짜를 알 수 있습니다. */
+  const IG_AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  function igWhen(url) {
+    const m = String(url || "").match(/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_-]+)/);
+    if (!m) return null;
+    let n = 0n;
+    for (const ch of m[1]) {
+      const i = IG_AB.indexOf(ch);
+      if (i < 0) return null;
+      n = n * 64n + BigInt(i);
+    }
+    const ms = Number((n >> 23n) + 1314220021721n);
+    const d = new Date(ms);
+    if (isNaN(d.getTime())) return null;
+    const y = d.getFullYear();
+    if (y < 2010 || y > new Date().getFullYear() + 1) return null;   // 말이 안 되면 버립니다
+    return d;
+  }
+
+  let dateFix = [];
+  document.getElementById("scanDate").addEventListener("click", async () => {
+    const msg = document.getElementById("dateMsg");
+    const tbl = document.getElementById("dateTbl");
+    msg.className = "msg"; msg.textContent = "찾는 중…";
+    const { data, error } = await sb.from("posts")
+      .select("id,title,source_url,created_at")
+      .eq("org", ORG).eq("source", "instagram")
+      .order("created_at", { ascending: false }).limit(1000);
+    if (error) { msg.className = "msg err"; msg.textContent = "불러오지 못했습니다: " + error.message; return; }
+    dateFix = [];
+    let noUrl = 0, same = 0;
+    (data || []).forEach(p => {
+      const d = igWhen(p.source_url);
+      if (!d) { noUrl++; return; }
+      const now = String(p.created_at || "").slice(0, 10);
+      const to = d.toISOString().slice(0, 10);
+      if (now === to) { same++; return; }
+      dateFix.push({ id: p.id, title: p.title, from: now, to, at: d.toISOString() });
+    });
+    msg.className = dateFix.length ? "msg ok" : "msg";
+    msg.textContent = "모두 " + (data || []).length + "건 · 고칠 것 " + dateFix.length + "건" +
+      (same ? " · 이미 맞음 " + same + "건" : "") +
+      (noUrl ? " · 주소로 알 수 없음 " + noUrl + "건" : "");
+    tbl.innerHTML = !dateFix.length ? "" :
+      "<thead><tr><th>글</th><th>지금</th><th>바뀔 날짜</th></tr></thead><tbody>" +
+      dateFix.slice(0, 300).map(r =>
+        "<tr><td>" + esc((r.title || "").slice(0, 46)) + "</td>" +
+        "<td style='color:#a8a291'>" + r.from + "</td>" +
+        "<td><b>" + r.to + "</b></td></tr>").join("") + "</tbody></table>";
+    document.getElementById("applyDate").style.display = dateFix.length ? "" : "none";
+  });
+
+  document.getElementById("applyDate").addEventListener("click", async () => {
+    if (!dateFix.length) return;
+    if (!confirm(dateFix.length + "건의 날짜를 원문 주소의 시각으로 되돌릴까요?")) return;
+    const btn = document.getElementById("applyDate");
+    const msg = document.getElementById("dateMsg");
+    btn.disabled = true;
+    let ok = 0;
+    for (const r of dateFix) {
+      const up = await sb.from("posts").update({ created_at: r.at }).eq("id", r.id);
+      if (up.error) {
+        msg.className = "msg err";
+        msg.textContent = "고치지 못했습니다: " + up.error.message;
+        btn.disabled = false; return;
+      }
+      ok++;
+      msg.className = "msg"; msg.textContent = "고치는 중… " + ok + "/" + dateFix.length;
+    }
+    btn.disabled = false;
+    msg.className = "msg ok";
+    msg.textContent = ok + "건의 날짜를 되돌렸습니다. 게시판에서 확인해 보세요.";
+    document.getElementById("dateTbl").innerHTML = "";
+    btn.style.display = "none";
+  });
+
   document.getElementById("fixDate").addEventListener("click", async () => {
     const btn = document.getElementById("fixDate");
     const msg = document.getElementById("saveMsg");
