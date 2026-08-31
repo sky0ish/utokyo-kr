@@ -115,7 +115,9 @@ export async function initBoard(ORG) {
      이게 비어 있으면 홈페이지의 모든 글이 섞여 나옵니다. */
   let GROUP = [];
   {
-    const cur = new URLSearchParams(location.search).get("cat") || "";
+    const q0 = new URLSearchParams(location.search);
+    const cur = q0.get("cat") || "";
+    const grp = q0.get("g") || "";       // 이 갈래가 든 묶음을 「전체」로 봅니다
 
     /** 위 메뉴의 드롭다운마다 그 안의 갈래를 뽑아옵니다 */
     const groups = [...document.querySelectorAll(".mhead .dd")].map(dd => ({
@@ -129,6 +131,10 @@ export async function initBoard(ORG) {
     let tabs = null;
     if (cur) {
       const g = groups.find(x => x.cats.includes(cur));       // 지금 글이 속한 메뉴
+      if (g) tabs = g.cats;
+    }
+    if (!tabs && grp) {                                      // ?g= 로 들어온 묶음
+      const g = groups.find(x => x.cats.includes(grp));
       if (g) tabs = g.cats;
     }
     if (!tabs) {                                             // 「전체」이거나 못 찾았을 때
