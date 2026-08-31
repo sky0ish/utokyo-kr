@@ -294,6 +294,10 @@ body.yb .sec-head .t h2,
   .whatfor:empty{display:none;}
 
   /* 이 게시판이 무엇을 올리는 곳인가 — 검색칸 바로 위 */
+  /* 단추 줄 왼쪽 빈자리에 나란히 놓습니다 */
+  .head:has(.bpurpose){align-items:center;}
+  .head .bpurpose{flex:1 1 320px;min-width:0;margin:0;}
+  .head .hbtns{flex:none;margin-left:auto;white-space:nowrap;}
   .bpurpose{margin:0 0 16px;padding:12px 18px;border-radius:9px;
     background:#f9f5ea;border:1px solid #eee6d2;
     font-size:14px;line-height:1.75;color:#6f6a5c;}

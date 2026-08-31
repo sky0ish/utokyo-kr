@@ -6,6 +6,23 @@ import { applyNav } from "/YB/board/nav.js?v=10";
 import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=122";
 import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js?v=2";
 
+/* 옮겨온 글의 지은이에는 소속·직함이 함께 붙어 있는 경우가 많습니다.
+   («학98.석02.박04.남지현 도시 Ph.D», «경희대 화공과 이용택» 처럼)
+   보기 좋게 이름만 남깁니다. 원래 적힌 말은 마우스를 올리면 그대로 보입니다. */
+function shortName(s) {
+  let t = String(s == null ? "" : s).trim();
+  if (!t) return "";
+  t = t.replace(/^(?:[가-힣]\s*\d{2}\s*\.)+/g, "");     // 학98.석02.박04.
+  t = t.replace(/\s*\([^)]*\)\s*/g, " ").trim();       // (주) 같은 괄호
+  const parts = t.split(/[\s,·]+/).filter(Boolean);
+  if (parts.length <= 1) return t;
+  const isName = (w) => /^[가-힣]{2,4}$/.test(w) && !/[대과원회부팀실국소사점처장]$/.test(w);
+  const found = parts.find(isName);
+  if (found) return found;
+  if (!/[가-힣]/.test(t)) return parts.slice(0, 2).join(" ");   // 영문 이름
+  return parts[0];
+}
+
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
 
@@ -508,7 +525,7 @@ export async function initBoard(ORG) {
         <span class="t">${escapeHtml(bodyOf(p.title))}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
         ${p.image_url ? `<img class="thumb" src="${p.image_url}" alt="">` : ""}
         <span class="meta">
-          <span class="mrow">${SRC[p.source] || ""}<span class="who">${escapeHtml(p.author_name || "")}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>
+          <span class="mrow">${SRC[p.source] || ""}<span class="who" title="${escapeHtml(p.author_name || "")}">${escapeHtml(shortName(p.author_name))}</span><span class="chip org-${p.org}">${p.org === "ALL" ? "공통" : p.org}</span></span>
           <span class="dt">${p.created_at.slice(0,10)}</span>
           <button class="rowlike" type="button" data-like="${p.id}" title="좋아요">${heart(false)}<span class="n"></span></button>
         </span>

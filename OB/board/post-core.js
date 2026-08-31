@@ -54,6 +54,23 @@ function attachedPdfs(list) {
 }
 
 /** 자리에 놓인 PDF 를 한 쪽씩 그림으로 그려 넣는다 */
+/* 옮겨온 글의 지은이에는 소속·직함이 함께 붙어 있는 경우가 많습니다.
+   («학98.석02.박04.남지현 도시 Ph.D», «경희대 화공과 이용택» 처럼)
+   보기 좋게 이름만 남깁니다. 원래 적힌 말은 마우스를 올리면 그대로 보입니다. */
+function shortName(s) {
+  let t = String(s == null ? "" : s).trim();
+  if (!t) return "";
+  t = t.replace(/^(?:[가-힣]\s*\d{2}\s*\.)+/g, "");     // 학98.석02.박04.
+  t = t.replace(/\s*\([^)]*\)\s*/g, " ").trim();       // (주) 같은 괄호
+  const parts = t.split(/[\s,·]+/).filter(Boolean);
+  if (parts.length <= 1) return t;
+  const isName = (w) => /^[가-힣]{2,4}$/.test(w) && !/[대과원회부팀실국소사점처장]$/.test(w);
+  const found = parts.find(isName);
+  if (found) return found;
+  if (!/[가-힣]/.test(t)) return parts.slice(0, 2).join(" ");   // 영문 이름
+  return parts[0];
+}
+
 export async function showPdfs() {
   const boxes = Array.prototype.slice.call(document.querySelectorAll(".ppdf"));
   if (!boxes.length) return;
@@ -271,7 +288,7 @@ function linkify(s) {
         <span class="chip ${p.category}">${CAT[p.category] || p.category}</span>
       </div>
       <h2>${escapeHtml(p.title)}</h2>
-      <div class="pmeta">${escapeHtml(p.author_name || "")} · ${p.created_at.slice(0,16).replace("T"," ")}</div>
+      <div class="pmeta"><span title="${escapeHtml(p.author_name || "")}">${escapeHtml(shortName(p.author_name))}</span> · ${p.created_at.slice(0,16).replace("T"," ")}</div>
       <div class="body">${linkify(p.content)}</div>
       ${(p.images && p.images.length)
           ? `<div class="pgal">${p.images.map(s => `<a href="${s}" target="_blank"><img src="${s}" alt=""></a>`).join("")}</div>`
@@ -568,7 +585,7 @@ function linkify(s) {
         <div class="cmt" data-id="${c.id}">
           ${canDrop(c) ? `<button class="del" data-id="${c.id}">삭제</button>` : ""}
           ${canEditC(c) ? `<button class="edit" data-id="${c.id}">수정</button>` : ""}
-          <div class="who">${escapeHtml(c.author_name || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
+          <div class="who" title="${escapeHtml(c.author_name || "")}">${escapeHtml(shortName(c.author_name) || "회원")}<span class="when">${c.created_at.slice(0,16).replace("T"," ")}</span></div>
           <div class="body">${linkify(c.content)}</div>
         </div>`).join("");
 
