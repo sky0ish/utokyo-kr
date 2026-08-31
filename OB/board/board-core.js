@@ -3,7 +3,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=120";
+import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=121";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -442,7 +442,12 @@ export async function initBoard(ORG) {
                 `<option value="${c}"${c === p.category ? " selected" : ""}>${CAT[c] || c}</option>`).join("")
             }</select>
             <select class="mvt" data-id="${p.id}" title="말머리 바꾸기">${
-              ["", ...boardTags(p.category)].map(t =>
+              /* 이 글이 단 말머리가 목록에 없어도 한 자리를 내어 줍니다 —
+                 안 그러면 맞는 option 이 없어 「말머리 없음」 으로 보이고,
+                 무심코 건드리면 말머리가 지워집니다. (위 게시판 고르개와 같은 대비) */
+              ((h) => ["", ...boardTags(p.category)]
+                .concat(h && !boardTags(p.category).includes(h) ? [h] : []))(headOf(p.title))
+              .map(t =>
                 `<option value="${t}"${t === headOf(p.title) ? " selected" : ""}>${t || "말머리 없음"}</option>`).join("")
             }</select>
           </span>` : ""}

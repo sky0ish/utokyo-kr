@@ -2,7 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=120";
+import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=121";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -72,7 +72,7 @@ export async function initWrite(ORG) {
     const TAGS_OB = {
       assembly: ["결과보고", "총회안내", "현장중계", "기타"],
       free: ["일상", "질문", "정보공유", "후기", "기타"],
-      club: ["골프", "등산", "운영진", "기타"],
+      club: ["골프", "등산", "전공별", "친목", "운영진", "기타"],
       mentoring: ["멘토 모집", "멘티 모집", "이달의 동문", "만남의 광장", "진로상담", "취업후기", "유학", "운영관리", "기타"],
       jobs: ["아르바이트", "일본채용", "한국채용", "인턴", "설명회", "기업홍보", "기타"],
       condolence: ["부고", "결혼", "출산", "축하", "기타"],
@@ -121,8 +121,20 @@ export async function initWrite(ORG) {
         (tg ? `<br><b>[${headTag}]</b> ${tg}` : "");
     }
 
+    /* 고치는 글이 원래 달고 있던 게시판·말머리.
+       목록에서 빠진 옛 말머리([전공별] 처럼)를 단 글을 고칠 때,
+       그 말머리가 아무 말 없이 지워지지 않도록 기억해 둡니다. */
+    let origCat = "", origTag = "";
+
+    /** 이 게시판이 지금 쓰는 말머리 (+ 같은 게시판이면 이 글의 옛 말머리도) */
+    function tagList() {
+      const list = (TAGS[category] || []).slice();
+      if (origTag && category === origCat && !list.includes(origTag)) list.push(origTag);
+      return list;
+    }
+
     function renderTags() {
-      const list = TAGS[category] || [];
+      const list = tagList();
       sayWhatFor();
       tagPick.classList.toggle("need", !headTag);   // 미선택 시 연초록 강조
       if (headTag) {                                 // 고르시면 붉은 알림을 거둡니다
@@ -141,7 +153,10 @@ export async function initWrite(ORG) {
     function setCat(v) {
       category = v;
       catPick.querySelectorAll("a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
-      if (!(TAGS[category] || []).includes(headTag)) headTag = "";
+      /* 게시판을 옮기면 그 게시판에 없는 말머리는 뗍니다.
+         다만 tagList() 가 이 글의 옛 말머리를 살려 두므로,
+         같은 게시판 안에서 고치기만 할 때는 그대로 남습니다. */
+      if (!tagList().includes(headTag)) headTag = "";
       renderTags();
       const vi = document.getElementById("visInfo");
       if (vi) vi.value = PUBLIC_CATS.includes(category) ? "전체 공개 (공지사항·홍보·경조사)" : "회원 전용";
@@ -266,8 +281,12 @@ export async function initWrite(ORG) {
         const m = (p.title || "").match(/^\s*\[([^\]]{1,12})\]\s*/);
         document.getElementById("title").value = m ? p.title.replace(m[0], "") : p.title;
         setOrg(p.org === "YB" ? "YB" : "OB");
+        /* 원래 말머리를 먼저 기억해 둡니다 — 목록에서 빠진 옛 말머리라도
+           고르개에 자리가 남아, 저장할 때 사라지지 않습니다. */
+        origCat = p.category || "";
+        origTag = m ? m[1].trim() : "";
         setCat(p.category);
-        if (m && (TAGS[p.category] || []).includes(m[1].trim())) { headTag = m[1].trim(); renderTags(); }
+        if (origTag && tagList().includes(origTag)) { headTag = origTag; renderTags(); }
         document.getElementById("content").value = p.content;
         let fs = p.files;
         if (typeof fs === "string") { try { fs = JSON.parse(fs); } catch (e) { fs = null; } }

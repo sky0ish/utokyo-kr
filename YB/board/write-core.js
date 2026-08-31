@@ -2,7 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/YB/auth/auth.js";
 import { applyNav } from "/YB/board/nav.js?v=10";
-import { boardInfo, tagInfo } from "/YB/board/board-info.js?v=120";
+import { boardInfo, tagInfo } from "/YB/board/board-info.js?v=121";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -121,8 +121,20 @@ export async function initWrite(ORG) {
         (tg ? `<br><b>[${headTag}]</b> ${tg}` : "");
     }
 
+    /* 고치는 글이 원래 달고 있던 게시판·말머리.
+       목록에서 빠진 옛 말머리를 단 글을 고칠 때,
+       그 말머리가 아무 말 없이 지워지지 않도록 기억해 둡니다. */
+    let origCat = "", origTag = "";
+
+    /** 이 게시판이 지금 쓰는 말머리 (+ 같은 게시판이면 이 글의 옛 말머리도) */
+    function tagList() {
+      const list = (TAGS[category] || []).slice();
+      if (origTag && category === origCat && !list.includes(origTag)) list.push(origTag);
+      return list;
+    }
+
     function renderTags() {
-      const list = TAGS[category] || [];
+      const list = tagList();
       sayWhatFor();
       tagPick.classList.toggle("need", !headTag);   // 미선택 시 연초록 강조
       if (headTag) {                                 // 고르시면 붉은 알림을 거둡니다
@@ -141,7 +153,9 @@ export async function initWrite(ORG) {
     function setCat(v) {
       category = v;
       catPick.querySelectorAll("a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
-      if (!(TAGS[category] || []).includes(headTag)) headTag = "";
+      /* 게시판을 옮기면 그 게시판에 없는 말머리는 뗍니다.
+         같은 게시판 안에서 고치기만 할 때는 옛 말머리가 그대로 남습니다. */
+      if (!tagList().includes(headTag)) headTag = "";
       renderTags();
       const vi = document.getElementById("visInfo");
       if (vi) vi.value = PUBLIC_CATS.includes(category) ? "전체 공개 — 로그인 없이도 읽을 수 있습니다" : "회원 전용";
@@ -266,8 +280,12 @@ export async function initWrite(ORG) {
         const m = (p.title || "").match(/^\s*\[([^\]]{1,12})\]\s*/);
         document.getElementById("title").value = m ? p.title.replace(m[0], "") : p.title;
         setOrg(p.org === "YB" ? "YB" : "OB");
+        /* 원래 말머리를 먼저 기억해 둡니다 — 목록에서 빠진 옛 말머리라도
+           고르개에 자리가 남아, 저장할 때 사라지지 않습니다. */
+        origCat = p.category || "";
+        origTag = m ? m[1].trim() : "";
         setCat(p.category);
-        if (m && (TAGS[p.category] || []).includes(m[1].trim())) { headTag = m[1].trim(); renderTags(); }
+        if (origTag && tagList().includes(origTag)) { headTag = origTag; renderTags(); }
         document.getElementById("content").value = p.content;
         let fs = p.files;
         if (typeof fs === "string") { try { fs = JSON.parse(fs); } catch (e) { fs = null; } }
