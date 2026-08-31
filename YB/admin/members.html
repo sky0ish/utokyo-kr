@@ -568,9 +568,14 @@ async function start() {
       state:   r => (r.approved ? (isRegrant(r) ? 1 : 0) : 2),
     };
     const list = pick(filter).slice();
+    // 승인을 기다리는 분은 어떤 차례로 보시든 늘 맨 위에 둡니다.
+    //   그래야 아래 가나다순으로 늘어선 기존 가입자와 저절로 갈립니다.
+    const waiting = (r) => (r.approved ? 1 : 0);
     if (sortKey && SORTV[sortKey]) {
       const v = SORTV[sortKey];
       list.sort((a, b) => {
+        const w = waiting(a) - waiting(b);
+        if (w) return w;
         const x = v(a), y = v(b);
         if (typeof x === "number") return (x - y) * sortDir;
         // 빈 칸은 늘 뒤로
