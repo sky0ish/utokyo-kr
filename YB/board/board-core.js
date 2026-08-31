@@ -110,6 +110,12 @@ export async function initBoard(ORG) {
     legacy: '<span class="src-tag legacy">(구)게시판</span>'
   };
   const onlyMyOrg = (q) => SHARED.includes(cat) ? q : q.eq("org", ORG);
+  /* 다른 게시판에서 「여기에도 함께」 로 걸어 둔 글도 이 게시판 글과 나란히 봅니다.
+     자리(also_cat)가 아직 없는 데이터베이스에서는 CROSS 를 내리고 예전처럼 봅니다. */
+  let CROSS = true;
+  const byCat = (q) => !cat ? q
+    : CROSS ? q.or("category.eq." + cat + ",also_cat.eq." + cat)
+            : q.eq("category", cat);
   const params = new URLSearchParams(location.search);
   const org = ORG;
   // 합쳐지며 없어진 옛 갈래는 새 자리로 돌립니다 (빈 껍데기 탭이 뜨지 않도록)
@@ -346,7 +352,7 @@ export async function initBoard(ORG) {
     if (!append && !keepTotal) {
       pageNo = 1;
       let cq = onlyMyOrg(sb.from("posts").select("id", { count: "exact", head: true }));
-      if (cat) cq = cq.eq("category", cat);
+      cq = byCat(cq);
       cq = applyTag(cq);
       cq = applySearch(cq);
       const { count } = await cq;
@@ -360,7 +366,7 @@ export async function initBoard(ORG) {
         .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned")
         .eq("pinned", true))
         .order("pinned_at", { ascending: false });
-      if (cat) pq = pq.eq("category", cat);
+      pq = byCat(pq);
       pq = applyTag(pq);
       const pr = await pq;
       pins = pr.data || [];          // 표에 pinned 칸이 없으면 조용히 넘어간다
@@ -371,35 +377,21 @@ export async function initBoard(ORG) {
       .order("created_at", { ascending: false })
       .range(PAGED ? (pageNo - 1) * PAGE : loaded.length,
              (PAGED ? (pageNo - 1) * PAGE : loaded.length) + PAGE - 1);
-    if (cat) q = q.eq("category", cat);
+    q = byCat(q);
     q = applyTag(q);
     q = applySearch(q);
     const { data, error } = await q;
 
-    /* 다른 게시판에서 「여기에도 함께」 로 걸어 둔 글을 첫 쪽에 얹습니다.
-       자리(also_cat)가 아직 없으면 조용히 넘어갑니다. */
-    if (!error && cat && !append && (!PAGED || pageNo === 1)) {
-      let aq = onlyMyOrg(sb.from("posts")
-        .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned"))
-        .eq("also_cat", cat)
-        .order("created_at", { ascending: false })
-        .limit(PAGE);
-      aq = applyTag(aq);
-      aq = applySearch(aq);
-      const extra = await aq;
-      if (!extra.error && extra.data && extra.data.length) {
-        const seen = new Set((data || []).map(x => x.id));
-        (extra.data || []).forEach(x => {
-          if (!seen.has(x.id)) { x.__also = true; data.push(x); }
-        });
-        data.sort((x, y) => String(y.created_at).localeCompare(String(x.created_at)));
-      }
-    }
-
     moreBtn.disabled = false;
     moreBtn.textContent = "더 보기";
 
+    if (error && CROSS && /also_cat|column|schema cache/i.test(error.message || "")) {
+      CROSS = false;                       // 자리가 아직 없으면 예전 방식으로 한 번 더
+      return load(append);
+    }
     if (error) { listEl.innerHTML = '<div class="empty">게시판을 불러오지 못했습니다. (' + error.message + ')</div>'; drawStat([]); return; }
+    // 이 게시판이 제집이 아닌 글은 「함께」 로 표시합니다
+    if (cat) (data || []).forEach(x => { x.__also = x.category !== cat; });
     if ((!data || data.length === 0) && !append) {
       listEl.innerHTML = kw
         ? `<div class="empty"><b>‘${kw}’</b> 에 해당하는 글이 없습니다.<br><br>` +
