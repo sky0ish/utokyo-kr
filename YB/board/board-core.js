@@ -28,7 +28,7 @@ function shortName(s) {
 const MAJOR_GUIDE = [
   ["농학부 · 농학생명과학연구과", "농학부"],
   ["공학부 건축학과 · 공학계연구과 건축학전공", "건축학"],
-  ["사회기반학과 · 도시공학과 · 환경계 · 신영역창성과학연구과", "도시·토목·환경"],
+  ["사회기반학과 · 도시공학과 · 환경계 · 신영역창성과학연구과", "도시환경토목(C.U.E)"],
   ["전기전자공학 · 기계공학 · 기계정보공학 · 계측공학 · 시스템창성", "전기·기계"],
   ["공학부 항공우주공학과 · 공학계연구과 항공우주공학전공", "항공우주"],
   ["정보이공학계연구과 · 정보학환·학제정보학부", "정보이공"],
@@ -685,7 +685,7 @@ export async function initBoard(ORG) {
     }).join("");
 
     const legend = items.map(([k,v], i) =>
-      `<span><i style="background:${PIE_COLORS[i % PIE_COLORS.length]}"></i>${escapeHtml(k)} <b>${Math.round(v/total*100)}%</b> <span style="color:#a8a291;">(${v})</span></span>`
+      `<span class="pieitem" data-k="${escapeHtml(k)}"><i style="background:${PIE_COLORS[i % PIE_COLORS.length]}"></i>${escapeHtml(k)} <b>${Math.round(v/total*100)}%</b> <span style="color:#a8a291;">(${v})</span></span>`
     ).join("");
 
     box.innerHTML = `<div class="stat">
@@ -695,6 +695,26 @@ export async function initBoard(ORG) {
           <div class="legend">${legend}</div>
         </div>
       </div>`;
+
+    /* 이름을 누르면 그 말머리(또는 그 게시판)만 봅니다. 다시 누르면 풀립니다. */
+    box.querySelectorAll(".pieitem").forEach(el => el.addEventListener("click", () => {
+      const k = el.dataset.k;
+      if (cat) {                                  // 말머리 비율일 때
+        tag = (tag === k) ? "" : k;
+        drawTagTabs();
+        document.querySelectorAll("#tagTabs a[data-t]").forEach(a =>
+          a.classList.toggle("on", (a.dataset.t || "") === tag));
+      } else {                                    // 게시판 분류 비율일 때
+        const hit = Object.keys(CAT).find(c => CAT[c] === k);
+        if (!hit) return;
+        cat = hit; tag = ""; seenTags.clear();
+        setBoardTitle(cat); drawTagTabs();
+        document.querySelectorAll("#catTabs a[data-cat]").forEach(a =>
+          a.classList.toggle("on", (a.dataset.cat || "") === cat));
+      }
+      keepUrl();
+      load();
+    }));
   }
 
   load();

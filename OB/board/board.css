@@ -432,3 +432,8 @@ body.yb .mguide td b{color:#2a6b40;}
 .btn.dateedit input{font-family:inherit;font-size:13px;border:none;background:none;
   color:inherit;cursor:pointer;padding:0;}
 .btn.dateedit.done{border-style:solid;border-color:#2a7a45;color:#2a7a45;}
+
+/* 원그래프 이름을 눌러 걸러 보기 */
+.legend .pieitem{cursor:pointer;border-radius:6px;padding:1px 6px;margin:0 -6px;transition:.14s;}
+.legend .pieitem:hover{background:#f5eddc;color:#8a6d2b;}
+body.yb .legend .pieitem:hover{background:#eef7f0;color:#2a6b40;}
