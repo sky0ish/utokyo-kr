@@ -34,6 +34,13 @@
     src:url("/fonts/VitroCore.woff2") format("woff2");
     font-weight:400 900; font-style:normal; font-display:swap;
   }
+  /* 첫 화면 새 글 — 어느 게시판 것인지 이름표로 */
+  .dcard .dbody li a{display:flex;align-items:baseline;gap:8px;}
+  .dcard .dbody li .bd{flex:none;font-size:11px;font-weight:700;color:#2a6b40;
+    background:#eef7f0;border:1px solid #d8eadd;border-radius:100px;padding:1px 8px;white-space:nowrap;}
+  .dcard .dbody li .tg{flex:none;font-size:11px;color:#7b8f82;white-space:nowrap;}
+  .dcard .dbody li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dcard .dbody li .dt{flex:none;font-size:11.5px;color:#a8b3ab;font-variant-numeric:tabular-nums;}
 </style>
 <style>
   :root{
@@ -206,6 +213,7 @@
   .dsum span{font-size:14.5px;color:#26312a;font-weight:400;line-height:1.6;}
   .dc-school .ico{background:#eef5ef;color:var(--green);}
   .dc-council .ico{background:#eaf3fb;color:#2e6a8f;}
+  .dc-join .ico{background:#fdf3e7;color:#a5762c;}
   .dc-board .ico{background:#f5f1e8;color:#8a6d2b;}
   .dc-gal .ico{background:#f3eef8;color:#5b4a86;}
   .dc-school{border-top:3px solid #84b08d;}
@@ -715,16 +723,6 @@
     </div>
     <div class="dash-grid">
 
-      <a class="dcard dc-school" href="#school">
-        <div class="dhead"><h3><span class="ico">🏫</span>학교안내</h3><span class="more">자세히 +</span></div>
-        <div class="dbody">
-          <div class="dsum"><b>캠퍼스</b><span>혼고 · 고마바 · 가시와 세 캠퍼스</span></div>
-          <div class="dsum"><b>오시는 길</b><span>도쿄메트로 혼고산초메역 · 도다이마에역</span></div>
-          <div class="dsum"><b>학사일정</b><span>4월 입학(S세메스터) · 9월 입학(A세메스터)</span></div>
-          <div class="dsum"><b>FAQ</b><span>입학·체류자격·기숙사·장학금 자주 묻는 질문</span></div>
-        </div>
-      </a>
-
       <a class="dcard dc-council" href="#council">
         <div class="dhead"><h3><span class="ico">🎓</span>학생회</h3><span class="more">자세히 +</span></div>
         <div class="dbody">
@@ -735,9 +733,18 @@
         </div>
       </a>
 
+      <div class="dcard dc-join">
+        <a class="dhead" href="/YB/board.html?cat=mentoring">
+          <h3><span class="ico">🤝</span>참여마당 새 글</h3><span class="more">전체보기 +</span>
+        </a>
+        <div class="dbody">
+          <ul id="dashJoin"><li><a><span class="tt">불러오는 중…</span></a></li></ul>
+        </div>
+      </div>
+
       <div class="dcard dc-board">
         <a class="dhead" href="/YB/board.html">
-          <h3><span class="ico">📋</span>게시판</h3><span class="more">전체보기 +</span>
+          <h3><span class="ico">📋</span>게시판 새 글</h3><span class="more">전체보기 +</span>
         </a>
         <div class="dbody">
           <ul id="dashPosts"><li><a><span class="tt">불러오는 중…</span></a></li></ul>
@@ -1349,33 +1356,53 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=255";
+import { initCalendar } from "/YB/board/calendar.js?v=256";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 
-// 최근 게시글 (학생회)
+// 첫 화면에 새 글을 보여드립니다 — 참여마당과 게시판을 따로.
+//   어느 게시판에 새 글이 늘었는지 이름표로 바로 알 수 있게 합니다.
 (async () => {
-  const CAT = { notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장" };
-  const el = document.getElementById("dashPosts");
+  const NAME = {
+    mentoring:"멘토멘티", major:"전공별모임", event:"행사", club:"소모임", suggest:"학생회에 바란다",
+    notice:"공지사항", free:"자유게시판", qna:"Q&A", jobs:"구인·채용", market:"벼룩시장",
+    scholarship:"장학정보", exam:"수험생", history:"활동 이력", career:"진학/취업 후기", counsel:"진로상담",
+  };
+  const JOIN_CATS  = ["mentoring", "major", "event", "club", "suggest"];
+  const BOARD_CATS = ["notice", "free", "qna", "jobs", "market", "scholarship", "exam"];
+  const SHARED = ["mentoring", "jobs", "major"];      // 두 단체가 함께 쓰는 게시판
   const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  try {
-    const { data } = await sb.from("posts")
-      .select("id,title,category,created_at").eq("org", "YB")
-      .order("created_at", { ascending: false }).limit(12);
-    if (!data || !data.length) {
-      el.innerHTML = '<li><a href="/YB/board.html"><span class="tt">아직 등록된 글이 없습니다. 첫 글을 남겨보세요 →</span></a></li>';
-      return;
+  const head = t => { const m = String(t||"").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/); return m ? m[1].trim() : ""; };
+  const body = t => String(t||"").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+
+  async function fill(id, cats, emptyMsg, link) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+      let q = sb.from("posts").select("id,title,category,org,created_at").in("category", cats);
+      const onlyShared = cats.every(c => SHARED.includes(c));
+      if (!onlyShared) q = q.or("org.eq.YB,category.in.(" + SHARED.join(",") + ")");
+      const { data } = await q.order("created_at", { ascending: false }).limit(8);
+      if (!data || !data.length) {
+        el.innerHTML = '<li><a href="' + link + '"><span class="tt">' + emptyMsg + '</span></a></li>';
+        return;
+      }
+      el.innerHTML = data.map(p => `
+        <li><a href="/YB/post.html?id=${p.id}">
+          <span class="bd">${esc(NAME[p.category] || p.category)}</span>
+          ${head(p.title) ? `<span class="tg">${esc(head(p.title))}</span>` : ""}
+          <span class="tt">${esc(body(p.title))}</span>
+          <span class="dt">${(p.created_at||"").slice(0,10)}</span>
+        </a></li>`).join("");
+    } catch (e) {
+      el.innerHTML = '<li><a href="' + link + '"><span class="tt">바로가기 →</span></a></li>';
     }
-    el.innerHTML = data.map(p => `
-      <li><a href="/YB/post.html?id=${p.id}">
-        <span class="tt">${esc(p.title)}</span>
-        <span class="dt">${(p.created_at||"").slice(0,10)}</span>
-      </a></li>`).join("");
-  } catch (e) {
-    el.innerHTML = '<li><a href="/YB/board.html"><span class="tt">게시판 바로가기 →</span></a></li>';
   }
+
+  fill("dashJoin", JOIN_CATS, "아직 올라온 글이 없습니다 →", "/YB/board.html?cat=mentoring");
+  fill("dashPosts", BOARD_CATS, "아직 등록된 글이 없습니다. 첫 글을 남겨보세요 →", "/YB/board.html");
 })();
 
 // 로그인 상태
@@ -1434,14 +1461,14 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=255");
+  const { initCouncil } = await import("/YB/council.js?v=256");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=255";
+  import { applyMenu } from "/YB/board/nav.js?v=256";
   applyMenu("YB");
 </script>
 </body>
