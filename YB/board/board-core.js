@@ -376,6 +376,23 @@ export async function initBoard(ORG) {
     q = applySearch(q);
     const { data, error } = await q;
 
+    /* 다른 게시판에서 「여기에도 함께」 로 걸어 둔 글을 첫 쪽에 얹습니다.
+       자리(also_cat)가 아직 없으면 조용히 넘어갑니다. */
+    if (!error && cat && !append && (!PAGED || pageNo === 1)) {
+      let aq = onlyMyOrg(sb.from("posts")
+        .select("id,title,org,category,author_name,visibility,source,image_url,created_at,pinned"))
+        .eq("also_cat", cat)
+        .order("created_at", { ascending: false })
+        .limit(PAGE);
+      aq = applySearch(aq);
+      const extra = await aq;
+      if (!extra.error && extra.data && extra.data.length) {
+        const seen = new Set((data || []).map(x => x.id));
+        (extra.data || []).forEach(x => { if (!seen.has(x.id)) data.push(x); });
+        data.sort((x, y) => String(y.created_at).localeCompare(String(x.created_at)));
+      }
+    }
+
     moreBtn.disabled = false;
     moreBtn.textContent = "더 보기";
 

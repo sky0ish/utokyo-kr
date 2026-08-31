@@ -387,6 +387,38 @@ function linkify(s) {
           pin.classList.toggle("on", next);
         });
         document.getElementById("actions").appendChild(pin);
+
+        /* 운영진 : 전공별모임 ↔ 포럼·세미나 에 같은 글을 함께 걸어 둡니다.
+           글을 옮기는 것이 아니라, 두 게시판에서 같은 글이 함께 보입니다. */
+        {
+          const PAIR = { major: ["forum", "포럼·세미나"],
+                         forum: ["major", "전공별모임(OB/YB)"] };
+          const pair = PAIR[p.category];
+          if (pair) {
+            const lab = document.createElement("label");
+            lab.className = "btn alsobox";
+            lab.title = pair[1] + " 게시판에도 같은 글이 함께 보입니다";
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = p.also_cat === pair[0];
+            lab.append(cb, document.createTextNode(pair[1] + "에도 함께"));
+            cb.addEventListener("change", async () => {
+              cb.disabled = true;
+              const { error } = await sb.from("posts")
+                .update({ also_cat: cb.checked ? pair[0] : null }).eq("id", p.id);
+              cb.disabled = false;
+              if (error) {
+                alert(/also_cat|schema cache|column/i.test(error.message || "")
+                  ? "아직 준비 전입니다 — auth/cross_post.sql 을 한 번 실행해주세요."
+                  : "바꾸지 못했습니다: " + error.message);
+                cb.checked = !cb.checked;
+                return;
+              }
+              p.also_cat = cb.checked ? pair[0] : null;
+            });
+            document.getElementById("actions").appendChild(lab);
+          }
+        }
       }
       document.getElementById("editBtn").addEventListener("click", () => location.href = HOME + "/write.html?edit=" + p.id);
       document.getElementById("delBtn").addEventListener("click", async () => {
