@@ -537,47 +537,47 @@ function linkify(s) {
         /^image\//.test(f.type || "") || /\.(png|jpe?g|gif|webp)$/i.test(f.name || ""));
       const slot = document.getElementById("galShare");
       if (slot && imgs.length) {
-        const CATS = ORG === "YB"
-          ? [["assembly","총회"],["event","행사·소모임"],["daily","일상"],["etc","기타"]]
-          : [["assembly","총회"],["staff","운영진"],["club","소모임"],["faculty","전공별모임"],
-             ["forum","포럼·세미나"],["old","옛날사진"],["daily","일상"]];
         slot.className = "galshare";
         slot.innerHTML =
           '<span class="gs-t">사진 ' + imgs.length + '장을 갤러리에도</span>' +
-          '<select class="gs-cat">' +
-            CATS.map(c => '<option value="' + c[0] + '">' + c[1] + '</option>').join("") +
-          '</select>' +
-          '<select class="gs-alb"><option value="">연도 앨범에 그대로</option></select>' +
-          '<button type="button" class="gs-go">갤러리에 공유</button>' +
-          '<span class="gs-msg"></span>';
+          '<select class="gs-alb"><option value="">앨범 불러오는 중…</option></select>' +
+          '<span class="gs-msg"></span>' +
+          '<button type="button" class="gs-go">갤러리에 공유</button>';
 
-        const selC = slot.querySelector(".gs-cat");
         const selA = slot.querySelector(".gs-alb");
         const btn = slot.querySelector(".gs-go");
         const msg = slot.querySelector(".gs-msg");
+        btn.disabled = true;
 
-        // 고른 분류에 이미 있는 앨범을 불러옵니다
-        let albums = [];
+        // 만들어 둔 앨범만 보여드립니다 (앨범이 제 분류를 가지고 있습니다)
         sb.from("gallery_albums").select("album_key,title,category").eq("org", ORG)
-          .then(({ data }) => { albums = data || []; drawAlbums(); });
-        function drawAlbums() {
-          const c = selC.value;
-          const mine = albums.filter(a => (a.category || "") === c);
-          selA.innerHTML = '<option value="">연도 앨범에 그대로</option>' +
-            mine.map(a => '<option value="' + a.album_key + '">' +
-                          escapeHtml(a.title || a.album_key) + '</option>').join("");
-        }
-        selC.addEventListener("change", drawAlbums);
+          .then(({ data }) => {
+            const list = (data || []).filter(a => a.album_key);
+            if (!list.length) {
+              selA.innerHTML = '<option value="">만들어 둔 앨범이 없습니다</option>';
+              msg.className = "gs-msg";
+              msg.textContent = "갤러리 관리에서 앨범을 먼저 만들어 주세요.";
+              return;
+            }
+            list.sort((a, b) => String(a.category || "").localeCompare(String(b.category || "")) ||
+                                String(a.title || "").localeCompare(String(b.title || ""), "ko"));
+            selA.innerHTML = list.map(a =>
+              '<option value="' + escapeHtml(a.album_key) + '" data-cat="' + escapeHtml(a.category || "") + '">' +
+              escapeHtml(a.title || a.album_key) + '</option>').join("");
+            btn.disabled = false;
+          });
 
         btn.addEventListener("click", async () => {
+          const opt = selA.selectedOptions[0];
+          if (!opt || !opt.value) return;
           btn.disabled = true;
           msg.className = "gs-msg";
           msg.textContent = "보내는 중…";
           const when = (p.created_at || "").slice(0, 10);
           const rows = imgs.map((f, i) => ({
             org: ORG,
-            category: selC.value,
-            album_key: selA.value || null,
+            category: opt.dataset.cat || "daily",
+            album_key: opt.value,
             image_url: sb.storage.from("board").getPublicUrl(f.path).data.publicUrl,
             storage_path: f.path,
             caption: String(p.title || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, ""),
@@ -593,7 +593,7 @@ function linkify(s) {
             return;
           }
           msg.className = "gs-msg ok";
-          msg.textContent = "갤러리에 올렸습니다.";
+          msg.textContent = "「" + (opt.textContent || "") + "」 앨범에 올렸습니다.";
         });
       }
     }
