@@ -90,6 +90,12 @@ a{text-decoration:none;color:inherit;}
 .chip.qna{background:#e7eef7;color:#2f4b8f;}
 .chip.parttime{background:#eef3e8;color:#5a7a33;}
 .chip.history{background:#f0ece2;color:#7a6a3c;}
+/* 뒤늦게 생긴 게시판들 — 이름표 색이 없어 민무늬로 보이던 것들 */
+.chip.assembly{background:#e9e3d3;color:#7a5f22;}
+.chip.exam{background:#e4f0ea;color:#2e6a55;}
+.chip.scholarship{background:#e6f0f6;color:#2b5f80;}
+.chip.career{background:#f1eaf4;color:#6b4a80;}
+.chip.counsel{background:#f5ece4;color:#8a5f36;}
 .chip.event{background:#fbe9e4;color:#a8542b;}
 .chip.major{background:#e6e9f5;color:#454f8c;}
 .chip.research{background:#e9f1ea;color:#3c6b4a;}
