@@ -157,6 +157,7 @@
       <div style="overflow-x:auto;"><table id="tbl"></table></div>
       <div class="row" style="margin-top:18px;">
         <button class="btn go" id="save">고른 것 담기</button>
+        <button class="btn" id="fixDate" title="이미 담은 글의 날짜를 인스타그램의 원래 게시 시각으로 되돌립니다">날짜만 고치기</button>
         <span class="msg" id="saveMsg" style="margin:0;"></span>
       </div>
       <div class="bar" id="bar"><i></i></div>
@@ -166,7 +167,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=266";
+import { CATS } from "/YB/gallery-lib.js?v=267";
 
 const ORG = "YB";
 
@@ -353,6 +354,45 @@ async function start() {
   }
 
   // ── 3) 담기 ──
+  /* 이미 담은 글의 날짜 고치기 —
+     옛 북마클릿으로 담을 때 인스타그램 게시 시각이 비어 와서 「오늘」로 들어간 글들이 있습니다.
+     새로 수집한 자료의 원래 시각으로 되돌립니다. 글을 다시 담지 않으니 겹치지 않습니다. */
+  document.getElementById("fixDate").addEventListener("click", async () => {
+    const btn = document.getElementById("fixDate");
+    const msg = document.getElementById("saveMsg");
+    const list = rows.filter(r => r.url && r.time);
+    if (!list.length) {
+      msg.className = "msg err";
+      msg.textContent = "원래 시각이 담긴 자료가 없습니다. 북마클릿을 새로 받아 다시 수집해 주세요.";
+      return;
+    }
+    if (!confirm(list.length + "건의 날짜를 인스타그램의 원래 게시 시각으로 되돌릴까요?" + String.fromCharCode(10) +
+                 "글은 새로 담지 않고 날짜만 고칩니다.")) return;
+    btn.disabled = true;
+    let ok = 0, miss = 0;
+    for (const r of list) {
+      const at = when(r.time);
+      const up = await sb.from("posts").update({ created_at: at })
+        .eq("org", ORG).eq("source_url", r.url).select("id");
+      if (up.error) {
+        msg.className = "msg err";
+        msg.textContent = "고치지 못했습니다: " + up.error.message;
+        btn.disabled = false;
+        return;
+      }
+      if (up.data && up.data.length) ok += up.data.length; else miss++;
+      // 같은 날짜로 사진첩의 사진도 함께 맞춥니다
+      await sb.from("gallery_photos").update({ taken_at: at.slice(0, 10) })
+        .eq("org", ORG).eq("caption", r.url);
+      msg.className = "msg";
+      msg.textContent = "고치는 중… " + (ok + miss) + "/" + list.length;
+    }
+    btn.disabled = false;
+    msg.className = "msg ok";
+    msg.textContent = "글 " + ok + "건의 날짜를 되돌렸습니다." +
+      (miss ? " (" + miss + "건은 담긴 글을 찾지 못했습니다)" : "");
+  });
+
   document.getElementById("save").addEventListener("click", async () => {
     const btn = document.getElementById("save");
     const out = document.getElementById("saveMsg");
