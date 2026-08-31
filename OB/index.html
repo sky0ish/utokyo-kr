@@ -34,6 +34,13 @@
   .asm-board li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .asm-board li .dt{flex:none;font-size:12px;color:#b0a98f;font-variant-numeric:tabular-nums;}
   .asm-board .none{padding:14px 2px;font-size:13.5px;color:#a8a291;}
+  /* 첫 화면 새 글 — 어느 게시판 것인지 이름표로 */
+  .dcard .dbody li a{display:flex;align-items:baseline;gap:8px;}
+  .dcard .dbody li .bd{flex:none;font-size:11px;font-weight:700;color:#8a6d2b;
+    background:#faf5e8;border:1px solid #efe4cc;border-radius:100px;padding:1px 8px;white-space:nowrap;}
+  .dcard .dbody li .tg{flex:none;font-size:11px;color:#a8a291;white-space:nowrap;}
+  .dcard .dbody li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dcard .dbody li .dt{flex:none;font-size:11.5px;color:#b0a98f;font-variant-numeric:tabular-nums;}
 </style>
 <style>
   :root{
@@ -683,7 +690,7 @@
     </div>
     <div class="dash-grid">
 
-      <!-- 동문회 소개 -->
+      <!-- 동문회 소개 — 참여마당 이야기까지 함께 -->
       <a class="dcard dc-intro" href="#greeting">
         <div class="dhead">
           <h3><span class="ico">🏛</span>동문회 소개</h3>
@@ -691,30 +698,30 @@
         </div>
         <div class="dbody">
           <div class="dsum"><b>회장</b><span>제4대 양일모 — 서울대학교 자유전공학부 교수</span></div>
-          <div class="dsum"><b>창설</b><span>2011년 3월 · 아카몬학우회(赤門学友会) 등록단체</span></div>
           <div class="dsum"><b>조직</b><span>고문단 15명 · 부회장단 30여 명 · 이사진 19명</span></div>
-          <div class="dsum"><b>정관</b><span>2023년 11월 제정 — 총칙부터 재무까지 9개 장</span></div>
+          <div class="dsum"><b>총회</b><span>매년 2월 정기총회 — 활동보고 · 자랑스러운 동경대인상 · 특별강연</span></div>
+          <div class="dsum"><b>소모임</b><span>골프(은행회) · 등산 · 약우회 · 젊은 동문 모임</span></div>
+          <div class="dsum"><b>전공별모임</b><span>전공·연구과별 모임 — 추진 모임마다 75만원 지원</span></div>
+          <div class="dsum"><b>포럼·세미나</b><span>학술 세미나 · 심포지엄 · 한일국제포럼 자율 개최 지원</span></div>
+          <div class="dsum"><b>멘토멘티</b><span>선배 동문과 재학생을 잇습니다 — 학생회와 함께 씁니다</span></div>
         </div>
       </a>
 
-      <!-- 참여마당 -->
-      <a class="dcard dc-join" href="#join">
-        <div class="dhead">
-          <h3><span class="ico">🤝</span>참여마당</h3>
-          <span class="more">자세히 +</span>
-        </div>
+      <!-- 참여마당 새 글 -->
+      <div class="dcard dc-join">
+        <a class="dhead" href="/OB/board.html?cat=assembly">
+          <h3><span class="ico">🤝</span>참여마당 새 글</h3>
+          <span class="more">전체보기 +</span>
+        </a>
         <div class="dbody">
-          <div class="dsum"><b>총회</b><span>매년 2월 정기총회 — 활동보고 · 자랑스러운 동경대인상 · 특별강연</span></div>
-          <div class="dsum"><b>소모임</b><span>골프(은행회) · 등산 · 약우회 · 젊은 동문 모임</span></div>
-          <div class="dsum"><b>단과대포럼</b><span>단과대별 순환 포럼 — 추진 단과대별 75만원 지원</span></div>
-          <div class="dsum"><b>세미나</b><span>학술 세미나 · 심포지엄 자율 개최 지원</span></div>
+          <ul id="dashJoin"><li><a><span class="tt">불러오는 중…</span></a></li></ul>
         </div>
-      </a>
+      </div>
 
       <!-- 게시판 -->
       <div class="dcard dc-board">
         <a class="dhead" href="/OB/board.html">
-          <h3><span class="ico">📋</span>게시판</h3>
+          <h3><span class="ico">📋</span>게시판 새 글</h3>
           <span class="more">전체보기 +</span>
         </a>
         <div class="dbody">
@@ -729,10 +736,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=262b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=262b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=262b3b5b07" alt="전공별모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=262b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=263b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=263b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=263b3b5b07" alt="전공별모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=263b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -1434,27 +1441,27 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=262b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=263b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=262b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=263b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=262b3b5b07" alt="전공별모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=263b3b5b07" alt="전공별모임" loading="lazy"></span>
         <span class="cap">전공별모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=262b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=263b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=262b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=263b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=262b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=263b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
     </div>
@@ -1564,7 +1571,7 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=262";
+import { initCalendar } from "/OB/board/calendar.js?v=263";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
@@ -1572,27 +1579,47 @@ initCalendar("#calFull", { mode: "mini", upcoming: false, titles: true });
 
 // ─── 모음판: 최근 게시글 ───
 (async () => {
-  const CAT = { notice:"공지", free:"자유", club:"소모임", jobs:"구인", mentoring:"멘토멘티",
-                promo:"홍보·채용", condolence:"경조사", faculty:"단과대별", news:"소식", market:"장터" };
-  const el = document.getElementById("dashPosts");
-  if (!el) return;
+  // 첫 화면에 새 글을 보여드립니다 — 참여마당과 게시판을 따로.
+  //   어느 게시판에 새 글이 늘었는지 이름표로 바로 알 수 있게 합니다.
+  const NAME = {
+    assembly:"총회", club:"소모임", major:"전공별모임", mentoring:"멘토멘티", forum:"포럼·세미나",
+    notice:"공지사항", free:"자유게시판", jobs:"구인·채용", condolence:"경조사",
+    research:"단행본·연구", suggest:"동문회에 바란다",
+  };
+  const JOIN_CATS  = ["assembly", "club", "major", "mentoring", "forum"];
+  const BOARD_CATS = ["notice", "free", "jobs", "condolence", "research", "suggest"];
+  const SHARED = ["mentoring", "jobs", "major"];      // 두 단체가 함께 쓰는 게시판
   const esc = s => (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  try {
-    const { data, error } = await sb.from("posts")
-      .select("id,title,category,created_at").eq("org", "OB")
-      .order("created_at", { ascending: false }).limit(12);
-    if (error || !data || !data.length) {
-      el.innerHTML = '<li><a href="/OB/auth/login.html"><span class="tt">로그인하시면 회원 전용 게시글을 보실 수 있습니다.</span></a></li>';
-      return;
+  const head = t => { const m = String(t||"").match(/^\s*[\[【]([^\]】]{1,20})[\]】]/); return m ? m[1].trim() : ""; };
+  const body = t => String(t||"").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
+
+  async function fill(id, cats, emptyMsg, link) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+      let q = sb.from("posts").select("id,title,category,org,created_at").in("category", cats);
+      const onlyShared = cats.every(c => SHARED.includes(c));
+      if (!onlyShared) q = q.or("org.eq.OB,category.in.(" + SHARED.join(",") + ")");
+      const { data, error } = await q.order("created_at", { ascending: false }).limit(8);
+      if (error || !data || !data.length) {
+        el.innerHTML = '<li><a href="' + link + '"><span class="tt">' + emptyMsg + '</span></a></li>';
+        return;
+      }
+      el.innerHTML = data.map(p => `
+        <li><a href="/OB/post.html?id=${p.id}">
+          <span class="bd">${esc(NAME[p.category] || p.category)}</span>
+          ${head(p.title) ? `<span class="tg">${esc(head(p.title))}</span>` : ""}
+          <span class="tt">${esc(body(p.title))}</span>
+          <span class="dt">${(p.created_at||"").slice(0,10)}</span>
+        </a></li>`).join("");
+    } catch (e) {
+      el.innerHTML = '<li><a href="' + link + '"><span class="tt">바로가기 →</span></a></li>';
     }
-    el.innerHTML = data.map(p => `
-      <li><a href="/OB/post.html?id=${p.id}">
-        <span class="tt">${esc(p.title)}</span>
-        <span class="dt">${(p.created_at||"").slice(0,10)}</span>
-      </a></li>`).join("");
-  } catch (e) {
-    el.innerHTML = '<li><a href="/OB/board.html"><span class="tt">게시판 바로가기 →</span></a></li>';
   }
+
+  fill("dashJoin", JOIN_CATS, "아직 올라온 글이 없습니다 →", "/OB/board.html?cat=assembly");
+  fill("dashPosts", BOARD_CATS,
+       "로그인하시면 회원 전용 게시글을 보실 수 있습니다.", "/OB/board.html");
 })();
 try {
   const user = await currentUser();
@@ -1689,7 +1716,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=262";
+  import { applyMenu } from "/OB/board/nav.js?v=263";
   applyMenu("OB");
 </script>
 </body>
