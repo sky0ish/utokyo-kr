@@ -355,15 +355,15 @@
 
   /* ── 참여마당 ── */
   .join-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
-  .jcard{border:1px solid #e2dbc8;border-radius:12px;padding:28px 26px 30px;transition:.25s;
+  .jcard{border:1px solid #e2dbc8;border-radius:12px;padding:20px 20px 22px;transition:.25s;
     background:linear-gradient(#fffdf7,#f8f4ea);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 3px 6px rgba(60,50,20,.1), 0 10px 24px rgba(60,50,20,.14);}
   .jcard:hover{border-color:var(--gold);transform:translateY(-4px);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 6px 12px rgba(60,50,20,.14), 0 20px 40px rgba(60,50,20,.2);}
   .jcard:active{transform:translateY(1px);box-shadow:inset 0 3px 8px rgba(0,0,0,.12);}
   .jcard .no{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--gold);font-weight:500;}
-  .jcard h3{font-family:'Noto Serif KR',serif;font-size:23px;font-weight:700;margin:6px 0 12px;letter-spacing:-.01em;color:#1d2333;}
-  .jcard p{font-size:14px;color:#575246;font-weight:400;line-height:1.8;word-break:keep-all;}
+  .jcard h3{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;margin:0 0 9px;letter-spacing:-.01em;color:#1d2333;}
+  .jcard p{font-size:13px;color:#575246;font-weight:400;line-height:1.7;word-break:keep-all;}
   /* 카드별 포인트 색 */
   .join-grid .jcard:nth-child(1){background:linear-gradient(#fffaf0,#f9f0dd);}
   .join-grid .jcard:nth-child(2){background:linear-gradient(#f6fbf7,#eaf4ec);border-color:#d5e6d9;}
@@ -371,7 +371,7 @@
   .join-grid .jcard:nth-child(4){background:linear-gradient(#faf8fd,#f1ecf8);border-color:#e0d8ee;}
   .join-grid .jcard:nth-child(5){background:linear-gradient(#fdf8f6,#f8ece7);border-color:#ead9d1;}
   /* 선택된 카드 (기본: 총회) */
-  .join-grid .jcard.on{border-color:var(--gold);border-width:2px;padding:27px 25px 29px;
+  .join-grid .jcard.on{border-color:var(--gold);border-width:2px;padding:19px 19px 21px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 4px 10px rgba(150,110,20,.2), 0 14px 30px rgba(150,110,20,.2);}
   .join-grid .jcard.on::after{content:'';position:absolute;left:50%;bottom:-11px;transform:translateX(-50%) rotate(45deg);
     width:18px;height:18px;background:#f9f0dd;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);}
@@ -757,10 +757,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=274b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=274b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=274b3b5b07" alt="전공별모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=274b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=275b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=275b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=275b3b5b07" alt="전공별모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=275b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -1332,39 +1332,29 @@
 
     <div class="join-grid">
       <a class="jcard on" href="/OB/board.html?cat=assembly" data-cat="assembly">
-        <span class="no">01</span>
         <h3>총회</h3>
-        <p>매년 2월 정기총회 — 총장 인사말, 활동보고와 회계 결산, 자랑스러운 동경대인상 수여,
-           특별강연과 경품 추첨. 총회 안내와 결과 보고, 지난 총회 자료를 모아 둡니다.
-           연도별 결과 보고는 아래에서 보실 수 있습니다.</p>
+        <p>매년 2월 정기총회 — 총장 인사말, 활동보고와 회계 결산, 자랑스러운 동경대인상,
+           특별강연. 연도별 결과 보고는 아래에 있습니다.</p>
       </a>
       <a class="jcard" href="/OB/board.html?cat=club" data-cat="club">
-        <span class="no">02</span>
         <h3>소모임</h3>
-        <p>골프(은행회) · 등산 · 약우회 · 현정회 · 젊은 동문 모임 등 취미와 친목의 자리입니다.
-           연 2회 활동비를 지원하며, 모임 안내와 다녀온 이야기를 함께 나눕니다.
-           새 소모임을 여시려는 분도 이곳에 알려 주세요.</p>
+        <p>골프(은행회) · 등산 · 약우회 · 현정회 · 젊은 동문 모임.
+           연 2회 활동비를 지원합니다.</p>
       </a>
       <a class="jcard" href="/OB/board.html?cat=major" data-cat="major">
-        <span class="no">03</span>
         <h3>전공별모임<small>(OB/YB)</small></h3>
-        <p>같은 전공·연구과끼리 모이는 자리로, 총동문회 선배와 학생회 후배가 함께 쓰는 곳입니다.
-           추진하는 모임마다 75만원을 지원합니다. 농학부 · 건축학 · 도시·토목·환경 ·
-           전기·기계 · 의학·약학 등 열여섯 계열로 나뉘어 있습니다.</p>
+        <p>같은 전공·연구과끼리 모이는 자리. 총동문회 선배와 학생회 후배가 함께 쓰며,
+           모임마다 75만원을 지원합니다.</p>
       </a>
       <a class="jcard" href="/OB/board.html?cat=mentoring" data-cat="mentoring">
-        <span class="no">04</span>
         <h3>멘토멘티<small>(OB/YB)</small></h3>
-        <p>선배 동문이 후배의 진로·유학·취업을 함께 고민합니다.
-           멘토·멘티 모집, 이달의 동문 소개, 만남의 광장, 상담과 취업 후기를 나눕니다.
-           학생회 재학생도 함께 쓰는 게시판입니다.</p>
+        <p>선배가 후배의 진로·유학·취업을 함께 고민합니다.
+           이달의 동문과 상담 후기도 나눕니다.</p>
       </a>
       <a class="jcard" href="/OB/board.html?cat=forum" data-cat="forum">
-        <span class="no">05</span>
         <h3>포럼·세미나</h3>
-        <p>학술 세미나 · 심포지엄 · 한일국제포럼의 자율적 개최를 지원합니다.
-           동문 간 전문지식을 나누고 서로를 잇는 자리입니다.
-           개최 안내와 다녀온 이야기, 발표 자료를 함께 올려 주세요.</p>
+        <p>학술 세미나 · 심포지엄 · 한일국제포럼의 자율 개최를 지원합니다.
+           동문 간 전문지식을 나누는 자리입니다.</p>
       </a>
     </div>
 
@@ -1478,27 +1468,27 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=274b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=275b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=274b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=275b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=274b3b5b07" alt="전공별모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=275b3b5b07" alt="전공별모임" loading="lazy"></span>
         <span class="cap">전공별모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=274b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=275b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=274b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=275b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=274b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=275b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
     </div>
@@ -1608,7 +1598,7 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=274";
+import { initCalendar } from "/OB/board/calendar.js?v=275";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
@@ -1632,14 +1622,14 @@ initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
   const head = t => { const m = String(t||"").match(/^\s*[\[【]([^\]】]{1,20})[\]】]/); return m ? m[1].trim() : ""; };
   const body = t => String(t||"").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
 
-  async function fill(id, cats, emptyMsg, link) {
+  async function fill(id, cats, emptyMsg, link, n) {
     const el = document.getElementById(id);
     if (!el) return;
     try {
       let q = sb.from("posts").select("id,title,category,org,created_at").in("category", cats);
       const onlyShared = cats.every(c => SHARED.includes(c));
       if (!onlyShared) q = q.or("org.eq.OB,category.in.(" + SHARED.join(",") + ")");
-      const { data, error } = await q.order("created_at", { ascending: false }).limit(7);   // 왼쪽 소개 칸과 길이를 맞춥니다
+      const { data, error } = await q.order("created_at", { ascending: false }).limit(n || 7);   // 옆 칸 길이에 맞춥니다
       if (error || !data || !data.length) {
         el.innerHTML = '<li><a href="' + link + '"><span class="tt">' + emptyMsg + '</span></a></li>';
         return;
@@ -1658,7 +1648,7 @@ initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
 
   fill("dashJoin", JOIN_CATS, "아직 올라온 글이 없습니다 →", "/OB/board.html?cat=assembly");
   fill("dashPosts", BOARD_CATS,
-       "로그인하시면 회원 전용 게시글을 보실 수 있습니다.", "/OB/board.html");
+       "로그인하시면 회원 전용 게시글을 보실 수 있습니다.", "/OB/board.html", 13);
 })();
 try {
   const user = await currentUser();
@@ -1755,7 +1745,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=274";
+  import { applyMenu } from "/OB/board/nav.js?v=275";
   applyMenu("OB");
 
 // ── 참여마당 : 칸을 누르면 그 게시판 글만 아래에 ──
