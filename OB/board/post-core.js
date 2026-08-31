@@ -3,7 +3,7 @@
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/OB/auth/auth.js";
 import { loadLikes, toggleLike, heart } from "/OB/auth/likes.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardTags } from "/OB/board/board-info.js?v=121";
+import { boardTags } from "/OB/board/board-info.js?v=122";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
 function esc(t) {

@@ -2,7 +2,7 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/OB/auth/auth.js";
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=121";
+import { boardInfo, tagInfo } from "/OB/board/board-info.js?v=122";
 
 export async function initWrite(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -72,7 +72,7 @@ export async function initWrite(ORG) {
     const TAGS_OB = {
       assembly: ["결과보고", "총회안내", "현장중계", "기타"],
       free: ["일상", "질문", "정보공유", "후기", "기타"],
-      club: ["골프", "등산", "전공별", "친목", "운영진", "기타"],
+      club: ["골프", "등산", "전공별", "친목", "학술", "운영진", "기타"],
       mentoring: ["멘토 모집", "멘티 모집", "이달의 동문", "만남의 광장", "진로상담", "취업후기", "유학", "운영관리", "기타"],
       jobs: ["아르바이트", "일본채용", "한국채용", "인턴", "설명회", "기업홍보", "기타"],
       condolence: ["부고", "결혼", "출산", "축하", "기타"],

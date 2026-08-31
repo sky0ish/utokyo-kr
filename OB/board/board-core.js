@@ -3,7 +3,7 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
 import { applyNav } from "/OB/board/nav.js?v=10";
-import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=121";
+import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=122";
 
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
@@ -125,11 +125,19 @@ export async function initBoard(ORG) {
     return tag ? q.ilike("title", "[" + tag + "]%") : q;
   }
 
+  /* 글에 실제로 쓰였는데 이름표 목록(board-info.js)에는 없는 말머리.
+     목록에서 말머리를 빼면 그 말머리를 단 옛 글을 걸러 볼 길이 사라집니다.
+     실제로 소모임의 「전공별」·「친목」·「학술」 이 그렇게 묻혔습니다.
+     그래서 불러온 글에서 본 말머리는 목록에 없어도 칩을 세워 둡니다. */
+  const seenTags = new Set();
+
   /** 지금 게시판의 말머리 줄을 다시 그린다 */
   function drawTagTabs() {
     const box = document.getElementById("tagTabs");
     if (!box) return;
-    const list = cat ? boardTags(cat) : [];
+    const known = cat ? boardTags(cat) : [];
+    const extra = cat ? [...seenTags].filter((t) => t && !known.includes(t)).sort() : [];
+    const list = known.concat(extra);
     if (!list.length) { box.className = "tagtabs"; box.innerHTML = ""; return; }
     box.className = "tagtabs on";
     box.innerHTML = '<span class="lb">말머리</span>' +
@@ -191,6 +199,7 @@ export async function initBoard(ORG) {
       e.preventDefault();
       cat = a.dataset.cat || "";
       tag = "";                                   // 게시판을 바꾸면 말머리는 푼다
+      seenTags.clear();                           // 앞 게시판의 말머리를 물고 가지 않게
       setBoardTitle(cat);
       drawTagTabs();
       keepUrl();
@@ -369,6 +378,13 @@ export async function initBoard(ORG) {
     }
 
     loaded = PAGED ? (data || []) : loaded.concat(data || []);
+    /* 불러온 글에서 본 말머리를 적어 둡니다 —
+       이름표 목록에 없는 것이 있으면 말머리 줄에 칩을 세워 줍니다. */
+    if (cat) {
+      const before = seenTags.size;
+      loaded.forEach((p) => { const h = headOf(p.title); if (h) seenTags.add(h); });
+      if (seenTags.size !== before) drawTagTabs();
+    }
     drawStat(loaded);
     const pinIds = new Set(pins.map(p => p.id));
     render(pins.concat(loaded.filter(p => !pinIds.has(p.id))));

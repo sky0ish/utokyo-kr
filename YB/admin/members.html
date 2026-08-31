@@ -500,6 +500,53 @@ async function start() {
     render();
   });
 
+  /* ── 정말 고쳐졌는지 확인하고 저장하기 ───────────────────
+     Supabase 의 update 는 .select() 를 안 붙이면 「몇 줄이 바뀌었는지」를
+     아예 돌려주지 않습니다(204 No Content). 게다가 접근 규칙(RLS)은
+     오류를 내지 않고 **고칠 수 있는 줄만 남기고 조용히 걸러 냅니다.**
+     그래서 한 줄도 안 고쳐져도 error 는 null 입니다.
+
+     예전 코드는 그것을 「됐다」로 믿고 화면만 바꿔, 승인을 눌러도
+     새로 고치면 대기로 돌아왔습니다. 이제 바뀐 줄 수를 세어 봅니다. */
+  async function saveRows(q) {
+    const { data, error } = await q.select("id");
+    if (error) return { n: 0, ids: [], error };
+    return { n: (data || []).length, ids: (data || []).map(x => x.id), error: null };
+  }
+  const RLS_MSG =
+    "서버가 한 줄도 고치지 않았습니다 — 접근 규칙(RLS)에 막혔습니다.\n\n" +
+    "Supabase SQL Editor 에서 auth/u-tokyo_self_edit.sql 을 한 번 돌려 주세요.\n" +
+    "(규칙이 제자리를 맴돌면 승인·등급 바꾸기가 모두 막힙니다)";
+
+  /* ── 도쿄대 학부·연구과 이름표 ───────────────────────────
+     동문 명단은 「이름」 하나로만 대조합니다. 그래서 최근 졸업생이나
+     표기가 조금 다른 분은 명단에 없다고 나옵니다.
+     그럴 때 전공까지 보아, 도쿄대 것이면 등급을 함부로 내리지 않습니다.
+     가입 화면 값이 「공학계연구과 (工学系研究科)」 꼴이라 한·일 표기를 둘 다 둡니다. */
+  const UTOKYO_ORGS = [
+    "법학부","의학부","공학부","문학부","이학부","농학부","경제학부","교양학부","교육학부","약학부",
+    "法学部","医学部","工学部","文学部","理学部","農学部","経済学部","教養学部","教育学部","薬学部",
+    "인문사회계연구과","교육학연구과","법학정치학연구과","경제학연구과","총합문화연구과",
+    "이학계연구과","공학계연구과","농학생명과학연구과","의학계연구과","약학계연구과",
+    "수리과학연구과","신영역창성과학연구과","정보이공학계연구과","학제정보학부","공공정책대학원",
+    "人文社会系研究科","教育学研究科","法学政治学研究科","経済学研究科","総合文化研究科",
+    "理学系研究科","工学系研究科","農学生命科学研究科","医学系研究科","薬学系研究科",
+    "数理科学研究科","新領域創成科学研究科","情報理工学系研究科","学際情報学府","公共政策大学院",
+    "情報学環","公共政策学教育部",
+    "생산기술연구소","물성연구소","의과학연구소","대기해양연구소","지진연구소","동양문화연구소",
+    "사회과학연구소","사료편찬소","우주선연구소","정량생명과학연구소","선단과학기술연구센터",
+    "生産技術研究所","物性研究所","医科学研究所","大気海洋研究所","地震研究所","東洋文化研究所",
+    "社会科学研究所","史料編纂所","宇宙線研究所","定量生命科学研究所","先端科学技術研究センター",
+    "동경제국대학","도쿄제국대학","東京帝国大学","제2공학부","第二工学部",
+  ];
+  const NOSPACE = (s) => String(s == null ? "" : s).replace(/[\s·・.．,]/g, "");
+  /** 적어 낸 전공이 도쿄대 것으로 보이는가 */
+  function isUTokyoFaculty(faculty) {
+    const t = NOSPACE(faculty);
+    if (t.length < 3) return false;
+    return UTOKYO_ORGS.some((w) => t.indexOf(NOSPACE(w)) >= 0);
+  }
+
   function render() {
     document.querySelectorAll("#orgseg a").forEach(a =>
     a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
@@ -608,8 +655,8 @@ async function start() {
           if (!d.error) r.is_admin = false;
         } else r.is_admin = false;
       }
-      const { error } = await sb.from("profiles")
-        .update({ grade: to, grade_manual_at: now }).eq("id", r.id);
+      const { n, error } = await saveRows(sb.from("profiles")
+        .update({ grade: to, grade_manual_at: now }).eq("id", r.id));
       sel.disabled = false;
       if (error) {
         alert("등급 변경 실패: " + error.message +
@@ -617,6 +664,7 @@ async function start() {
         sel.value = r.grade || "guest";
         return;
       }
+      if (!n) { alert("등급이 바뀌지 않았습니다.\n\n" + RLS_MSG); sel.value = r.grade || "guest"; return; }
       r.grade = to; r.grade_manual_at = now;
       const cell = tr.querySelector(".gcell");
       cell.innerHTML = gradeChip(r) + gradeSel(r);
@@ -648,10 +696,26 @@ async function start() {
       const patch = { grade_checked_at: now,
                       roster_dept: h0.department || null, roster_year: h0.degree_year || null,
                       roster_belong: h0.belong || null,   roster_email: h0.email || null };
-      sb.from("profiles").update(patch).eq("id", r.id).then(() => Object.assign(r, patch));
+      const put = await saveRows(sb.from("profiles").update(patch).eq("id", r.id));
+      if (put.n) Object.assign(r, patch);
+      else {
+        const m0 = document.getElementById("listMsg");
+        m0.className = "msg err";
+        m0.textContent = "확인 결과를 저장하지 못했습니다 — " +
+          (put.error ? put.error.message : "접근 규칙(RLS)에 막혔습니다.");
+      }
       const hits = data || [];
       const cell = tr.querySelector(".gcell");
       if (!hits.length) {
+        /* 명단은 「이름」 하나로만 대조합니다. 최근 졸업생이나 표기가 조금 다른 분은
+           명단에 없다고 나옵니다. 전공이 도쿄대 것이면 등급을 함부로 내리지 않고
+           운영진께 여쭙니다 — 공학계연구과를 나오셨으면 동문이 맞으니까요. */
+        if (isUTokyoFaculty(r.faculty)) {
+          cell.innerHTML = gradeChip(r) +
+            '<div class="rnote warn">명단에 없음 — 다만 전공이 도쿄대 (' +
+            esc(r.faculty) + ')<br>등급은 그대로 두었습니다. 운영진이 살펴봐 주세요</div>';
+          return;
+        }
         cell.innerHTML = gradeChip({ grade: "guest" }) +
           '<div class="rnote">동문 명단에 없음</div>';
         await setGrade(r, "guest");
@@ -686,18 +750,22 @@ async function start() {
 
     async function setGrade(r, g) {
       if (r.is_admin || r.grade === g) return;
-      const { error } = await sb.from("profiles").update({ grade: g }).eq("id", r.id);
-      if (!error) r.grade = g;
+      const { n } = await saveRows(sb.from("profiles").update({ grade: g }).eq("id", r.id));
+      if (n) r.grade = g;
+      return !!n;
     }
 
     t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
       const id = b.closest("tr").dataset.id;
       const r = rows.find(x => x.id === id);
       b.disabled = true;
-      const { error } = await sb.from("profiles").update({ approved: !r.approved }).eq("id", id);
+      const { n, error } = await saveRows(
+        sb.from("profiles").update({ approved: !r.approved }).eq("id", id));
       if (error) { alert("변경 실패: " + error.message); b.disabled = false; return; }
-      r.approved = !r.approved;
-      render(); refreshEmails();
+      if (!n)    { alert(RLS_MSG); b.disabled = false; return; }
+      /* 브라우저 안에서 뒤집지 않고 서버에서 다시 읽습니다 —
+         그래야 위쪽 숫자가 늘 서버와 같습니다. */
+      await load();
     }));
 
     // ── 명단에서 아예 빼기 (계정까지) ──
@@ -762,11 +830,17 @@ async function start() {
     if (!confirm(`${ids.length}명을 ${word}할까요?`)) return;
     const msg = document.getElementById("listMsg");
     msg.className = "msg"; msg.textContent = `${word} 처리 중…`;
-    const { error } = await sb.from("profiles").update({ approved: value }).in("id", ids);
+    const { n, error } = await saveRows(
+      sb.from("profiles").update({ approved: value }).in("id", ids));
     if (error) { msg.className = "msg err"; msg.textContent = word + " 실패: " + error.message; return; }
-    ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.approved = value; });
-    render(); refreshEmails();
-    msg.className = "msg ok"; msg.textContent = `${ids.length}명을 ${word}했습니다.`;
+    if (!n) { msg.className = "msg err"; msg.textContent = word + " 실패 — " + RLS_MSG; return; }
+    await load();                       // 서버에서 다시 읽어 숫자를 맞춥니다
+    if (n < ids.length) {
+      msg.className = "msg err";
+      msg.textContent = `${ids.length}명 가운데 ${n}명만 바뀌었습니다 — 나머지는 접근 규칙에 막혔습니다.`;
+    } else {
+      msg.className = "msg ok"; msg.textContent = `${n}명을 ${word}했습니다.`;
+    }
   }
 
   document.getElementById("okSel").addEventListener("click", () => bulk(selected(), true));
@@ -849,8 +923,16 @@ async function start() {
     const ids = targetRows().filter(r => list.includes((r.email || "").trim())).map(r => r.id);
     if (!ids.length) return;
     const now = new Date().toISOString();
-    const { error } = await sb.from("profiles").update({ welcome_sent_at: now }).in("id", ids);
-    if (!error) ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.welcome_sent_at = now; });
+    const { n, error } = await saveRows(
+      sb.from("profiles").update({ welcome_sent_at: now }).in("id", ids));
+    /* 여기가 조용히 실패하면 「보낸 것으로 표시」가 안 남아
+       같은 분께 안내메일을 또 보내게 됩니다. */
+    if (error || !n) {
+      alert("「보낸 것으로 표시」가 저장되지 않았습니다.\n\n" +
+            (error ? error.message : RLS_MSG));
+      return;
+    }
+    ids.forEach(id => { const r = rows.find(x => x.id === id); if (r) r.welcome_sent_at = now; });
     render();
   }
 
