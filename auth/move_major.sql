@@ -30,7 +30,7 @@
 
 select category as "지금 게시판",
        case
-         when title ~ '항공|우주공학' then '항공우주'
+         when title ~ '항공|우주공학|항공우주' then '항공우주'
          when title ~ '농학|농생명|농업|수의|산림|축산|응용생명' then '농학부'
          when title ~ '건축' then '건축학'
          when title ~ 'C\.?U\.?E|사회기반|도시공학|도시|토목|환경|방재|신영역' then '도시환경토목(C.U.E)'
@@ -80,7 +80,7 @@ with t as (
 update public.posts p
    set category = 'major',
        title = '[' || case
-         when t.title ~ '항공|우주공학' then '항공우주'
+         when t.title ~ '항공|우주공학|항공우주' then '항공우주'
          when t.title ~ '농학|농생명|농업|수의|산림|축산|응용생명' then '농학부'
          when t.title ~ '건축' then '건축학'
          when t.title ~ 'C\.?U\.?E|사회기반|도시공학|도시|토목|환경|방재|신영역' then '도시환경토목(C.U.E)'
