@@ -478,3 +478,8 @@ body.yb .list .row .alsochip{color:#3d6b52;background:#eef7f1;border-color:#c7e0
 body.yb .galshare{border-color:#cfe3d4;background:#fbfefb;}
 body.yb .galshare .gs-t{color:#2a6b40;}
 body.yb .galshare .gs-go{border-color:#4f9d5d;background:linear-gradient(#fbfefb,#eef6f0);color:#1e5230;}
+
+/* 글보기 — 보던 목록으로 돌아가기 */
+.pactions .btn.back{border-color:#cfc7b4;color:#6f6a5c;}
+.pactions .btn.back:hover{border-color:#8a6d2b;color:#8a6d2b;}
+body.yb .pactions .btn.back:hover{border-color:#2a6b40;color:#2a6b40;}

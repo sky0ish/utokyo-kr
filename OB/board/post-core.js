@@ -223,22 +223,55 @@ ${plain}${plain.length >= 300 ? "…" : ""}
 ${url}`;
     const msg = document.getElementById("shMsg");
 
-    document.getElementById("shBand").addEventListener("click", () => {
+    /* 두 단체가 함께 쓰는 게시판에서는 밴드 · 페이스북 · 인스타그램을 모두 둡니다.
+       화면마다 원래 있던 단추가 달라, 없는 것만 만들어 붙이고 차례를 맞춥니다. */
+    {
+      const SHARED = ["mentoring", "jobs", "major"];
+      const want = SHARED.includes(p.category)
+        ? [["shBand", "밴드에 공유", "band"],
+           ["shFb", "페이스북에 공유", "fb"],
+           ["shInsta", "인스타그램에 공유", "insta"]]
+        : [];
+      want.forEach(([id, label, cls]) => {
+        if (document.getElementById(id)) return;
+        const b = document.createElement("button");
+        b.type = "button"; b.id = id; b.className = "btn sh " + cls; b.textContent = label;
+        box.appendChild(b);
+      });
+      ["shBand", "shFb", "shInsta", "shCopy"].forEach((id) => {
+        const b = document.getElementById(id);
+        if (b) box.appendChild(b);
+      });
+      if (msg) box.appendChild(msg);
+    }
+
+    const on = (id, fn) => {
+      const b = document.getElementById(id);
+      if (b) b.addEventListener("click", fn);
+    };
+
+    on("shBand", () => {
       window.open("https://band.us/plugin/share?body=" + encodeURIComponent(body)
                   + "&route=" + encodeURIComponent(url),
                   "bandShare", "width=500,height=640");
     });
-    document.getElementById("shFb").addEventListener("click", () => {
+    on("shFb", () => {
       // 페이스북은 본문을 미리 채울 수 없어, 주소를 함께 복사해 드립니다
       navigator.clipboard && navigator.clipboard.writeText(body).catch(() => {});
-      msg.textContent = "글 내용을 복사했습니다. 페이스북 창에서 붙여넣기(Ctrl+V) 하세요.";
+      if (msg) msg.textContent = "글 내용을 복사했습니다. 페이스북 창에서 붙여넣기(Ctrl+V) 하세요.";
       window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url),
                   "fbShare", "width=600,height=640");
     });
-    document.getElementById("shCopy").addEventListener("click", () => {
+    on("shInsta", () => {
+      // 인스타그램도 글을 미리 채워 보낼 수 없어, 내용을 복사해 드립니다
+      navigator.clipboard && navigator.clipboard.writeText(body).catch(() => {});
+      if (msg) msg.textContent = "글 내용을 복사했습니다. 인스타그램에서 붙여넣기(Ctrl+V) 하세요.";
+      window.open("https://www.instagram.com/", "instaShare", "noopener");
+    });
+    on("shCopy", () => {
       navigator.clipboard.writeText(url).then(
-        () => { msg.textContent = "주소를 복사했습니다."; },
-        () => { msg.textContent = "복사하지 못했습니다: " + url; });
+        () => { if (msg) msg.textContent = "주소를 복사했습니다."; },
+        () => { if (msg) msg.textContent = "복사하지 못했습니다: " + url; });
     });
   }
 
@@ -541,6 +574,30 @@ function linkify(s) {
           msg.className = "gs-msg ok";
           msg.textContent = "갤러리에 올렸습니다.";
         });
+      }
+    }
+
+
+    /* 돌아가기 — 보고 계시던 글 모음으로 그대로 (말머리·검색어까지 살려서).
+       바로 주소로 들어오셨다면 이 글이 있는 게시판으로 갑니다. */
+    {
+      const acts = document.getElementById("actions");
+      if (acts && !document.getElementById("backToList")) {
+        acts.style.display = "flex";
+        const b = document.createElement("button");
+        b.type = "button";
+        b.id = "backToList";
+        b.className = "btn line back";
+        b.textContent = "← 돌아가기";
+        b.addEventListener("click", () => {
+          const ref = document.referrer || "";
+          if (ref.indexOf(location.origin) === 0 && /board\.html/.test(ref)) {
+            location.href = ref;
+            return;
+          }
+          location.href = HOME + "/board.html" + (p.category ? "?cat=" + p.category : "");
+        });
+        acts.insertBefore(b, acts.firstChild);
       }
     }
 
