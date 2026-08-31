@@ -603,8 +603,8 @@ async function start() {
     if (!use.length) { box.innerHTML = ""; return; }
     const n = {};
     use.forEach(r => { const m = majorOf(r); n[m] = (n[m] || 0) + 1; });
+    // 사람 수가 아니라 계열 차례대로 — 가까운 전공끼리 이웃하게 놓습니다
     const rows = MAJOR_ORDER.filter(m => n[m]).map(m => [m, n[m]]);
-    rows.sort((a, b) => b[1] - a[1]);
     const max = Math.max(...rows.map(r => r[1]), 1);
     const known = use.length - (n["모름"] || 0);
     box.innerHTML =
