@@ -2,7 +2,10 @@
 --  전공별 모임 · 전공별 상담 이야기를 [참여마당 / 전공별모임] 으로 모읍니다.
 --
 --   말머리는 전공 계열로 나눕니다
---     농학부 · 건축학부 · C.U.E · 의약 · 응용화학계열 · 전기전자기계 · 항공우주 · 기타
+--     명부의 전공코드를 그대로 따릅니다 —
+--     농학부(AG) · 건축학(AR) · C.U.E(CUE) · 전기·기계·항공(EM) · 재료·화학(CM)
+--     의약(MM) · 법학부(L) · 인문사회(HS) · 이학부(SC) · 총합문화(T)
+--     공학 기타(EE) · 생산기술연구소(LAB) · 경제학부(EC) · 정보이공(IN) · 기타(NONE)
 --
 --   무엇을 옮기나
 --     ① 제목이 [전공별] 로 시작하는 글  (지금 소모임에 들어가 있는 것들)
@@ -25,14 +28,20 @@
 
 select category as "지금 게시판",
        case
-         when title ~ '항공|우주'                              then '항공우주'
-         when title ~ '농학|농생명|농업|수의|산림|축산'          then '농학부'
-         when title ~ '건축'                                    then '건축학부'
-         when title ~ 'C\.?U\.?E|도시|토목|환경|사회기반|방재'  then 'C.U.E'
-         when title ~ '의학|의약|약학|생명|의대|병원|보건|간호'  then '의약'
-         when title ~ '응용화학|화학|화공|재료|신소재'           then '응용화학계열'
-         when title ~ '전기|전자|기계|정보공학|컴퓨터|계측|시스템창성'
-                                                                then '전기전자기계'
+         when title ~ '항공|우주|전자|전기|기계|계측|시스템창성|기계정보'  then '전기·기계·항공'
+         when title ~ '농학|농생명|농업|수의|산림|축산|응용생명'            then '농학부'
+         when title ~ '건축'                                              then '건축학'
+         when title ~ 'C\.?U\.?E|도시공학|도시|토목|환경|사회기반|방재|신영역' then 'C.U.E'
+         when title ~ '금속|재료|공업화학|화학시스템|화공|신소재|응용화학'   then '재료·화학'
+         when title ~ '의학|의약|약학|의대|병원|보건|간호'                  then '의약'
+         when title ~ '법학|법과대'                                        then '법학부'
+         when title ~ '인문|사회학|사회과학|교육학|문학'                    then '인문사회'
+         when title ~ '이학부|이학계|물리|수학|화학과|지구|천문'             then '이학부'
+         when title ~ '총합문화|교양학부'                                   then '총합문화'
+         when title ~ '정보이공|정보학|정보관련|컴퓨터|정보공학'             then '정보이공'
+         when title ~ '생산기술연구소|생기연'                               then '생산기술연구소'
+         when title ~ '경제학|경영'                                        then '경제학부'
+         when title ~ '공학'                                              then '공학 기타'
          else '기타'
        end as "붙을 말머리",
        title as "제목"
@@ -68,14 +77,20 @@ with t as (
 update public.posts p
    set category = 'major',
        title = '[' || case
-         when t.title ~ '항공|우주'                              then '항공우주'
-         when t.title ~ '농학|농생명|농업|수의|산림|축산'          then '농학부'
-         when t.title ~ '건축'                                    then '건축학부'
-         when t.title ~ 'C\.?U\.?E|도시|토목|환경|사회기반|방재'  then 'C.U.E'
-         when t.title ~ '의학|의약|약학|생명|의대|병원|보건|간호'  then '의약'
-         when t.title ~ '응용화학|화학|화공|재료|신소재'           then '응용화학계열'
-         when t.title ~ '전기|전자|기계|정보공학|컴퓨터|계측|시스템창성'
-                                                                  then '전기전자기계'
+         when t.title ~ '항공|우주|전자|전기|기계|계측|시스템창성|기계정보'  then '전기·기계·항공'
+         when t.title ~ '농학|농생명|농업|수의|산림|축산|응용생명'            then '농학부'
+         when t.title ~ '건축'                                              then '건축학'
+         when t.title ~ 'C\.?U\.?E|도시공학|도시|토목|환경|사회기반|방재|신영역' then 'C.U.E'
+         when t.title ~ '금속|재료|공업화학|화학시스템|화공|신소재|응용화학'   then '재료·화학'
+         when t.title ~ '의학|의약|약학|의대|병원|보건|간호'                  then '의약'
+         when t.title ~ '법학|법과대'                                        then '법학부'
+         when t.title ~ '인문|사회학|사회과학|교육학|문학'                    then '인문사회'
+         when t.title ~ '이학부|이학계|물리|수학|화학과|지구|천문'             then '이학부'
+         when t.title ~ '총합문화|교양학부'                                   then '총합문화'
+         when t.title ~ '정보이공|정보학|정보관련|컴퓨터|정보공학'             then '정보이공'
+         when t.title ~ '생산기술연구소|생기연'                               then '생산기술연구소'
+         when t.title ~ '경제학|경영'                                        then '경제학부'
+         when t.title ~ '공학'                                              then '공학 기타'
          else '기타'
        end || '] ' || coalesce(t.stripped, t.title)
   from t
