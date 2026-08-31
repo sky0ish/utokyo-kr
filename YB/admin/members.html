@@ -187,6 +187,9 @@
   .topbar .links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
   .btn.sm.rm{background:#fff;border-color:#e3bfba;color:#b3453b;}
   .btn.sm.rm:hover{background:#fbeeec;border-color:#b3453b;}
+  /* 일련번호 — 지금 보이는 차례대로 1부터 */
+  #tbl th.no, #tbl td.no{width:42px;text-align:right;padding-right:10px;
+    color:#a09a86;font-variant-numeric:tabular-nums;font-weight:400;}
 </style>
 </head>
 <body>
@@ -370,7 +373,7 @@ function esc(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;","
 
 async function start() {
   let rows = [], filter = "all", orgF = "all";
-  let sortKey = "", sortDir = 1;                    // 빈 값이면 기본 차례 (가입 최신순)
+  let sortKey = "name", sortDir = 1;                // 처음에는 이름 가나다순
   // 어느 홈페이지에서 들어왔는지 — 그 쪽 회원을 위에 보여준다
   // 이 화면은 도쿄대학 한국인학생회 운영진 것입니다. 제 단체 명단이 먼저 나옵니다.
   const HOME = "YB";
@@ -604,6 +607,7 @@ async function start() {
     }
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
+      '<th class="no">#</th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
        ["faculty", orgF === "GUEST" ? "자격 · 소속 기관" : "전공 · 연도"],
        ["company", orgF === "GUEST" ? "남기신 말" : "직장 · 직급"],
@@ -612,8 +616,9 @@ async function start() {
         .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
           `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
       "<th></th></tr></thead><tbody>" +
-      list.map(r => `<tr data-id="${r.id}">
+      list.map((r, i) => `<tr data-id="${r.id}">
         <td><input type="checkbox" class="chk"></td>
+        <td class="no">${i + 1}</td>
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
         <td class="em">${esc(r.email) || "-"}</td>
         <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
