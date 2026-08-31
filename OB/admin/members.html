@@ -615,8 +615,16 @@ async function start() {
                 '<button class="btn sm rm" title="회원 정보와 로그인 계정을 지웁니다">명단에서 빼기</button>'}</td>
       </tr>`).join("") + "</tbody>";
 
-    // ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
-    t.querySelectorAll(".gsel").forEach(sel => sel.addEventListener("change", async () => {
+    /* ── 등급 손으로 바꾸기 (명단에 없어도 아는 분이면 회원으로) ──
+       손 다는 일을 따로 떼어 두었습니다. 「회원여부 확인」 뒤에 등급 칸을
+       다시 그리고 나서도 이것을 부르면 고르개가 그대로 움직입니다.
+       (예전에는 다시 그린 고르개에 손이 안 달려 눌러도 아무 일이 없었고,
+        확인 뒤에는 고르개 자체가 사라져 회원으로 올릴 길이 없었습니다) */
+    function wireGradeSel(scope) {
+      (scope || t).querySelectorAll(".gsel").forEach(sel => {
+        if (sel.dataset.wired) return;
+        sel.dataset.wired = "1";
+        sel.addEventListener("change", async () => {
       const tr = sel.closest("tr");
       const r = rows.find(x => x.id === tr.dataset.id);
       const to = sel.value;
@@ -644,11 +652,15 @@ async function start() {
       r.grade = to; r.grade_manual_at = now;
       const cell = tr.querySelector(".gcell");
       cell.innerHTML = gradeChip(r) + gradeSel(r);
+      wireGradeSel(tr);
       render();
       const m = document.getElementById("listMsg");
       m.className = "msg ok";
       m.textContent = `${r.name || "회원"} 님을 ${to === "member" ? "회원" : "준회원"}으로 바꿨습니다.`;
-    }));
+        });
+      });
+    }
+    wireGradeSel(t);
 
     // ── 동문 명단에서 회원 여부 확인 ──
     t.querySelectorAll(".chk2").forEach(b => b.addEventListener("click", async () => {
@@ -687,22 +699,25 @@ async function start() {
            명단에 없다고 나옵니다. 전공이 도쿄대 것이면 등급을 함부로 내리지 않고
            운영진께 여쭙니다 — 공학계연구과를 나오셨으면 동문이 맞으니까요. */
         if (isUTokyoFaculty(r.faculty)) {
-          cell.innerHTML = gradeChip(r) +
+          cell.innerHTML = gradeChip(r) + gradeSel(r) +
             '<div class="rnote warn">명단에 없음 — 다만 전공이 도쿄대 (' +
-            esc(r.faculty) + ')<br>등급은 그대로 두었습니다. 운영진이 살펴봐 주세요</div>';
+            esc(r.faculty) + ')<br>등급은 그대로 두었습니다. 아래에서 골라 주세요</div>';
+          wireGradeSel(tr);
           return;
         }
-        cell.innerHTML = gradeChip({ grade: "guest" }) +
+        cell.innerHTML = gradeChip({ grade: "guest" }) + gradeSel({ ...r, grade: "guest" }) +
           '<div class="rnote">동문 명단에 없음</div>';
         await setGrade(r, "guest");
+        wireGradeSel(tr);
         return;
       }
       const h = hits[0];
-      cell.innerHTML = gradeChip({ grade: "member" }) +
+      cell.innerHTML = gradeChip({ grade: "member" }) + gradeSel({ ...r, grade: "member" }) +
         `<div class="rnote">${esc(h.department || "")} ${esc(h.degree_year || "")}<br>` +
         `${esc(h.belong || "")}${h.email ? `<br><a href="mailto:${esc(h.email)}">${esc(h.email)}</a>` : ""}` +
         (hits.length > 1 ? `<br>동명이인 ${hits.length}명` : "") + "</div>";
       await setGrade(r, "member");
+      wireGradeSel(tr);
     }));
 
     t.querySelectorAll(".adm").forEach(b => b.addEventListener("click", async () => {
