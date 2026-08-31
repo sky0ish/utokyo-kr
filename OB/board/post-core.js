@@ -391,8 +391,9 @@ function linkify(s) {
         /* 운영진 : 전공별모임 ↔ 포럼·세미나 에 같은 글을 함께 걸어 둡니다.
            글을 옮기는 것이 아니라, 두 게시판에서 같은 글이 함께 보입니다. */
         {
-          const PAIR = { major: ["forum", "포럼·세미나"],
-                         forum: ["major", "전공별모임(OB/YB)"] };
+          /* 한쪽으로만 겁니다 — 전공별모임 글을 포럼·세미나에도 걸 수 있고,
+             그 반대는 두지 않습니다. */
+          const PAIR = { major: ["forum", "포럼·세미나"] };
           const pair = PAIR[p.category];
           if (pair) {
             const lab = document.createElement("label");
