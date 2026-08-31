@@ -1,6 +1,8 @@
 -- ═══════════════════════════════════════════════════════════
 --  ① 게시판 갈래 목록 맞추기   ② 「장학」 글을 장학정보 게시판으로
 --
+--   ※ 장학정보는 학생회(YB) 것입니다. 총동문회 글은 건드리지 않습니다.
+--
 --   실행 : Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 --   ※ 여러 번 실행해도 안전합니다. 옮기기 전 모습을 먼저 보여드립니다.
 -- ═══════════════════════════════════════════════════════════
@@ -24,16 +26,18 @@ select org as "단체", category as "지금 게시판", count(*) as "글수"
   from public.posts
  where title ilike '%장학%'
    and category <> 'scholarship'
+   and org = 'YB'
  group by org, category
  order by count(*) desc;
 
 -- ── ③ 옮기기 ──
 --   제목에 「장학」이 들어간 글을 모두 [장학정보]로 보냅니다.
---   단체(OB/YB)는 그대로 둡니다 — 장학정보는 양쪽이 함께 쓰는 게시판입니다.
+--   장학정보는 학생회(YB) 게시판이라 학생회 글만 옮깁니다.
 update public.posts
    set category = 'scholarship'
  where title ilike '%장학%'
-   and category <> 'scholarship';
+   and category <> 'scholarship'
+   and org = 'YB';
 
 -- ── ④ 옮긴 뒤 : 장학정보 게시판에 몇 건이 모였는지 ──
 select org as "단체", count(*) as "장학정보 글수"

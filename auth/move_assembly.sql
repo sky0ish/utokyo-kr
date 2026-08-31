@@ -7,6 +7,8 @@
 --     총회안내 — 언제 어디서 여는지 미리 알리는 글
 --     기타     — 그 밖의 총회 소식
 --
+--   ※ 총회 게시판은 총동문회(OB) 것입니다. 학생회 글은 건드리지 않습니다.
+--
 --   실행 : Supabase 대시보드 → SQL Editor → 붙여넣기 → Run
 --   ※ 여러 번 실행해도 안전합니다. 옮기기 전 모습을 먼저 보여드립니다.
 -- ═══════════════════════════════════════════════════════════
@@ -27,6 +29,7 @@ select org as "단체", category as "지금 게시판", count(*) as "글수"
   from public.posts
  where title ilike '%총회%'
    and category <> 'assembly'
+   and org = 'OB'
  group by org, category
  order by count(*) desc;
 
@@ -41,7 +44,7 @@ select case
        end as "붙을 말머리",
        count(*) as "글수"
   from public.posts
- where category = 'assembly' or title ilike '%총회%'
+ where org = 'OB' and (category = 'assembly' or title ilike '%총회%')
  group by 1
  order by count(*) desc;
 
@@ -52,7 +55,7 @@ with t as (
   select id, title,
          nullif(regexp_replace(title, '^\s*[\[【][^\]】]{1,14}[\]】]\s*', ''), '') as stripped
     from public.posts
-   where category = 'assembly' or title ilike '%총회%'
+   where org = 'OB' and (category = 'assembly' or title ilike '%총회%')
 )
 update public.posts p
    set category = 'assembly',

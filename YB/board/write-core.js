@@ -65,20 +65,20 @@ export async function initWrite(ORG) {
     orgTabs.forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); setOrg(a.dataset.org); }));
 
     // 게시판 분류 · 말머리 선택 (조직별)
-    const CATS_OB = { assembly:"총회", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"단과대포럼", seminar:"세미나", jobs:"구인·채용(OB/YB)", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
+    const CATS_OB = { assembly:"총회", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", forum:"포럼·세미나", jobs:"구인·채용(OB/YB)", condolence:"경조사", notice:"공지사항", research:"단행본 및 연구소개", suggest:"동문회에 바란다" };
     const CATS_YB = { mentoring:"멘토멘티(OB/YB)", event:"행사", club:"소모임", major:"전공별모임", suggest:"학생회에 바란다", jobs:"구인·채용(OB/YB)", free:"자유게시판", qna:"Q&A", scholarship:"장학·연구지원", market:"벼룩시장", exam:"수험생 게시판", notice:"공지사항", history:"활동 이력", career:"진학/취업 후기", counsel:"진로상담" };
     const CATS = ORG === "YB" ? CATS_YB : CATS_OB;
 
     const TAGS_OB = {
       assembly: ["결과보고", "총회안내", "현장중계", "기타"],
-      free: ["일상", "질문", "정보공유", "후기"],
-      club: ["골프", "등산", "운영진", "기타"],
-      mentoring: ["멘토 모집", "멘티 모집", "이달의 동문", "만남의 광장", "진로상담", "취업후기", "유학", "기타"],
+      free: ["일상", "질문", "정보공유", "후기", "기타"],
+      club: ["골프", "등산", "전공별", "친목", "학술", "운영진", "기타"],
+      mentoring: ["멘토 모집", "멘티 모집", "이달의 동문", "만남의 광장", "진로상담", "취업후기", "유학", "운영관리", "기타"],
       jobs: ["아르바이트", "일본채용", "한국채용", "인턴", "설명회", "기업홍보", "기타"],
-      condolence: ["부고", "결혼", "출산", "축하"],
-      notice: ["총회", "회비", "행사", "안내"],
-      forum: ["건축학", "농학생명", "공학", "인문사회", "약학", "의학", "기타"],
-      seminar: ["학술", "산업", "한일교류", "기타"],
+      condolence: ["부고", "결혼", "출산", "축하", "기타"],
+      notice: ["총회", "회비", "행사", "안내", "기타"],
+      forum: ["건축학", "농학생명", "공학", "인문사회", "약학", "의학",
+              "세미나", "학술", "산업", "한일교류", "기타"],
       research: ["단행본", "연구", "신기술", "신규개발제품", "기타"],
       suggest: ["건의", "문의", "아이디어", "불편", "칭찬", "기타"]
     };
