@@ -6,7 +6,7 @@
 --     [이과] 농학부(AG) · 건축학(AR) · 도시·토목·환경(CUE) · 전기·기계(EM)
 --            재료·화학(CM) · 의약(MM) · 이학부(SC) · 공학 기타(EE)
 --            생산기술연구소(LAB) · 정보이공(IN) · 항공우주
---     [문과] 법학부(L) · 인문사회(HS) · 총합문화(T) · 경제학부(EC)
+--     [문과] 인문·사회·법정책(L+HS+T) · 경제학부(EC)
 --            기타(NONE)
 --
 --   무엇을 옮기나
@@ -41,9 +41,8 @@ select category as "지금 게시판",
          when title ~ '정보이공|정보학|정보관련|컴퓨터|정보공학' then '정보이공'
          when title ~ '전자|전기|기계|계측|시스템창성|기계정보' then '전기·기계'
          when title ~ '공학' then '공학 기타'
-         when title ~ '법학|법과대' then '법학부'
-         when title ~ '인문|사회학|사회과학|교육학|문학' then '인문사회'
-         when title ~ '총합문화|교양학부' then '총합문화'
+
+         when title ~ '법학|법과대|공공정책|정책|인문|사회학|사회과학|교육학|교육|문학|총합문화|교양학부|동양문화연구소|사회과학연구소|사료편찬' then '인문·사회·법정책'
          when title ~ '경제학|경영' then '경제학부'
          else '기타'
        end as "붙을 말머리",
@@ -91,9 +90,8 @@ update public.posts p
          when t.title ~ '정보이공|정보학|정보관련|컴퓨터|정보공학' then '정보이공'
          when t.title ~ '전자|전기|기계|계측|시스템창성|기계정보' then '전기·기계'
          when t.title ~ '공학' then '공학 기타'
-         when t.title ~ '법학|법과대' then '법학부'
-         when t.title ~ '인문|사회학|사회과학|교육학|문학' then '인문사회'
-         when t.title ~ '총합문화|교양학부' then '총합문화'
+
+         when t.title ~ '법학|법과대|공공정책|정책|인문|사회학|사회과학|교육학|교육|문학|총합문화|교양학부|동양문화연구소|사회과학연구소|사료편찬' then '인문·사회·법정책'
          when t.title ~ '경제학|경영' then '경제학부'
          else '기타'
        end || '] ' || coalesce(t.stripped, t.title)

@@ -388,7 +388,7 @@ function linkify(s) {
 
         // 운영진 : 이 글의 말머리 바꾸기
         const headOf = (t) => {
-          const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/);
+          const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,20})[\]】]/);
           return m ? m[1].trim() : "";
         };
         const tg = document.createElement("select");

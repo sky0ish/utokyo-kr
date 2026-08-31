@@ -57,7 +57,7 @@ export async function initBoard(ORG) {
   const bodyOf = (t) => String(t || "").replace(/^\s*[\[【][^\]】]*[\]】]\s*/, "");
   /** 제목 앞의 [말머리] 를 떼어냅니다 */
   const headOf = (t) => {
-    const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,14})[\]】]/);
+    const m = String(t || "").match(/^\s*[\[【]([^\]】]{1,20})[\]】]/);
     return m ? m[1].trim() : "";
   };
 
