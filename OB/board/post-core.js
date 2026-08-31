@@ -591,8 +591,10 @@ function linkify(s) {
         b.textContent = "← 돌아가기";
         b.addEventListener("click", () => {
           const ref = document.referrer || "";
-          if (ref.indexOf(location.origin) === 0 && /board\.html/.test(ref)) {
-            location.href = ref;
+          // 목록에서 눌러 들어오셨으면 브라우저의 「뒤로」 를 씁니다.
+          //   그래야 보시던 자리·스크롤·더 보기로 펼친 글까지 그대로 돌아갑니다.
+          if (ref.indexOf(location.origin) === 0 && /board\.html/.test(ref) && history.length > 1) {
+            history.back();
             return;
           }
           location.href = HOME + "/board.html" + (p.category ? "?cat=" + p.category : "");
