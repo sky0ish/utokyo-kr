@@ -22,6 +22,7 @@ select case
        count(*) as "글수"
   from public.posts
  where org = 'OB' and category = 'club'
+   and title !~ '^\s*[\[【]\s*전공별'   -- 전공별모임으로 갈 글은 빼둡니다
  group by 1
  order by count(*) desc;
 
@@ -32,6 +33,7 @@ with t as (
          nullif(regexp_replace(title, '^\s*[\[【][^\]】]{1,14}[\]】]\s*', ''), '') as stripped
     from public.posts
    where org = 'OB' and category = 'club'
+   and title !~ '^\s*[\[【]\s*전공별'   -- 전공별모임으로 갈 글은 빼둡니다
 )
 update public.posts p
    set title = '[' || case
@@ -52,5 +54,6 @@ select split_part(split_part(title, ']', 1), '[', 2) as "말머리",
        count(*) as "글수"
   from public.posts
  where org = 'OB' and category = 'club'
+   and title !~ '^\s*[\[【]\s*전공별'   -- 전공별모임으로 갈 글은 빼둡니다
  group by 1
  order by count(*) desc;
