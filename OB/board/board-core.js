@@ -372,11 +372,14 @@ export async function initBoard(ORG) {
         .eq("also_cat", cat)
         .order("created_at", { ascending: false })
         .limit(PAGE);
+      aq = applyTag(aq);
       aq = applySearch(aq);
       const extra = await aq;
       if (!extra.error && extra.data && extra.data.length) {
         const seen = new Set((data || []).map(x => x.id));
-        (extra.data || []).forEach(x => { if (!seen.has(x.id)) data.push(x); });
+        (extra.data || []).forEach(x => {
+          if (!seen.has(x.id)) { x.__also = true; data.push(x); }
+        });
         data.sort((x, y) => String(y.created_at).localeCompare(String(x.created_at)));
       }
     }
@@ -464,6 +467,7 @@ export async function initBoard(ORG) {
     listEl.innerHTML = data.map(p => `
       <a class="row${p.pinned ? " pinned" : ""}" href="${HOME}/post.html?id=${p.id}">
         <span class="chip ${p.pinned ? "notice-pin" : p.category}">${p.pinned ? "알림" : (CAT[p.category] || p.category)}</span>
+        ${p.__also ? '<span class="alsochip" title="다른 게시판에 올린 글을 여기에도 함께 걸어 두었습니다">함께</span>' : ""}
         ${headOf(p.title) ? `<span class="tagchip">${escapeHtml(headOf(p.title))}</span>` : ""}
         <span class="t">${escapeHtml(bodyOf(p.title))}${p.visibility === "members" ? '<span class="lock">회원전용</span>' : ""}</span>
         ${p.image_url ? `<img class="thumb" src="${p.image_url}" alt="">` : ""}

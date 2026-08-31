@@ -366,3 +366,9 @@ body.yb .likebtn.on{background:linear-gradient(#e8604f,#d0402f);border-color:#b8
   font-weight:500;background:#fff;border-style:dashed;}
 .btn.alsobox input{width:14px;height:14px;margin:0;cursor:pointer;accent-color:#8a6d2b;}
 body.yb .btn.alsobox input{accent-color:#2a6b40;}
+
+/* 다른 게시판에서 함께 걸어 둔 글 */
+.list .row .alsochip{flex:none;font-size:11px;font-weight:600;color:#5c6b8a;
+  background:#eef2f8;border:1px dashed #c3cee0;border-radius:100px;
+  padding:1px 9px;white-space:nowrap;}
+body.yb .list .row .alsochip{color:#3d6b52;background:#eef7f1;border-color:#c7e0d1;}
