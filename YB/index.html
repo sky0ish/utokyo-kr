@@ -1356,7 +1356,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=272";
+import { initCalendar } from "/YB/board/calendar.js?v=273";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1387,7 +1387,7 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
       let q = sb.from("posts").select("id,title,category,org,created_at").in("category", cats);
       const onlyShared = cats.every(c => SHARED.includes(c));
       if (!onlyShared) q = q.or("org.eq.YB,category.in.(" + SHARED.join(",") + ")");
-      const { data } = await q.order("created_at", { ascending: false }).limit(12);
+      const { data } = await q.order("created_at", { ascending: false }).limit(7);   // 왼쪽 소개 칸과 길이를 맞춥니다
       if (!data || !data.length) {
         el.innerHTML = '<li><a href="' + link + '"><span class="tt">' + emptyMsg + '</span></a></li>';
         return;
@@ -1464,14 +1464,14 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=272");
+  const { initCouncil } = await import("/YB/council.js?v=273");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=272";
+  import { applyMenu } from "/YB/board/nav.js?v=273";
   applyMenu("YB");
 </script>
 </body>
