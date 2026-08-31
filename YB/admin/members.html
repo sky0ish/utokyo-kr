@@ -198,6 +198,12 @@
   .majorstat .ms-b{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
     gap:3px 22px;}
   .majorstat .ms-r{display:flex;align-items:center;gap:9px;}
+  .majorstat .ms-r{cursor:pointer;border-radius:6px;padding:1px 4px;margin:0 -4px;transition:.14s;}
+  .majorstat .ms-r:hover{background:#faf5e8;}
+  .majorstat .ms-r.on{background:#f5eddc;}
+  .majorstat .ms-r.on .ms-n{font-weight:700;color:#8a6d2b;}
+  .majorstat .ms-pick{color:#8a6d2b;}
+
   .majorstat .ms-n{flex:0 0 118px;font-size:12px;color:#5a5445;text-align:right;}
   .majorstat .ms-bar{flex:1;height:9px;background:#f2ede0;border-radius:100px;overflow:hidden;}
   .majorstat .ms-bar i{display:block;height:100%;border-radius:100px;
@@ -392,6 +398,7 @@ function esc(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;","
 
 async function start() {
   let rows = [], filter = "all", orgF = "all";
+  let majorF = "";        // 전공 계열 그래프에서 고른 계열
   let sortKey = "name", sortDir = 1;                // 처음에는 이름 가나다순
   // 어느 홈페이지에서 들어왔는지 — 그 쪽 회원을 위에 보여준다
   // 이 화면은 도쿄대학 한국인학생회 운영진 것입니다. 제 단체 명단이 먼저 나옵니다.
@@ -609,11 +616,17 @@ async function start() {
     const known = use.length - (n["모름"] || 0);
     box.innerHTML =
       '<div class="ms-h">전공 계열별 인원 <span>' + use.length + '명 중 ' + known + '명 확인' +
+      (majorF ? ' · <b class="ms-pick">' + esc(majorF) + '</b> 만 보는 중 (다시 누르면 전체)' : '') +
       (n["모름"] ? ' · 모름 ' + n["모름"] + '명' : '') + '</span></div>' +
       '<div class="ms-b">' + rows.map(([m, c]) =>
-        '<div class="ms-r"><span class="ms-n">' + esc(m) + '</span>' +
+        '<div class="ms-r' + (majorF === m ? ' on' : '') + '" data-m="' + esc(m) + '">' +
+        '<span class="ms-n">' + esc(m) + '</span>' +
         '<span class="ms-bar"><i style="width:' + Math.round(c / max * 100) + '%"></i></span>' +
         '<span class="ms-c">' + c + '</span></div>').join("") + '</div>';
+    box.querySelectorAll(".ms-r").forEach(el => el.addEventListener("click", () => {
+      majorF = (majorF === el.dataset.m) ? "" : el.dataset.m;   // 다시 누르면 풀립니다
+      draw();
+    }));
   }
 
   function isUTokyoFaculty(faculty) {
@@ -640,7 +653,8 @@ async function start() {
       grade:   r => r.grade || "",
       state:   r => (r.approved ? (isRegrant(r) ? 1 : 0) : 2),
     };
-    const list = pick(filter).slice();
+    let list = pick(filter).slice();
+    if (majorF) list = list.filter(r => majorOf(r) === majorF);   // 그래프에서 고른 계열만
     // 승인을 기다리는 분은 어떤 차례로 보시든 늘 맨 위에 둡니다.
     //   그래야 아래 가나다순으로 늘어선 기존 가입자와 저절로 갈립니다.
     const waiting = (r) => (r.approved ? 1 : 0);
@@ -794,7 +808,13 @@ async function start() {
                       roster_dept: h0.department || null, roster_year: h0.degree_year || null,
                       roster_belong: h0.belong || null,   roster_email: h0.email || null };
       const put = await saveRows(sb.from("profiles").update(patch).eq("id", r.id));
-      if (put.n) Object.assign(r, patch);
+      if (put.n) {
+        Object.assign(r, patch);
+        // 명부에서 소속을 찾았으면 전공 계열 칸과 그래프도 새로 그립니다
+        const mj = tr.querySelector(".mjchip");
+        if (mj) mj.textContent = majorOf(r);
+        drawMajorStat(rows);
+      }
       else {
         const m0 = document.getElementById("listMsg");
         m0.className = "msg err";
