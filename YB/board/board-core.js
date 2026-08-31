@@ -44,6 +44,11 @@ const MAJOR_GUIDE = [
   ["지진 · 물성 · 대기해양 · 우주선 · 선단과학기술연구센터 등", "기타"],
 ];
 
+/** 대조표에서 쓸 글자 감싸기 (initBoard 안의 것과는 따로 둡니다) */
+const mgEsc = (s) => String(s == null ? "" : s)
+  .replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;",
+                                 '"': "&quot;", "'": "&#39;" }[c]));
+
 function drawMajorGuide(cat) {
   const old = document.getElementById("majorGuide");
   if (old) old.remove();
@@ -57,7 +62,7 @@ function drawMajorGuide(cat) {
     "<summary>내 전공은 어느 말머리? — 동경대 학부·연구과 대조표</summary>" +
     "<table><thead><tr><th>동경대 공식 이름</th><th>이 게시판 말머리</th></tr></thead><tbody>" +
     MAJOR_GUIDE.map((r) =>
-      "<tr><td>" + escapeHtml(r[0]) + "</td><td><b>" + escapeHtml(r[1]) + "</b></td></tr>").join("") +
+      "<tr><td>" + mgEsc(r[0]) + "</td><td><b>" + mgEsc(r[1]) + "</b></td></tr>").join("") +
     "</tbody></table>" +
     '<p class="src">동경대학교 공식 조직 기준 · 소속이 여럿이면 학위를 받은 곳으로 골라 주세요.</p>';
   anchor.parentNode.insertBefore(d, anchor.nextSibling);
