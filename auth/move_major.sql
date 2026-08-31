@@ -30,15 +30,15 @@
 
 select category as "지금 게시판",
        case
-         when title ~ '항공|우주' then '항공우주'
+         when title ~ '항공|우주공학' then '항공우주'
          when title ~ '농학|농생명|농업|수의|산림|축산|응용생명' then '농학부'
          when title ~ '건축' then '건축학'
          when title ~ 'C\.?U\.?E|사회기반|도시공학|도시|토목|환경|방재|신영역' then '도시환경토목(C.U.E)'
          when title ~ '응용화학|화학시스템|화학생명|머티리얼|금속|재료|공업화학|화공|신소재' then '화학·응용화학·재료'
          when title ~ '의학|의약|약학|의대|병원|보건|간호|약우회|의사회|치과|의과학|정량생명' then '의학·약학·간호학'
-         when title ~ '이학부|이학계|수리과학|물리|수학|화학과|지구|천문' then '이학부'
-         when title ~ '생산기술연구소|생기연' then '생산기술연구소'
-         when title ~ '정보이공|정보학환|학제정보|정보학|컴퓨터|정보공학' then '정보이공'
+         when title ~ '이학부|이학계|수리과학|물리|수학|지구|천문' then '이학부'
+         when title ~ '생산기술연구소|생기연|선단과학|선단연|RCAST|물성연구소|우주선연구소|지진연구소|대기해양' then '생산·첨단·기술기타'
+         when title ~ '정보이공|정보학환|학제정보|정보학|정보공학|컴퓨터' then '정보이공'
          when title ~ '전기전자|전기|전자|기계|계측|시스템창성|기계정보' then '전기·기계'
          when title ~ '경제학|경영|금융|파이낸스' then '경제·경영학'
          when title ~ '법학|법과대|법학정치|공공정책|정치학' then '법학·공공정책'
@@ -80,15 +80,15 @@ with t as (
 update public.posts p
    set category = 'major',
        title = '[' || case
-         when t.title ~ '항공|우주' then '항공우주'
+         when t.title ~ '항공|우주공학' then '항공우주'
          when t.title ~ '농학|농생명|농업|수의|산림|축산|응용생명' then '농학부'
          when t.title ~ '건축' then '건축학'
          when t.title ~ 'C\.?U\.?E|사회기반|도시공학|도시|토목|환경|방재|신영역' then '도시환경토목(C.U.E)'
          when t.title ~ '응용화학|화학시스템|화학생명|머티리얼|금속|재료|공업화학|화공|신소재' then '화학·응용화학·재료'
          when t.title ~ '의학|의약|약학|의대|병원|보건|간호|약우회|의사회|치과|의과학|정량생명' then '의학·약학·간호학'
-         when t.title ~ '이학부|이학계|수리과학|물리|수학|화학과|지구|천문' then '이학부'
-         when t.title ~ '생산기술연구소|생기연' then '생산기술연구소'
-         when t.title ~ '정보이공|정보학환|학제정보|정보학|컴퓨터|정보공학' then '정보이공'
+         when t.title ~ '이학부|이학계|수리과학|물리|수학|지구|천문' then '이학부'
+         when t.title ~ '생산기술연구소|생기연|선단과학|선단연|RCAST|물성연구소|우주선연구소|지진연구소|대기해양' then '생산·첨단·기술기타'
+         when t.title ~ '정보이공|정보학환|학제정보|정보학|정보공학|컴퓨터' then '정보이공'
          when t.title ~ '전기전자|전기|전자|기계|계측|시스템창성|기계정보' then '전기·기계'
          when t.title ~ '경제학|경영|금융|파이낸스' then '경제·경영학'
          when t.title ~ '법학|법과대|법학정치|공공정책|정치학' then '법학·공공정책'
