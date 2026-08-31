@@ -190,6 +190,24 @@
   /* 일련번호 — 지금 보이는 차례대로 1부터 */
   #tbl th.no, #tbl td.no{width:42px;text-align:right;padding-right:10px;
     color:#a09a86;font-variant-numeric:tabular-nums;font-weight:400;}
+  /* 전공 계열별 인원 */
+  .majorstat{margin:4px 0 16px;}
+  .majorstat:empty{display:none;}
+  .majorstat .ms-h{font-size:13px;font-weight:600;color:#4a3c14;margin-bottom:8px;}
+  .majorstat .ms-h span{font-weight:400;color:#a09a86;font-size:12px;margin-left:6px;}
+  .majorstat .ms-b{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:3px 22px;}
+  .majorstat .ms-r{display:flex;align-items:center;gap:9px;}
+  .majorstat .ms-n{flex:0 0 118px;font-size:12px;color:#5a5445;text-align:right;}
+  .majorstat .ms-bar{flex:1;height:9px;background:#f2ede0;border-radius:100px;overflow:hidden;}
+  .majorstat .ms-bar i{display:block;height:100%;border-radius:100px;
+    background:linear-gradient(90deg,#c9a961,#8a6d2b);}
+  .majorstat .ms-c{flex:0 0 34px;font-size:12px;color:#8a6d2b;font-weight:700;
+    text-align:right;font-variant-numeric:tabular-nums;}
+  /* 전공 계열 이름표 */
+  #tbl td .mjchip{display:inline-block;font-size:11.5px;font-weight:600;color:#8a6d2b;
+    background:#faf5e8;border:1px solid #efe4cc;border-radius:100px;padding:1px 9px;
+    white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -249,6 +267,7 @@
         <button class="btn sm" id="okWait">대기자 전체 승인</button>
       </div>
       <div class="msg" id="listMsg"></div>
+      <div class="majorstat" id="majorStat"></div>
       <div style="overflow-x:auto;"><table id="tbl"></table></div>
     </div>
 
@@ -544,6 +563,59 @@ async function start() {
   ];
   const NOSPACE = (s) => String(s == null ? "" : s).replace(/[\s·・.．,]/g, "");
   /** 적어 낸 전공이 도쿄대 것으로 보이는가 */
+  /* ── 전공 계열 — 게시판 「전공별모임」 말머리와 같은 분류 ──
+     명부의 전공·연구과 글자를 보고 어느 계열인지 알아냅니다. */
+  const MAJOR_RULES = [
+    [/항공|우주/, "항공우주"],
+    [/농학|농생명|농업|수의|산림|축산|응용생명/, "농학부"],
+    [/건축/, "건축학"],
+    [/C\.?U\.?E|사회기반|도시공학|도시|토목|환경|방재|신영역/, "도시·토목·환경"],
+    [/응용화학|화학시스템|화학생명|머티리얼|금속|재료|공업화학|화공|신소재/, "화학·응용화학·재료"],
+    [/의학|의약|약학|의대|병원|보건|간호|의과학|정량생명/, "의학·약학·간호학"],
+    [/이학부|이학계|수리과학|물리|수학|지구|천문/, "이학부"],
+    [/생산기술연구소|생기연/, "생산기술연구소"],
+    [/정보이공|정보학환|학제정보|정보학|정보공학|컴퓨터/, "정보이공"],
+    [/전기전자|전기|전자|기계|계측|시스템창성|기계정보/, "전기·기계"],
+    [/경제학|경영|금융|파이낸스/, "경제·경영학"],
+    [/법학|법과대|법학정치|공공정책|정치학/, "법학·공공정책"],
+    [/총합문화|교양학부|교양|국제사회과학|상관사회과학/, "교양·총합문화"],
+    [/인문|사회학|사회과학|교육학|교육|문학|동양문화연구소|사료편찬/, "인문·사회·교육"],
+    [/공학/, "공학 기타"],
+  ];
+  const MAJOR_ORDER = ["농학부", "건축학", "도시·토목·환경", "전기·기계", "항공우주", "정보이공",
+    "의학·약학·간호학", "이학부", "화학·응용화학·재료", "공학 기타", "생산기술연구소",
+    "법학·공공정책", "경제·경영학", "인문·사회·교육", "교양·총합문화", "모름"];
+
+  /** 이 회원의 전공 계열 (가입 때 적은 전공 + 명부의 소속을 함께 봅니다) */
+  function majorOf(r) {
+    const t = [(r && r.faculty) || "", (r && r.major) || "",
+               (r && r.roster_dept) || "", (r && r.roster_belong) || ""].join(" ");
+    if (!t.trim()) return "모름";
+    for (const [re, name] of MAJOR_RULES) if (re.test(t)) return name;
+    return "모름";
+  }
+
+  /** 전공별로 몇 분인지 — 가로 막대로 봅니다 */
+  function drawMajorStat(all) {
+    const box = document.getElementById("majorStat");
+    if (!box) return;
+    const use = (all || []).filter(byOrg);
+    if (!use.length) { box.innerHTML = ""; return; }
+    const n = {};
+    use.forEach(r => { const m = majorOf(r); n[m] = (n[m] || 0) + 1; });
+    const rows = MAJOR_ORDER.filter(m => n[m]).map(m => [m, n[m]]);
+    rows.sort((a, b) => b[1] - a[1]);
+    const max = Math.max(...rows.map(r => r[1]), 1);
+    const known = use.length - (n["모름"] || 0);
+    box.innerHTML =
+      '<div class="ms-h">전공 계열별 인원 <span>' + use.length + '명 중 ' + known + '명 확인' +
+      (n["모름"] ? ' · 모름 ' + n["모름"] + '명' : '') + '</span></div>' +
+      '<div class="ms-b">' + rows.map(([m, c]) =>
+        '<div class="ms-r"><span class="ms-n">' + esc(m) + '</span>' +
+        '<span class="ms-bar"><i style="width:' + Math.round(c / max * 100) + '%"></i></span>' +
+        '<span class="ms-c">' + c + '</span></div>').join("") + '</div>';
+  }
+
   function isUTokyoFaculty(faculty) {
     const t = NOSPACE(faculty);
     if (t.length < 3) return false;
@@ -561,6 +633,7 @@ async function start() {
       phone:   r => String(r.phone || "").replace(/[^0-9]/g, ""),
       org:     r => r.member_type || "",
       faculty: r => ((r.faculty || "") + " " + (r.grad_year || "")).trim(),
+      major:   r => majorOf(r),
       company: r => ((r.company || "") + " " + (r.job_title || "")).trim(),
       login:   r => scoreOf(ACT.get(r.id)),
       joined:  r => r.created_at || "",
@@ -600,6 +673,7 @@ async function start() {
                `　—　명부 전체 ${rows.length}명 (총동문회 ${ob} · 학생회 ${yb}` +
                (gu ? ` · 비동문 ${gu}` : "") + `)`;
       })();
+    drawMajorStat(rows);
     const showJob = orgF !== "YB";      // 재학생 명단에는 직장·직급을 두지 않는다
     const t = document.getElementById("tbl");
     if (!list.length) {
@@ -614,7 +688,7 @@ async function start() {
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       '<th class="no">#</th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty", orgF === "GUEST" ? "자격 · 소속 기관" : "전공 · 연도"],
+       ["faculty", orgF === "GUEST" ? "자격 · 소속 기관" : "전공 · 연도"],["major","전공 계열"],
        ["company", orgF === "GUEST" ? "남기신 말" : "직장 · 직급"],
        ["login","활동"],["joined","가입일"],["grade","등급"],["state","상태"]]
         .filter(([k]) => k !== "company" || showJob)
@@ -631,6 +705,7 @@ async function start() {
         <td>${r.member_type === "GUEST"
               ? (esc(r.guest_type) || "-") + (r.org_name ? " · " + esc(r.org_name) : "")
               : (esc(r.faculty) || "-") + (r.major ? " " + esc(r.major) : "") + " " + (esc(r.grad_year) || "")}</td>
+        <td><span class="mjchip">${esc(majorOf(r))}</span></td>
         ${showJob ? `<td>${r.member_type === "GUEST"
               ? (esc(r.guest_note) || "-")
               : (esc(r.company) || "-") + " " + (esc(r.job_title) || "")}</td>` : ""}

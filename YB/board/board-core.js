@@ -23,6 +23,46 @@ function shortName(s) {
   return parts[0];
 }
 
+/* 전공별모임 — 동경대 공식 학부·연구과와 우리 말머리를 견주어 보여줍니다.
+   (출처: u-tokyo.ac.jp 학부·대학원등) 접었다 펼 수 있게 두어 목록을 가리지 않습니다. */
+const MAJOR_GUIDE = [
+  ["농학부 · 농학생명과학연구과", "농학부"],
+  ["공학부 건축학과 · 공학계연구과 건축학전공", "건축학"],
+  ["사회기반학과 · 도시공학과 · 환경계 · 신영역창성과학연구과", "도시·토목·환경"],
+  ["전기전자공학 · 기계공학 · 기계정보공학 · 계측공학 · 시스템창성", "전기·기계"],
+  ["공학부 항공우주공학과 · 공학계연구과 항공우주공학전공", "항공우주"],
+  ["정보이공학계연구과 · 정보학환·학제정보학부", "정보이공"],
+  ["의학부(의학과·건강총합과학과) · 약학부 · 의학계 · 약학계연구과 · 의과학연구소", "의학·약학·간호학"],
+  ["이학부 · 이학계연구과 · 수리과학연구과", "이학부"],
+  ["응용화학 · 화학시스템공학 · 화학생명공학 · 머티리얼공학", "화학·응용화학·재료"],
+  ["그 밖의 공학부 · 공학계연구과 전공", "공학 기타"],
+  ["생산기술연구소 (고마바II)", "생산기술연구소"],
+  ["법학부 · 법학정치학연구과 · 공공정책대학원", "법학·공공정책"],
+  ["경제학부(경제학과·경영학과·금융학과) · 경제학연구과", "경제·경영학"],
+  ["문학부 · 교육학부 · 인문사회계연구과 · 교육학연구과 · 동양문화·사회과학연구소", "인문·사회·교육"],
+  ["교양학부 · 총합문화연구과 (코마바)", "교양·총합문화"],
+  ["지진 · 물성 · 대기해양 · 우주선 · 선단과학기술연구센터 등", "기타"],
+];
+
+function drawMajorGuide(cat) {
+  const old = document.getElementById("majorGuide");
+  if (old) old.remove();
+  if (cat !== "major") return;
+  const anchor = document.getElementById("tagTabs");
+  if (!anchor || !anchor.parentNode) return;
+  const d = document.createElement("details");
+  d.id = "majorGuide";
+  d.className = "mguide";
+  d.innerHTML =
+    "<summary>내 전공은 어느 말머리? — 동경대 학부·연구과 대조표</summary>" +
+    "<table><thead><tr><th>동경대 공식 이름</th><th>이 게시판 말머리</th></tr></thead><tbody>" +
+    MAJOR_GUIDE.map((r) =>
+      "<tr><td>" + escapeHtml(r[0]) + "</td><td><b>" + escapeHtml(r[1]) + "</b></td></tr>").join("") +
+    "</tbody></table>" +
+    '<p class="src">동경대학교 공식 조직 기준 · 소속이 여럿이면 학위를 받은 곳으로 골라 주세요.</p>';
+  anchor.parentNode.insertBefore(d, anchor.nextSibling);
+}
+
 export async function initBoard(ORG) {
   const HOME = ORG === "YB" ? "/YB" : "/OB";
 
@@ -165,6 +205,7 @@ export async function initBoard(ORG) {
 
   /** 지금 게시판의 말머리 줄을 다시 그린다 */
   function drawTagTabs() {
+    drawMajorGuide(cat);
     const box = document.getElementById("tagTabs");
     if (!box) return;
     const known = cat ? boardTags(cat) : [];
