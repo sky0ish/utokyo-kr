@@ -389,5 +389,29 @@ export async function initCalendar(sel, opts) {
       c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
     });
   }
+  /* 휴대전화 : 달력을 옆으로 쓸어 달을 넘깁니다.
+     왼쪽으로 쓸면 다음 달, 오른쪽으로 쓸면 지난 달 —
+     책장을 넘기듯 손가락을 따라 달이 움직입니다.
+     세로로 그은 것은 화면 스크롤이니 그냥 둡니다. */
+  if (!box.dataset.swipe) {
+    box.dataset.swipe = "1";
+    let sx = 0, sy = 0, on = false;
+    box.addEventListener("touchstart", (e) => {
+      if (e.touches.length !== 1) { on = false; return; }
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY; on = true;
+    }, { passive: true });
+    box.addEventListener("touchend", (e) => {
+      if (!on) return;
+      on = false;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      mo += dx < 0 ? 1 : -1;
+      if (mo < 0) { mo = 11; y--; }
+      if (mo > 11) { mo = 0; y++; }
+      picked = ""; draw();
+    }, { passive: true });
+  }
+
   draw();
 }
