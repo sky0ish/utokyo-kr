@@ -7,7 +7,7 @@ export const CATS = [
   ["assembly", "총회"],
   ["staff",    "운영진"],
   ["club",     "소모임"],
-  ["faculty",  "단과대모임"],
+  ["faculty",  "전공별모임"],
   ["forum",    "포럼·세미나"],
   ["old",      "옛날사진"],
   ["daily",    "일상"],

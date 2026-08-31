@@ -11,7 +11,7 @@ export async function initBoard(ORG) {
 
 
   // ── 조직별 게시판 구성 ──
-  const CAT_OB = { assembly:"총회", notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티(OB/YB)", condolence:"경조사",
+  const CAT_OB = { assembly:"총회", notice:"공지사항", free:"자유게시판", club:"소모임", major:"전공별모임", mentoring:"멘토멘티(OB/YB)", condolence:"경조사",
                    forum:"포럼·세미나", seminar:"포럼·세미나",
                    jobs:"구인·채용(OB/YB)", faculty:"단과대별", news:"소식", market:"장터",
                    research:"단행본 및 연구소개",
@@ -32,7 +32,7 @@ export async function initBoard(ORG) {
   applyNav(ORG, ORG === "YB" ? "게시판 | 도쿄대학 한국인학생회"
                             : "게시판 | 재한 도쿄대학 총동문회");
   // 참여마당 식구 — 위 메뉴의 참여마당 드롭다운과 같은 차례입니다
-  const JOIN_OB = ["assembly", "club", "mentoring", "forum"];
+  const JOIN_OB = ["assembly", "club", "major", "mentoring", "forum"];
   const JOIN_YB = ["mentoring", "counsel", "career", "event", "club", "major", "suggest"];
   const JOIN = ORG === "YB" ? JOIN_YB : JOIN_OB;
 

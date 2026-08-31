@@ -22,6 +22,7 @@ const NAV = {
           <a href="/OB/index.html#news">총회 안내</a>
           <a href="/OB/board.html?cat=assembly">총회</a>
           <a href="/OB/board.html?cat=club">소모임</a>
+          <a href="/OB/board.html?cat=major">전공별모임</a>
           <a href="/OB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
           <a href="/OB/board.html?cat=forum">포럼·세미나</a>
         </div>
@@ -43,7 +44,7 @@ const NAV = {
           <a href="/OB/gallery.html?cat=assembly">총회</a>
           <a href="/OB/gallery.html?cat=staff">운영진</a>
           <a href="/OB/gallery.html?cat=club">소모임</a>
-          <a href="/OB/gallery.html?cat=faculty">단과대모임</a>
+          <a href="/OB/gallery.html?cat=faculty">전공별모임</a>
           <a href="/OB/gallery.html?cat=forum">포럼·세미나</a>
           <a href="/OB/gallery.html?cat=old">옛날사진</a>
           <a href="/OB/gallery.html?cat=daily">일상</a>
