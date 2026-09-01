@@ -407,12 +407,20 @@ body.yb .galshare .gs-go{border-color:#4f9d5d;background:linear-gradient(#fbfefb
 body.yb .pactions .btn.back:hover{border-color:#2a6b40;color:#2a6b40;}
 
 /* 전공별모임 — 전공 대조표 */
-.mguide{margin:10px 0 4px;border:1px solid #e6dfcb;border-radius:9px;background:#fdfbf5;}
-.mguide summary{cursor:pointer;padding:9px 14px;font-size:13px;font-weight:600;color:#8a6d2b;list-style:none;}
+.mguide{margin:12px 0 6px;border:1.5px solid #d9c89a;border-radius:11px;background:#fdf6e6;
+  box-shadow:0 2px 8px rgba(138,109,43,.12);}
+.mguide summary{cursor:pointer;padding:14px 20px;font-size:15.5px;font-weight:700;
+  color:#7a5f22;list-style:none;letter-spacing:-.01em;}
 .mguide summary::-webkit-details-marker{display:none;}
-.mguide summary::before{content:"▸ ";}
-.mguide[open] summary::before{content:"▾ ";}
+.mguide summary::before{content:"▸";display:inline-block;width:22px;height:22px;line-height:22px;
+  margin-right:9px;text-align:center;border-radius:6px;background:#8a6d2b;color:#fff;font-size:12px;}
+.mguide[open] summary::before{content:"▾";}
 .mguide summary:hover{color:#5c4a1c;}
+.mguide summary:hover::before{background:#5c4a1c;}
+body.yb .mguide{border-color:#bcdcc6;background:#eef7f0;box-shadow:0 2px 8px rgba(42,107,64,.12);}
+body.yb .mguide summary{color:#1e5230;}
+body.yb .mguide summary::before{background:#2a6b40;}
+body.yb .mguide summary:hover::before{background:#1e5230;}
 .mguide table{width:100%;border-collapse:collapse;font-size:12.5px;}
 .mguide th{text-align:left;padding:7px 14px;color:#a09a86;font-weight:400;
   border-top:1px solid #eee6d2;border-bottom:1px solid #eee6d2;background:#f9f5ea;}
