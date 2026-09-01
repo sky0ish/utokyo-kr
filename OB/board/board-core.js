@@ -203,8 +203,13 @@ export async function initBoard(ORG) {
   let tag = (params.get("tag") || "").trim();      // 말머리로 좁혀 보기
 
   /** 말머리로 좁힌다 — 제목이 [말머리] 로 시작하는 글만 */
+  /* 말머리로 거르기.
+     옮겨온 옛 글은 【 】(전각) 을, 새 글은 [ ] (반각) 을 씁니다. 둘 다 찾습니다.
+     말머리에 괄호가 든 것(도시환경토목(C.U.E))도 있어 값을 따옴표로 감쌉니다. */
   function applyTag(q) {
-    return tag ? q.ilike("title", "[" + tag + "]%") : q;
+    if (!tag) return q;
+    const t = tag.replace(/"/g, '\\"');
+    return q.or('title.ilike."[' + t + ']%",title.ilike."【' + t + '】%"');
   }
 
   /* 글에 실제로 쓰였는데 이름표 목록(board-info.js)에는 없는 말머리.
