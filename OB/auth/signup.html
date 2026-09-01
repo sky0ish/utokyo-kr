@@ -37,14 +37,14 @@
       <option value="GUEST">비동문 — 준회원 (도쿄대학 출신이 아닌 분)</option>
     </select>
 
-    <div class="row2">
+    <div class="row2" id="schoolBox">
       <div>
-        <label>학부/연구과</label>
-        <input type="text" id="faculty" placeholder="예: 공학부 건축학">
+        <label>학부/연구과 *</label>
+        <input type="text" id="faculty" required placeholder="예: 공학계연구과 도시공학과">
       </div>
       <div>
-        <label>졸업(예정)연도</label>
-        <input type="text" id="grad_year" placeholder="예: 박2012">
+        <label>졸업(예정)연도 *</label>
+        <input type="text" id="grad_year" required placeholder="예: 박2012">
       </div>
     </div>
 
@@ -83,12 +83,19 @@ import { sb, showMsg } from "./auth.js";
 const form = document.getElementById("signupForm");
 
 // 재학생(YB)에게는 직장·직급을 묻지 않는다
+// 비동문(GUEST)은 도쿄대 소속이 아니므로 학부/연구과·졸업연도를 묻지 않는다
 const jobBox = document.getElementById("jobBox");
+const schoolBox = document.getElementById("schoolBox");
 const typeSel = document.getElementById("member_type");
 function toggleJob() {
-  const yb = typeSel.value === "YB";
-  jobBox.style.display = yb ? "none" : "";
-  if (yb) { document.getElementById("company").value = ""; document.getElementById("position").value = ""; }
+  const yb = typeSel.value === "YB", guest = typeSel.value === "GUEST";
+  jobBox.style.display = (yb || guest) ? "none" : "";
+  if (yb || guest) { document.getElementById("company").value = ""; document.getElementById("position").value = ""; }
+  // 감춘 칸은 「필수」도 함께 풀어야 가입 단추가 먹습니다
+  schoolBox.style.display = guest ? "none" : "";
+  document.getElementById("faculty").required = !guest;
+  document.getElementById("grad_year").required = !guest;
+  if (guest) { document.getElementById("faculty").value = ""; document.getElementById("grad_year").value = ""; }
 }
 typeSel.addEventListener("change", toggleJob);
 toggleJob();

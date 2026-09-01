@@ -117,8 +117,8 @@
       목록에 없으면 맨 아래 <b>「목록에 없음 — 직접 입력」</b>을 고르시고,
       <b>학생증에 적힌 정식 명칭</b>을 그대로 적어주세요.</div>
 
-    <label>졸업(예정)연도</label>
-    <input type="text" id="grad_year" placeholder="예: 박2012">
+    <label>졸업(예정)연도 *</label>
+    <input type="text" id="grad_year" required placeholder="예: 박2012">
     </div>
 
     <div id="guestBox" style="display:none;">
@@ -222,7 +222,7 @@ function toggleByType() {
   idcardBox.style.display = (t === "OB" || guest) ? "none" : "";
 
   // 감춘 칸은 「필수」도 함께 풀어야 가입 단추가 먹습니다
-  $("faculty").required = $("major").required = !guest;
+  $("faculty").required = $("major").required = $("grad_year").required = !guest;
   $("guest_type").required = guest;
 
   // 감춘 칸에 남은 값은 지워 둡니다

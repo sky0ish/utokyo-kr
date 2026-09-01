@@ -624,7 +624,10 @@ async function start() {
         '<span class="ms-c">' + c + '</span></div>').join("") + '</div>';
     box.querySelectorAll(".ms-r").forEach(el => el.addEventListener("click", () => {
       majorF = (majorF === el.dataset.m) ? "" : el.dataset.m;   // 다시 누르면 풀립니다
-      draw();
+      // 그래프는 대기·승인을 가리지 않고 세므로, 고른 계열의 사람이
+      // 한 분도 안 보이는 일이 없도록 목록도 「전체」로 되돌립니다
+      if (majorF) { filter = "all"; chosen = []; }
+      render();
     }));
   }
 
