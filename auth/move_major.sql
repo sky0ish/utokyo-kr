@@ -44,7 +44,7 @@ select category as "지금 게시판",
          when title ~ '법학|법과대|법학정치|공공정책|정치학|국제정치' then '법학·정치·공공정책'
          when title ~ '총합문화|교양학부|교양|국제사회과학|상관사회과학|국제관계' then '교양·총합문화'
          when title ~ '인문|사회학|사회과학|교육학|교육|문학|동양문화연구소|사료편찬' then '인문·사회·교육'
-         when title ~ '공학' then '공학 기타'
+         when title ~ '공학' then '기타'
          else '기타'
        end as "붙을 말머리",
        title as "제목"
@@ -94,7 +94,7 @@ update public.posts p
          when t.title ~ '법학|법과대|법학정치|공공정책|정치학|국제정치' then '법학·정치·공공정책'
          when t.title ~ '총합문화|교양학부|교양|국제사회과학|상관사회과학|국제관계' then '교양·총합문화'
          when t.title ~ '인문|사회학|사회과학|교육학|교육|문학|동양문화연구소|사료편찬' then '인문·사회·교육'
-         when t.title ~ '공학' then '공학 기타'
+         when t.title ~ '공학' then '기타'
          else '기타'
        end || '] ' || coalesce(t.stripped, t.title)
   from t
