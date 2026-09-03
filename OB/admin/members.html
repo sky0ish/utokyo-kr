@@ -92,6 +92,11 @@
   .gsel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
     font-family:inherit;font-size:11.5px;background:#fffdf8;color:#2f2a1d;cursor:pointer;}
   .gsel:focus{outline:0;border-color:#c9a24b;}
+  /* 등급을 골라 두었으나 아직 저장 전 — 승인을 눌러야 확정됩니다 */
+  .pend{margin-top:4px;font-size:11.5px;line-height:1.5;color:#8a6d2b;font-weight:600;}
+  tr.pend-row{background:#fdf8ea;}
+  .btn.pend-on{background:#c9a961;border-color:#b8963f;color:#2b2410;font-weight:700;
+    box-shadow:0 0 0 3px rgba(201,169,97,.25);}
   .btn.sm.done{background:#eeeae0;border-color:#ddd6c4;color:#a09a86;font-weight:400;}
   .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
   .cardhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
@@ -730,43 +735,45 @@ async function start() {
        다시 그리고 나서도 이것을 부르면 고르개가 그대로 움직입니다.
        (예전에는 다시 그린 고르개에 손이 안 달려 눌러도 아무 일이 없었고,
         확인 뒤에는 고르개 자체가 사라져 회원으로 올릴 길이 없었습니다) */
+    /** 고른 등급이 아직 저장되지 않았음을 그 줄에 보여 줍니다 */
+    function markPending(tr) {
+      const to = tr.dataset.pendGrade || "";
+      const cell = tr.querySelector(".gcell");
+      if (cell) {
+        let note = cell.querySelector(".pend");
+        if (!to) { if (note) note.remove(); }
+        else {
+          if (!note) {
+            note = document.createElement("div");
+            note.className = "pend";
+            cell.appendChild(note);
+          }
+          note.textContent = "→ " + (to === "member" ? "회원" : "준회원") +
+                             " (승인을 누르면 함께 저장됩니다)";
+        }
+      }
+      const tog = tr.querySelector(".tog");
+      if (tog) tog.classList.toggle("pend-on", !!to);
+      tr.classList.toggle("pend-row", !!to);
+    }
+
     function wireGradeSel(scope) {
       (scope || t).querySelectorAll(".gsel").forEach(sel => {
         if (sel.dataset.wired) return;
         sel.dataset.wired = "1";
-        sel.addEventListener("change", async () => {
-      const tr = sel.closest("tr");
-      const r = rows.find(x => x.id === tr.dataset.id);
-      const to = sel.value;
-      sel.disabled = true;
-      const now = new Date().toISOString();
-      // 등급을 내리면 운영진 권한도 함께 내립니다
-      // (그러지 않으면 준회원인데 관리 메뉴가 계속 보입니다)
-      if (r.is_admin && to !== "admin") {
-        const off = await sb.rpc("set_admin", { p_id: r.id, p_on: false });
-        if (off.error) {
-          const d = await sb.from("profiles").update({ is_admin: false }).eq("id", r.id);
-          if (!d.error) r.is_admin = false;
-        } else r.is_admin = false;
-      }
-      const { n, error } = await saveRows(sb.from("profiles")
-        .update({ grade: to, grade_manual_at: now }).eq("id", r.id));
-      sel.disabled = false;
-      if (error) {
-        alert("등급 변경 실패: " + error.message +
-              " — OB/board/sql/grade_setup.sql 을 실행하셨는지 확인해주세요.");
-        sel.value = r.grade || "guest";
-        return;
-      }
-      if (!n) { alert("등급이 바뀌지 않았습니다.\n\n" + RLS_MSG); sel.value = r.grade || "guest"; return; }
-      r.grade = to; r.grade_manual_at = now;
-      const cell = tr.querySelector(".gcell");
-      cell.innerHTML = gradeChip(r) + gradeSel(r);
-      wireGradeSel(tr);
-      render();
-      const m = document.getElementById("listMsg");
-      m.className = "msg ok";
-      m.textContent = `${r.name || "회원"} 님을 ${to === "member" ? "회원" : "준회원"}으로 바꿨습니다.`;
+        /* 고르기만 하고 저장하지 않습니다.
+           예전에는 고르는 순간 저장하고 표를 다시 그려, 그 줄이 눈앞에서
+           사라져 정작 「승인」을 누를 수가 없었습니다.
+           이제 고른 등급은 그 줄에 적어만 두고, 「승인」을 누를 때
+           승인과 함께 한 번에 저장합니다. */
+        sel.addEventListener("change", () => {
+          const tr = sel.closest("tr");
+          const r = rows.find(x => x.id === tr.dataset.id) || {};
+          const to = sel.value;
+          const now0 = r.grade || "guest";
+          if (to === now0) delete tr.dataset.pendGrade;
+          else tr.dataset.pendGrade = to;
+          markPending(tr);
         });
       });
     }
@@ -863,13 +870,33 @@ async function start() {
     }
 
     t.querySelectorAll(".tog").forEach(b => b.addEventListener("click", async () => {
-      const id = b.closest("tr").dataset.id;
+      const tr = b.closest("tr");
+      const id = tr.dataset.id;
       const r = rows.find(x => x.id === id);
       b.disabled = true;
+
+      /* 고르개에서 골라 둔 등급이 있으면 승인과 **함께** 저장합니다.
+         그래야 「회원으로 골라 놓고 승인」 이 한 번에 끝납니다. */
+      const patch = { approved: !r.approved };
+      const pend = tr.dataset.pendGrade;
+      if (pend && pend !== (r.grade || "guest")) {
+        patch.grade = pend;
+        patch.grade_manual_at = new Date().toISOString();
+        // 등급을 내리면 운영진 권한도 함께 내립니다
+        if (r.is_admin && pend !== "admin") {
+          const off = await sb.rpc("set_admin", { p_id: r.id, p_on: false });
+          if (off.error) {
+            await saveRows(sb.from("profiles").update({ is_admin: false }).eq("id", r.id));
+          }
+          r.is_admin = false;
+        }
+      }
+
       const { n, error } = await saveRows(
-        sb.from("profiles").update({ approved: !r.approved }).eq("id", id));
+        sb.from("profiles").update(patch).eq("id", id));
       if (error) { alert("변경 실패: " + error.message); b.disabled = false; return; }
       if (!n)    { alert(RLS_MSG); b.disabled = false; return; }
+      delete tr.dataset.pendGrade;
       /* 브라우저 안에서 뒤집지 않고 서버에서 다시 읽습니다 —
          그래야 위쪽 숫자가 늘 서버와 같습니다. */
       await load();
