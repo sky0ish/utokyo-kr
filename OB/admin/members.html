@@ -60,7 +60,26 @@
   th.sorted .arr{color:#c9a24b;}
   td{padding:9px 10px;border-bottom:1px solid #f4f0e5;vertical-align:middle;}
   tr:hover td{background:#fcfaf4;}
-  td.em{color:#5b6474;font-size:12.5px;word-break:break-all;}
+  /* 이메일·연락처는 줄바꿈하지 않습니다.
+     예전에는 break-all 이라 「kang.se / ungwoo / @gmail.com」 처럼 석 줄로 접혀
+     왼쪽 칸이 잔뜩 눌리고, 남은 자리가 오른쪽에 빈 채로 남았습니다. */
+  td.em{color:#5b6474;font-size:12.5px;white-space:nowrap;}
+  /* 좁은 화면에서는 표를 옆으로 밀어 봅니다 (칸을 뭉개지 않습니다) */
+  @media (max-width:900px){ td.em{white-space:normal;overflow-wrap:anywhere;} }
+
+  /* 칸 너비를 고르게 — 글이 든 칸에 자리를 주고,
+     짧은 칸(구분·활동·가입일·등급·상태)은 제 몫만 차지하게 둡니다. */
+  #tbl th[data-s="name"],    #tbl td.nm      { min-width:88px; }
+  #tbl th[data-s="email"]                    { min-width:190px; }
+  #tbl th[data-s="phone"]                    { min-width:120px; }
+  #tbl th[data-s="faculty"]                  { min-width:150px; }
+  #tbl th[data-s="major"]                    { min-width:120px; }
+  #tbl th[data-s="company"]                  { min-width:120px; }
+  #tbl th[data-s="org"],
+  #tbl th[data-s="login"],
+  #tbl th[data-s="joined"],
+  #tbl th[data-s="grade"],
+  #tbl th[data-s="state"]                    { width:1%; white-space:nowrap; }
   .chip{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:500;}
   .chip.ok{background:#e7f3ea;color:#2f7a45;}
   .chip.wait{background:#fdf1e2;color:#a3671f;}
@@ -720,8 +739,12 @@ async function start() {
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       '<th class="no">#</th>' +
+      /* 등급(회원·준회원)과 상태(승인·대기)를 「구분」 바로 뒤에 둡니다.
+         맨 끝에 두었더니 표가 넓어질 때 화면 밖으로 밀려,
+         정작 가장 먼저 봐야 할 것이 안 보였습니다. */
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty","전공 · 연도"],["major","전공 계열"],["company","직장 · 직급"],["login","활동"],["joined","가입일"],["grade","등급"],["state","상태"]]
+       ["grade","등급"],["state","상태"],
+       ["faculty","전공 · 연도"],["major","전공 계열"],["company","직장 · 직급"],["login","활동"],["joined","가입일"]]
         .filter(([k]) => k !== "company" || showJob)
         .map(([k, t]) => `<th data-s="${k}"${sortKey === k ? ' class="sorted"' : ""}>${t}` +
           `<span class="arr">${sortKey === k ? (sortDir > 0 ? "▲" : "▼") : "⇅"}</span></th>`).join("") +
@@ -733,16 +756,16 @@ async function start() {
         <td class="em">${esc(r.email) || "-"}</td>
         <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
         <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : r.member_type === "GUEST" ? "wait" : "ob"}">${r.member_type === "GUEST" ? "비동문" : r.member_type}</span>` : "-"}</td>
-        <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
-        <td><span class="mjchip">${esc(majorOf(r))}</span></td>
-        ${showJob ? `<td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>` : ""}
-        <td>${actCell(r.id)}</td>
-        <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="gcell">${gradeChip(r)}${gradeSel(r)}</td>
         <td>${r.approved
               ? (isRegrant(r) ? '<span class="chip ok">재승인</span>'
                               : '<span class="chip ok">승인</span>')
               : '<span class="chip wait">대기</span>'}</td>
+        <td>${esc(r.faculty) || "-"} ${esc(r.grad_year) || ""}</td>
+        <td><span class="mjchip">${esc(majorOf(r))}</span></td>
+        ${showJob ? `<td>${esc(r.company) || "-"} ${esc(r.job_title) || ""}</td>` : ""}
+        <td>${actCell(r.id)}</td>
+        <td>${(r.created_at || "").slice(0, 10)}</td>
         <td class="acts"><button class="btn sm tog">${r.approved ? "승인 취소" : "승인"}</button>
             ${r.grade_checked_at
                 ? '<button class="btn sm chk2 done" title="다시 확인">확인</button>'

@@ -67,6 +67,23 @@
     background:#fffdf8;font-size:14px;color:#6f6a5c;transition:.2s;}
   .asm-more a:hover{border-color:var(--gold);color:#8a6d2b;}
   .asm-more b{color:#8a6d2b;}
+
+
+  /* ── 첫 화면 카드 글자를 1.3배로 ─────────────────────
+     동문회 소개 · 참여마당 새 글 · 게시판 새 글 · 갤러리 네 카드입니다.
+     한 곳에 모아 두었으니 되돌리거나 배수를 바꾸기 쉽습니다.
+     (원래 크기를 옆에 적어 둡니다) */
+  /* 제목은 뒤쪽에 17px 규칙이 하나 더 있어, 한 겹 더 짚어 이깁니다 */
+  .dash-grid .dcard .dhead h3,
+  .dash-grid .dcard .dhead h4 { font-size:22px; }   /* 17 */
+  .dcard .dhead .ico    { font-size:17px;   }   /* 13   */
+  .dcard .dhead .more   { font-size:15.5px; }   /* 12   */
+  .dcard .dbody b       { font-size:17.5px; }   /* 13.5 */
+  .dcard .dbody span    { font-size:17.5px; }   /* 13.5 */
+  .dcard .dbody li .bd  { font-size:19px;   }   /* 14.5 */
+  .dcard .dbody li .tg  { font-size:19px;   }   /* 14.5 */
+  .dcard .dbody li .tt  { font-size:17.5px; }   /* 13.5 */
+  .dcard .dbody li .dt  { font-size:19.5px; }   /* 15   */
 </style>
 <style>
   :root{
