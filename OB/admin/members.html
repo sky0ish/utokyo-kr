@@ -92,6 +92,12 @@
   .gsel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
     font-family:inherit;font-size:11.5px;background:#fffdf8;color:#2f2a1d;cursor:pointer;}
   .gsel:focus{outline:0;border-color:#c9a24b;}
+  /* 갈래 단추 옆 명수 */
+  .tabs .sn{display:inline-block;margin-left:5px;padding:1px 6px;border-radius:100px;
+    background:rgba(0,0,0,.07);font-size:11px;font-weight:700;
+    font-variant-numeric:tabular-nums;}
+  .tabs a.on .sn{background:rgba(255,255,255,.45);}
+  .tabs .sn:empty{display:none;}
   /* 등급을 골라 두었으나 아직 저장 전 — 승인을 눌러야 확정됩니다 */
   .pend{margin-top:4px;font-size:11.5px;line-height:1.5;color:#8a6d2b;font-weight:600;}
   tr.pend-row{background:#fdf8ea;}
@@ -459,7 +465,16 @@ async function start() {
     document.getElementById("orgseg").innerHTML =
       order.map(o => `<a data-o="${o}"${o === "YB" ? ' class="yb"' : ""}>${HOME_NAME[o]}</a>`).join("") +
       '<a data-o="all">도쿄대학 한국인 총동문회(전체)</a>';
-    orgF = HOME || "all";                       // 처음에는 들어온 쪽 명단부터
+    /* 주소에 적혀 오면 그것을 따릅니다 —
+       첫 화면의 「회원관리 N명 대기」 배지가 ?org=all&f=wait 로 보냅니다.
+       그러지 않으면 배지는 OB·YB 를 합쳐 세는데 화면은 한쪽만 보여,
+       「다 승인했는데 왜 아직 대기라고 뜨지?」 가 됩니다. */
+    const q0 = new URLSearchParams(location.search);
+    const o0 = (q0.get("org") || "").toUpperCase();
+    orgF = (o0 === "OB" || o0 === "YB" || o0 === "ALL") ? (o0 === "ALL" ? "all" : o0)
+                                                        : (HOME || "all");
+    const f0 = (q0.get("f") || "").toLowerCase();
+    if (["wait", "approved", "all"].includes(f0)) filter = f0;
   }
   const homeFirst = (a, b) => {                 // 들어온 홈페이지 쪽을 위로
     if (!HOME) return 0;
@@ -636,7 +651,13 @@ async function start() {
   function render() {
     document.querySelectorAll("#orgseg a").forEach(a =>
     a.addEventListener("click", () => { orgF = a.dataset.o; chosen = []; render(); }));
-  document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.f === filter));
+  document.querySelectorAll("#tabs a").forEach(a => {
+      a.classList.toggle("on", a.dataset.f === filter);
+      /* 갈래마다 몇 명인지 단추에 바로 적어 둡니다 —
+         지금 고른 소속(OB·YB·전체) 안에서 셉니다. */
+      const nb = a.querySelector(".sn");
+      if (nb) nb.textContent = rows.length ? pick(a.dataset.f).length : "";
+    });
     document.querySelectorAll("#orgseg a").forEach(a => a.classList.toggle("on", a.dataset.o === orgF));
     const SORTV = {
       name:    r => (r.name || "").trim(),

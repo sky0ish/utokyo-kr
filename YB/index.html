@@ -1446,16 +1446,24 @@ try {
         a.style.color = "#ffdc80"; a.style.fontWeight = "600";
         return a;
       };
-      const appr = mk("/YB/admin/members.html?org=YB", "⚙ 회원관리");
+      /* 누르면 대기자가 **바로 보이게** 합니다.
+         배지는 OB·YB 를 합쳐 세므로, 화면도 양쪽을 함께 열고
+         「승인 대기」 갈래로 바로 들어갑니다. */
+      const appr = mk("/YB/admin/members.html?org=all&f=wait", "⚙ 회원관리");
       el.append(appr, mk("/YB/admin/gallery.html?org=YB", "⚙ 갤러리 관리"));
-      sb.from("profiles").select("id", { count: "exact", head: true }).eq("approved", false)
-        .then(({ count }) => {
-          if (count) {
-            appr.textContent = `⚙ 회원관리 ${count}명 대기`;
-            appr.style.background = "#b3453b"; appr.style.color = "#fff";
-            appr.style.padding = "2px 9px"; appr.style.borderRadius = "100px";
-          }
-        });
+      // 승인 대기 인원을 버튼에 표시 — 어느 쪽 몇 명인지까지
+      sb.from("profiles").select("member_type").eq("approved", false)
+        .then(({ data }) => {
+          const list = data || [];
+          if (!list.length) return;
+          const ob = list.filter(x => (x.member_type || "OB") !== "YB").length;
+          const yb = list.length - ob;
+          const part = [ob ? `OB ${ob}` : "", yb ? `YB ${yb}` : ""].filter(Boolean).join(" · ");
+          appr.textContent = `⚙ 회원관리 ${list.length}명 대기` + (part ? ` (${part})` : "");
+          appr.title = "누르면 승인 대기자만 모아 보여 드립니다";
+          appr.style.background = "#b3453b"; appr.style.color = "#fff";
+          appr.style.padding = "2px 9px"; appr.style.borderRadius = "100px";
+        }).catch(() => {});
     }
     const ln = document.getElementById("loginNotice");
     if (ln) ln.remove();
