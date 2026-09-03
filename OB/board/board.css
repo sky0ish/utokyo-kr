@@ -11,13 +11,13 @@ body{font-family:'Noto Sans KR',sans-serif;color:#22283a;background:#f8f7f3;min-
 a{text-decoration:none;color:inherit;}
 .topbar{background:#101d33;color:rgba(255,255,255,.75);font-size:12.5px;
   position:sticky;top:0;z-index:1300;}   /* 어느 메뉴에서든 늘 보이게 */
-.topbar .inner{max-width:1530px;margin:0 auto;padding:9px 20px;display:flex;justify-content:space-between;gap:16px;}
+.topbar .inner{max-width:min(2200px,92vw);margin:0 auto;padding:9px 20px;display:flex;justify-content:space-between;gap:16px;}
 .topbar a:hover{color:#e8c876;}
 .topbar .links{display:flex;gap:16px;}
 /* ─── 메인 메뉴 헤더 (서브페이지 공용) ─── */
 .mhead{background:#101d33;color:#fff;border-bottom:1px solid rgba(255,255,255,.08);
   position:sticky;top:35px;z-index:1200;}
-.mhead .inner{max-width:1530px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
+.mhead .inner{max-width:min(2200px,92vw);margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
 .mhead .mlogo{font-family:'Noto Serif KR',serif;font-weight:600;font-size:16.5px;color:#fff;line-height:1.25;}
 .mhead .mlogo small{display:block;font-size:9.5px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.14em;font-family:'Noto Sans KR',sans-serif;}
 .mhead nav{display:flex;gap:2px;align-items:center;margin-left:auto;}
@@ -40,10 +40,10 @@ a{text-decoration:none;color:inherit;}
 
 /* ─── 어두운 사진 배너 ─── */
 .banner{background:linear-gradient(rgba(11,18,32,.74),rgba(11,18,32,.66)),url('../images/gold_avenue.jpg') center 42%/cover;color:#fff;}
-.banner .binner{max-width:1530px;margin:0 auto;padding:40px 20px 36px;}
+.banner .binner{max-width:min(2200px,92vw);margin:0 auto;padding:40px 20px 36px;}
 .banner .en{font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:#e8c876;letter-spacing:.14em;display:block;margin-bottom:4px;}
 .banner h1{font-family:'Noto Serif KR',serif;font-size:27px;font-weight:600;text-shadow:0 2px 16px rgba(0,0,0,.5);}
-.wrap{max-width:1530px;margin:0 auto;padding:36px 20px 80px;}
+.wrap{max-width:min(2200px,92vw);margin:0 auto;padding:36px 20px 80px;}
 .head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
 .head h1{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:600;}
 .head .en{font-family:Georgia,serif;font-style:italic;font-size:14px;color:#c9a24b;letter-spacing:.1em;display:block;}

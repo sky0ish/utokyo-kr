@@ -69,21 +69,6 @@
   .asm-more b{color:#8a6d2b;}
 
 
-  /* ── 첫 화면 카드 글자를 1.3배로 ─────────────────────
-     동문회 소개 · 참여마당 새 글 · 게시판 새 글 · 갤러리 네 카드입니다.
-     한 곳에 모아 두었으니 되돌리거나 배수를 바꾸기 쉽습니다.
-     (원래 크기를 옆에 적어 둡니다) */
-  /* 제목은 뒤쪽에 17px 규칙이 하나 더 있어, 한 겹 더 짚어 이깁니다 */
-  .dash-grid .dcard .dhead h3,
-  .dash-grid .dcard .dhead h4 { font-size:22px; }   /* 17 */
-  .dcard .dhead .ico    { font-size:17px;   }   /* 13   */
-  .dcard .dhead .more   { font-size:15.5px; }   /* 12   */
-  .dcard .dbody b       { font-size:17.5px; }   /* 13.5 */
-  .dcard .dbody span    { font-size:17.5px; }   /* 13.5 */
-  .dcard .dbody li .bd  { font-size:19px;   }   /* 14.5 */
-  .dcard .dbody li .tg  { font-size:19px;   }   /* 14.5 */
-  .dcard .dbody li .tt  { font-size:17.5px; }   /* 13.5 */
-  .dcard .dbody li .dt  { font-size:19.5px; }   /* 15   */
 </style>
 <style>
   :root{
@@ -98,7 +83,7 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#fff;line-height:1.75;}
   a{text-decoration:none;color:inherit;}
-  .container{max-width:1480px;margin:0 auto;padding:0 24px;}
+  .container{max-width:min(2200px,92vw);margin:0 auto;padding:0 24px;}
 
   /* ── 유틸바 ── */
   .utilbar{background:#0b1526;color:rgba(255,255,255,.7);font-size:12px;
@@ -112,11 +97,21 @@
   header.site{position:sticky;top:34px;z-index:100;background:rgba(16,29,51,.97);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);}
   header.site .container{display:flex;align-items:center;justify-content:space-between;height:80px;}
   .logo{display:flex;align-items:center;gap:13px;}
-  .logo .mark{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}
-  .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;}
-  .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.16em;}
-  nav.gnb{display:flex;gap:2px;align-items:center;margin-left:auto;margin-right:10px;}
-  nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 12px;font-size:17.5px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;}
+  .logo .mark{width:54px;height:54px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}
+  .logo .mark img,.logo .mark svg{width:100%;height:100%;object-fit:contain;}
+  /* 이름표를 1.3배로 (원래 18 / 10.5px) — 동그란 마크도 함께 키웁니다 */
+  .logo .name{font-family:'Noto Serif KR',serif;font-weight:600;font-size:23.5px;}
+  .logo .name small{display:block;font-family:'Noto Sans KR';font-weight:300;font-size:13.5px;color:rgba(255,255,255,.55);letter-spacing:.16em;}
+  /* 머리글이 넓어진 만큼 메뉴 사이도 벌립니다 (글자 크기는 그대로).
+     좁은 화면에서는 다시 좁혀 한 줄에 들어가게 둡니다. */
+  nav.gnb{display:flex;gap:10px;align-items:center;margin-left:auto;margin-right:18px;}
+  /* 메뉴 글자도 1.3배 (원래 17.5px) */
+  nav.gnb>a,nav.gnb .dd>a{display:inline-block;padding:10px 20px;font-size:23px;font-weight:400;color:rgba(255,255,255,.85);border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;}
+  /* 좁은 화면에서는 사이와 크기를 도로 줄여 한 줄에 들어가게 둡니다 */
+  @media (max-width:1500px){
+    nav.gnb{gap:2px;margin-right:10px;}
+    nav.gnb>a,nav.gnb .dd>a{padding:10px 12px;font-size:17.5px;}
+  }
   nav.gnb>a:hover,nav.gnb>a.on,nav.gnb .dd>a:hover{color:var(--gold-bright);border-bottom-color:var(--gold);}
 
   /* ── 드롭다운 하위메뉴 ── */
@@ -610,6 +605,45 @@
     #join .sec-head, .dash .sec-head{flex-direction:column;gap:20px;}
     .cal-side{flex:1 1 auto;max-width:none;width:100%;}
   }
+
+  /* ═══ 첫 화면 다듬기 ═══ */
+  /* 메뉴 사이를 더 벌립니다 (10 → 22px) */
+  nav.gnb{gap:22px;}
+  @media (max-width:1560px){
+    nav.gnb{gap:2px;margin-right:10px;}
+    nav.gnb>a,nav.gnb .dd>a{padding:10px 12px;font-size:17.5px;}
+  }
+  /* 「한눈에 보기」와 달력 사이 — 34 → 306px (다시 3배). 좁아지면 함께 줄어듭니다 */
+  .dash .sec-head{gap:clamp(34px,16vw,306px);}
+  /* 달력 — 가로 : 세로 = 1.5 : 1 */
+  .dash .cal-side{flex:0 1 900px;max-width:900px;}
+  .dash .cal-titles .cal-days{aspect-ratio:1.5/1;grid-auto-rows:1fr;}
+  .dash .cal-titles .cd{min-height:0;}
+  @media(max-width:860px){
+    .dash .sec-head{gap:20px;}
+    .dash .cal-side{flex:1 1 auto;max-width:none;width:100%;}
+    .dash .cal-titles .cal-days{aspect-ratio:auto;grid-auto-rows:auto;}
+    .dash .cal-titles .cd{min-height:36px;}
+  }
+  /* 일정 이름을 두 줄까지 — 칸이 높아졌으니 더 많이 보입니다 */
+  .dash .cal-titles .chip{white-space:normal;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;text-overflow:clip;}
+  @media(max-width:860px){
+    .dash .cal-titles .chip{-webkit-line-clamp:1;white-space:nowrap;text-overflow:ellipsis;}
+  }
+
+  /* ── 첫 화면 네 카드 글자 0.85배 (원래값을 옆에 적어 둡니다) ── */
+  .dcard .dhead h3{font-size:14.5px;}          /* 17 */
+  .dcard .dhead .ico{width:22px;height:22px;font-size:11px;}   /* 26/13 */
+  .dcard .dhead .more{font-size:10px;}         /* 12 */
+  .dcard .dbody li a{font-size:11.5px;}        /* 13.5 */
+  .dcard .dbody li .bd{font-size:9.5px;}       /* 11 */
+  .dcard .dbody li .tg{font-size:9.5px;}       /* 11 */
+  .dcard .dbody li .dt{font-size:10px;}        /* 11.5 */
+  .dcard .empty{font-size:11px;}               /* 13 */
+  .dcard .dsum b{font-size:11.5px;}            /* 13.5 */
+  .dcard .dsum span{font-size:11.5px;}         /* 13.5 */
 </style>
 </head>
 <body>
