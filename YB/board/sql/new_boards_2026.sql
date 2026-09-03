@@ -13,19 +13,27 @@
 -- ═══════════════════════════════════════════════════════════
 
 -- ── 새 갈래를 받아들이게 ──
-alter table public.posts drop constraint if exists posts_category_check;
-alter table public.posts add constraint posts_category_check
-  check (category in (
-    -- 총동문회(OB)
-    'notice','free','club','mentoring','promo','condolence','forum','seminar',
-    'jobs','faculty','news','market','research',
-    -- 학생회(YB)
-    'qna','parttime','history','event','major',
-    -- 양쪽에 있는 것
-    'suggest',
-    -- 이번에 생긴 것
-    'exam','career','counsel','scholarship'
-  ));
+-- 이미 쓰이고 있는 갈래는 무엇이든 그대로 두고, 새 갈래 넷만 더합니다.
+-- (목록을 손으로 적으면 빠뜨린 갈래 하나 때문에 통째로 실패합니다)
+do $$
+declare cats text;
+begin
+  select string_agg(quote_literal(c), ', ' order by c) into cats
+    from (
+      select distinct category as c from public.posts where category is not null
+      union
+      select unnest(array['notice','free','club','mentoring','promo','condolence',
+                          'forum','seminar','jobs','faculty','news','market','research',
+                          'qna','parttime','history','event','major','suggest',
+                          'exam','career','counsel','scholarship'])
+    ) t;
+
+  execute 'alter table public.posts drop constraint if exists posts_category_check';
+  execute 'alter table public.posts add constraint posts_category_check check (category in ('
+           || cats || '))';
+
+  raise notice '게시판 갈래 % 개를 받아들이도록 했습니다', array_length(string_to_array(cats, ', '), 1);
+end $$;
 
 -- ── 수험생 게시판 첫 글 ──
 insert into public.posts (author_name, org, category, title, content, visibility)
