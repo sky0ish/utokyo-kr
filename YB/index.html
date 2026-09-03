@@ -538,9 +538,10 @@
     line-height:13px;color:#fff;font-size:9.5px;}
 
   /* 날짜 오른쪽에 행사명 */
+  /* 한 칸을 두 줄로 — 같은 날 일정이 겹쳐도 둘 다 보이게 합니다 */
   .cal-titles .cd{display:grid;grid-template-columns:17px minmax(0,1fr);
     column-gap:5px;row-gap:2px;align-content:start;
-    min-height:36px;text-align:left;padding:5px 6px 6px;}
+    min-height:56px;text-align:left;padding:5px 6px 6px;}
   .cal-titles .cd .n{grid-column:1;grid-row:1;line-height:1.5;}
   .cal-titles .chip{grid-column:2;display:block;font-style:normal;font-size:10.5px;
     line-height:1.5;padding:0 4px;border-radius:2px;background:#eaf2ec;color:#2f5c40;
@@ -1356,7 +1357,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=289";
+import { initCalendar } from "/YB/board/calendar.js?v=290";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1472,14 +1473,14 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=289");
+  const { initCouncil } = await import("/YB/council.js?v=290");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=289";
+  import { applyMenu } from "/YB/board/nav.js?v=290";
   applyMenu("YB");
 </script>
 </body>
