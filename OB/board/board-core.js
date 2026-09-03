@@ -183,8 +183,11 @@ export async function initBoard(ORG) {
   /* 다른 게시판에서 「여기에도 함께」 로 걸어 둔 글도 이 게시판 글과 나란히 봅니다.
      자리(also_cat)가 아직 없는 데이터베이스에서는 CROSS 를 내리고 예전처럼 봅니다. */
   let CROSS = true;
+  /* 「전체」는 이 묶음 안에서만 봅니다.
+     다만 검색할 때는 홈페이지 전체를 뒤집니다 —
+     메뉴에서 빠진 게시판의 글도 찾을 수 있어야 하니까요. */
   const byCat = (q) => !cat
-    ? (GROUP.length ? q.in("category", GROUP) : q)   // 「전체」 = 이 묶음 안에서만
+    ? ((GROUP.length && !kw) ? q.in("category", GROUP) : q)
     : CROSS ? q.or("category.eq." + cat + ",also_cat.eq." + cat)
             : q.eq("category", cat);
   const params = new URLSearchParams(location.search);
