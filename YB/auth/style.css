@@ -46,3 +46,8 @@ button.ghost{
   background:none;border:1px solid #d8d1bf;border-radius:3px;color:#5a5648;cursor:pointer;
 }
 button.ghost:hover{border-color:#8a3b32;color:#8a3b32;}
+
+/* 본인이 못 바꾸는 칸 (구분은 운영진이 정합니다) */
+select:disabled{background:#f2efe6;color:#7d7768;cursor:not-allowed;}
+.fixnote{margin:-6px 0 14px;font-size:12.5px;line-height:1.65;color:#9a947f;font-weight:300;}
+.fixnote a{color:#7d7768;text-decoration:underline;}

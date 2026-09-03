@@ -92,6 +92,10 @@
   .gsel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
     font-family:inherit;font-size:11.5px;background:#fffdf8;color:#2f2a1d;cursor:pointer;}
   .gsel:focus{outline:0;border-color:#c9a24b;}
+  .osel{display:block;margin-top:4px;padding:3px 6px;border:1px solid #ddd6c4;border-radius:6px;
+    background:#fffdf6;font-family:inherit;font-size:11.5px;color:#6b6350;cursor:pointer;}
+  .osel:focus{outline:0;border-color:#c9a24b;}
+  .yr{color:#9a947f;font-weight:300;}
   .btn.sm.done{background:#eeeae0;border-color:#ddd6c4;color:#a09a86;font-weight:400;}
   .btn.sm.done:hover{background:#e5e0d2;color:#7d7768;}
   .cardhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
@@ -499,6 +503,25 @@ async function start() {
 
   const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
   /** 등급을 손으로 바꾸는 칸 (운영진 계정은 관리자로 고정) */
+  /* 구분(총동문회 · 학생회 · 비동문)은 회원이 스스로 못 바꿉니다.
+     볼 수 있는 게시판이 여기서 갈리므로, 운영진이 이 고르개로 정합니다. */
+  const ORG_NAME = { OB: "총동문회(OB)", YB: "학생회(YB)", GUEST: "비동문" };
+
+  function orgChip(r) {
+    const m = r.member_type;
+    if (!m) return '<span class="chip">-</span>';
+    return `<span class="chip ${m === "YB" ? "yb" : m === "GUEST" ? "wait" : "ob"}">` +
+           `${m === "GUEST" ? "비동문" : m}</span>`;
+  }
+
+  function orgSel(r) {
+    const m = ["OB", "YB", "GUEST"].includes(r.member_type) ? r.member_type : "";
+    return '<select class="osel" title="구분 바꾸기">' + (m ? "" : '<option value="">고르기</option>') +
+      [["OB", "OB 동문"], ["YB", "YB 재학"], ["GUEST", "비동문"]]
+        .map(([k, v]) => `<option value="${k}"${k === m ? " selected" : ""}>${v}</option>`).join("") +
+      "</select>";
+  }
+
   function gradeSel(r) {
     const btn = `<button type="button" class="btn sm adm" title="운영진 지정·해제">` +
       (r.is_admin ? "운영진 해제" : "운영진 지정") + "</button>";
@@ -646,7 +669,9 @@ async function start() {
       email:   r => (r.email || "").toLowerCase(),
       phone:   r => String(r.phone || "").replace(/[^0-9]/g, ""),
       org:     r => r.member_type || "",
-      faculty: r => ((r.faculty || "") + " " + (r.grad_year || "")).trim(),
+      faculty: r => (r.member_type === "GUEST" ? (r.guest_type || "")
+                     : ((r.faculty || "") + " " + (r.grad_year || ""))).trim(),
+      major2:  r => (r.member_type === "GUEST" ? (r.org_name || "") : (r.major || "")).trim(),
       major:   r => majorOf(r),
       company: r => ((r.company || "") + " " + (r.job_title || "")).trim(),
       login:   r => scoreOf(ACT.get(r.id)),
@@ -703,7 +728,9 @@ async function start() {
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       '<th class="no">#</th>' +
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
-       ["faculty", orgF === "GUEST" ? "자격 · 소속 기관" : "전공 · 연도"],["major","전공 계열"],
+       ["faculty", orgF === "GUEST" ? "자격" : "소속 · 연도"],
+       ["major2",  orgF === "GUEST" ? "소속 기관" : "세부 전공"],
+       ["major",   "전공 계열"],
        ["company", orgF === "GUEST" ? "남기신 말" : "직장 · 직급"],
        ["login","활동"],["joined","가입일"],["grade","등급"],["state","상태"]]
         .filter(([k]) => k !== "company" || showJob)
@@ -716,10 +743,13 @@ async function start() {
         <td>${esc(r.name) || "-"}${r.is_admin ? ' <span class="chip ob">운영진</span>' : ""}</td>
         <td class="em">${esc(r.email) || "-"}</td>
         <td class="em">${r.phone ? `<a href="tel:${esc(String(r.phone).replace(/[^0-9+]/g, ""))}">${esc(phoneText(r.phone))}</a>` : "-"}</td>
-        <td>${r.member_type ? `<span class="chip ${r.member_type === "YB" ? "yb" : r.member_type === "GUEST" ? "wait" : "ob"}">${r.member_type === "GUEST" ? "비동문" : r.member_type}</span>` : "-"}</td>
+        <td class="ocell">${orgChip(r)}${orgSel(r)}</td>
         <td>${r.member_type === "GUEST"
-              ? (esc(r.guest_type) || "-") + (r.org_name ? " · " + esc(r.org_name) : "")
-              : (esc(r.faculty) || "-") + (r.major ? " " + esc(r.major) : "") + " " + (esc(r.grad_year) || "")}</td>
+              ? (esc(r.guest_type) || "-")
+              : (esc(r.faculty) || "-") + (r.grad_year ? ` <span class="yr">${esc(r.grad_year)}</span>` : "")}</td>
+        <td>${r.member_type === "GUEST"
+              ? (esc(r.org_name) || "-")
+              : (esc(r.major) || "-")}</td>
         <td><span class="mjchip">${esc(majorOf(r))}</span></td>
         ${showJob ? `<td>${r.member_type === "GUEST"
               ? (esc(r.guest_note) || "-")
@@ -785,6 +815,31 @@ async function start() {
       });
     }
     wireGradeSel(t);
+
+    /* 구분 바꾸기 — 볼 수 있는 게시판이 달라지므로 한 번 여쭙습니다 */
+    t.querySelectorAll(".osel").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        const tr = sel.closest("tr");
+        const r = rows.find(x => x.id === tr.dataset.id);
+        const to = sel.value;
+        if (!to) return;
+        if (!confirm(`${r.name || "이 회원"} 님을 ${ORG_NAME[to]} 으로 옮깁니다.\n` +
+                     "볼 수 있는 게시판이 달라집니다. 계속할까요?")) {
+          sel.value = r.member_type || ""; return;
+        }
+        sel.disabled = true;
+        const { n, error } = await saveRows(
+          sb.from("profiles").update({ member_type: to }).eq("id", r.id));
+        sel.disabled = false;
+        if (error) { alert("구분 변경 실패: " + error.message); sel.value = r.member_type || ""; return; }
+        if (!n) { alert("구분이 바뀌지 않았습니다.\n\n" + RLS_MSG); sel.value = r.member_type || ""; return; }
+        r.member_type = to;
+        render();
+        const m = document.getElementById("listMsg");
+        m.className = "msg ok";
+        m.textContent = `${r.name || "회원"} 님을 ${ORG_NAME[to]} 으로 옮겼습니다.`;
+      });
+    });
 
     // ── 동문 명단에서 회원 여부 확인 ──
     t.querySelectorAll(".chk2").forEach(b => b.addEventListener("click", async () => {
