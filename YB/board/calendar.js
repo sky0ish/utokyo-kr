@@ -25,12 +25,15 @@ const CATNAME = {
   history: "활동 이력", mentoring: "멘토멘티",
   // 총동문회에서 함께 보는 것
   forum: "포럼·세미나", condolence: "경조사", promo: "홍보·채용",
+  assembly: "총회", major: "전공별모임", event: "행사", scholarship: "장학",
+  exam: "수험생", research: "단행본·연구", suggest: "바란다",
 };
 
 // ── 달력에 실을 갈래 ──
 //   학생회(YB) 는 우리 모임을 모두 싣고,
 //   총동문회(OB) 것은 함께 참여할 수 있는 자리만 가져옵니다.
-const MEET_CATS = ["club", "mentoring", "notice", "history"];   // 학생회 것
+const MEET_CATS = ["club", "mentoring", "notice", "history",
+                   "forum", "major", "event", "news", "condolence"];   // 학생회 것
 const OB_SHARED = ["forum", "mentoring", "notice"];             // 총동문회에서 함께 보는 것
 //   포럼·세미나 · 멘토멘티 · 총회 — 선후배가 같은 자리에 모이는 일정입니다.
 //   (총동문회 공지는 총회 같은 모임 글만 골라 옵니다)
