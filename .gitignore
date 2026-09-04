@@ -6,6 +6,8 @@
 !/index.html
 !/robots.txt
 !/sitemap.xml
+# 홈 화면에 담을 때 쓰는 앱 정보 (아이콘·이름)
+!/manifest.webmanifest
 # 검색엔진 소유권 확인 파일 (지우면 확인이 풀립니다)
 !/google*.html
 !/naver*.html

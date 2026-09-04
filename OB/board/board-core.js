@@ -2,8 +2,8 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 // ─── 게시판 목록 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
-import { applyNav } from "/OB/board/nav.js?v=309";
-import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=309";
+import { applyNav } from "/OB/board/nav.js?v=310";
+import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=310";
 
 /* 옮겨온 글의 지은이에는 소속·직함이 함께 붙어 있는 경우가 많습니다.
    («학98.석02.박04.남지현 도시 Ph.D», «경희대 화공과 이용택» 처럼)
@@ -46,6 +46,28 @@ const MAJOR_GUIDE = [
 const mgEsc = (s) => String(s == null ? "" : s)
   .replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;",
                                  '"': "&quot;", "'": "&#39;" }[c]));
+
+/** 총회 게시판에서는 「연도별 결과 보고」를 목록 위에 먼저 보여드립니다.
+ *  (첫 화면에 있던 그 판입니다 — 여기까지 오시면 다시 첫 화면으로 갈 일이 없도록) */
+async function drawAssembly(cat) {
+  const old = document.getElementById("asmIntro");
+  if (old) old.remove();
+  if (cat !== "assembly" || ORG !== "OB") return;
+  let mod = null;
+  try { mod = await import("/OB/board/assembly-intro.js?v=310"); } catch (e) { return; }
+  if (!document.getElementById("asmIntroCss")) {
+    const st = document.createElement("style");
+    st.id = "asmIntroCss";
+    st.textContent = mod.ASM_CSS;
+    document.head.appendChild(st);
+  }
+  const anchor = document.getElementById("tagTabs");
+  if (!anchor || !anchor.parentNode) return;
+  const box = document.createElement("div");
+  box.id = "asmIntro";
+  box.innerHTML = mod.ASM_HTML;
+  anchor.parentNode.insertBefore(box, anchor.nextSibling);
+}
 
 function drawMajorGuide(cat) {
   const old = document.getElementById("majorGuide");
@@ -223,6 +245,7 @@ export async function initBoard(ORG) {
   /** 지금 게시판의 말머리 줄을 다시 그린다 */
   function drawTagTabs() {
     drawMajorGuide(cat);
+    drawAssembly(cat);
     const box = document.getElementById("tagTabs");
     if (!box) return;
     const known = cat ? boardTags(cat) : [];
