@@ -440,6 +440,10 @@ body.yb .mguide td b{color:#2a6b40;}
 .btn.dateedit input{font-family:inherit;font-size:13px;border:none;background:none;
   color:inherit;cursor:pointer;padding:0;}
 .btn.dateedit.done{border-style:solid;border-color:#2a7a45;color:#2a7a45;}
+/* 글에서 찾아낸 「행사하는 날」을 미리 넣어 둔 상태 */
+.btn.dateedit.guess{border-color:#c9a961;background:#fdf6e6;color:#8a6d2b;}
+.btn.dateedit.guess::after{content:"행사일";font-size:11px;font-weight:700;
+  color:#a8853a;margin-left:2px;}
 
 /* 원그래프 이름을 눌러 걸러 보기 */
 .legend .pieitem{cursor:pointer;border-radius:6px;padding:1px 6px;margin:0 -6px;transition:.14s;}

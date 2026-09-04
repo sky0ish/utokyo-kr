@@ -2,8 +2,9 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/YB/auth/auth.js";
 import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js";
-import { applyNav } from "/YB/board/nav.js?v=303";
-import { boardTags } from "/YB/board/board-info.js?v=303";
+import { applyNav } from "/YB/board/nav.js?v=304";
+import { boardTags } from "/YB/board/board-info.js?v=304";
+import { findDates } from "/YB/board/calendar.js?v=304";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
 function esc(t) {
@@ -466,12 +467,25 @@ function linkify(s) {
         {
           const lab = document.createElement("label");
           lab.className = "btn dateedit";
-          lab.title = "이 글이 원래 올라간 날로 고칩니다";
+          /* 처음 보이는 날은 「행사하는 날」입니다.
+             글에 적힌 날짜(달력이 읽는 것과 같은 방식)를 먼저 찾아 넣고,
+             날짜가 안 적힌 글이면 글 올린 날을 그대로 둡니다. */
+          let eventDay = "";
+          try {
+            const hit = findDates(p.title, p.content, new Date(p.created_at || Date.now()),
+                                  { earliest: p.category === "condolence" });
+            if (hit && hit.length) eventDay = hit[0].key;
+          } catch (e) { /* 못 찾으면 글 올린 날로 */ }
+          lab.title = eventDay
+            ? "행사하는 날로 맞춰 두었습니다 — 고치시면 그날로 옮겨집니다"
+            : "이 글이 원래 올라간 날로 고칩니다";
           const ico = document.createElement("span");
           ico.textContent = "📅";
           const inp = document.createElement("input");
           inp.type = "date";
-          inp.value = String(p.created_at || "").slice(0, 10);
+          inp.value = eventDay || String(p.created_at || "").slice(0, 10);
+          if (eventDay && eventDay !== String(p.created_at || "").slice(0, 10))
+            lab.classList.add("guess");
           lab.append(ico, inp);
           inp.addEventListener("change", async () => {
             const v = inp.value;
