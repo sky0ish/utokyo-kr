@@ -1247,7 +1247,7 @@ async function start() {
   const jobCols = () => orgF !== "YB";     // 재학생 명단에는 직장·직급을 넣지 않는다
   const HEADER = () => "이름,이메일,연락처,구분,전공,졸업연도," +
                        (jobCols() ? "직장,직급," : "") +
-                       "활동점수,로그인,방문,쪽보기,글읽기,댓글,글쓰기,사진,마지막로그인,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
+                       "활동점수,로그인,방문,쪽보기,글읽기,댓글,글쓰기,사진,좋아요,마지막로그인,등급,승인,가입일,명단_전공,명단_학위연도,명단_소속,명단_이메일";
   /** 전화번호를 010-1234-5678 꼴로 (엑셀이 숫자로 바꿔 앞 0 이 사라지는 것도 막습니다) */
   function phoneText(v) {
     const d = String(v || "").replace(/[^0-9]/g, "");
@@ -1264,7 +1264,7 @@ async function start() {
     .concat((() => { const a = ACT.get(r.id) || {};
       return [String(Math.round(scoreOf(a))), a.login || 0, a.visit || 0,
               a.view || 0, a.read || 0,
-              a.comment || 0, a.post || 0, a.photo || 0,
+              a.comment || 0, a.post || 0, a.photo || 0, a.liked || 0,
               (r.last_login_at || "").slice(0, 10)].map(String); })())
     .concat([isRegrant(r) ? "재승인" : GNAME[r.is_admin ? "admin" : (r.grade || "guest")],
              r.approved ? (isRegrant(r) ? "재승인" : "승인") : "대기",
