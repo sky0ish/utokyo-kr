@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=294">
+<link rel="stylesheet" href="/YB/board/board.css?v=295">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -135,6 +135,13 @@
   .card2.today .tnums dd{display:flex;align-items:baseline;gap:3px;}
   .card2.today .tnums b{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;}
   .card2.today .tnums span{font-size:12.5px;color:#9a947f;}
+  .daystrip{margin-top:18px;padding-top:14px;border-top:1px solid #efe8d8;}
+  .daystrip .ds-cap{font-size:12.5px;color:#9a947f;margin-bottom:8px;}
+  .daystrip .ds-bars{display:flex;align-items:flex-end;gap:3px;height:48px;}
+  .daystrip .ds-bars i{flex:1;min-width:4px;border-radius:2px 2px 0 0;background:#c9ab6b;}
+  .daystrip .ds-bars i:hover{background:#8a6d2b;}
+  .daystrip .ds-ends{display:flex;justify-content:space-between;gap:10px;
+    margin-top:6px;font-size:11.5px;color:#b0a98f;}
 </style>
 </head>
 <body>
@@ -178,7 +185,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=294";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=295";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -210,7 +217,7 @@ if (!me || !(me.approved || me.is_admin)) {
 }
 
   /** 오늘 다녀간 사람 — 창구가 아직 없으면 아무것도 그리지 않습니다 */
-  function todayCard(t) {
+  function todayCard(t, days) {
     if (!t) return "";
     const n = (v) => Number(v || 0).toLocaleString();
     return `<div class="card2 today">
@@ -222,7 +229,25 @@ if (!me || !(me.approved || me.is_admin)) {
         <div><dt>어제</dt><dd><b>${n(t.yesterday_people)}</b><span>명</span></dd></div>
         <div><dt>이번 주</dt><dd><b>${n(t.week_people)}</b><span>명</span></dd></div>
         <div><dt>이번 달</dt><dd><b>${n(t.month_people)}</b><span>명</span></dd></div>
-      </dl></div>`;
+      </dl>${dayStrip(days)}</div>`;
+  }
+
+  /** 최근 30일 — 하루에 몇 분이 다녀가셨는지 */
+  function dayStrip(days) {
+    if (!days || !days.length) return "";
+    const list = days.slice(0, 30).reverse();
+    const top = Math.max(...list.map(d => Number(d.people) || 0), 1);
+    return `<div class="daystrip">
+      <div class="ds-cap">최근 ${list.length}일 — 하루에 다녀가신 분</div>
+      <div class="ds-bars">${list.map(d => {
+        const n = Number(d.people) || 0;
+        return `<i style="height:${Math.max(3, Math.round(n / top * 46))}px"
+                   title="${esc(String(d.day))} · ${n}명"></i>`;
+      }).join("")}</div>
+      <div class="ds-ends"><span>${esc(String(list[0].day))}</span>
+        <span>가장 많은 날 ${top}명</span>
+        <span>${esc(String(list[list.length - 1].day))}</span></div>
+    </div>`;
   }
 
 async function start() {
@@ -233,12 +258,15 @@ async function start() {
   document.getElementById("sTitle").textContent =
     (ORG_NAME[org] || "") + " 사용통계";
 
-  const [b, m, w, td] = await Promise.all([
+  const [b, m, w, td, dl] = await Promise.all([
     sb.from("activity_board").select("*"),
     sb.from("activity_month").select("*"),
     sb.from("activity_weights").select("kind,weight"),
     // 오늘 다녀간 사람 — 아직 준비 전이면 조용히 넘어갑니다
     sb.from("activity_today").select("*").then(r => r, () => ({ data: null })),
+    // 날짜별 다녀간 사람 — 예전 기록도 그대로 셉니다
+    sb.from("activity_daily").select("*").order("day", { ascending: false }).limit(120)
+      .then(r => r, () => ({ data: null })),
   ]);
   // 활동마다 몇 점으로 세는지 (운영진이 정합니다)
   const WEIGHT = {};
@@ -304,7 +332,8 @@ async function start() {
          <p class="myrank">아직 쌓인 내 기록이 없습니다. 홈페이지를 쓰시면 하나씩 쌓입니다.</p>`) +
     `<div id="allStats"><div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
        <small>우리 쪽 회원 ${rows.length}명이 함께 쓴 기록입니다</small></div>
-     ${todayCard(((td && td.data) || []).find(r => r.org === org))}
+     ${todayCard(((td && td.data) || []).find(r => r.org === org),
+                 ((dl && dl.data) || []).filter(r => r.org === org))}
      <div class="card2">
        <p class="sub">우리 쪽 회원이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
        <div class="segs">

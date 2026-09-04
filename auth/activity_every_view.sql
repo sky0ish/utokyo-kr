@@ -107,3 +107,28 @@ grant select on public.activity_today to authenticated;
 select kind as "활동", label as "이름", weight as "가중치"
   from public.activity_weights order by sort;
 select * from public.activity_today;
+
+
+-- ── 날짜별 다녀간 사람 (지난 기록 그대로 살립니다) ──
+--   예전에도 「하루 한 번」은 남겨 두었으므로,
+--   어느 날 몇 분이 다녀가셨는지는 지금까지 것을 그대로 셀 수 있습니다.
+--   (다만 「그날 몇 쪽을 보셨는지」는 남기지 않았으므로 오늘부터 쌓입니다)
+drop view if exists public.activity_daily;
+create view public.activity_daily as
+select (e.at at time zone 'Asia/Seoul')::date       as day,
+       p.member_type                                as org,
+       count(distinct e.user_id)                    as people,
+       count(*)                                     as views
+  from public.activity_events e
+  join public.profiles p on p.id = e.user_id
+ where e.kind in ('visit', 'login')
+   and p.is_admin = false
+   and public.is_approved()
+   and (public.is_admin() or p.member_type = public.my_org())
+ group by 1, 2;
+
+revoke all on public.activity_daily from anon;
+grant select on public.activity_daily to authenticated;
+
+select day as "날짜", org as "소속", people as "다녀간 사람", views as "기록"
+  from public.activity_daily order by day desc limit 30;
