@@ -855,19 +855,48 @@ async function start() {
       (scope || t).querySelectorAll(".gsel").forEach(sel => {
         if (sel.dataset.wired) return;
         sel.dataset.wired = "1";
-        /* 고르기만 하고 저장하지 않습니다.
-           예전에는 고르는 순간 저장하고 표를 다시 그려, 그 줄이 눈앞에서
-           사라져 정작 「승인」을 누를 수가 없었습니다.
-           이제 고른 등급은 그 줄에 적어만 두고, 「승인」을 누를 때
-           승인과 함께 한 번에 저장합니다. */
-        sel.addEventListener("change", () => {
+        /* 승인 전이면 적어만 두고 「승인」과 함께 저장합니다.
+           (고르는 순간 표를 다시 그리면 그 줄이 눈앞에서 사라져
+            정작 승인을 누를 수 없었기 때문입니다)
+           이미 승인된 분은 그 자리에서 바로 저장합니다. */
+        sel.addEventListener("change", async () => {
           const tr = sel.closest("tr");
           const r = rows.find(x => x.id === tr.dataset.id) || {};
           const to = sel.value;
           const now0 = r.grade || "guest";
-          if (to === now0) delete tr.dataset.pendGrade;
-          else tr.dataset.pendGrade = to;
-          markPending(tr);
+          if (to === now0) { delete tr.dataset.pendGrade; markPending(tr); return; }
+          /* 아직 승인 전이면 「승인」을 누를 때 함께 저장합니다.
+             이미 승인된 분은 누를 승인 단추가 없으므로 그 자리에서 저장합니다.
+             (예전에는 저장할 길이 없어 고르기만 하고 그대로였습니다) */
+          if (!r.approved) { tr.dataset.pendGrade = to; markPending(tr); return; }
+          delete tr.dataset.pendGrade;
+          sel.disabled = true;
+          const cell = tr.querySelector(".gcell");
+          let note = cell && cell.querySelector(".pend");
+          if (cell && !note) {
+            note = document.createElement("div");
+            note.className = "pend"; cell.appendChild(note);
+          }
+          if (note) note.textContent = "저장하는 중…";
+          const NAMES = { member: "회원", associate: "준회원", guest: "Guest" };
+          let res = await saveRows(sb.from("profiles")
+            .update({ grade: to, grade_manual_at: new Date().toISOString() }).eq("id", r.id));
+          if (res.error && /grade_manual_at/.test(res.error.message || "")) {
+            res = await saveRows(sb.from("profiles").update({ grade: to }).eq("id", r.id));
+          }
+          sel.disabled = false;
+          if (res.error || !res.n) {
+            sel.value = now0;
+            if (note) note.textContent = /grade_check|violates check/i.test(res.error ? res.error.message : "")
+              ? "자료방이 이 등급을 아직 모릅니다 — auth/grade_associate.sql 실행 필요"
+              : "저장하지 못했습니다" + (res.error ? " : " + res.error.message : "");
+            return;
+          }
+          r.grade = to;
+          r.grade_manual_at = new Date().toISOString();
+          if (note) note.textContent = "→ " + (NAMES[to] || to) + " 로 저장했습니다";
+          const chip = cell && cell.querySelector(".chip");
+          if (chip) chip.outerHTML = gradeChip(r);
         });
       });
     }
