@@ -2,9 +2,9 @@
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 import { sb, currentUser, myProfile, noteActivity, fixEnter } from "/OB/auth/auth.js";
 import { loadLikes, toggleLike, heart } from "/OB/auth/likes.js";
-import { applyNav } from "/OB/board/nav.js?v=313";
-import { boardTags } from "/OB/board/board-info.js?v=313";
-import { findDates } from "/OB/board/calendar.js?v=313";
+import { applyNav } from "/OB/board/nav.js?v=314";
+import { boardTags } from "/OB/board/board-info.js?v=314";
+import { findDates } from "/OB/board/calendar.js?v=314";
 
 /** 글자를 화면에 안전하게 넣기 위한 다듬기 */
 function esc(t) {
@@ -665,10 +665,22 @@ function linkify(s) {
     wrap.style.display = "block";
 
     const profile = meProfile;
-    const canWrite = !!(profile && profile.approved);
+    /* 준회원은 다 보시되 댓글은 쓰지 않습니다.
+       Guest 는 구인·채용 · 수험생 두 곳에서만 씁니다.
+       (자료방에도 같은 규칙이 서 있으니 여기서는 미리 알려드리는 것입니다) */
+    const isAssoc = !!(profile && !profile.is_admin && profile.grade === "associate");
+    const isGuest = !!(profile && !profile.is_admin &&
+                       (profile.grade === "guest" ||
+                        (profile.member_type === "GUEST" && profile.grade !== "member")));
+    const guestOK = ["jobs", "exam"].includes(p.category);
+    const canWrite = !!(profile && profile.approved) && !isAssoc && !(isGuest && !guestOK);
 
     if (!canWrite) {
-      formBox.innerHTML = user
+      formBox.innerHTML = isAssoc
+        ? '<div class="cmt-login">준회원은 댓글을 쓰지 않습니다 — 읽기는 모두 열려 있습니다.</div>'
+        : isGuest
+        ? '<div class="cmt-login">Guest 는 구인·채용 · 수험생 게시판에서만 댓글을 쓰실 수 있습니다.</div>'
+        : user
         ? '<div class="cmt-login">댓글 작성은 운영진 승인이 완료된 회원만 가능합니다. (현재: 승인 대기중)</div>'
         : '<div class="cmt-login">댓글을 작성하려면 로그인이 필요합니다. <a href="/OB/auth/login.html">로그인</a> · <a href="/OB/auth/signup.html">회원가입</a></div>';
     }

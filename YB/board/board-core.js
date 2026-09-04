@@ -2,9 +2,9 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // ─── 게시판 목록 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
-import { applyNav } from "/YB/board/nav.js?v=313";
-import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=313";
-import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js?v=313";
+import { applyNav } from "/YB/board/nav.js?v=314";
+import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=314";
+import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js?v=314";
 
 /* 옮겨온 글의 지은이에는 소속·직함이 함께 붙어 있는 경우가 많습니다.
    («학98.석02.박04.남지현 도시 Ph.D», «경희대 화공과 이용택» 처럼)
@@ -398,10 +398,18 @@ export async function initBoard(ORG) {
     let mine = null;
     try { mine = await myProfile(); } catch (e) { return; }
     if (!mine || mine.is_admin) return;
-    const guest = (mine.grade === "guest") || (mine.member_type === "GUEST");
+    if (mine.grade === "associate") {              // 준회원 — 다 보시되 쓰지는 않습니다
+      btn.classList.add("locked");
+      btn.dataset.why = "assoc";
+      btn.title = "준회원은 글을 올리실 수 없습니다 — 읽기는 모두 열려 있습니다";
+      return;
+    }
+    const guest = (mine.grade === "guest") ||
+                  (mine.member_type === "GUEST" && mine.grade !== "member");
     if (!guest) return;
     if (cat === "jobs" || cat === "exam") return;   // 이 두 곳은 그대로 쓰십니다
     btn.classList.add("locked");
+    btn.dataset.why = "guest";
     btn.title = "Guest 는 구인·채용과 수험생 게시판에만 글을 올리실 수 있습니다";
   })();
 
@@ -409,9 +417,13 @@ export async function initBoard(ORG) {
     if (!user) { location.href = "/YB/auth/login.html"; return; }
     const btn = ev.currentTarget;
     if (btn.classList.contains("locked")) {
-      alert("Guest 는 구인·채용과 수험생 게시판에만 글을 올리실 수 있습니다." + String.fromCharCode(10) +
-            String.fromCharCode(10) +
-            "동문이신데 Guest 로 되어 있다면 운영진에게 알려 주세요.");
+      const NL2 = String.fromCharCode(10);
+      alert(btn.dataset.why === "assoc"
+        ? "준회원은 글을 올리실 수 없습니다." + NL2 + NL2 +
+          "게시판과 갤러리는 모두 보실 수 있습니다." + NL2 +
+          "글을 쓰셔야 한다면 운영진에게 알려 주세요."
+        : "Guest 는 구인·채용과 수험생 게시판에만 글을 올리실 수 있습니다." + NL2 + NL2 +
+          "동문이신데 Guest 로 되어 있다면 운영진에게 알려 주세요.");
       return;
     }
     const qs = [];
