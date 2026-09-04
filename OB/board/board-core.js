@@ -2,8 +2,8 @@ import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
 // ─── 게시판 목록 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
-import { applyNav } from "/OB/board/nav.js?v=305";
-import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=305";
+import { applyNav } from "/OB/board/nav.js?v=306";
+import { boardInfo, boardTags, tagInfo } from "/OB/board/board-info.js?v=306";
 
 /* 옮겨온 글의 지은이에는 소속·직함이 함께 붙어 있는 경우가 많습니다.
    («학98.석02.박04.남지현 도시 Ph.D», «경희대 화공과 이용택» 처럼)
