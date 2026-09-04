@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=296">
+<link rel="stylesheet" href="/YB/board/board.css?v=297">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -142,6 +142,10 @@
   .daystrip .ds-bars i:hover{background:#8a6d2b;}
   .daystrip .ds-ends{display:flex;justify-content:space-between;gap:10px;
     margin-top:6px;font-size:11.5px;color:#b0a98f;}
+  /* 자료방 준비가 아직일 때 알려드리는 줄 */
+  .notyet{margin-top:-4px;margin-bottom:10px;padding:8px 12px;border-radius:8px;
+    background:#fdf4e3;border:1px solid #ecdcba;color:#8a6d2b;font-size:12.5px;line-height:1.6;}
+  .notyet b{font-weight:700;}
 </style>
 </head>
 <body>
@@ -185,7 +189,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=296";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=297";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -249,6 +253,11 @@ if (!me || !(me.approved || me.is_admin)) {
         <span>가장 많은 날 ${top}명</span>
         <span>${esc(String(list[list.length - 1].day))}</span></div>
     </div>`;
+  }
+
+  /** 자료방 쪽 준비가 아직인지 — 창구에 「쪽 보기」 칸이 없으면 아직입니다 */
+  function needSql(rows) {
+    return !!(rows && rows.length) && !("view_n" in rows[0]);
   }
 
 async function start() {
@@ -351,6 +360,8 @@ async function start() {
      <div class="card2">
        <h3>많이 참여하신 분</h3>
        <p class="sub" id="rankSub">활동을 점수로 더한 순서입니다. 위 그래프에서 달·해를 누르면 그 기간만 봅니다.</p>
+       ${needSql(all) ? '<p class="notyet">「쪽 보기」는 아직 세지 않습니다 — ' +
+          '운영진이 <b>auth/activity_every_view.sql</b> 을 한 번 실행하면 그때부터 쌓입니다.</p>' : ""}
        <div style="overflow-x:auto;"><table class="rank" id="rank"></table></div>
      </div></div>`;
 
