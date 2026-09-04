@@ -251,6 +251,10 @@
     background:#faf5e8;border:1px solid #efe4cc;border-radius:100px;padding:1px 9px;
     white-space:nowrap;}
   #tbl .chip.assoc{background:#eaf0f7;color:#3a5a86;border-color:#cfdcec;}
+  .bulk .bulkgrade{display:inline-flex;align-items:center;gap:5px;margin-left:10px;
+    padding-left:12px;border-left:1px solid #e3dcc9;font-size:13px;color:#6f6a5c;}
+  .bulk .bulkgrade select{font-family:inherit;font-size:13px;padding:3px 6px;
+    border:1px solid #ded6c2;border-radius:5px;background:#fff;}
 </style>
 </head>
 <body>
@@ -308,6 +312,15 @@
         <button class="btn sm" id="noSel">선택 승인 취소</button>
         <button class="btn sm" id="autoGrade">회원여부 일괄확인</button>
         <button class="btn sm" id="okWait">대기자 전체 승인</button>
+        <span class="bulkgrade">선택한 분들을
+          <select id="gradeSel2">
+            <option value="">등급 그대로</option>
+            <option value="member">회원</option>
+            <option value="associate">준회원</option>
+            <option value="guest">Guest</option>
+          </select>
+          <button class="btn sm" id="gradeApply">으로 바꾸기</button>
+        </span>
       </div>
       <div class="msg" id="listMsg"></div>
       <div class="majorstat" id="majorStat"></div>
@@ -1038,6 +1051,15 @@ async function start() {
     if (!confirm(`${ids.length}명을 ${word}할까요?`)) return;
     const msg = document.getElementById("listMsg");
     msg.className = "msg"; msg.textContent = `${word} 처리 중…`;
+    /* 줄마다 고르개에서 골라만 두신 등급이 있으면 함께 저장합니다.
+       (예전에는 승인만 저장하고 등급을 버려서, 눌러도 그대로였습니다) */
+    const pend = [...document.querySelectorAll("#tbl tbody tr")]
+      .filter(tr => ids.includes(tr.dataset.id) && tr.dataset.pendGrade)
+      .map(tr => [tr.dataset.id, tr.dataset.pendGrade]);
+    for (const [id, g] of pend) {
+      await saveRows(sb.from("profiles")
+        .update({ grade: g, grade_manual_at: new Date().toISOString() }).eq("id", id));
+    }
     const { n, error } = await saveRows(
       sb.from("profiles").update({ approved: value }).in("id", ids));
     if (error) { msg.className = "msg err"; msg.textContent = word + " 실패: " + error.message; return; }
@@ -1050,6 +1072,39 @@ async function start() {
       msg.className = "msg ok"; msg.textContent = `${n}명을 ${word}했습니다.`;
     }
   }
+
+  /** 고른 분들의 등급을 한꺼번에 바꿉니다.
+      (「선택 승인」은 승인 여부만 저장하므로, 등급은 여기서 따로 바꾸십니다) */
+  async function bulkGrade(ids, g) {
+    if (!ids.length) { alert("먼저 회원을 선택해주세요."); return; }
+    const NAME = { member: "회원", associate: "준회원", guest: "Guest" };
+    if (!confirm(ids.length + "명을 " + NAME[g] + " 으로 바꿀까요?")) return;
+    const msg = document.getElementById("listMsg");
+    msg.className = "msg"; msg.textContent = "등급 바꾸는 중…";
+    /* 손으로 정하신 것임을 남깁니다 — 「회원여부 확인」이 나중에 되돌리지 않도록 */
+    const patch = { grade: g, grade_manual_at: new Date().toISOString() };
+    let r = await saveRows(sb.from("profiles").update(patch).in("id", ids));
+    if (r.error && /grade_manual_at/.test(r.error.message || "")) {
+      r = await saveRows(sb.from("profiles").update({ grade: g }).in("id", ids));
+    }
+    if (r.error) {
+      msg.className = "msg err";
+      msg.textContent = /grade_check|violates check/i.test(r.error.message || "")
+        ? "자료방이 아직 이 등급을 모릅니다 — auth/grade_associate.sql 을 한 번 실행해주세요."
+        : "등급을 바꾸지 못했습니다: " + r.error.message;
+      return;
+    }
+    if (!r.n) { msg.className = "msg err"; msg.textContent = "등급 바꾸기 실패 — " + RLS_MSG; return; }
+    await load();
+    msg.className = "msg ok";
+    msg.textContent = r.n + "명을 " + NAME[g] + " 으로 바꿨습니다.";
+  }
+
+  document.getElementById("gradeApply").addEventListener("click", () => {
+    const g = document.getElementById("gradeSel2").value;
+    if (!g) { alert("바꿀 등급을 골라주세요."); return; }
+    bulkGrade(selected(), g);
+  });
 
   document.getElementById("okSel").addEventListener("click", () => bulk(selected(), true));
   document.getElementById("noSel").addEventListener("click", () => bulk(selected(), false));
