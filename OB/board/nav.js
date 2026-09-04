@@ -134,6 +134,17 @@ const PILLS = {
  * 메뉴 모양(css)은 그 화면 것을 그대로 쓰고 항목만 하나로 맞춥니다.
  * @param {"OB"|"YB"} org
  */
+/** 이 쪽을 보신 것을 한 번 적어 둡니다.
+ *  화면마다 따로 부르지 않아도 되도록 메뉴를 그릴 때 함께 부릅니다.
+ *  (예전에는 지도처럼 몇몇 쪽에서만 불려, 게시판을 아무리 둘러보셔도
+ *   기록이 남지 않았습니다) */
+let visitNoted = false;
+function noteThisPage(org) {
+  if (visitNoted) return;                  // 한 쪽에서 두 번 세지 않도록
+  visitNoted = true;
+  import("/OB/auth/auth.js").then(m => m.noteVisit()).catch(() => {});
+}
+
 export function applyMenu(org) {
   const key = org === "YB" ? "YB" : "OB";
   const nav = document.querySelector(".mhead nav") ||
@@ -148,6 +159,7 @@ export function applyMenu(org) {
     if (u.hash && u.pathname.replace(/index\.html$/, "") === here) a.setAttribute("href", u.hash);
   });
   mobileNav();
+  noteThisPage(org);
 }
 
 export function applyNav(org, title) {
@@ -174,6 +186,7 @@ export function applyNav(org, title) {
     last.setAttribute("href", LOGO[key].href);
   }
   mobileNav();
+  noteThisPage(org);
 }
 
 /** 상단 얇은 줄의 로그인 자리를 지금 상태에 맞게 그린다.
@@ -181,8 +194,8 @@ export function applyNav(org, title) {
 export async function applyAuthLinks(org) {
   const el = document.getElementById("authLinks");
   if (!el) return;
-  const { sb, currentUser, myProfile, noteVisit } = await import("/OB/auth/auth.js");
-  noteVisit();                       // 오늘 처음 들르신 것이면 한 번 세어둔다
+  const { sb, currentUser, myProfile } = await import("/OB/auth/auth.js");
+  noteThisPage(org);                 // 이 쪽을 보신 것을 한 번 적어 둡니다
   let user = null, p = null;
   try {
     user = await currentUser();
