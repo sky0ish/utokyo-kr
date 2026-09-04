@@ -2,13 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
+<meta name="apple-mobile-web-app-title" content="도쿄대학 한국인 총동문회">
+<meta name="application-name" content="도쿄대학 한국인 총동문회">
+<meta name="theme-color" content="#0d1c13">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="description" content="도쿄대학 한국인학생회 갤러리입니다. 개강총회·소풍회·체육대회 등 행사 사진을 모았습니다.">
 <meta name="keywords" content="도쿄대학 한국인학생회 행사, 도쿄대 유학생 모임">
 <link rel="canonical" href="https://u-tokyo.kr/YB/gallery.html">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-<link rel="apple-touch-icon" href="/images/favicon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="도쿄대학 한국인 총동문회">
 <meta property="og:title" content="갤러리 | 도쿄대학 한국인학생회">
@@ -22,7 +26,7 @@
 
 <title>갤러리 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=307">
+<link rel="stylesheet" href="/YB/board/board.css?v=308">
 <style>
   .topbar .inner,.mhead .inner,.banner .binner{max-width:1180px;padding-left:24px;padding-right:24px;}
   .gwrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
@@ -297,7 +301,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=307";
+import { CATS, CAT_NAME, loadGallery } from "./gallery-lib.js?v=308";
 
 let cur = new URLSearchParams(location.search).get("cat") || "all";
 if (cur !== "all" && !CATS.some(c => c[0] === cur)) cur = "all";
@@ -712,7 +716,7 @@ function setupNewAlbum(user, me) {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=307";
+  import { applyMenu } from "/YB/board/nav.js?v=308";
   applyMenu("YB");
 </script>
 </body>

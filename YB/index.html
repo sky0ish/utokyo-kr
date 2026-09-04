@@ -2,13 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
+<meta name="apple-mobile-web-app-title" content="도쿄대학 한국인 총동문회">
+<meta name="application-name" content="도쿄대학 한국인 총동문회">
+<meta name="theme-color" content="#0d1c13">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="description" content="도쿄대학 한국인학생회 공식 홈페이지입니다. 혼고·코마바·카시와 세 캠퍼스의 한국인 유학생을 위한 학업·취업·장학·생활 정보와 소모임 안내를 제공합니다.">
 <meta name="keywords" content="도쿄대학 한국인학생회, 도쿄대 유학, 東京大学韓国人学生会, UTKSA, 도쿄대 장학금, 도쿄대 대학원 입시">
 <link rel="canonical" href="https://u-tokyo.kr/YB/index.html">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-<link rel="apple-touch-icon" href="/images/favicon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="도쿄대학 한국인 총동문회">
 <meta property="og:title" content="도쿄대학 한국인학생회 | 東京大学韓国人学生会">
@@ -1384,7 +1388,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=307";
+import { initCalendar } from "/YB/board/calendar.js?v=308";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1500,7 +1504,7 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=307");
+  const { initCouncil } = await import("/YB/council.js?v=308");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 
@@ -1518,7 +1522,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=307";
+  import { applyMenu } from "/YB/board/nav.js?v=308";
   applyMenu("YB");
 </script>
 </body>
