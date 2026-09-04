@@ -1469,6 +1469,7 @@ async function start() {
     const legend = document.querySelector(".stat .legend");
     let EV = null;                 // 활동 기록 (바깥 rows 는 회원 명단입니다)
     let statOrg = HOME;            // 점수는 OB · YB 따로 셉니다
+    let withAdmin = false;        // 운영진 계정도 함께 셀지 (평소에는 뺍니다)
 
     // 어떤 활동을 볼지 고르는 줄
     {
@@ -1505,12 +1506,14 @@ async function start() {
       return EVENTS;
     }
 
-    /** 고른 소속의 일반 회원 기록만 — 운영진 계정과 다른 소속은 뺍니다 */
+    /** 고른 소속의 기록만 — 평소에는 운영진 계정을 뺍니다
+        (「운영진 포함」을 켜면 운영진 것까지 함께 셉니다 —
+         내 기록이 쌓이고 있는지 확인하실 때 쓰십시오) */
     function useEv() {
       const who = new Map(rows.map(r => [r.id, r]));
       return (EV || []).filter(e => {
         const p = who.get(e.user_id);
-        return p && !p.is_admin && (p.member_type || "") === statOrg;
+        return p && (withAdmin || !p.is_admin) && (p.member_type || "") === statOrg;
       });
     }
 
@@ -1741,6 +1744,18 @@ async function start() {
         box.querySelectorAll("a").forEach(x => x.classList.toggle("on", x === a));
         drawYears(); drawStat();
       }));
+      /* 운영진 계정은 평소 통계에서 뺍니다 (관리하느라 드나든 것은 참여가 아니므로).
+         다만 내 기록이 제대로 쌓이는지 볼 일이 있으니 켤 수 있게 해 둡니다. */
+      const ad = document.createElement("span");
+      ad.className = "seg";
+      ad.style.marginLeft = "8px";
+      ad.innerHTML = '<a data-ad="1">운영진 포함</a>';
+      box.parentNode.insertBefore(ad, box.nextSibling);
+      ad.querySelector("a").addEventListener("click", (e) => {
+        withAdmin = !withAdmin;
+        e.currentTarget.classList.toggle("on", withAdmin);
+        pick = ""; drawYears(); drawStat();
+      });
     }
 
     loadStat().then(d => { EV = d; if (EV) { drawYears(); drawStat(); } });
