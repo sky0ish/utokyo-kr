@@ -982,16 +982,11 @@ async function start() {
       const gone = turnDown
         ? "가입 신청과 로그인 계정이 지워집니다"
         : "회원 정보와 로그인 계정이 지워집니다";
-      if (!confirm(lead + "
-
-· " + gone + "
-· 쓰신 글과 사진은 그대로 남습니다
-" +
+      if (!confirm(lead + "\n\n· " + gone +
+          "\n· 쓰신 글과 사진은 그대로 남습니다\n" +
           (r.is_admin ? "· 운영진이셨으므로 같은 메일로 다시 가입하실 수 있습니다"
                       : "· 같은 메일로는 다시 가입할 수 없습니다") +
-          "
-
-계속할까요?")) return;
+          "\n\n계속할까요?")) return;
       b.disabled = true;
       const msg = document.getElementById("listMsg");
       const rp = await sb.rpc("remove_member", { p_id: r.id });
