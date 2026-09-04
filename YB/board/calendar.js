@@ -260,6 +260,7 @@ function monthGrid(year, month, map, todayKey, titles) {
       html += titles
         ? ev.slice(0, 2).map((e) =>
             `<i class="chip c-${esc(e.cat)}${e.org === "OB" ? " c-ob" : ""}" ` +
+            `data-id="${esc(String(e.id))}" ` +
             `title="${esc(e.title)}">${fromMark(e)}` +
             `${esc(shortTitle(e.title))}</i>`).join("") +
           (ev.length > 2 ? `<i class="chip more">＋${ev.length - 2}</i>` : "")
@@ -389,7 +390,13 @@ export async function initCalendar(sel, opts) {
         if (ev.length === 1) { location.href = "/YB/post.html?id=" + ev[0].id; return; }
         picked = c.dataset.k; draw();
       };
-      c.addEventListener("click", go);
+      /* 행사 이름표를 바로 누르시면 아래 목록을 거치지 않고 그 글로 갑니다.
+         날짜칸의 빈 곳을 누르시면 예전처럼 그날 일정이 아래에 펼쳐집니다. */
+      c.addEventListener("click", (e) => {
+        const chip = e.target.closest(".chip[data-id]");
+        if (chip) { e.stopPropagation(); location.href = "/YB/post.html?id=" + chip.dataset.id; return; }
+        go();
+      });
       c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
     });
   }
