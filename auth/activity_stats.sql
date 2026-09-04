@@ -3,8 +3,8 @@
 --
 --   무엇을 세는가
 --     login   로그인 화면에서 실제로 로그인했을 때
---     visit   홈페이지를 열었을 때 (하루 한 번만)
---     read    게시글을 열어봤을 때 (같은 글은 하루 한 번)
+--     visit   홈페이지 한 쪽을 열었을 때 (쪽마다 · 보신 만큼)
+--     read    게시글을 열어봤을 때 (같은 글은 30초에 한 번)
 --     post    글을 올렸을 때
 --     comment 댓글을 달았을 때
 --     photo   사진을 올렸을 때 (올린 장수만큼)
@@ -69,8 +69,8 @@ create policy "admin weights" on public.activity_weights
 
 -- ── 3) 홈페이지가 부르는 기록 함수 ──
 --    같은 일을 짧은 사이에 여러 번 세지 않도록 걸러 줍니다.
---      visit  하루 한 번
---      read   같은 글은 하루 한 번
+--      visit  같은 쪽을 5초 안에 다시 여는 것만 거릅니다
+--      read   같은 글은 30초에 한 번
 --      login  10분에 한 번
 --      그 밖   그대로 셉니다 (글·댓글·사진은 한 일마다 세는 것이 맞습니다)
 create or replace function public.note_activity(p_kind text, p_amount int default 1, p_ref text default null)
@@ -86,15 +86,19 @@ begin
   if p_kind not in ('login','visit','read','post','comment','photo') then return; end if;
 
   if p_kind = 'visit' then
+    -- 쪽(주소)마다 셉니다. 같은 쪽을 5초 안에 다시 여는 것만 거릅니다.
     select exists(select 1 from public.activity_events
-                   where user_id = uid and kind = 'visit' and at > now() - interval '1 day')
+                   where user_id = uid and kind = 'visit'
+                     and ref is not distinct from p_ref
+                     and at > now() - interval '5 seconds')
       into seen;
     if seen then return; end if;
 
   elsif p_kind = 'read' then
     select exists(select 1 from public.activity_events
                    where user_id = uid and kind = 'read'
-                     and ref is not distinct from p_ref and at > now() - interval '1 day')
+                     and ref is not distinct from p_ref
+                     and at > now() - interval '30 seconds')
       into seen;
     if seen then return; end if;
 

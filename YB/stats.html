@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=293">
+<link rel="stylesheet" href="/YB/board/board.css?v=294">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -128,6 +128,13 @@
     background:#fff4cf;border:1px solid #eccf72;border-left:4px solid #dfa521;
     font-size:12.5px;line-height:1.6;color:#6b4d06;font-weight:500;}
   .stattop .gift b{color:#a06f08;font-weight:700;}
+  /* 오늘 다녀간 사람 */
+  .card2.today .tnums{display:flex;flex-wrap:wrap;gap:10px 34px;margin-top:12px;}
+  .card2.today .tnums div{display:flex;flex-direction:column;gap:2px;}
+  .card2.today .tnums dt{font-size:12.5px;color:#9a947f;letter-spacing:.02em;}
+  .card2.today .tnums dd{display:flex;align-items:baseline;gap:3px;}
+  .card2.today .tnums b{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .card2.today .tnums span{font-size:12.5px;color:#9a947f;}
 </style>
 </head>
 <body>
@@ -171,7 +178,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=293";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=294";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -202,6 +209,22 @@ if (!me || !(me.approved || me.is_admin)) {
   start();
 }
 
+  /** 오늘 다녀간 사람 — 창구가 아직 없으면 아무것도 그리지 않습니다 */
+  function todayCard(t) {
+    if (!t) return "";
+    const n = (v) => Number(v || 0).toLocaleString();
+    return `<div class="card2 today">
+      <h3>오늘 다녀간 사람</h3>
+      <p class="sub">회원이 홈페이지 한 쪽을 열 때마다 셉니다. 로그인하신 분만 세어집니다.</p>
+      <dl class="tnums">
+        <div><dt>오늘</dt><dd><b>${n(t.today_people)}</b><span>명</span></dd></div>
+        <div><dt>오늘 본 쪽</dt><dd><b>${n(t.today_views)}</b><span>번</span></dd></div>
+        <div><dt>어제</dt><dd><b>${n(t.yesterday_people)}</b><span>명</span></dd></div>
+        <div><dt>이번 주</dt><dd><b>${n(t.week_people)}</b><span>명</span></dd></div>
+        <div><dt>이번 달</dt><dd><b>${n(t.month_people)}</b><span>명</span></dd></div>
+      </dl></div>`;
+  }
+
 async function start() {
   // 이 화면이 어느 단체 것인지는 주소가 정합니다.
   //   운영진은 두 단체를 다 맡으므로, 보는 사람의 소속으로 정하면
@@ -210,10 +233,12 @@ async function start() {
   document.getElementById("sTitle").textContent =
     (ORG_NAME[org] || "") + " 사용통계";
 
-  const [b, m, w] = await Promise.all([
+  const [b, m, w, td] = await Promise.all([
     sb.from("activity_board").select("*"),
     sb.from("activity_month").select("*"),
     sb.from("activity_weights").select("kind,weight"),
+    // 오늘 다녀간 사람 — 아직 준비 전이면 조용히 넘어갑니다
+    sb.from("activity_today").select("*").then(r => r, () => ({ data: null })),
   ]);
   // 활동마다 몇 점으로 세는지 (운영진이 정합니다)
   const WEIGHT = {};
@@ -279,6 +304,7 @@ async function start() {
          <p class="myrank">아직 쌓인 내 기록이 없습니다. 홈페이지를 쓰시면 하나씩 쌓입니다.</p>`) +
     `<div id="allStats"><div class="sec2"><h3>전체 사용통계 — ${esc(ORG_NAME[org] || "")}</h3>
        <small>우리 쪽 회원 ${rows.length}명이 함께 쓴 기록입니다</small></div>
+     ${todayCard(((td && td.data) || []).find(r => r.org === org))}
      <div class="card2">
        <p class="sub">우리 쪽 회원이 홈페이지를 얼마나 쓰셨는지 흐름으로 봅니다.</p>
        <div class="segs">

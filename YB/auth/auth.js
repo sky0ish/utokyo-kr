@@ -44,16 +44,16 @@ export async function noteActivity(kind, amount, ref) {
 /** 로그인 한 번 */
 export const noteLogin = () => noteActivity("login", 1);
 
-/** 홈페이지에 들른 것 — 하루 한 번만 세어집니다 */
+/** 홈페이지 한 쪽을 열어 보신 것 — 열 때마다 셉니다.
+ *  예전에는 「하루 한 번」이라 회원이 온종일 둘러보셔도 1이었습니다.
+ *  이제는 누르고 옮겨 다니신 만큼 그대로 쌓입니다.
+ *  같은 쪽을 몇 초 사이에 두 번 여는 것(새로고침·나눠 부르기)만
+ *  자료방 쪽에서 걸러 줍니다. */
 export async function noteVisit() {
   try {
     if (!(await currentUser())) return;            // 로그인한 분만
-    const key = "utokyo-visit";
-    const today = new Date().toISOString().slice(0, 10);
-    if (localStorage.getItem(key) === today) return;   // 이 기기에서 오늘 이미 셌음
-    localStorage.setItem(key, today);
-    await noteActivity("visit", 1);
-  } catch (e) { /* 저장소를 못 쓰는 환경은 그냥 넘어감 */ }
+    await noteActivity("visit", 1, location.pathname);
+  } catch (e) { /* 안 되어도 화면은 그대로 돌아갑니다 */ }
 }
 
 // 내 프로필 (profiles 테이블)
