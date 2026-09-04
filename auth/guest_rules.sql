@@ -50,7 +50,7 @@ create policy "guest write limit" on public.posts as restrictive for insert
 
 drop policy if exists "guest edit limit" on public.posts;
 create policy "guest edit limit" on public.posts as restrictive for update
-  using      (not public.is_guest() or category = 'jobs')
+  using      (not public.is_guest() or category in ('jobs', 'exam'))
   with check (not public.is_guest() or category in ('jobs', 'exam'));
 
 
