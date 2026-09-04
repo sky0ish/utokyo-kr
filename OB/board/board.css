@@ -449,3 +449,7 @@ body.yb .mguide td b{color:#2a6b40;}
 .legend .pieitem{cursor:pointer;border-radius:6px;padding:1px 6px;margin:0 -6px;transition:.14s;}
 .legend .pieitem:hover{background:#f5eddc;color:#8a6d2b;}
 body.yb .legend .pieitem:hover{background:#eef7f0;color:#2a6b40;}
+
+/* 비동문 준회원 — 글을 못 쓰는 게시판에서는 단추가 잠깁니다 */
+#writeBtn.locked{opacity:.45;filter:grayscale(.4);}
+#writeBtn.locked::after{content:"🔒";margin-left:5px;font-size:12px;}

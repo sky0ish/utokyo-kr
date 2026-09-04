@@ -69,6 +69,16 @@
   .asm-more b{color:#8a6d2b;}
 
 
+  /* 비동문 준회원께 드리는 안내 */
+  #guestNotice{background:#fdf6e6;border-bottom:1px solid #e6dcc0;}
+  #guestNotice .gn{padding:16px 0;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  #guestNotice h4{font-size:15px;font-weight:700;color:#8a6d2b;white-space:nowrap;}
+  #guestNotice ul{list-style:none;display:flex;gap:8px;flex-wrap:wrap;flex:1;}
+  #guestNotice li{font-size:13.5px;color:#5c5344;background:#fff;border:1px solid #ecdcba;
+    border-radius:100px;padding:4px 13px;}
+  #guestNotice li.can{border-color:#c9a961;color:#7a5f22;font-weight:600;}
+  #guestNotice a{color:#8a6d2b;font-weight:600;border-bottom:1px solid #d8cba8;}
+  #guestNotice p{width:100%;font-size:12.5px;color:#8a8574;margin-top:2px;}
 </style>
 <style>
   :root{
@@ -489,6 +499,9 @@
   .rh .rcnt{margin-left:auto;font-family:'Noto Sans KR',sans-serif;font-size:12.5px;
     font-weight:400;color:#a8a291;}
   .rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:10px;margin-top:14px;}
+  /* 현 회장은 한 줄을 온전히 — 그 아래 줄에 전 회장단이 나란히 */
+  .rp.rp-head{grid-column:1/-1;background:#fffdf8;border-color:#e3d5b0;}
+  .rp.rp-head .rn{font-size:17px;}
   .rp{background:#fff;border:1px solid #ece5d4;border-radius:5px;padding:13px 15px;transition:.15s;}
   .rp:hover{border-color:#c9a24b;box-shadow:0 3px 12px rgba(160,120,30,.09);}
   .rn{font-size:16px;font-weight:600;color:#101d33;display:flex;align-items:baseline;
@@ -717,6 +730,20 @@
 </section>
 
 <!-- 비로그인 안내 (로그인하면 자동으로 사라짐) -->
+<div id="guestNotice" hidden>
+  <div class="container gn">
+    <h4>🎫 비동문 준회원으로 오셨습니다</h4>
+    <ul>
+      <li>동문회 소개 · 인사말 · 연혁</li>
+      <li>후원 안내</li>
+      <li><a href="/OB/board.html?cat=forum">포럼·세미나 게시판</a> — 읽기</li>
+      <li class="can"><a href="/OB/board.html?cat=jobs">구인·채용 게시판</a> — 읽기 · <b>글쓰기</b></li>
+    </ul>
+    <p>그 밖의 게시판과 갤러리 · 회원 명부는 동문 회원께만 열려 있습니다.
+       동문이신데 준회원으로 되어 있다면 <a href="/OB/auth/mypage.html">내 정보</a>에서
+       전공과 졸업연도를 채워 주시고 운영진에게 알려 주세요.</p>
+  </div>
+</div>
 <div id="loginNotice" style="background:#f2eee2;border-bottom:1px solid #e6e1d5;">
   <div class="container" style="padding-top:13px;padding-bottom:13px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;font-size:14px;color:#6f6a5c;">
     <span>🔒 <b style="color:#22283a;font-weight:600;">로그인 하시면 상세정보를 보실 수 있습니다</b> — 게시판·갤러리 등 회원 전용 콘텐츠</span>
@@ -783,10 +810,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=306b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=306b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=306b3b5b07" alt="전공별모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=306b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=307b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=307b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=307b3b5b07" alt="전공별모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=307b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -903,7 +930,7 @@
         <h3 class="rh">회장단<span class="ren">President</span><span class="rcnt">4명</span></h3>
       </div>
       <div class="rlist">
-        <div class="rp">
+        <div class="rp rp-head">
           <div class="rn">양일모<span class="rr">회장</span></div>
           <p class="rb">서울대학교 자유전공학부 교수</p>
           <p class="rm">문학부 동아시아 사상문화 · 1997</p>
@@ -1493,27 +1520,27 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=306b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=307b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=306b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=307b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=306b3b5b07" alt="전공별모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=307b3b5b07" alt="전공별모임" loading="lazy"></span>
         <span class="cap">전공별모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=306b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=307b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=306b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=307b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=306b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=307b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
     </div>
@@ -1629,7 +1656,7 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=306";
+import { initCalendar } from "/OB/board/calendar.js?v=307";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
@@ -1822,11 +1849,22 @@ try {
   // 칸을 누르면 그 게시판으로 그냥 들어갑니다. 아래 목록은 늘 참여마당 전체입니다.
   show("");
 })();
+
+// ── 비동문 준회원이시면 무엇을 쓰실 수 있는지 알려 드립니다 ──
+(async () => {
+  try {
+    const me = await myProfile();
+    if (!me || me.is_admin) return;
+    if (me.grade !== "guest" && me.member_type !== "GUEST") return;
+    const box = document.getElementById("guestNotice");
+    if (box) box.hidden = false;
+  } catch (e) { /* 로그인 전이면 그냥 넘어갑니다 */ }
+})();
 </script>
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=306";
+  import { applyMenu } from "/OB/board/nav.js?v=307";
   applyMenu("OB");
 
 </script>

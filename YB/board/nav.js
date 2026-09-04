@@ -144,6 +144,41 @@ function noteThisPage(org) {
   import("/YB/auth/auth.js").then(m => m.noteVisit()).catch(() => {});
 }
 
+/** 비동문 준회원에게는 쓰실 수 있는 곳만 남깁니다.
+ *  볼 수 있는 게시판  포럼·세미나 · 구인·채용
+ *  글 쓰는 곳          구인·채용 한 곳
+ *  소개 · 인사말 · 후원 같은 안내 쪽은 그대로 두어 둘러보실 수 있게 합니다.
+ *  (자료방에도 같은 규칙이 서 있으므로 이것은 헛걸음을 막는 안내입니다) */
+const GUEST_CATS = ["forum", "jobs"];
+let guestTrimmed = false;
+async function guestTrim(org) {
+  if (guestTrimmed) return;
+  let me = null;
+  try {
+    const m = await import("/YB/auth/auth.js");
+    me = await m.myProfile();
+  } catch (e) { return; }
+  if (!me || me.is_admin) return;
+  if (me.grade !== "guest" && me.member_type !== "GUEST") return;
+  guestTrimmed = true;
+  document.documentElement.classList.add("is-guest");
+
+  // 게시판 고리는 볼 수 있는 곳만
+  document.querySelectorAll('.dd-menu a[href*="board.html"], nav a[href*="board.html"]')
+    .forEach((a) => {
+      const m = a.getAttribute("href").match(/cat=([a-z]+)/);
+      if (!m || !GUEST_CATS.includes(m[1])) a.remove();
+    });
+  // 갤러리·명부는 회원만 봅니다
+  document.querySelectorAll('a[href*="gallery.html"], a[href*="/members.html"]')
+    .forEach((a) => a.remove());
+  // 속이 빈 드롭다운은 통째로 치웁니다
+  document.querySelectorAll(".dd").forEach((dd) => {
+    const menu = dd.querySelector(".dd-menu");
+    if (menu && !menu.querySelector("a")) dd.remove();
+  });
+}
+
 export function applyMenu(org) {
   const key = org === "YB" ? "YB" : "OB";
   const nav = document.querySelector(".mhead nav") ||
@@ -159,6 +194,7 @@ export function applyMenu(org) {
   });
   mobileNav();
   noteThisPage(org);
+  guestTrim(org);
 }
 
 export function applyNav(org, title) {
@@ -182,6 +218,7 @@ export function applyNav(org, title) {
   //  같은 곳으로 가는 단추가 둘 생겼습니다. 이제 각 화면이 윗줄 네 개를 그대로 적습니다.)
   mobileNav();
   noteThisPage(org);
+  guestTrim(org);
 }
 
 /** 상단 얇은 줄의 로그인 자리를 지금 상태에 맞게 그린다.

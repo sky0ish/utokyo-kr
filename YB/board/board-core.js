@@ -2,9 +2,9 @@ import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
 // ─── 게시판 목록 화면 (총동문회 OB · 학생회 YB 공용 엔진) ────────
 // 화면 파일은 OB/ · YB/ 폴더에 따로 두고, 동작은 이 파일 하나를 함께 씁니다.
 // 그래서 한쪽만 고쳐져 서로 어긋나는 일이 생기지 않습니다.
-import { applyNav } from "/YB/board/nav.js?v=306";
-import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=306";
-import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js?v=306";
+import { applyNav } from "/YB/board/nav.js?v=307";
+import { boardInfo, boardTags, tagInfo } from "/YB/board/board-info.js?v=307";
+import { loadLikes, toggleLike, heart } from "/YB/auth/likes.js?v=307";
 
 /* 옮겨온 글의 지은이에는 소속·직함이 함께 붙어 있는 경우가 많습니다.
    («학98.석02.박04.남지현 도시 Ph.D», «경희대 화공과 이용택» 처럼)
@@ -390,8 +390,30 @@ export async function initBoard(ORG) {
     }
   }
 
-  document.getElementById("writeBtn").addEventListener("click", async () => {
+  /* 비동문 준회원은 구인·채용에만 글을 쓰실 수 있습니다.
+     자료방에도 같은 규칙이 서 있으니 이 단추는 헛걸음을 막는 안내입니다. */
+  (async () => {
+    const btn = document.getElementById("writeBtn");
+    if (!btn) return;
+    let mine = null;
+    try { mine = await myProfile(); } catch (e) { return; }
+    if (!mine || mine.is_admin) return;
+    const guest = (mine.grade === "guest") || (mine.member_type === "GUEST");
+    if (!guest) return;
+    if (cat === "jobs") return;                 // 구인·채용은 그대로 쓰십니다
+    btn.classList.add("locked");
+    btn.title = "비동문 준회원은 구인·채용 게시판에만 글을 올리실 수 있습니다";
+  })();
+
+  document.getElementById("writeBtn").addEventListener("click", async (ev) => {
     if (!user) { location.href = "/YB/auth/login.html"; return; }
+    const btn = ev.currentTarget;
+    if (btn.classList.contains("locked")) {
+      alert("비동문 준회원은 구인·채용 게시판에만 글을 올리실 수 있습니다." + String.fromCharCode(10) +
+            String.fromCharCode(10) +
+            "동문이신데 준회원으로 되어 있다면 운영진에게 알려 주세요.");
+      return;
+    }
     const qs = [];
     if (cat) qs.push("cat=" + cat);
     location.href = HOME + "/write.html" + (qs.length ? "?" + qs.join("&") : "");
