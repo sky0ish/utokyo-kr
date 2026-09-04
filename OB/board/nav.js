@@ -23,7 +23,7 @@ const NAV = {
           <a href="/OB/board.html?cat=club">소모임</a>
           <a href="/OB/board.html?cat=major">전공별모임(OB/YB)</a>
           <a href="/OB/board.html?cat=mentoring">멘토멘티(OB/YB)</a>
-          <a href="/OB/index.html#news">총회 안내</a>
+          <a href="/OB/board.html?cat=assembly">총회</a>
         </div>
       </div>
       <div class="dd">
