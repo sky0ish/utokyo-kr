@@ -44,15 +44,18 @@ export async function noteActivity(kind, amount, ref) {
 /** 로그인 한 번 */
 export const noteLogin = () => noteActivity("login", 1);
 
-/** 홈페이지 한 쪽을 열어 보신 것 — 열 때마다 셉니다.
- *  예전에는 「하루 한 번」이라 회원이 온종일 둘러보셔도 1이었습니다.
- *  이제는 누르고 옮겨 다니신 만큼 그대로 쌓입니다.
- *  같은 쪽을 몇 초 사이에 두 번 여는 것(새로고침·나눠 부르기)만
- *  자료방 쪽에서 걸러 줍니다. */
+/** 홈페이지 한 쪽을 열어 보신 것 — 두 가지를 함께 적습니다.
+ *    visit  다녀가신 한 차례   (30분 안에 다시 오시면 같은 방문으로 봅니다)
+ *    view   쪽 하나를 보신 것  (누르고 옮겨 다니신 만큼 그대로 쌓입니다)
+ *  겹쳐 세지 않도록 거르는 일은 자료방 쪽에서 맡습니다.
+ *  예전에는 「하루 한 번」이라 온종일 둘러보셔도 1이었습니다. */
 export async function noteVisit() {
   try {
     if (!(await currentUser())) return;            // 로그인한 분만
-    await noteActivity("visit", 1, location.pathname);
+    await Promise.all([
+      noteActivity("visit", 1),
+      noteActivity("view", 1, location.pathname),
+    ]);
   } catch (e) { /* 안 되어도 화면은 그대로 돌아갑니다 */ }
 }
 

@@ -127,12 +127,14 @@ export function mountActivity(host, opt) {
   let EVENTS = null;         // 원본 기록 (그래프용)
 
   // 활동 갈래 빛깔 — 색맹 구분까지 검증한 여섯 자리
-  const KCOLOR = { login: "#2a78d6", visit: "#eb6834", read: "#1baf7a",
-                   comment: "#eda100", post: "#e87ba4", photo: "#008300" };
-  const KORDER = ["login", "visit", "read", "comment", "post", "photo"];
+  const KCOLOR = { login: "#2a78d6", visit: "#eb6834", view: "#9b7bd4",
+                   read: "#1baf7a", comment: "#eda100", post: "#e87ba4",
+                   photo: "#008300" };
+  const KORDER = ["login", "visit", "view", "read", "comment", "post", "photo"];
 
-  const KIND_NAME = { login: "로그인", visit: "방문", read: "글읽기",
-                      comment: "댓글", post: "글쓰기", photo: "사진" };
+  const KIND_NAME = { login: "로그인", visit: "방문", view: "쪽 보기",
+                      read: "글읽기", comment: "댓글", post: "글쓰기",
+                      photo: "사진" };
 
   const scoreOf = (a) => WEIGHT.reduce((n, w) => n + (a && a[w.kind] || 0) * (+w.weight || 0), 0);
 
