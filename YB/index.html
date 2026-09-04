@@ -729,6 +729,7 @@
       <li>후원 · 협력 요청</li>
       <li><a href="/YB/board.html?cat=forum">포럼·세미나 게시판</a> — 읽기</li>
       <li class="can"><a href="/YB/board.html?cat=jobs">구인·채용 게시판</a> — 읽기 · <b>글쓰기</b></li>
+      <li class="can"><a href="/YB/board.html?cat=exam">수험생 게시판</a> — 읽기 · <b>글쓰기</b></li>
     </ul>
     <p>그 밖의 게시판과 갤러리는 학생회 회원께만 열려 있습니다.
        재학생·동문이신데 Guest 로 되어 있다면 <a href="/YB/auth/mypage.html">내 정보</a>를
@@ -1388,7 +1389,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=311";
+import { initCalendar } from "/YB/board/calendar.js?v=312";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1504,7 +1505,7 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=311");
+  const { initCouncil } = await import("/YB/council.js?v=312");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 
@@ -1522,7 +1523,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=311";
+  import { applyMenu } from "/YB/board/nav.js?v=312";
   applyMenu("YB");
 </script>
 </body>

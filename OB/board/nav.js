@@ -146,11 +146,11 @@ function noteThisPage(org) {
 }
 
 /** 비동문 준회원에게는 쓰실 수 있는 곳만 남깁니다.
- *  볼 수 있는 게시판  포럼·세미나 · 구인·채용
- *  글 쓰는 곳          구인·채용 한 곳
+ *  볼 수 있는 게시판  포럼·세미나 · 구인·채용 · 수험생
+ *  글 쓰는 곳          구인·채용 · 수험생
  *  소개 · 인사말 · 후원 같은 안내 쪽은 그대로 두어 둘러보실 수 있게 합니다.
  *  (자료방에도 같은 규칙이 서 있으므로 이것은 헛걸음을 막는 안내입니다) */
-const GUEST_CATS = ["forum", "jobs"];
+const GUEST_CATS = ["forum", "jobs", "exam"];
 let guestTrimmed = false;
 async function guestTrim(org) {
   if (guestTrimmed) return;
