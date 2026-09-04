@@ -291,7 +291,7 @@
         <span class="orgseg" id="orgseg"></span>
         <span class="csvbtns">
           <button class="btn csvtop" id="csvTop">⤓ 전체 명단 CSV</button>
-          <button class="btn csvtop" id="csvGuest">⤓ 준회원만 CSV</button>
+          <button class="btn csvtop" id="csvGuest">⤓ Guest만 CSV</button>
           <button class="btn csvtop" id="csvPick">⤓ 선택한 분만 CSV</button>
         </span>
       </div>
@@ -540,7 +540,7 @@ async function start() {
     msg.textContent = "동문 명단과 대조했습니다 — " + line;
   });
 
-  const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["준회원", "wait"] };
+  const GRADE = { admin: ["관리자", "ob"], member: ["회원", "ok"], guest: ["Guest", "wait"] };
   /** 등급을 손으로 바꾸는 칸 (운영진 계정은 관리자로 고정) */
   function gradeSel(r) {
     const btn = `<button type="button" class="btn sm adm" title="운영진 지정·해제">` +
@@ -548,7 +548,7 @@ async function start() {
     if (r.is_admin) return btn;
     const g = r.grade || "guest";
     return '<select class="gsel">' +
-      [["member", "회원"], ["guest", "준회원"]]
+      [["member", "회원"], ["guest", "Guest"]]
         .map(([k, v]) => `<option value="${k}"${k === g ? " selected" : ""}>${v}</option>`).join("") +
       "</select>" + btn;
   }
@@ -727,7 +727,7 @@ async function start() {
     document.getElementById("listMsg").textContent =
       (() => {
         const inOrg = rows.filter(byOrg);
-        const who = orgF === "OB" ? "재한 도쿄대학 총동문회(OB)" : orgF === "YB" ? "도쿄대학 한국인학생회(YB)" : orgF === "GUEST" ? "비동문 준회원" : "도쿄대학 한국인 총동문회(전체)";
+        const who = orgF === "OB" ? "재한 도쿄대학 총동문회(OB)" : orgF === "YB" ? "도쿄대학 한국인학생회(YB)" : orgF === "GUEST" ? "비동문 Guest" : "도쿄대학 한국인 총동문회(전체)";
         const ob = rows.filter(r => r.member_type === "OB").length;
         const yb = rows.filter(r => r.member_type === "YB").length;
         const gu = rows.filter(r => r.member_type === "GUEST").length;
@@ -751,7 +751,7 @@ async function start() {
     t.innerHTML =
       '<thead><tr><th><input type="checkbox" id="chkAll" title="전체 선택"></th>' +
       '<th class="no">#</th>' +
-      /* 등급(회원·준회원)과 상태(승인·대기)를 「구분」 바로 뒤에 둡니다.
+      /* 등급(회원·Guest)과 상태(승인·대기)를 「구분」 바로 뒤에 둡니다.
          맨 끝에 두었더니 표가 넓어질 때 화면 밖으로 밀려,
          정작 가장 먼저 봐야 할 것이 안 보였습니다. */
       [["name","이름"],["email","이메일"],["phone","연락처"],["org","구분"],
@@ -805,7 +805,7 @@ async function start() {
             note.className = "pend";
             cell.appendChild(note);
           }
-          note.textContent = "→ " + (to === "member" ? "회원" : "준회원") +
+          note.textContent = "→ " + (to === "member" ? "회원" : "Guest") +
                              " (승인을 누르면 함께 저장됩니다)";
         }
       }
@@ -1244,7 +1244,7 @@ async function start() {
     msg.textContent = "메일 앱을 열었습니다. 내용을 확인하고 보내주세요.";
   });
 
-  const GNAME = { admin: "관리자", member: "회원", guest: "준회원" };
+  const GNAME = { admin: "관리자", member: "회원", guest: "Guest" };
   const jobCols = () => orgF !== "YB";     // 재학생 명단에는 직장·직급을 넣지 않는다
   const HEADER = () => "이름,이메일,연락처,구분,전공,졸업연도," +
                        (jobCols() ? "직장,직급," : "") +
@@ -1285,7 +1285,7 @@ async function start() {
     download(HEADER() + "\n" + list.map(csvLine).join("\n"), "회원명단.csv");
   }
 
-  /** 전체 명단 — 관리자·회원·재승인·준회원 모두 (체크 여부와 무관) */
+  /** 전체 명단 — 관리자·회원·재승인·Guest 모두 (체크 여부와 무관) */
   function saveCsvAll() {
     const today = new Date().toISOString().slice(0, 10);
     saveNamed(rows.slice(), "회원명단_전체_" + today, "전체 명단");
@@ -1300,16 +1300,16 @@ async function start() {
     saveNamed(list, "회원명단_선택_" + today, "선택한 분");
   }
 
-  /** 준회원만 따로 (별도 파일) */
+  /** Guest 만 따로 (별도 파일) */
   function saveCsvGuest() {
     const list = rows.filter(r => !r.is_admin && (r.grade || "guest") === "guest");
     const today = new Date().toISOString().slice(0, 10);
     if (!list.length) {
       const m = document.getElementById("listMsg");
-      m.className = "msg"; m.textContent = "준회원이 없습니다.";
+      m.className = "msg"; m.textContent = "Guest 회원이 없습니다.";
       return;
     }
-    saveNamed(list, "회원명단_준회원_" + today, "준회원");
+    saveNamed(list, "회원명단_Guest_" + today, "Guest");
   }
 
   function saveNamed(list, fileName, label) {

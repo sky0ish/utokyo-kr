@@ -45,7 +45,7 @@
   .dcard .dbody li .tg{flex:none;font-size:11px;color:#7b8f82;white-space:nowrap;}
   .dcard .dbody li .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .dcard .dbody li .dt{flex:none;font-size:11.5px;color:#a8b3ab;font-variant-numeric:tabular-nums;}
-  /* 비동문 준회원께 드리는 안내 */
+  /* 비동문 Guest 께 드리는 안내 */
   #guestNotice{background:#eef7f0;border-bottom:1px solid #cfe3d5;}
   #guestNotice .gn{padding:16px 0;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;}
   #guestNotice h4{font-size:15px;font-weight:700;color:#2a6b40;white-space:nowrap;}
@@ -722,7 +722,7 @@
 
 <div id="guestNotice" hidden>
   <div class="container gn">
-    <h4>🎫 비동문 준회원으로 오셨습니다</h4>
+    <h4>🎫 비동문 Guest 로 오셨습니다</h4>
     <ul>
       <li>학교 안내</li>
       <li>학생회 소개</li>
@@ -731,7 +731,7 @@
       <li class="can"><a href="/YB/board.html?cat=jobs">구인·채용 게시판</a> — 읽기 · <b>글쓰기</b></li>
     </ul>
     <p>그 밖의 게시판과 갤러리는 학생회 회원께만 열려 있습니다.
-       재학생·동문이신데 준회원으로 되어 있다면 <a href="/YB/auth/mypage.html">내 정보</a>를
+       재학생·동문이신데 Guest 로 되어 있다면 <a href="/YB/auth/mypage.html">내 정보</a>를
        채워 주시고 학생회에 알려 주세요.</p>
   </div>
 </div>
@@ -1388,7 +1388,7 @@
 
 <script type="module">
 
-import { initCalendar } from "/YB/board/calendar.js?v=310";
+import { initCalendar } from "/YB/board/calendar.js?v=311";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop", { mode: "mini", upcoming: false, titles: true });
@@ -1504,11 +1504,11 @@ try {
 
 // 역대 회장 및 임원진 — 회장 목록과 게시판 모양의 명단 자료
 try {
-  const { initCouncil } = await import("/YB/council.js?v=310");
+  const { initCouncil } = await import("/YB/council.js?v=311");
   await initCouncil();
 } catch (e) { /* 자료를 불러오지 못해도 나머지 화면은 그대로 */ }
 
-// ── 비동문 준회원이시면 무엇을 쓰실 수 있는지 알려 드립니다 ──
+// ── 비동문 Guest 이시면 무엇을 쓰실 수 있는지 알려 드립니다 ──
 (async () => {
   try {
     const me = await myProfile();
@@ -1522,7 +1522,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/YB/board/nav.js?v=310";
+  import { applyMenu } from "/YB/board/nav.js?v=311";
   applyMenu("YB");
 </script>
 </body>

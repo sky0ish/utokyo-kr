@@ -75,7 +75,7 @@
   .asm-more b{color:#8a6d2b;}
 
 
-  /* 비동문 준회원께 드리는 안내 */
+  /* 비동문 Guest 께 드리는 안내 */
   #guestNotice{background:#fdf6e6;border-bottom:1px solid #e6dcc0;}
   #guestNotice .gn{padding:16px 0;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;}
   #guestNotice h4{font-size:15px;font-weight:700;color:#8a6d2b;white-space:nowrap;}
@@ -738,7 +738,7 @@
 <!-- 비로그인 안내 (로그인하면 자동으로 사라짐) -->
 <div id="guestNotice" hidden>
   <div class="container gn">
-    <h4>🎫 비동문 준회원으로 오셨습니다</h4>
+    <h4>🎫 비동문 Guest 로 오셨습니다</h4>
     <ul>
       <li>동문회 소개 · 인사말 · 연혁</li>
       <li>후원 안내</li>
@@ -746,7 +746,7 @@
       <li class="can"><a href="/OB/board.html?cat=jobs">구인·채용 게시판</a> — 읽기 · <b>글쓰기</b></li>
     </ul>
     <p>그 밖의 게시판과 갤러리 · 회원 명부는 동문 회원께만 열려 있습니다.
-       동문이신데 준회원으로 되어 있다면 <a href="/OB/auth/mypage.html">내 정보</a>에서
+       동문이신데 Guest 로 되어 있다면 <a href="/OB/auth/mypage.html">내 정보</a>에서
        전공과 졸업연도를 채워 주시고 운영진에게 알려 주세요.</p>
   </div>
 </div>
@@ -816,10 +816,10 @@
           <span class="more">전체보기 +</span>
         </div>
         <div class="dgal">
-          <span><img src="../images/gallery/assembly/cover_t.jpg?v=310b3b5b07" alt="총회" loading="lazy"></span>
-          <span><img src="../images/gallery/club/cover_t.jpg?v=310b3b5b07" alt="소모임" loading="lazy"></span>
-          <span><img src="../images/gallery/faculty/cover_t.jpg?v=310b3b5b07" alt="전공별모임" loading="lazy"></span>
-          <span><img src="../images/gallery/forum/cover_t.jpg?v=310b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+          <span><img src="../images/gallery/assembly/cover_t.jpg?v=311b3b5b07" alt="총회" loading="lazy"></span>
+          <span><img src="../images/gallery/club/cover_t.jpg?v=311b3b5b07" alt="소모임" loading="lazy"></span>
+          <span><img src="../images/gallery/faculty/cover_t.jpg?v=311b3b5b07" alt="전공별모임" loading="lazy"></span>
+          <span><img src="../images/gallery/forum/cover_t.jpg?v=311b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         </div>
       </a>
 
@@ -1526,27 +1526,27 @@
     </div>
     <div class="gal-grid">
       <a class="gsq" href="gallery.html?cat=assembly">
-        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=310b3b5b07" alt="총회" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/assembly/cover_t.jpg?v=311b3b5b07" alt="총회" loading="lazy"></span>
         <span class="cap">총회<small>2012 – 2026</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=club">
-        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=310b3b5b07" alt="소모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/club/cover_t.jpg?v=311b3b5b07" alt="소모임" loading="lazy"></span>
         <span class="cap">소모임<small>등산 · 골프 · 지회</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=faculty">
-        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=310b3b5b07" alt="전공별모임" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/faculty/cover_t.jpg?v=311b3b5b07" alt="전공별모임" loading="lazy"></span>
         <span class="cap">전공별모임<small>계열 · 학과별</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=forum">
-        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=310b3b5b07" alt="포럼·세미나" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/forum/cover_t.jpg?v=311b3b5b07" alt="포럼·세미나" loading="lazy"></span>
         <span class="cap">포럼·세미나<small>학술 · 한일교류</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=old">
-        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=310b3b5b07" alt="옛날사진" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/old/cover_t.jpg?v=311b3b5b07" alt="옛날사진" loading="lazy"></span>
         <span class="cap">옛날사진<small>창립기 신년하례식</small></span>
       </a>
       <a class="gsq" href="gallery.html?cat=daily">
-        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=310b3b5b07" alt="일상" loading="lazy"></span>
+        <span class="ph"><img src="../images/gallery/daily/cover_t.jpg?v=311b3b5b07" alt="일상" loading="lazy"></span>
         <span class="cap">일상<small>교류회 · 임원회의</small></span>
       </a>
     </div>
@@ -1662,7 +1662,7 @@
 <script type="module">
 // 로그인 상태를 상단바에 반영
 import { sb, currentUser, myProfile } from "/OB/auth/auth.js";
-import { initCalendar } from "/OB/board/calendar.js?v=310";
+import { initCalendar } from "/OB/board/calendar.js?v=311";
 
 // ─── 일정 달력 ───
 initCalendar("#calTop",  { mode: "mini", upcoming: false, titles: true });
@@ -1856,7 +1856,7 @@ try {
   show("");
 })();
 
-// ── 비동문 준회원이시면 무엇을 쓰실 수 있는지 알려 드립니다 ──
+// ── 비동문 Guest 이시면 무엇을 쓰실 수 있는지 알려 드립니다 ──
 (async () => {
   try {
     const me = await myProfile();
@@ -1870,7 +1870,7 @@ try {
 
 <script type="module">
   // 상단 메뉴는 board/nav.js 한 곳에서만 정합니다 (화면마다 달라지지 않도록)
-  import { applyMenu } from "/OB/board/nav.js?v=310";
+  import { applyMenu } from "/OB/board/nav.js?v=311";
   applyMenu("OB");
 
 </script>
