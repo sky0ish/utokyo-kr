@@ -185,7 +185,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { CATS } from "/YB/gallery-lib.js?v=308";
+import { CATS } from "/YB/gallery-lib.js?v=309";
 
 const ORG = "YB";
 
@@ -292,8 +292,7 @@ if (me && me.is_admin) {
     if (error) {
       msg.className = "msg err";
       msg.textContent = "불러오지 못했습니다: " + error.message;
-      alert("글을 불러오지 못했습니다.
-" + error.message);
+      alert("글을 불러오지 못했습니다." + String.fromCharCode(10) + error.message);
       return;
     }
     dateFix = [];
