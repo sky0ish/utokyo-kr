@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사용통계 | 도쿄대학 한국인학생회</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/YB/board/board.css?v=300">
+<link rel="stylesheet" href="/YB/board/board.css?v=301">
 <style>
   .swrap{max-width:1100px;margin:0 auto;padding:0 24px 70px;}
   .stop{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:34px 0 16px;}
@@ -189,7 +189,7 @@
 
 <script type="module">
 import { sb, currentUser, myProfile } from "/YB/auth/auth.js";
-import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=300";
+import { applyNav, applyAuthLinks } from "/YB/board/nav.js?v=301";
 
 applyNav("YB", "사용통계 | 도쿄대학 한국인학생회");
 applyAuthLinks("YB");
@@ -200,10 +200,12 @@ const KIND = [["login", "로그인"], ["visit", "방문"], ["view", "쪽 보기"
               ["photo", "사진"], ["liked", "좋아요 받음"]];
 const KNAME = Object.fromEntries(KIND);
 // 그래프 색 — 채도를 낮춘 차분한 여섯 빛깔
-const KCOLOR = { login: "#6b83a8", visit: "#c9836a", read: "#6f9e86",
-                 comment: "#c9a961", post: "#b07f92", photo: "#7a6a90" };
+const KCOLOR = { login: "#6b83a8", visit: "#c9836a", view: "#8f86b5",
+                 read: "#6f9e86", comment: "#c9a961", post: "#b07f92",
+                 photo: "#7a6a90", liked: "#c06a6a" };
 const CATN = { notice:"공지사항", free:"자유게시판", club:"소모임", mentoring:"멘토멘티", promo:"홍보·채용", condolence:"경조사", forum:"포럼·세미나", qna:"Q&A", jobs:"취업정보", parttime:"아르바이트", market:"벼룩시장", history:"활동 이력", suggest:"동문회에 바란다" };
-const KORDER = ["login", "visit", "read", "comment", "post", "photo"];
+const KORDER = ["login", "visit", "view", "read", "comment", "post",
+                "photo", "liked"];
 const esc = (s) => String(s == null ? "" : s)
   .replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const box = document.getElementById("box");
